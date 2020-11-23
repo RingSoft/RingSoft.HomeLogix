@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using RingSoft.DataEntryControls.WPF;
 
 namespace RingSoft.App.Controls
 {
@@ -33,17 +34,15 @@ namespace RingSoft.App.Controls
     ///     <MyNamespace:AppMainWindow/>
     ///
     /// </summary>
-    public abstract class AppMainWindow : Window
+    public abstract class AppMainWindow : BaseWindow
     {
         public event EventHandler Done;
 
-        static AppMainWindow()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(AppMainWindow), new FrameworkPropertyMetadata(typeof(AppMainWindow)));
-        }
-
         public AppMainWindow()
         {
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            WindowState = WindowState.Maximized;
+
             var timer = new DispatcherTimer
             {
                 Interval = new TimeSpan(0, 0, 0, 0, 10),
@@ -61,6 +60,8 @@ namespace RingSoft.App.Controls
                 Activate();
                 timer.Start();
             };
+
+            SetFocusToFirstControl = true;
         }
     }
 }

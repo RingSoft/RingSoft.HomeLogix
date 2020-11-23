@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace RingSoft.HomeLogix
+﻿namespace RingSoft.HomeLogix
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -10,6 +8,16 @@ namespace RingSoft.HomeLogix
         public MainWindow()
         {
             InitializeComponent();
+
+            ContentRendered += (sender, args) => ShowLoginWindow();
+        }
+
+        private void ShowLoginWindow()
+        {
+            var loginWindow = new LoginWindow();
+            loginWindow.Owner = this;
+
+            loginWindow.ShowDialog();
         }
     }
 }

@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="RingSoft.DataEntryControls.WPF" Version="0.95.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RingSoft.AppLibrary\RingSoft.App.Library.csproj" />
   </ItemGroup>
 
