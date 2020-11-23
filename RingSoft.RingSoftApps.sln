@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.HomeLogix", "RingSoft.HomeLogix\RingSoft.HomeLogix.csproj", "{BDDC9F0E-4D3E-4550-BA9C-33AD31E558C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix", "RingSoft.HomeLogix\RingSoft.HomeLogix.csproj", "{BDDC9F0E-4D3E-4550-BA9C-33AD31E558C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.HomeLogix.Library", "RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj", "{4D813171-4D2C-4E8D-8E9C-0A5B35D362FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix.Library", "RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj", "{4D813171-4D2C-4E8D-8E9C-0A5B35D362FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.App.Library", "RingSoft.AppLibrary\RingSoft.App.Library.csproj", "{CDDA4479-672B-4877-A683-1771F900B0E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.App.Controls", "RingSoft.App.Controls\RingSoft.App.Controls.csproj", "{321265C2-F707-4AB7-9D56-22214473A285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{4D813171-4D2C-4E8D-8E9C-0A5B35D362FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D813171-4D2C-4E8D-8E9C-0A5B35D362FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D813171-4D2C-4E8D-8E9C-0A5B35D362FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDDA4479-672B-4877-A683-1771F900B0E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDDA4479-672B-4877-A683-1771F900B0E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDDA4479-672B-4877-A683-1771F900B0E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDDA4479-672B-4877-A683-1771F900B0E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{321265C2-F707-4AB7-9D56-22214473A285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{321265C2-F707-4AB7-9D56-22214473A285}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{321265C2-F707-4AB7-9D56-22214473A285}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{321265C2-F707-4AB7-9D56-22214473A285}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
