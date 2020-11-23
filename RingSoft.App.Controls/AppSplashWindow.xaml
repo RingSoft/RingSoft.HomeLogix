@@ -1,13 +1,12 @@
-﻿<ac:AppMainWindow x:Class="RingSoft.HomeLogix.MainWindow"
+﻿<Window x:Class="RingSoft.App.Controls.AppSplashWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
-        xmlns:local="clr-namespace:RingSoft.HomeLogix"
+        xmlns:local="clr-namespace:RingSoft.App.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="AppSplashWindow" Height="450" Width="800">
     <Grid>
-
+        
     </Grid>
-</ac:AppMainWindow>
+</Window>

@@ -6,4 +6,10 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RingSoft.App.Controls\RingSoft.App.Controls.csproj" />
+    <ProjectReference Include="..\RingSoft.AppLibrary\RingSoft.App.Library.csproj" />
+    <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
+  </ItemGroup>
+
 </Project>

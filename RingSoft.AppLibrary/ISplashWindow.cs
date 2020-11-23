@@ -1,6 +1,6 @@
 ﻿namespace RingSoft.App.Library
 {
-    public interface IAppSplashWindow
+    public interface ISplashWindow
     {
         bool IsDisposed { get; }
 
