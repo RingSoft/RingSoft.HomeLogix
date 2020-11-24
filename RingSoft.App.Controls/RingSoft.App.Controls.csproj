@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="4.4.1" />
+    <PackageReference Include="Castle.Windsor" Version="5.1.0" />
     <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="1.13.9" />
     <PackageReference Include="RingSoft.DbMaintenance" Version="1.13.9" />
   </ItemGroup>
