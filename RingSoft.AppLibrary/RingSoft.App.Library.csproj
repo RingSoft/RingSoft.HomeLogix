@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0" />
-    <PackageReference Include="RingSoft.DbLookup.EfCore" Version="1.13.10" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="1.13.10" />
+    <PackageReference Include="RingSoft.DbLookup.EfCore" Version="1.13.11" />
+    <PackageReference Include="RingSoft.DbMaintenance" Version="1.13.11" />
   </ItemGroup>
 
 </Project>

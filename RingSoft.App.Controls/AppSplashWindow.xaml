@@ -3,10 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RingSoft.App.Controls"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         mc:Ignorable="d"
-        Title="AppSplashWindow" Height="450" Width="800">
-    <Grid>
-        
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        Background="AntiqueWhite"
+        Height="250" Width="400">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <Image Source="/RingSoft.App.Controls;component/Resources/RingSoft Logo.png" Height="48" Width="48"/>
+            <TextBlock VerticalAlignment="Center" Text="RingSoft" FontSize="24" FontWeight="Bold"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock x:Name="AppTitleTextBlock" Text="AppTitle" FontSize="18"/>
+            <TextBlock x:Name="AppVersionTextBlock" Text="Version" HorizontalAlignment="Center" FontSize="14"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <dec:WaitSpinner Height="20" Width="20" EllipseSize="4" Margin="5"/>
+            <TextBlock x:Name="ProgressTextBlock" Text="Progress..." VerticalAlignment="Center" FontSize="12" Margin="10,0,0,0"/>
+        </StackPanel>
     </Grid>
 </Window>

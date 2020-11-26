@@ -13,11 +13,14 @@ namespace RingSoft.App.Controls
         public AppSplashWindow()
         {
             InitializeComponent();
+
+            AppTitleTextBlock.Text = RingSoftAppGlobals.AppTitle;
+            AppVersionTextBlock.Text = $"Version {RingSoftAppGlobals.AppVersion}";
         }
 
         public void SetProgress(string progressText)
         {
-            
+            Dispatcher.Invoke(() => ProgressTextBlock.Text = progressText);
         }
 
         public void CloseSplash()
