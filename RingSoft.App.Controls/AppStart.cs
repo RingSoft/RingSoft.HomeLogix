@@ -17,11 +17,17 @@ namespace RingSoft.App.Controls
             _mainWindow = mainWindow;
         }
 
-        public sealed override void Start()
+        public sealed override bool Start()
         {
             _mainWindow.Done += (sender, args) => CloseSplash();
 
-            base.Start();
+            if (!base.Start())
+            {
+                _application.Shutdown();
+                return false;
+            }
+
+            return true;
         }
 
         protected sealed override void ShowSplash()

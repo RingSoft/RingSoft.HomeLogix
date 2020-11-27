@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RingSoft.App.Controls\RingSoft.App.Controls.csproj" />
     <ProjectReference Include="..\RingSoft.AppLibrary\RingSoft.App.Library.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />

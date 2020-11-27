@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Mime;
 using System.Threading;
 
 namespace RingSoft.App.Library
@@ -11,7 +12,7 @@ namespace RingSoft.App.Library
 
         private object _lockCloseWindow = new object();
 
-        public virtual void Start()
+        public virtual bool Start()
         {
             SplashThread = new Thread(ShowSplash);
             SplashThread.SetApartmentState(ApartmentState.STA);
@@ -23,8 +24,22 @@ namespace RingSoft.App.Library
                 Thread.Sleep(100);
             }
 
-            if (!DoProcess())
+            try
+            {
+                if (!DoProcess())
+                {
+                    CloseSplash();
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                SplashWindow.ShowError(e.Message, "Error!");
                 CloseSplash();
+                return false;
+            }
+
+            return true;
         }
 
         protected void SetProgress(string progressText)

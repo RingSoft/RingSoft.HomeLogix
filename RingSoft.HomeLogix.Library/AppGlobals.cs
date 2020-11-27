@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using RingSoft.App.Library;
+using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -29,11 +30,11 @@ namespace RingSoft.HomeLogix.Library
         {
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
-            Thread.Sleep(3000);
+            //Thread.Sleep(3000);
 
-            AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to System Database."));
+            AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to Master Database."));
 
-            Thread.Sleep(3000);
+            MasterDbContext.ConnectToMaster();
         }
     }
 }

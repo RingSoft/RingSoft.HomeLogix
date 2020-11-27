@@ -8,6 +8,8 @@
 
         void SetProgress(string progressText);
 
+        void ShowError(string message, string title);
+
         void CloseSplash();
     }
 }

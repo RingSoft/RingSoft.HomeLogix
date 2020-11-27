@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Library;
+﻿using System.Windows;
+using RingSoft.App.Library;
 
 namespace RingSoft.App.Controls
 {
@@ -21,6 +22,11 @@ namespace RingSoft.App.Controls
         public void SetProgress(string progressText)
         {
             Dispatcher.Invoke(() => ProgressTextBlock.Text = progressText);
+        }
+
+        public void ShowError(string message, string title)
+        {
+            Dispatcher.Invoke(() => MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Error));
         }
 
         public void CloseSplash()
