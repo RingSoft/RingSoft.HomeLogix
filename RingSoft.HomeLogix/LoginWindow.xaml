@@ -4,11 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels;assembly=RingSoft.HomeLogix.Library"
         xmlns:local="clr-namespace:RingSoft.HomeLogix"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=vm:LoginViewModelDesign, IsDesignTimeCreatable=True}"
         ShowInTaskbar="False"
         Title="LoginWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <vm:LoginViewModel x:Name="LoginViewModel"/>
+    </Window.DataContext>
     <Grid>
-        <TextBox Width="100" Height="20"/>
+        <ListBox Height="100" ItemsSource="{Binding Households}" SelectedItem="{Binding Path=SelectedHousehold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </Grid>
 </dec:BaseWindow>
