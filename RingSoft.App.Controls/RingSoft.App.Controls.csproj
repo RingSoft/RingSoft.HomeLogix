@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RingSoft.AppLibrary\RingSoft.App.Library.csproj" />
+    <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
   </ItemGroup>
 
   <ItemGroup>
