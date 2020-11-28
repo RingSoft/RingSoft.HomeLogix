@@ -1,18 +1,32 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.Library.Annotations;
 using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
+    public interface ILoginView
+    {
+        bool ShowAddEditHousehold(Households household);
+
+        string GetHouseholdDataFile();
+
+        void CloseWindow(bool cancel);
+    }
+
     public class LoginViewModel : INotifyPropertyChanged
     {
+        public ILoginView View { get; private set; }
+
         private ObservableCollection<Households> _households;
 
         public ObservableCollection<Households> Households
         {
-            get { return _households; }
+            get => _households;
             set
             {
                 if (_households == value)
@@ -27,7 +41,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public Households SelectedHousehold
         {
-            get { return _selectedHousehold; }
+            get => _selectedHousehold;
             set
             {
                 if (_selectedHousehold == value)
@@ -43,7 +57,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public bool IsDefault
         {
-            get { return _isDefault; }
+            get => _isDefault;
             set
             {
                 if (_isDefault == value)
@@ -54,9 +68,99 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
+        public ICommand AddNewCommand { get; }
+        public ICommand EditCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand ConnectToDataFileCommand { get; }
+        public ICommand LoginCommand { get; }
+        public ICommand CancelCommand { get; }
+
         public LoginViewModel()
         {
             Households = new ObservableCollection<Households>();
+            Households.Add(new Households { Name = "John and Jane Doe Household" });
+            SelectedHousehold = Households[0];
+
+            AddNewCommand = new RelayCommand(AddNewHouseHold);
+            EditCommand = new RelayCommand(EditHousehold){IsEnabled = CanLogin()};
+            DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
+            ConnectToDataFileCommand = new RelayCommand(ConnectToDataFile);
+            LoginCommand = new RelayCommand(Login){IsEnabled = CanLogin()};
+            CancelCommand = new RelayCommand(Cancel);
+        }
+
+        public void OnViewLoaded(ILoginView loginView)
+        {
+            View = loginView;
+        }
+
+        private bool CanLogin() => SelectedHousehold != null;
+
+        private bool CanDeleteHousehold()
+        {
+            if (SelectedHousehold == null)
+                return false;
+
+            if (AppGlobals.LoggedInHousehold != null)
+                return AppGlobals.LoggedInHousehold.Id != SelectedHousehold.Id;
+
+            return true;
+        }
+
+        private void AddNewHouseHold()
+        {
+            var newHousehold = new Households();
+            if (View.ShowAddEditHousehold(newHousehold))
+            {
+                if (MasterDbContext.SaveHousehold(newHousehold))
+                {
+                    Households.Add(newHousehold);
+                    SelectedHousehold = newHousehold;
+                }
+            }
+        }
+
+        private void EditHousehold()
+        {
+            if (View.ShowAddEditHousehold(SelectedHousehold))
+            {
+                MasterDbContext.SaveHousehold(SelectedHousehold);
+            }
+        }
+
+        private void ConnectToDataFile()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void DeleteHousehold()
+        {
+            var message = "Are you sure you wish to delete this household?";
+            if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
+                MessageBoxButtonsResult.Yes)
+            {
+                Households.Remove(SelectedHousehold);
+                SelectedHousehold = null;
+                MasterDbContext.DeleteHousehold(SelectedHousehold);
+            }
+        }
+
+        private void Login()
+        {
+            AppGlobals.LoggedInHousehold = SelectedHousehold;
+
+            View.CloseWindow(false);
+        }
+
+        private void Cancel()
+        {
+            if (AppGlobals.LoggedInHousehold == null)
+            {
+                var message = "Login failure.  Application will shut down.";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Login Failure", RsMessageBoxIcons.Information);
+            }
+
+            View.CloseWindow(true);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -74,7 +178,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             for (int i = 0; i < 5; i++)
             {
-                Households.Add(new Households { Name = "John and Jane Doe Demo Household" });
+                Households.Add(new Households { Name = "John and Jane Doe Household" });
             }
         }
     }

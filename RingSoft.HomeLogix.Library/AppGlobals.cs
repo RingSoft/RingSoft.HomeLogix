@@ -16,6 +16,8 @@ namespace RingSoft.HomeLogix.Library
     }
     public class AppGlobals
     {
+        public static Households LoggedInHousehold { get; set; }
+
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
         public static void InitSettings()

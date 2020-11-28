@@ -55,5 +55,15 @@ namespace RingSoft.HomeLogix.MasterData
             var context = new MasterDbContext();
             context.Database.Migrate();
         }
+
+        public static bool SaveHousehold(Households household)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void DeleteHousehold(Households household)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
