@@ -33,20 +33,15 @@ namespace RingSoft.HomeLogix.MasterData
             {
                 entity.HasKey(hk => hk.Id);
 
-                entity.Property(p => p.Name)
-                    .IsRequired()
-                    .HasColumnType("nvarchar(50)")
-                    .HasMaxLength(50);
+                entity.Property(p => p.Id).HasColumnType("integer");
 
-                entity.Property(p => p.FilePath)
-                    .IsRequired()
-                    .HasColumnType("nvarchar(250)")
-                    .HasMaxLength(250);
+                entity.Property(p => p.Name).HasColumnType("nvarchar");
 
-                entity.Property(p => p.FileName)
-                    .IsRequired()
-                    .HasColumnType("nvarchar(250)")
-                    .HasMaxLength(250);
+                entity.Property(p => p.FilePath).HasColumnType("nvarchar");
+
+                entity.Property(p => p.FileName).HasColumnType("nvarchar");
+
+                entity.Property(p => p.IsDefault).HasColumnType("bit");
             });
 
             base.OnModelCreating(modelBuilder);

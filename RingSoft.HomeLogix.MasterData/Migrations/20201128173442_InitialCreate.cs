@@ -10,11 +10,11 @@ namespace RingSoft.HomeLogix.MasterData.Migrations
                 name: "Households",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
+                    FilePath = table.Column<string>(type: "nvarchar", maxLength: 250, nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar", maxLength: 250, nullable: false)
                 },
                 constraints: table =>
                 {

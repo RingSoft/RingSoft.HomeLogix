@@ -8,8 +8,8 @@ using RingSoft.HomeLogix.MasterData;
 namespace RingSoft.HomeLogix.MasterData.Migrations
 {
     [DbContext(typeof(MasterDbContext))]
-    [Migration("20201127005238_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201128174124_AddedIsDefault")]
+    partial class AddedIsDefault
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,22 +21,25 @@ namespace RingSoft.HomeLogix.MasterData.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasColumnType("nvarchar");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar");
 
                     b.HasKey("Id");
 
