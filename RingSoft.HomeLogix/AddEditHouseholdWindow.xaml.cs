@@ -31,9 +31,11 @@ namespace RingSoft.HomeLogix
 
         public string ShowFileDialog()
         {
-            var fileName = string.Empty;
+            string fileName;
             var directory = string.Empty;
-            if (!ViewModel.FileName.IsNullOrEmpty())
+            if (ViewModel.FileName.IsNullOrEmpty())
+                fileName = "HomeLogix Database.sqlite";
+            else
             {
                 fileName = Path.GetFileName(ViewModel.FileName);
                 directory = new FileInfo(ViewModel.FileName ?? string.Empty).DirectoryName;
@@ -43,7 +45,7 @@ namespace RingSoft.HomeLogix
                 FileName = fileName ?? string.Empty,
                 InitialDirectory = directory ?? string.Empty,
                 DefaultExt = "sqlite",
-                Filter = "SQLite Files|*.sqlite"
+                Filter = "SQLite Files(*.sqlite)|*.sqlite"
             };
 
             if (saveFileDialog.ShowDialog() == true)

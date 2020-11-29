@@ -1,23 +1,30 @@
-﻿namespace RingSoft.HomeLogix
+﻿using RingSoft.HomeLogix.Library.ViewModels.Main;
+
+namespace RingSoft.HomeLogix
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : IMainView
     {
         public MainWindow()
         {
             InitializeComponent();
 
-            ContentRendered += (sender, args) => ShowLoginWindow();
+            ContentRendered += (sender, args) => ViewModel.OnViewLoaded(this);
         }
 
-        private void ShowLoginWindow()
+        public bool ChangeHousehold()
         {
-            var loginWindow = new LoginWindow();
-            loginWindow.Owner = this;
+            var loginWindow = new LoginWindow {Owner = this};
 
-            loginWindow.ShowDialog();
+            var result = false;
+            var loginResult = loginWindow.ShowDialog();
+
+            if (loginResult != null)
+                result = (bool) loginResult;
+
+            return result;
         }
     }
 }

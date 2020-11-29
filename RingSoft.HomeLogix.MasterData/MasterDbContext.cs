@@ -19,12 +19,15 @@ namespace RingSoft.HomeLogix.MasterData
 
         public static string ProgramDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix";
 
+        public static string MasterFilePath => $"{ProgramDataFolder}\\{MasterFileName}";
+
+        private const string MasterFileName = "MasterDb.sqlite";
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var fileName = $"{ProgramDataFolder}\\MasterDb.sqlite";
-                optionsBuilder.UseSqlite($"Data Source={fileName}");
+                optionsBuilder.UseSqlite($"Data Source={MasterFilePath}");
             }
 
             base.OnConfiguring(optionsBuilder);
@@ -55,8 +58,20 @@ namespace RingSoft.HomeLogix.MasterData
             if (!Directory.Exists(ProgramDataFolder))
                 Directory.CreateDirectory(ProgramDataFolder);
 
+            var firstTime = !File.Exists(MasterFilePath);
+
             var context = new MasterDbContext();
             context.Database.Migrate();
+
+            if (firstTime)
+            {
+                SaveHousehold(new Households
+                {
+                    Name = "John and Jane Doe Household (Demo)",
+                    FilePath = $"{ProgramDataFolder}\\",
+                    FileName = "DemoData.sqlite"
+                });
+            }
         }
 
         public static IEnumerable<Households> GetHouseholds()

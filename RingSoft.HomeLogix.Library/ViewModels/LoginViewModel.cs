@@ -1,12 +1,10 @@
-﻿using System;
+﻿using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.MasterData;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.HomeLogix.Library.Annotations;
-using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -16,7 +14,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         string GetHouseholdDataFile();
 
-        void CloseWindow(bool dialogResult);
+        void CloseWindow();
+
+        void ShutDownApplication();
     }
 
     public class LoginViewModel : INotifyPropertyChanged
@@ -69,12 +69,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
-        public ICommand AddNewCommand { get; }
-        public ICommand EditCommand { get; }
-        public ICommand DeleteCommand { get; }
-        public ICommand ConnectToDataFileCommand { get; }
-        public ICommand LoginCommand { get; }
-        public ICommand CancelCommand { get; }
+        public bool DialogResult { get; private set; }
+
+        public RelayCommand AddNewCommand { get; }
+        public RelayCommand EditCommand { get; }
+        public RelayCommand DeleteCommand { get; }
+        public RelayCommand ConnectToDataFileCommand { get; }
+        public RelayCommand LoginCommand { get; }
+        public RelayCommand CancelCommand { get; }
+
+        private bool _initialized;
 
         public LoginViewModel()
         {
@@ -84,26 +88,44 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             foreach (var household in dbHouseholds)
             {
                 Households.Add(household);
+                if (AppGlobals.LoggedInHousehold != null && AppGlobals.LoggedInHousehold.Id == household.Id)
+                    SelectedHousehold = household;
             }
 
-            if (Households.Any())
+            if (SelectedHousehold == null && Households.Any())
                 SelectedHousehold = Households[0];
 
             AddNewCommand = new RelayCommand(AddNewHouseHold);
-            EditCommand = new RelayCommand(EditHousehold){IsEnabled = CanLogin()};
+            EditCommand = new RelayCommand(EditHousehold){IsEnabled = CanEditHousehold()};
             DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
             ConnectToDataFileCommand = new RelayCommand(ConnectToDataFile);
             LoginCommand = new RelayCommand(Login){IsEnabled = CanLogin()};
             CancelCommand = new RelayCommand(Cancel);
+
+            _initialized = true;
         }
 
         public void OnViewLoaded(ILoginView loginView) => View = loginView;
 
         private bool CanLogin() => SelectedHousehold != null;
 
+        private bool CanEditHousehold()
+        {
+            if (SelectedHousehold == null)
+                return false;
+
+            if (AppGlobals.LoggedInHousehold != null && SelectedHousehold.Id == AppGlobals.LoggedInHousehold.Id)
+                return false;
+
+            return SelectedHousehold.Id != 1;
+        }
+
         private bool CanDeleteHousehold()
         {
             if (SelectedHousehold == null)
+                return false;
+
+            if (SelectedHousehold.Id == 1)
                 return false;
 
             if (AppGlobals.LoggedInHousehold != null)
@@ -155,19 +177,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         private void Login()
         {
             AppGlobals.LoggedInHousehold = SelectedHousehold;
-
-            View.CloseWindow(true);
+            DialogResult = true;
+            View.CloseWindow();
         }
 
         private void Cancel()
         {
-            if (AppGlobals.LoggedInHousehold == null)
+            DialogResult = false;
+            View.CloseWindow();
+        }
+
+        public bool DoCancelClose()
+        {
+            if (AppGlobals.LoggedInHousehold == null && !DialogResult)
             {
-                var message = "Login failure.  Application will shut down.";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, "Login Failure", RsMessageBoxIcons.Information);
+                var message = "Application will shut down if you do not login.  Do you wish to continue?";
+                if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Login Failure") ==
+                    MessageBoxButtonsResult.Yes)
+                {
+                    View.ShutDownApplication();
+                }
+                else
+                {
+                    return true;
+                }
             }
 
-            View.CloseWindow(false);
+            return false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -175,6 +211,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
+            if (_initialized)
+            {
+                EditCommand.IsEnabled = CanEditHousehold();
+                DeleteCommand.IsEnabled = CanDeleteHousehold();
+                LoginCommand.IsEnabled = CanLogin();
+            }
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }

@@ -68,7 +68,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             CancelCommand = new RelayCommand(OnCancel);
         }
 
-        public void OnViewLoaded(IAddEditHouseholdView addEditHouseholdView) => View = addEditHouseholdView;
+        public void OnViewLoaded(IAddEditHouseholdView addEditHouseholdView)
+        {
+            View = addEditHouseholdView;
+            HouseholdName = addEditHouseholdView.Household.Name;
+            FileName = $"{addEditHouseholdView.Household.FilePath}{addEditHouseholdView.Household.FileName}";
+        }
 
         private void ShowFileDialog()
         {
