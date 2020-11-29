@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         string GetHouseholdDataFile();
 
-        void CloseWindow(bool cancel);
+        void CloseWindow(bool dialogResult);
     }
 
     public class LoginViewModel : INotifyPropertyChanged
@@ -78,7 +78,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public LoginViewModel()
         {
             Households = new ObservableCollection<Households>();
-            Households.Add(new Households { Name = "John and Jane Doe Household" });
+            Households.Add(new Households { Name = "John and Jane Doe Household Demo" });
             SelectedHousehold = Households[0];
 
             AddNewCommand = new RelayCommand(AddNewHouseHold);
@@ -89,10 +89,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             CancelCommand = new RelayCommand(Cancel);
         }
 
-        public void OnViewLoaded(ILoginView loginView)
-        {
-            View = loginView;
-        }
+        public void OnViewLoaded(ILoginView loginView) => View = loginView;
 
         private bool CanLogin() => SelectedHousehold != null;
 
@@ -149,7 +146,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             AppGlobals.LoggedInHousehold = SelectedHousehold;
 
-            View.CloseWindow(false);
+            View.CloseWindow(true);
         }
 
         private void Cancel()
@@ -160,7 +157,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 ControlsGlobals.UserInterface.ShowMessageBox(message, "Login Failure", RsMessageBoxIcons.Information);
             }
 
-            View.CloseWindow(true);
+            View.CloseWindow(false);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -178,7 +175,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             for (int i = 0; i < 5; i++)
             {
-                Households.Add(new Households { Name = "John and Jane Doe Household" });
+                Households.Add(new Households { Name = "John and Jane Doe Household Demo" });
             }
         }
     }

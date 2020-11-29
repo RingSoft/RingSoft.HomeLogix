@@ -11,13 +11,15 @@ namespace RingSoft.HomeLogix
         public LoginWindow()
         {
             InitializeComponent();
-
-            Loaded += (sender, args) => ViewModel.OnViewLoaded(this);
+            
+            ViewModel.OnViewLoaded(this);
         }
 
         public bool ShowAddEditHousehold(Households household)
         {
-            throw new System.NotImplementedException();
+            var addEditHouseholdWindow = new AddEditHouseholdWindow(household);
+            addEditHouseholdWindow.Owner = this;
+            return addEditHouseholdWindow.ShowDialog() == true;
         }
 
         public string GetHouseholdDataFile()
@@ -25,9 +27,10 @@ namespace RingSoft.HomeLogix
             throw new System.NotImplementedException();
         }
 
-        public void CloseWindow(bool cancel)
+        public void CloseWindow(bool dialogResult)
         {
-            throw new System.NotImplementedException();
+            DialogResult = dialogResult;
+            Close();
         }
     }
 }
