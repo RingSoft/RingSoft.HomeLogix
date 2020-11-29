@@ -23,7 +23,7 @@
         
         <Label Content="Household Name" Style="{StaticResource ControlLabel}"/>
 
-        <dec:StringEditControl Grid.Row="0" Grid.Column="1" Text="{Binding Path=HouseholdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="John and Jane Doe Household Demo" Width="300" HorizontalAlignment="Left"/>
+        <dec:StringEditControl x:Name="HouseholdNameTextBox" Grid.Row="0" Grid.Column="1" Text="{Binding Path=HouseholdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="John and Jane Doe Household Demo" Width="300" HorizontalAlignment="Left"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Database File Name" Style="{StaticResource ControlLabel}"/>
 

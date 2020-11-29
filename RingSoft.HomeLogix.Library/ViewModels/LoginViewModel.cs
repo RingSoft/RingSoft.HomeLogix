@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using RingSoft.DataEntryControls.Engine;
@@ -78,8 +79,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public LoginViewModel()
         {
             Households = new ObservableCollection<Households>();
-            Households.Add(new Households { Name = "John and Jane Doe Household Demo" });
-            SelectedHousehold = Households[0];
+            var dbHouseholds = MasterDbContext.GetHouseholds();
+
+            foreach (var household in dbHouseholds)
+            {
+                Households.Add(household);
+            }
+
+            if (Households.Any())
+                SelectedHousehold = Households[0];
 
             AddNewCommand = new RelayCommand(AddNewHouseHold);
             EditCommand = new RelayCommand(EditHousehold){IsEnabled = CanLogin()};
@@ -136,9 +144,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
                 MessageBoxButtonsResult.Yes)
             {
-                Households.Remove(SelectedHousehold);
-                SelectedHousehold = null;
-                MasterDbContext.DeleteHousehold(SelectedHousehold);
+                if (MasterDbContext.DeleteHousehold(SelectedHousehold.Id))
+                {
+                    Households.Remove(SelectedHousehold);
+                    SelectedHousehold = null;
+                }
             }
         }
 

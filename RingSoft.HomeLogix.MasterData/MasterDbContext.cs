@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.DbLookup.EfCore;
 
 namespace RingSoft.HomeLogix.MasterData
 {
@@ -56,14 +59,23 @@ namespace RingSoft.HomeLogix.MasterData
             context.Database.Migrate();
         }
 
-        public static bool SaveHousehold(Households household)
+        public static IEnumerable<Households> GetHouseholds()
         {
-            throw new NotImplementedException();
+            var context = new MasterDbContext();
+            return context.Households.OrderBy(p => p.Name);
         }
 
-        public static void DeleteHousehold(Households household)
+        public static bool SaveHousehold(Households household)
         {
-            throw new NotImplementedException();
+            var context = new MasterDbContext();
+            return context.SaveEntity(context.Households, household, "Saving Household");
+        }
+
+        public static bool DeleteHousehold(int householdId)
+        {
+            var context = new MasterDbContext();
+            var household = context.Households.FirstOrDefault(f => f.Id == householdId);
+            return context.DeleteEntity(context.Households, household, "Deleting Household");
         }
     }
 }

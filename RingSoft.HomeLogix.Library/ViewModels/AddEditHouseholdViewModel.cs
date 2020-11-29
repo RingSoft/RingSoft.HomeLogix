@@ -1,12 +1,18 @@
-﻿using System;
+﻿using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.MasterData;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
+    public enum SetFocusControls
+    {
+        HouseholdName = 0,
+        FileName = 1
+    }
+
     public interface IAddEditHouseholdView
     {
         Households Household { get; }
@@ -14,6 +20,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         void CloseWindow(bool dialogResult);
 
         string ShowFileDialog();
+
+        void SetFocus(SetFocusControls control);
     }
     public class AddEditHouseholdViewModel : INotifyPropertyChanged
     {
@@ -64,11 +72,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void ShowFileDialog()
         {
-            throw new NotImplementedException();
+            var fileName = View.ShowFileDialog();
+            if (!fileName.IsNullOrEmpty())
+                FileName = fileName;
         }
 
         private void OnOk()
         {
+            if (HouseholdName.IsNullOrEmpty())
+            {
+                var message = "Household Name must have a value";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Household Name", RsMessageBoxIcons.Exclamation);
+                View.SetFocus(SetFocusControls.HouseholdName);
+                return;
+            }
+
+            if (FileName.IsNullOrEmpty())
+            {
+                var message = "File Name must have a value";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid File Name", RsMessageBoxIcons.Exclamation);
+                View.SetFocus(SetFocusControls.FileName);
+                return;
+            }
+
+            View.Household.Name = HouseholdName;
+            var fileInfo = new FileInfo(FileName);
+            View.Household.FileName = fileInfo.Name;
+            View.Household.FilePath = fileInfo.DirectoryName;
+
             View.CloseWindow(true);
         }
 

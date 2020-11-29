@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.App.Controls
 {
@@ -19,6 +20,7 @@ namespace RingSoft.App.Controls
 
         public sealed override bool Start()
         {
+            LookupControlsGlobals.InitUi();
             _mainWindow.Done += (sender, args) => CloseSplash();
 
             if (!base.Start())
