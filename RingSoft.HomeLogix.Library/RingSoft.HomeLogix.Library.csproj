@@ -15,8 +15,4 @@
     <ProjectReference Include="..\RingSoft.HomeLogix.Sqlite\RingSoft.HomeLogix.Sqlite.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DataProcessor\" />
-  </ItemGroup>
-
 </Project>

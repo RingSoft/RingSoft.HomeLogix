@@ -8,8 +8,8 @@ using RingSoft.HomeLogix.MasterData;
 namespace RingSoft.HomeLogix.MasterData.Migrations
 {
     [DbContext(typeof(MasterDbContext))]
-    [Migration("20201128174124_AddedIsDefault")]
-    partial class AddedIsDefault
+    [Migration("20201130215828_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

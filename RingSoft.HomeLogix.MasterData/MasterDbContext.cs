@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.MasterData
             {
                 SaveHousehold(new Households
                 {
-                    Name = "John and Jane Doe Household (Demo)",
+                    Name = "John and Jane Doe Family (Demo)",
                     FilePath = ProgramDataFolder,
                     FileName = DemoDataFileName
                 });

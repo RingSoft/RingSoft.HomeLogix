@@ -6,6 +6,7 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="False"
         WindowStyle="None"
         Background="AntiqueWhite"
         Height="250" Width="400">

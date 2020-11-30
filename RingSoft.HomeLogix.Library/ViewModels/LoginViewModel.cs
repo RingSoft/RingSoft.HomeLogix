@@ -10,6 +10,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 {
     public interface ILoginView
     {
+        bool LoginToHousehold(Households household);
+
         bool ShowAddEditHousehold(Households household);
 
         string GetHouseholdDataFile();
@@ -176,9 +178,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void Login()
         {
-            AppGlobals.LoggedInHousehold = SelectedHousehold;
-            DialogResult = true;
-            View.CloseWindow();
+            if (View.LoginToHousehold(SelectedHousehold))
+            {
+                AppGlobals.LoggedInHousehold = SelectedHousehold;
+                DialogResult = true;
+                View.CloseWindow();
+            }
         }
 
         private void Cancel()

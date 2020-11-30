@@ -1,8 +1,13 @@
-﻿using RingSoft.App.Library;
-using RingSoft.HomeLogix.MasterData;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess;
+using RingSoft.HomeLogix.MasterData;
 using RingSoft.HomeLogix.Sqlite;
+using System;
+using System.Linq;
+using RingSoft.DbLookup.EfCore;
+using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -18,6 +23,8 @@ namespace RingSoft.HomeLogix.Library
     public class AppGlobals
     {
         public static HomeLogixLookupContext LookupContext { get; private set; }
+
+        //public static IDataProvider
 
         public static Households LoggedInHousehold { get; set; }
 
@@ -41,7 +48,7 @@ namespace RingSoft.HomeLogix.Library
 
             LookupContext.Initialize(new HomeLogixDbContext(LookupContext));
 
-            AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to Master Database."));
+            AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));
 
             MasterDbContext.ConnectToMaster();
         }
@@ -49,6 +56,30 @@ namespace RingSoft.HomeLogix.Library
         public static IHomeLogixDbContext GetNewDbContext()
         {
             return new HomeLogixDbContext();
+        }
+
+        public static bool LoginToHousehold(Households household)
+        {
+            AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
+
+            LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
+            LookupContext.SqliteDataProcessor.FileName = household.FileName;
+
+            var context = GetNewDbContext();
+            context.DbContext.Database.Migrate();
+
+            var systemMaster = context.SystemMaster.FirstOrDefault();
+            if (systemMaster == null)
+                systemMaster = new SystemMaster();
+            systemMaster.HouseholdName = household.Name;
+            context.DbContext.SaveEntity(context.SystemMaster, systemMaster, "Updating household name.");
+
+            AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
+
+            var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
+            LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
+
+            return true;
         }
     }
 }

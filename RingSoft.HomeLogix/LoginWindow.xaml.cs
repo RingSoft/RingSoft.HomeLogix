@@ -19,6 +19,12 @@ namespace RingSoft.HomeLogix
             ListBox.GotKeyboardFocus += (sender, args) => ListBox.SelectedItem ??= ListBox.Items[0];
         }
 
+        public bool LoginToHousehold(Households household)
+        {
+            var loginProcedure = new LoginProedure(household);
+            return loginProcedure.Start();
+        }
+
         public bool ShowAddEditHousehold(Households household)
         {
             var addEditHouseholdWindow = new AddEditHouseholdWindow(household);

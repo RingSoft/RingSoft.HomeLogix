@@ -14,11 +14,18 @@ namespace RingSoft.HomeLogix
 
         protected override bool DoProcess()
         {
-            AppGlobals.AppSplashProgress += (sender, args) => SetProgress(args.ProgressText);
+            AppGlobals.AppSplashProgress += AppGlobals_AppSplashProgress;
 
             AppGlobals.Initialize();
 
+            AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
+
             return base.DoProcess();
+        }
+
+        private void AppGlobals_AppSplashProgress(object sender, AppProgressArgs e)
+        {
+            SetProgress(e.ProgressText);
         }
     }
 }

@@ -14,7 +14,8 @@ namespace RingSoft.HomeLogix.MasterData.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar", maxLength: 250, nullable: false),
-                    FileName = table.Column<string>(type: "nvarchar", maxLength: 250, nullable: false)
+                    FileName = table.Column<string>(type: "nvarchar", maxLength: 250, nullable: false),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

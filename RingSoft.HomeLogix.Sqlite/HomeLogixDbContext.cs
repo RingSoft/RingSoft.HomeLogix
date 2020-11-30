@@ -6,13 +6,22 @@ namespace RingSoft.HomeLogix.Sqlite
 {
     public class HomeLogixDbContext : DbContext, IHomeLogixDbContext
     {
+        //install Microsoft.EntityFrameworkCore.Tools NuGet
+
+        //Restart Visual Studio.
+
+        //Add-Migration <Name>
+
         public const string StringColumnType = "nvarchar";
+        
         public DbContext DbContext => this;
+
+        public bool IsDesignTime { get; set; }
 
         public virtual DbSet<SystemMaster> SystemMaster { get; set; }
 
         private static HomeLogixLookupContext _lookupContext;
-
+        
         public HomeLogixDbContext(HomeLogixLookupContext lookupContext)
         {
             _lookupContext = lookupContext;
@@ -25,7 +34,10 @@ namespace RingSoft.HomeLogix.Sqlite
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(_lookupContext.SqliteDataProcessor.ConnectionString);
+            if (IsDesignTime)
+                optionsBuilder.UseSqlite("DataSource=C:\\");
+            else 
+                optionsBuilder.UseSqlite(_lookupContext.SqliteDataProcessor.ConnectionString);
 
             base.OnConfiguring(optionsBuilder);
         }
