@@ -1,11 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
 {
     public class HomeLogixLookupContext : LookupContext
     {
+        public TableDefinition<SystemMaster> SystemMaster { get; set; }
+
         public override DbDataProcessor DataProcessor => SqliteDataProcessor;
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
@@ -17,17 +21,22 @@ namespace RingSoft.HomeLogix.DataAccess
         public HomeLogixLookupContext()
         {
             SqliteDataProcessor = new SqliteDataProcessor();
-            //_dbContext = 
+        }
+
+        public void Initialize(IHomeLogixDbContext dbContext)
+        {
+            _dbContext = dbContext.DbContext;
+            Initialize();
         }
 
         protected override void InitializeLookupDefinitions()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         protected override void SetupModel()
         {
-            throw new System.NotImplementedException();
+            
         }
 
     }
