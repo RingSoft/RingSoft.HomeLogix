@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix.MasterDa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.App.Library", "RingSoft.App.Library\RingSoft.App.Library.csproj", "{960B1230-A86D-4F1F-942C-27363729B88A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.HomeLogix.DataAccess", "RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj", "{28F8137A-A929-4898-98E0-2F71598AD2F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.HomeLogix.Sqlite", "RingSoft.HomeLogix.Sqlite\RingSoft.HomeLogix.Sqlite.csproj", "{05EDEA31-AD2A-4B3B-898E-EDDF8C20E434}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{960B1230-A86D-4F1F-942C-27363729B88A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{960B1230-A86D-4F1F-942C-27363729B88A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{960B1230-A86D-4F1F-942C-27363729B88A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28F8137A-A929-4898-98E0-2F71598AD2F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28F8137A-A929-4898-98E0-2F71598AD2F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28F8137A-A929-4898-98E0-2F71598AD2F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28F8137A-A929-4898-98E0-2F71598AD2F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05EDEA31-AD2A-4B3B-898E-EDDF8C20E434}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05EDEA31-AD2A-4B3B-898E-EDDF8C20E434}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05EDEA31-AD2A-4B3B-898E-EDDF8C20E434}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05EDEA31-AD2A-4B3B-898E-EDDF8C20E434}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

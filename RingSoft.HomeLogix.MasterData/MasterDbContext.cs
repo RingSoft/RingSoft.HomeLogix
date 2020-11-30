@@ -17,11 +17,12 @@ namespace RingSoft.HomeLogix.MasterData
 
         public virtual DbSet<Households> Households { get; set; }
 
-        public static string ProgramDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix";
+        public static string ProgramDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix\\";
 
-        public static string MasterFilePath => $"{ProgramDataFolder}\\{MasterFileName}";
+        public static string MasterFilePath => $"{ProgramDataFolder}{MasterFileName}";
 
-        private const string MasterFileName = "MasterDb.sqlite";
+        public const string MasterFileName = "MasterDb.sqlite";
+        public const string DemoDataFileName = "DemoData.sqlite";
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -68,8 +69,8 @@ namespace RingSoft.HomeLogix.MasterData
                 SaveHousehold(new Households
                 {
                     Name = "John and Jane Doe Household (Demo)",
-                    FilePath = $"{ProgramDataFolder}\\",
-                    FileName = "DemoData.sqlite"
+                    FilePath = ProgramDataFolder,
+                    FileName = DemoDataFileName
                 });
             }
         }

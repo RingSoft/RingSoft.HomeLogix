@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.App.Controls\RingSoft.App.Controls.csproj" />
     <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
+    <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
   </ItemGroup>
 

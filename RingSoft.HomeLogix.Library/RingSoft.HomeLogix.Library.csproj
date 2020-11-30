@@ -10,7 +10,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
+    <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.MasterData\RingSoft.HomeLogix.MasterData.csproj" />
+    <ProjectReference Include="..\RingSoft.HomeLogix.Sqlite\RingSoft.HomeLogix.Sqlite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DataProcessor\" />
   </ItemGroup>
 
 </Project>
