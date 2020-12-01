@@ -5,14 +5,20 @@ using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix
 {
-    public class LoginProedure : AppProcedure
+    public class LoginProcedure : AppProcedure
     {
         public override ISplashWindow SplashWindow => _splashWindow;
 
         private ProcessingSplashWindow _splashWindow;
         private Households _household;
+        private string _fileName;
 
-        public LoginProedure(Households household)
+        public LoginProcedure(string fileName)
+        {
+            _fileName = fileName;
+        }
+
+        public LoginProcedure(Households household)
         {
             _household = household;
         }

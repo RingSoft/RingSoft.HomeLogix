@@ -15,9 +15,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
     public interface IAddEditHouseholdView
     {
-        Households Household { get; }
-
-        void CloseWindow(bool dialogResult);
+        void CloseWindow();
 
         string ShowFileDialog();
 
@@ -55,6 +53,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
+        public Households Household { get; private set; }
+
         public IAddEditHouseholdView View { get; private set; }
 
         public ICommand ShowFileDialogCommand { get; }
@@ -71,8 +71,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public void OnViewLoaded(IAddEditHouseholdView addEditHouseholdView)
         {
             View = addEditHouseholdView;
-            HouseholdName = addEditHouseholdView.Household.Name;
-            FileName = $"{addEditHouseholdView.Household.FilePath}{addEditHouseholdView.Household.FileName}";
         }
 
         private void ShowFileDialog()
@@ -100,17 +98,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return;
             }
 
-            View.Household.Name = HouseholdName;
             var fileInfo = new FileInfo(FileName);
-            View.Household.FileName = fileInfo.Name;
-            View.Household.FilePath = fileInfo.DirectoryName;
 
-            View.CloseWindow(true);
+            Household = new Households
+            {
+                Name = HouseholdName,
+                FileName = fileInfo.Name,
+                FilePath = fileInfo.DirectoryName
+            };
+
+            View.CloseWindow();
         }
 
         private void OnCancel()
         {
-            View.CloseWindow(false);
+            View.CloseWindow();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

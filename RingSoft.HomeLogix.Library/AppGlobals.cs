@@ -24,7 +24,7 @@ namespace RingSoft.HomeLogix.Library
     {
         public static HomeLogixLookupContext LookupContext { get; private set; }
 
-        //public static IDataProvider
+        public static IDataRepository DataProvider { get; set; }
 
         public static Households LoggedInHousehold { get; set; }
 
@@ -40,6 +40,8 @@ namespace RingSoft.HomeLogix.Library
         public static void Initialize()
         
         {
+            DataProvider = new DataRepository();
+
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
             LookupContext = new HomeLogixLookupContext();

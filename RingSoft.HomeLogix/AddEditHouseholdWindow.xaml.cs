@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.Library.ViewModels;
+using System;
+using System.IO;
 using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix
@@ -12,22 +12,20 @@ namespace RingSoft.HomeLogix
     /// </summary>
     public partial class AddEditHouseholdWindow : IAddEditHouseholdView
     {
-        public Households Household { get; }
-
-        public AddEditHouseholdWindow(Households household)
+        public AddEditHouseholdWindow()
         {
-            Household = household;
-
             InitializeComponent();
             
             ViewModel.OnViewLoaded(this);
         }
 
-        public void CloseWindow(bool dialogResult)
+        public new Households ShowDialog()
         {
-            DialogResult = dialogResult;
-            Close();
+            base.ShowDialog();
+            return ViewModel.Household;
         }
+
+        public void CloseWindow() => Close();
 
         public string ShowFileDialog()
         {

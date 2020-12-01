@@ -1,7 +1,8 @@
-﻿using System.ComponentModel;
-using System.Windows;
+﻿using Microsoft.Win32;
 using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.MasterData;
+using System.ComponentModel;
+using System.Windows;
 
 namespace RingSoft.HomeLogix
 {
@@ -21,20 +22,30 @@ namespace RingSoft.HomeLogix
 
         public bool LoginToHousehold(Households household)
         {
-            var loginProcedure = new LoginProedure(household);
+            var loginProcedure = new LoginProcedure(household);
             return loginProcedure.Start();
         }
 
-        public bool ShowAddEditHousehold(Households household)
+        public Households ShowAddHousehold()
         {
-            var addEditHouseholdWindow = new AddEditHouseholdWindow(household);
-            addEditHouseholdWindow.Owner = this;
-            return addEditHouseholdWindow.ShowDialog() == true;
+            var addEditHouseholdWindow = new AddEditHouseholdWindow {Owner = this};
+            return addEditHouseholdWindow.ShowDialog();
         }
 
         public string GetHouseholdDataFile()
         {
-            throw new System.NotImplementedException();
+            var openFileDialog = new OpenFileDialog()
+            {
+                DefaultExt = "sqlite",
+                Filter = "SQLite Files(*.sqlite)|*.sqlite"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                return openFileDialog.FileName;
+            }
+
+            return string.Empty;
         }
 
         public void CloseWindow()

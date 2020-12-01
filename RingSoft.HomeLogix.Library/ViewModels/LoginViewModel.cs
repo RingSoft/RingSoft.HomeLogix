@@ -1,8 +1,8 @@
 ﻿using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.MasterData;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -12,7 +12,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
     {
         bool LoginToHousehold(Households household);
 
-        bool ShowAddEditHousehold(Households household);
+        Households ShowAddHousehold();
 
         string GetHouseholdDataFile();
 
@@ -74,7 +74,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public bool DialogResult { get; private set; }
 
         public RelayCommand AddNewCommand { get; }
-        public RelayCommand EditCommand { get; }
         public RelayCommand DeleteCommand { get; }
         public RelayCommand ConnectToDataFileCommand { get; }
         public RelayCommand LoginCommand { get; }
@@ -91,14 +90,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             {
                 Households.Add(household);
                 if (AppGlobals.LoggedInHousehold != null && AppGlobals.LoggedInHousehold.Id == household.Id)
+                {
+                    household.Name = $"(Active) {household.Name}";
                     SelectedHousehold = household;
+                }
             }
 
             if (SelectedHousehold == null && Households.Any())
                 SelectedHousehold = Households[0];
 
             AddNewCommand = new RelayCommand(AddNewHouseHold);
-            EditCommand = new RelayCommand(EditHousehold){IsEnabled = CanEditHousehold()};
             DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
             ConnectToDataFileCommand = new RelayCommand(ConnectToDataFile);
             LoginCommand = new RelayCommand(Login){IsEnabled = CanLogin()};
@@ -111,23 +112,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private bool CanLogin() => SelectedHousehold != null;
 
-        private bool CanEditHousehold()
-        {
-            if (SelectedHousehold == null)
-                return false;
-
-            if (AppGlobals.LoggedInHousehold != null && SelectedHousehold.Id == AppGlobals.LoggedInHousehold.Id)
-                return false;
-
-            return SelectedHousehold.Id != 1;
-        }
-
         private bool CanDeleteHousehold()
         {
             if (SelectedHousehold == null)
-                return false;
-
-            if (SelectedHousehold.Id == 1)
                 return false;
 
             if (AppGlobals.LoggedInHousehold != null)
@@ -138,33 +125,42 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void AddNewHouseHold()
         {
-            var newHousehold = new Households();
-            if (View.ShowAddEditHousehold(newHousehold))
+            var newHousehold = View.ShowAddHousehold();
+            if (newHousehold != null)
             {
-                if (MasterDbContext.SaveHousehold(newHousehold))
-                {
-                    Households.Add(newHousehold);
-                    SelectedHousehold = newHousehold;
-                }
-            }
-        }
-
-        private void EditHousehold()
-        {
-            if (View.ShowAddEditHousehold(SelectedHousehold))
-            {
-                MasterDbContext.SaveHousehold(SelectedHousehold);
+                Households.Add(newHousehold);
+                SelectedHousehold = newHousehold;
             }
         }
 
         private void ConnectToDataFile()
         {
-            throw new NotImplementedException();
+            var fileName = View.GetHouseholdDataFile();
+            if (!fileName.IsNullOrEmpty())
+            {
+                var currentFilePath = AppGlobals.LookupContext.SqliteDataProcessor.FilePath;
+                var currentFileName = AppGlobals.LookupContext.SqliteDataProcessor.FileName;
+
+                var fileInfo = new FileInfo(fileName);
+                AppGlobals.LookupContext.SqliteDataProcessor.FilePath = fileInfo.DirectoryName;
+                AppGlobals.LookupContext.SqliteDataProcessor.FileName = fileInfo.Name;
+
+
+            }
         }
 
         private void DeleteHousehold()
         {
-            var message = "Are you sure you wish to delete this household?";
+            string message;
+            if (SelectedHousehold.Id == 1)
+            {
+                message = "Deleting Demo household is not allowed.";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Operation",
+                    RsMessageBoxIcons.Exclamation);
+                return;
+            }
+
+            message = "Are you sure you wish to delete this household?";
             if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
                 MessageBoxButtonsResult.Yes)
             {
@@ -218,7 +214,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             if (_initialized)
             {
-                EditCommand.IsEnabled = CanEditHousehold();
                 DeleteCommand.IsEnabled = CanDeleteHousehold();
                 LoginCommand.IsEnabled = CanLogin();
             }
