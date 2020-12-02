@@ -29,21 +29,14 @@ namespace RingSoft.HomeLogix
 
         public string ShowFileDialog()
         {
-            string fileName;
-            var directory = string.Empty;
-            if (ViewModel.FileName.IsNullOrEmpty())
-                fileName = "HomeLogix Database.sqlite";
-            else
-            {
-                fileName = Path.GetFileName(ViewModel.FileName);
-                directory = new FileInfo(ViewModel.FileName ?? string.Empty).DirectoryName;
-            }
+            var fileName = Path.GetFileName(ViewModel.FileName);
+            var directory = new FileInfo(ViewModel.FileName ?? string.Empty).DirectoryName;
             var saveFileDialog = new SaveFileDialog
             {
                 FileName = fileName ?? string.Empty,
                 InitialDirectory = directory ?? string.Empty,
                 DefaultExt = "sqlite",
-                Filter = "SQLite Files(*.sqlite)|*.sqlite"
+                Filter = "HomeLogix SQLite Files(*.sqlite)|*.sqlite"
             };
 
             if (saveFileDialog.ShowDialog() == true)

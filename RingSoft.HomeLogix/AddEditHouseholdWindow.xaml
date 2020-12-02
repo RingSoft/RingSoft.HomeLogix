@@ -6,7 +6,7 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
-        Title="AddEditHouseholdWindow" SizeToContent="Width" Height="300">
+        Title="Add Household" SizeToContent="Width" Height="300">
     <Window.DataContext>
         <vm:AddEditHouseholdViewModel x:Name="ViewModel"/>
     </Window.DataContext>
@@ -14,20 +14,23 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-        </Grid.ColumnDefinitions>
         
-        <Label Content="Household Name" Style="{StaticResource ControlLabel}"/>
+        <TextBlock Text="Household Name" HorizontalAlignment="Left"/>
 
-        <dec:StringEditControl x:Name="HouseholdNameTextBox" Grid.Row="0" Grid.Column="1" Text="{Binding Path=HouseholdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="John and Jane Doe Household Demo" Width="300" HorizontalAlignment="Left"/>
+        <dec:StringEditControl x:Name="HouseholdNameTextBox" Grid.Row="1" Text="{Binding Path=HouseholdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="John and Jane Doe Household Demo" Width="300" HorizontalAlignment="Left"/>
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Database File Name" Style="{StaticResource ControlLabel}"/>
+        <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="0,5,0,0">
+            <TextBlock Text="Database File Name"/>
 
-        <Grid Grid.Row="1" Grid.Column="1">
+            <TextBlock Text="(Set this to where it will automatically be backed up to the Cloud.)"/>
+
+        </StackPanel>
+
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -39,9 +42,9 @@
 
         </Grid>
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,5,0,0">
+        <StackPanel Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,5,0,0">
             
-            <Button Content="_OK" Command="{Binding OkCommand}" Width="100" Margin="2.5,0"/>
+            <Button Content="_OK" Command="{Binding OkCommand}" Width="100" Margin="2.5,0" IsDefault="True"/>
 
             <Button Content="_Cancel" Command="{Binding CancelCommand}" Width="100" Margin="2.5,0"/>
         </StackPanel>

@@ -99,7 +99,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (SelectedHousehold == null && Households.Any())
                 SelectedHousehold = Households[0];
 
-            AddNewCommand = new RelayCommand(AddNewHouseHold);
+            AddNewCommand = new RelayCommand(AddNewHousehold);
             DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
             ConnectToDataFileCommand = new RelayCommand(ConnectToDataFile);
             LoginCommand = new RelayCommand(Login){IsEnabled = CanLogin()};
@@ -123,14 +123,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             return true;
         }
 
-        private void AddNewHouseHold()
+        private void AddNewHousehold()
         {
             var newHousehold = View.ShowAddHousehold();
             if (newHousehold != null)
-            {
-                Households.Add(newHousehold);
-                SelectedHousehold = newHousehold;
-            }
+                AddNewHousehold(newHousehold);
+        }
+
+        private void AddNewHousehold(Households newHousehold)
+        {
+            Households.Add(newHousehold);
+            Households = new ObservableCollection<Households>(Households.OrderBy(o => o.Name));
+            MasterDbContext.SaveHousehold(newHousehold);
+            SelectedHousehold = newHousehold;
         }
 
         private void ConnectToDataFile()
@@ -145,7 +150,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 AppGlobals.LookupContext.SqliteDataProcessor.FilePath = fileInfo.DirectoryName;
                 AppGlobals.LookupContext.SqliteDataProcessor.FileName = fileInfo.Name;
 
+                var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+                if (systemMaster != null)
+                {
+                    var household = new Households
+                    {
+                        Name = systemMaster.HouseholdName,
+                        FileName = fileInfo.Name,
+                        FilePath = fileInfo.DirectoryName
+                    };
+                    AddNewHousehold(household);
+                }
 
+                AppGlobals.LookupContext.SqliteDataProcessor.FilePath = currentFilePath;
+                AppGlobals.LookupContext.SqliteDataProcessor.FileName = currentFileName;
             }
         }
 

@@ -5,6 +5,7 @@ using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.MasterData;
 using RingSoft.HomeLogix.Sqlite;
 using System;
+using System.IO;
 using System.Linq;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -24,7 +25,7 @@ namespace RingSoft.HomeLogix.Library
     {
         public static HomeLogixLookupContext LookupContext { get; private set; }
 
-        public static IDataRepository DataProvider { get; set; }
+        public static IDataRepository DataRepository { get; set; }
 
         public static Households LoggedInHousehold { get; set; }
 
@@ -40,7 +41,7 @@ namespace RingSoft.HomeLogix.Library
         public static void Initialize()
         
         {
-            DataProvider = new DataRepository();
+            DataRepository = new DataRepository();
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
@@ -64,17 +65,27 @@ namespace RingSoft.HomeLogix.Library
         {
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
 
+            if (!household.FilePath.EndsWith('\\'))
+                household.FilePath += "\\";
+
+            var newFile = !File.Exists($"{household.FilePath}{household.FileName}");
+
             LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
             LookupContext.SqliteDataProcessor.FileName = household.FileName;
 
             var context = GetNewDbContext();
             context.DbContext.Database.Migrate();
 
-            var systemMaster = context.SystemMaster.FirstOrDefault();
-            if (systemMaster == null)
-                systemMaster = new SystemMaster();
-            systemMaster.HouseholdName = household.Name;
-            context.DbContext.SaveEntity(context.SystemMaster, systemMaster, "Updating household name.");
+            if (newFile)
+            {
+                var systemMaster = new SystemMaster {HouseholdName = household.Name};
+                context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+            }
+            else
+            {
+                var systemMaster = context.SystemMaster.FirstOrDefault();
+                household.Name = systemMaster?.HouseholdName;
+            }
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
 

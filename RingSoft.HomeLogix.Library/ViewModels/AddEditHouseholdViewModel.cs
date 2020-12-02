@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine;
+﻿using System;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.MasterData;
 using System.ComponentModel;
 using System.IO;
@@ -34,6 +35,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     return;
 
                 _householdName = value;
+                SetFileName();
+
                 OnPropertyChanged();
             }
         }
@@ -66,11 +69,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             ShowFileDialogCommand = new RelayCommand(ShowFileDialog);
             OkCommand = new RelayCommand(OnOk);
             CancelCommand = new RelayCommand(OnCancel);
+
+            SetFileName();
         }
 
         public void OnViewLoaded(IAddEditHouseholdView addEditHouseholdView)
         {
             View = addEditHouseholdView;
+        }
+
+        private void SetFileName()
+        {
+            var folder = Environment.GetEnvironmentVariable("OneDriveConsumer");
+            if (folder.IsNullOrEmpty())
+                folder = MasterDbContext.ProgramDataFolder;
+
+            var fileName = $"{HouseholdName} HomeLogix.sqlite";
+            FileName = $"{folder?.Trim()}\\{fileName.Trim()}";
         }
 
         private void ShowFileDialog()

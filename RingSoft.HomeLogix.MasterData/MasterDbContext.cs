@@ -17,6 +17,8 @@ namespace RingSoft.HomeLogix.MasterData
 
         public virtual DbSet<Households> Households { get; set; }
 
+        //--------------------------------------------------------------------
+
         public static string ProgramDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix\\";
 
         public static string MasterFilePath => $"{ProgramDataFolder}{MasterFileName}";

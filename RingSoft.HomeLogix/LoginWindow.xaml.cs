@@ -37,7 +37,7 @@ namespace RingSoft.HomeLogix
             var openFileDialog = new OpenFileDialog()
             {
                 DefaultExt = "sqlite",
-                Filter = "SQLite Files(*.sqlite)|*.sqlite"
+                Filter = "HomeLogix SQLite Files(*.sqlite)|*.sqlite"
             };
 
             if (openFileDialog.ShowDialog() == true)
