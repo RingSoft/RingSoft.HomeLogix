@@ -25,10 +25,10 @@
 
         <Label Content="Select a Household"/>
 
-        <ListBox x:Name="ListBox" Grid.Row="1" Grid.Column="0" Height="150" ItemsSource="{Binding Households}" SelectedItem="{Binding Path=SelectedHousehold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300">
+        <ListBox x:Name="ListBox" Grid.Row="1" Grid.Column="0" Height="150" ItemsSource="{Binding Items}" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{Binding Text}"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
@@ -40,6 +40,8 @@
             <Button Content="_Delete Household" Margin="0,2.5" Command="{Binding DeleteCommand}"/>
 
             <Button Content="C_onnect To Data File" Margin="0,2.5" Command="{Binding ConnectToDataFileCommand}"/>
+
+            <CheckBox Content="_Set As Default" IsChecked="{Binding Path=IsDefault, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </StackPanel>
 

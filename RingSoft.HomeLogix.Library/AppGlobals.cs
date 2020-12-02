@@ -54,6 +54,13 @@ namespace RingSoft.HomeLogix.Library
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));
 
             MasterDbContext.ConnectToMaster();
+
+            var defaultHousehold = MasterDbContext.GetDefaultHousehold();
+            if (defaultHousehold != null)
+            {
+                if (LoginToHousehold(defaultHousehold))
+                    LoggedInHousehold = defaultHousehold;
+            }
         }
 
         public static IHomeLogixDbContext GetNewDbContext()

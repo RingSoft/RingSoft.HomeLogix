@@ -21,52 +21,72 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         void ShutDownApplication();
     }
 
+    public class LoginListBoxItem
+    {
+        public string Text { get; set; }
+
+        public Households Household { get; set; }
+    }
+
     public class LoginViewModel : INotifyPropertyChanged
     {
         public ILoginView View { get; private set; }
 
-        private ObservableCollection<Households> _households;
+        private ObservableCollection<LoginListBoxItem> _listBoxItems;
 
-        public ObservableCollection<Households> Households
+        public ObservableCollection<LoginListBoxItem> Items
         {
-            get => _households;
+            get => _listBoxItems;
             set
             {
-                if (_households == value)
+                if (_listBoxItems == value)
                     return;
 
-                _households = value;
+                _listBoxItems = value;
                 OnPropertyChanged();
             }
         }
 
-        private Households _selectedHousehold;
+        private LoginListBoxItem _selectedItem;
 
-        public Households SelectedHousehold
+        public LoginListBoxItem SelectedItem
         {
-            get => _selectedHousehold;
+            get => _selectedItem;
             set
             {
-                if (_selectedHousehold == value)
+                if (_selectedItem == value)
                     return;
 
-                _selectedHousehold = value;
+                _selectingHousehold = true;
+
+                _selectedItem = value;
+
+                if (SelectedItem == null)
+                    IsDefault = false;
+                else 
+                    IsDefault = SelectedItem.Household.IsDefault;
+
+                _selectingHousehold = false;
+
                 OnPropertyChanged();
             }
         }
-
 
         private bool _isDefault;
-
         public bool IsDefault
         {
-            get => _isDefault;
+            get
+            {
+                return _isDefault;
+            }
             set
             {
                 if (_isDefault == value)
                     return;
 
                 _isDefault = value;
+                UpdateDefaults();
+
                 OnPropertyChanged();
             }
         }
@@ -79,25 +99,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public RelayCommand LoginCommand { get; }
         public RelayCommand CancelCommand { get; }
 
-        private bool _initialized;
+        private readonly bool _initialized;
+        private bool _selectingHousehold;
 
         public LoginViewModel()
         {
-            Households = new ObservableCollection<Households>();
+            Items = new ObservableCollection<LoginListBoxItem>();
             var dbHouseholds = MasterDbContext.GetHouseholds();
 
             foreach (var household in dbHouseholds)
             {
-                Households.Add(household);
+                var listBoxItem = new LoginListBoxItem
+                {
+                    Household = household,
+                    Text = household.Name
+                };
+                Items.Add(listBoxItem);
+
                 if (AppGlobals.LoggedInHousehold != null && AppGlobals.LoggedInHousehold.Id == household.Id)
                 {
-                    household.Name = $"(Active) {household.Name}";
-                    SelectedHousehold = household;
+                    listBoxItem.Text = $"(Active) {listBoxItem.Text}";
+                    SelectedItem = listBoxItem;
+                    IsDefault = household.IsDefault;
                 }
             }
 
-            if (SelectedHousehold == null && Households.Any())
-                SelectedHousehold = Households[0];
+            if (SelectedItem == null && Items.Any())
+                SelectedItem = Items[0];
 
             AddNewCommand = new RelayCommand(AddNewHousehold);
             DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
@@ -110,15 +138,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public void OnViewLoaded(ILoginView loginView) => View = loginView;
 
-        private bool CanLogin() => SelectedHousehold != null;
+        private bool CanLogin() => SelectedItem != null;
 
         private bool CanDeleteHousehold()
         {
-            if (SelectedHousehold == null)
+            if (SelectedItem == null)
                 return false;
 
             if (AppGlobals.LoggedInHousehold != null)
-                return AppGlobals.LoggedInHousehold.Id != SelectedHousehold.Id;
+                return AppGlobals.LoggedInHousehold.Id != SelectedItem.Household.Id;
 
             return true;
         }
@@ -132,10 +160,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void AddNewHousehold(Households newHousehold)
         {
-            Households.Add(newHousehold);
-            Households = new ObservableCollection<Households>(Households.OrderBy(o => o.Name));
+            var item = new LoginListBoxItem
+            {
+                Household = newHousehold,
+                Text = newHousehold.Name
+            };
+            Items.Add(item);
+            Items = new ObservableCollection<LoginListBoxItem>(Items.OrderBy(o => o.Text));
             MasterDbContext.SaveHousehold(newHousehold);
-            SelectedHousehold = newHousehold;
+            SelectedItem = item;
         }
 
         private void ConnectToDataFile()
@@ -170,7 +203,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         private void DeleteHousehold()
         {
             string message;
-            if (SelectedHousehold.Id == 1)
+            if (SelectedItem.Household.Id == 1)
             {
                 message = "Deleting Demo household is not allowed.";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid Operation",
@@ -182,19 +215,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
                 MessageBoxButtonsResult.Yes)
             {
-                if (MasterDbContext.DeleteHousehold(SelectedHousehold.Id))
+                if (MasterDbContext.DeleteHousehold(SelectedItem.Household.Id))
                 {
-                    Households.Remove(SelectedHousehold);
-                    SelectedHousehold = null;
+                    Items.Remove(SelectedItem);
+                    SelectedItem = Items[0];
                 }
             }
         }
 
         private void Login()
         {
-            if (View.LoginToHousehold(SelectedHousehold))
+            if (View.LoginToHousehold(SelectedItem.Household))
             {
-                AppGlobals.LoggedInHousehold = SelectedHousehold;
+                AppGlobals.LoggedInHousehold = SelectedItem.Household;
                 DialogResult = true;
                 View.CloseWindow();
             }
@@ -225,6 +258,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             return false;
         }
 
+        private void UpdateDefaults()
+        {
+            if (_selectingHousehold)
+                return;
+
+            SelectedItem.Household.IsDefault = IsDefault;
+            MasterDbContext.SaveHousehold(SelectedItem.Household);
+
+            if (IsDefault)
+            {
+                foreach (var item in Items)
+                {
+                    if (item != SelectedItem && item.Household.IsDefault)
+                    {
+                        item.Household.IsDefault = false;
+                        MasterDbContext.SaveHousehold(item.Household);
+                    }
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -246,7 +300,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             for (int i = 0; i < 5; i++)
             {
-                Households.Add(new Households { Name = "John and Jane Doe Household Demo" });
+                Items.Add(new LoginListBoxItem() { Text = "John and Jane Doe Household Demo" });
             }
         }
     }

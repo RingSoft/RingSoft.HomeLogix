@@ -83,6 +83,12 @@ namespace RingSoft.HomeLogix.MasterData
             return context.Households.OrderBy(p => p.Name);
         }
 
+        public static Households GetDefaultHousehold()
+        {
+            var context = new MasterDbContext();
+            return context.Households.FirstOrDefault(f => f.IsDefault);
+        }
+
         public static bool SaveHousehold(Households household)
         {
             var context = new MasterDbContext();

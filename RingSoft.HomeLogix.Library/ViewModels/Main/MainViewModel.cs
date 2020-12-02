@@ -24,15 +24,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public void OnViewLoaded(IMainView view)
         {
             View = view;
-            ChangeHousehold();
+
+            if (AppGlobals.LoggedInHousehold == null)
+                View.ChangeHousehold();
+
+            RefreshView();
         }
 
         private void ChangeHousehold()
         {
             if (View.ChangeHousehold())
             {
-
+                RefreshView();
             }
+        }
+
+        private void RefreshView()
+        {
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

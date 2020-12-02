@@ -11,12 +11,6 @@ namespace RingSoft.HomeLogix
 
         private ProcessingSplashWindow _splashWindow;
         private Households _household;
-        private string _fileName;
-
-        public LoginProcedure(string fileName)
-        {
-            _fileName = fileName;
-        }
 
         public LoginProcedure(Households household)
         {
