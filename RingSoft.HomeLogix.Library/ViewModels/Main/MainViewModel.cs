@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
+﻿using RingSoft.DataEntryControls.Engine;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
-using RingSoft.DataEntryControls.Engine;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
@@ -14,11 +13,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
     {
         public IMainView View { get; private set; }
 
-        public ICommand ChangeHouseholdCommand { get; }
+        public RelayCommand ChangeHouseholdCommand { get; }
+        public RelayCommand ManageBudgetCommand { get; }
 
         public MainViewModel()
         {
             ChangeHouseholdCommand = new RelayCommand(ChangeHousehold);
+            ManageBudgetCommand = new RelayCommand(ManageBudget);
         }
 
         public void OnViewLoaded(IMainView view)
@@ -40,6 +41,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         }
 
         private void RefreshView()
+        {
+
+        }
+
+        private void ManageBudget()
         {
 
         }
