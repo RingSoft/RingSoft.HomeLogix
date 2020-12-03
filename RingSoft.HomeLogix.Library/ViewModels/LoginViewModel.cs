@@ -10,9 +10,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 {
     public interface ILoginView
     {
-        bool LoginToHousehold(Households household);
+        bool LoginToHousehold(Household household);
 
-        Households ShowAddHousehold();
+        Household ShowAddHousehold();
 
         string GetHouseholdDataFile();
 
@@ -25,7 +25,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
     {
         public string Text { get; set; }
 
-        public Households Household { get; set; }
+        public Household Household { get; set; }
     }
 
     public class LoginViewModel : INotifyPropertyChanged
@@ -158,7 +158,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 AddNewHousehold(newHousehold);
         }
 
-        private void AddNewHousehold(Households newHousehold)
+        private void AddNewHousehold(Household newHousehold)
         {
             var item = new LoginListBoxItem
             {
@@ -186,7 +186,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
                 if (systemMaster != null)
                 {
-                    var household = new Households
+                    var household = new Household
                     {
                         Name = systemMaster.HouseholdName,
                         FileName = fileInfo.Name,

@@ -27,7 +27,7 @@ namespace RingSoft.HomeLogix.Library
 
         public static IDataRepository DataRepository { get; set; }
 
-        public static Households LoggedInHousehold { get; set; }
+        public static Household LoggedInHousehold { get; set; }
 
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.Library
             return new HomeLogixDbContext();
         }
 
-        public static bool LoginToHousehold(Households household)
+        public static bool LoginToHousehold(Household household)
         {
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
 

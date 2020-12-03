@@ -2,7 +2,7 @@
 
 namespace RingSoft.HomeLogix.MasterData
 {
-    public class Households
+    public class Household
     {
         [Required]
         public int Id { get; set; }

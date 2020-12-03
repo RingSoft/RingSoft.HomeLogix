@@ -56,7 +56,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
-        public Households Household { get; private set; }
+        public Household Household { get; private set; }
 
         public IAddEditHouseholdView View { get; private set; }
 
@@ -115,7 +115,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
             var fileInfo = new FileInfo(FileName);
 
-            Household = new Households
+            Household = new Household
             {
                 Name = HouseholdName,
                 FileName = fileInfo.Name,

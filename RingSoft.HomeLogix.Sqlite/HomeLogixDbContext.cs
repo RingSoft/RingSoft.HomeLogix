@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -12,13 +13,15 @@ namespace RingSoft.HomeLogix.Sqlite
 
         //Add-Migration <Name>
 
-        public const string StringColumnType = "nvarchar";
-        
         public DbContext DbContext => this;
 
         public bool IsDesignTime { get; set; }
 
+        //-----------------------------------------------------------------------
         public virtual DbSet<SystemMaster> SystemMaster { get; set; }
+        public virtual DbSet<BudgetItem> BudgetItems { get; set; }
+        public virtual DbSet<BankAccount> BankAccounts { get; set; }
+        //-----------------------------------------------------------------------
 
         private static HomeLogixLookupContext _lookupContext;
         
@@ -44,7 +47,11 @@ namespace RingSoft.HomeLogix.Sqlite
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SystemMaster>().Property(p => p.HouseholdName).HasColumnType(StringColumnType);
+            modelBuilder.Entity<SystemMaster>().Property(p => p.HouseholdName)
+                .HasColumnType(SqliteConstants.StringColumnType);
+
+            modelBuilder.ApplyConfiguration(new BudgetItemConfiguration());
+            modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }

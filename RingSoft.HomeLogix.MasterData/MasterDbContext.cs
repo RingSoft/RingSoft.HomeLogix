@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.MasterData
 
         //Add-Migration <Name>
 
-        public virtual DbSet<Households> Households { get; set; }
+        public virtual DbSet<Household> Households { get; set; }
 
         //--------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ namespace RingSoft.HomeLogix.MasterData
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Households>(entity =>
+            modelBuilder.Entity<Household>(entity =>
             {
                 entity.HasKey(hk => hk.Id);
 
@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.MasterData
 
             if (firstTime)
             {
-                SaveHousehold(new Households
+                SaveHousehold(new Household
                 {
                     Name = "John and Jane Doe Family (Demo)",
                     FilePath = ProgramDataFolder,
@@ -77,19 +77,19 @@ namespace RingSoft.HomeLogix.MasterData
             }
         }
 
-        public static IEnumerable<Households> GetHouseholds()
+        public static IEnumerable<Household> GetHouseholds()
         {
             var context = new MasterDbContext();
             return context.Households.OrderBy(p => p.Name);
         }
 
-        public static Households GetDefaultHousehold()
+        public static Household GetDefaultHousehold()
         {
             var context = new MasterDbContext();
             return context.Households.FirstOrDefault(f => f.IsDefault);
         }
 
-        public static bool SaveHousehold(Households household)
+        public static bool SaveHousehold(Household household)
         {
             var context = new MasterDbContext();
             return context.SaveEntity(context.Households, household, "Saving Household");

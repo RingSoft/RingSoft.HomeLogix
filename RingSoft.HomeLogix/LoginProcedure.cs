@@ -10,9 +10,9 @@ namespace RingSoft.HomeLogix
         public override ISplashWindow SplashWindow => _splashWindow;
 
         private ProcessingSplashWindow _splashWindow;
-        private Households _household;
+        private Household _household;
 
-        public LoginProcedure(Households household)
+        public LoginProcedure(Household household)
         {
             _household = household;
         }

@@ -9,7 +9,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         Expense = 1
     }
 
-    public enum BudgetItemRecurringType
+    public enum BudgetItemRecurringTypes
     {
         Days = 0,
         Weeks = 1,
@@ -17,10 +17,11 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         Years = 3
     }
 
-    public enum BudgetSpendingType
+    public enum BudgetSpendingTypes
     {
-        Days = 0,
-        Weeks = 1
+        Months = 0,
+        Days = 1,
+        Weeks = 2
     }
 
     public class BudgetItem
@@ -30,9 +31,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public int Id { get; set; }
 
         [Required]
-        public int BankAccountId { get; set; }
-
-        public virtual BankAccount BankAccount { get; set; }
+        public int Index { get; set; }
 
         [Required]
         public BudgetItemTypes Type { get; set; }
@@ -42,20 +41,29 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public string Description { get; set; }
 
         [Required]
+        public int BankAccountId { get; set; }
+
+        public virtual BankAccount BankAccount { get; set; }
+
+        [Required]
         public decimal Amount { get; set; }
 
         [Required]
         public int RecurringPeriod { get; set; }
 
         [Required]
-        public BudgetItemRecurringType RecurringType { get; set; }
+        public BudgetItemRecurringTypes RecurringType { get; set; }
 
         [Required]
         public DateTime StartingDate { get; set; }
 
         public bool? DoEscrow { get; set; }
 
-        public BudgetSpendingType? SpendingType { get; set; }
+        public int? EscrowBankAccountId { get; set; }
+
+        public virtual BankAccount EscrowBankAccount { get; set; }
+
+        public BudgetSpendingTypes? SpendingType { get; set; }
 
         public DayOfWeek? SpendingDayOfWeek { get; set; }
 

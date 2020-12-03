@@ -8,5 +8,8 @@ namespace RingSoft.HomeLogix.DataAccess
         DbContext DbContext { get; }
 
         DbSet<SystemMaster> SystemMaster { get; set; }
+        DbSet<BudgetItem> BudgetItems { get; set; }
+        DbSet<BankAccount> BankAccounts { get; set; }
+
     }
 }

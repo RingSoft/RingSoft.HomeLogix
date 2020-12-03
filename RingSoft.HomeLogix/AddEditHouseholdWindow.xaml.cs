@@ -18,7 +18,7 @@ namespace RingSoft.HomeLogix
             ViewModel.OnViewLoaded(this);
         }
 
-        public new Households ShowDialog()
+        public new Household ShowDialog()
         {
             base.ShowDialog();
             return ViewModel.Household;
