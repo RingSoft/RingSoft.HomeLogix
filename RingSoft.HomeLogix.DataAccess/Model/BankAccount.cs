@@ -1,10 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace RingSoft.HomeLogix.DataAccess.Model
 {
     public class BankAccount
     {
+        public BankAccount()
+        {
+            BudgetItems = new HashSet<BudgetItem>();
+        }
+
         [Required]
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -13,5 +21,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         public decimal CurrentBalance { get; set; }
+
+        public string Notes { get; set; }
+
+        public virtual ICollection<BudgetItem> BudgetItems { get; set; }
     }
 }

@@ -44,7 +44,6 @@ namespace RingSoft.HomeLogix.Sqlite
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SystemMaster>().HasKey(p => p.HouseholdName);
             modelBuilder.Entity<SystemMaster>().Property(p => p.HouseholdName).HasColumnType(StringColumnType);
 
             base.OnModelCreating(modelBuilder);

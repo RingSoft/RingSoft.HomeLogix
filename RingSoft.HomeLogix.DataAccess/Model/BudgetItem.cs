@@ -26,7 +26,13 @@ namespace RingSoft.HomeLogix.DataAccess.Model
     public class BudgetItem
     {
         [Required]
+        [Key]
         public int Id { get; set; }
+
+        [Required]
+        public int BankAccountId { get; set; }
+
+        public virtual BankAccount BankAccount { get; set; }
 
         [Required]
         public BudgetItemTypes Type { get; set; }
@@ -54,5 +60,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public DayOfWeek? SpendingDayOfWeek { get; set; }
 
         public string Notes { get; set; }
+
+        public DateTime? LastTransactionDate { get; set; }
+
+        public DateTime? NextTransactionDate { get; set; }
     }
 }
