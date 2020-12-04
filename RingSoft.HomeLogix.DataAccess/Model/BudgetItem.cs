@@ -63,11 +63,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual BankAccount EscrowBankAccount { get; set; }
 
-        public BudgetSpendingTypes? SpendingType { get; set; }
+        public BudgetSpendingTypes SpendingType { get; set; }
 
-        public DayOfWeek? SpendingDayOfWeek { get; set; }
-
-        public string Notes { get; set; }
+        public DayOfWeek SpendingDayOfWeek { get; set; }
 
         public DateTime? LastTransactionDate { get; set; }
 

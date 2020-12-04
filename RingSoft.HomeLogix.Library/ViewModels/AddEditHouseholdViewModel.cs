@@ -82,7 +82,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             var folder = Environment.GetEnvironmentVariable("OneDriveConsumer");
             if (folder.IsNullOrEmpty())
-                folder = MasterDbContext.ProgramDataFolder;
+                folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             var fileName = $"{HouseholdName} HomeLogix.sqlite";
             FileName = $"{folder?.Trim()}\\{fileName.Trim()}";

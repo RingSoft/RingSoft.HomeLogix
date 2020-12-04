@@ -33,7 +33,11 @@ namespace RingSoft.App.Library
             }
             catch (Exception e)
             {
-                SplashWindow.ShowError(e.Message, "Error!");
+                var message = e.Message;
+                if (e.InnerException != null)
+                    message = e.InnerException.Message;
+
+                SplashWindow.ShowError(message, "Error!");
                 CloseSplash();
                 return false;
             }
