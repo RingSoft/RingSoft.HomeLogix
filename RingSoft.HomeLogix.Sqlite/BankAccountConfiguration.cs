@@ -11,6 +11,7 @@ namespace RingSoft.HomeLogix.Sqlite
         {
             builder.Property(p => p.CurrentBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
+            builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.Notes).HasColumnType(SqliteConstants.MemoColumnType);
         }
     }

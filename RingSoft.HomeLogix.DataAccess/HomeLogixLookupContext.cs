@@ -3,6 +3,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -42,12 +43,21 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItemsLookup = new LookupDefinition<BudgetItemLookup, BudgetItem>(BudgetItems);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget Item",
                 p => p.Description, 50);
+            BudgetItems.HasLookupDefinition(BudgetItemsLookup);
 
+            BankAccountsLookup = new LookupDefinition<BankAccountLookup, BankAccount>(BankAccounts);
+            BankAccountsLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
+                p => p.Description, 70);
+            BankAccountsLookup.AddVisibleColumnDefinition(p => p.CurrentBalance, "Current Balance",
+                p => p.CurrentBalance, 30);
+            BankAccounts.HasLookupDefinition(BankAccountsLookup);
         }
 
         protected override void SetupModel()
         {
-            
+            BankAccounts.GetFieldDefinition(p => p.CurrentBalance)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .HasDescription("Current Balance");
         }
 
     }

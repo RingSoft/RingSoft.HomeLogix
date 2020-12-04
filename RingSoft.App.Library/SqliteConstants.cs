@@ -2,6 +2,7 @@
 {
     public class SqliteConstants
     {
+        public const string IntegerColumnType = "integer";
         public const string StringColumnType = "nvarchar";
         public const string DecimalColumnType = "numeric";
         public const string DateColumnType = "datetime";
