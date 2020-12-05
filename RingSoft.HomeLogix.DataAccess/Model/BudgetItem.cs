@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.HomeLogix.DataAccess.Model
@@ -11,17 +12,21 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
     public enum BudgetItemRecurringTypes
     {
+        [Description("Day(s)")]
         Days = 0,
+        [Description("Week(s)")]
         Weeks = 1,
+        [Description("Month(s)")]
         Months = 2,
+        [Description("Year(s)")]
         Years = 3
     }
 
-    public enum BudgetSpendingTypes
+    public enum BudgetItemSpendingTypes
     {
-        Months = 0,
-        Days = 1,
-        Weeks = 2
+        Month = 0,
+        Day = 1,
+        Week = 2
     }
 
     public class BudgetItem
@@ -63,7 +68,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual BankAccount EscrowBankAccount { get; set; }
 
-        public BudgetSpendingTypes SpendingType { get; set; }
+        public BudgetItemSpendingTypes SpendingType { get; set; }
 
         public DayOfWeek SpendingDayOfWeek { get; set; }
 
