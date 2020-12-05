@@ -21,7 +21,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         void SetViewType(RecurringViewTypes viewType);
         void OnValidationFail(FieldDefinition failedFieldDefinition);
-        void CloseWindow(BudgetItem budgetItem);
+        void CloseWindow();
     }
 
     public class BudgetExpenseViewModel : INotifyPropertyChanged
@@ -255,11 +255,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public BudgetItem BudgetItem { get; private set; }
+
+        public bool DialogResult { get; private set; }
+
         public RelayCommand OkCommand { get; }
         public RelayCommand CancelCommand { get; }
 
         private IBudgetItemView _view;
-        private BudgetItem _budgetItem;
         private bool _loading;
         private DataEntryComboBoxSetup _recurringTypeComboBoxSetup = new DataEntryComboBoxSetup();
         private DataEntryComboBoxSetup _spendingTypeComboBoxSetup = new DataEntryComboBoxSetup();
@@ -291,7 +294,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = true;
 
             _view = view;
-            _budgetItem = budgetItem;
+            BudgetItem = budgetItem;
 
             _loading = false;
         }
@@ -341,6 +344,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOk()
         {
+            DialogResult = true;
             _view.CloseWindow();
         }
 
