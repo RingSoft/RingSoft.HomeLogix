@@ -7,6 +7,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
     public interface IMainView
     {
         bool ChangeHousehold();
+
+        void ManageBudget();
     }
 
     public class MainViewModel : INotifyPropertyChanged

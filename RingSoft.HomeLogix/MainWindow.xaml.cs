@@ -1,4 +1,5 @@
-﻿using RingSoft.HomeLogix.Library.ViewModels.Main;
+﻿using RingSoft.HomeLogix.Budget;
+using RingSoft.HomeLogix.Library.ViewModels.Main;
 
 namespace RingSoft.HomeLogix
 {
@@ -25,6 +26,12 @@ namespace RingSoft.HomeLogix
                 result = (bool) loginResult;
 
             return result;
+        }
+
+        public void ManageBudget()
+        {
+            var budgetExpenseWindow = new BudgetExpenseWindow(){Owner = this};
+            budgetExpenseWindow.ShowDialog();
         }
     }
 }

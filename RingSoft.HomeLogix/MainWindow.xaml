@@ -10,7 +10,8 @@
     <Window.DataContext>
         <vm:MainViewModel x:Name="ViewModel"/>
     </Window.DataContext>
-    <Grid>
+    <StackPanel Orientation="Horizontal">
         <Button Command="{Binding ChangeHouseholdCommand}" Content="_Change Household" Height="20" Width="100"/>
-    </Grid>
+        <Button Command="{Binding ManageBudgetCommand}" Content="_Manage Budget" Height="20" Width="100"/>
+    </StackPanel>
 </ac:AppMainWindow>

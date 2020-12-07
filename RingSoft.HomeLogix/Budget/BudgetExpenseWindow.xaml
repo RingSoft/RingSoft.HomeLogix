@@ -1,0 +1,44 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.Budget.BudgetExpenseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+        mc:Ignorable="d"
+        Title="BudgetExpenseWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <vm:BudgetExpenseViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Budget Item ID" Style="{StaticResource ControlLabel}"/>
+
+        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="123456" Width="75" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="0" Grid.Column="2" Content="Description" Style="{StaticResource ControlLabel}"/>
+
+        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="3" Text="{Binding Path=Description}" DesignText="House Payment" Width="200" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Bank Account" Style="{StaticResource ControlLabel}"/>
+
+        <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Bank Off America" Width="200" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="1" Grid.Column="2" Content="Amount" Style="{StaticResource ControlLabel}"/>
+
+        <dec:DecimalEditControl Grid.Row="1" Grid.Column="3"/>
+    </Grid>
+</dec:BaseWindow>

@@ -23,6 +23,17 @@
 
     <Style TargetType="dec:StringEditControl" BasedOn="{StaticResource GlobalStringEditControlStyle}"/>
 
+    <Style TargetType="dec:ReadOnlyBox" x:Key="ReadOnlyBox">
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Margin" Value="0,2.5"/>
+    </Style>
+
+    <Style TargetType="dec:StringReadOnlyBox" BasedOn="{StaticResource ReadOnlyBox}"/>
+
+    <Style TargetType="dec:DecimalReadOnlyBox" x:Key="GlobalDecimalReadOnlyBoxStyle" BasedOn="{StaticResource ReadOnlyBox}"/>
+
+    <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource GlobalDecimalReadOnlyBoxStyle}"/>
+
     <Style TargetType="deg:DataEntryGrid">
         <Setter Property="EnterToTab" Value="True"/>
         <Setter Property="CloseWindowOnEscape" Value="True"/>

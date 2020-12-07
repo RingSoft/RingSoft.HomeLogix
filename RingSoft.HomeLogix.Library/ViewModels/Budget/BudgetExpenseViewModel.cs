@@ -12,12 +12,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     public enum RecurringViewTypes
     {
         Escrow = 0,
-        DayOrWeek = 11,
+        DayOrWeek = 1,
         MonthlySpendingMonthly = 2,
         MonthlySpendingWeekly = 3
     }
 
-    public interface IBudgetItemView
+    public interface IBudgetExpenseView
     {
         void SetViewType(RecurringViewTypes viewType);
         void OnValidationFail(FieldDefinition failedFieldDefinition);
@@ -26,6 +26,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
     public class BudgetExpenseViewModel : INotifyPropertyChanged
     {
+        private int _id;
+
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                if (_id == value)
+                    return;
+
+                _id = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _description;
 
         public string Description
@@ -262,7 +277,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public RelayCommand OkCommand { get; }
         public RelayCommand CancelCommand { get; }
 
-        private IBudgetItemView _view;
+        private IBudgetExpenseView _view;
         private bool _loading;
         private DataEntryComboBoxSetup _recurringTypeComboBoxSetup = new DataEntryComboBoxSetup();
         private DataEntryComboBoxSetup _spendingTypeComboBoxSetup = new DataEntryComboBoxSetup();
@@ -286,10 +301,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             SpendingDayOfWeekItemSource = _spendingDayOfWeekComboBoxSetup.Items;
             SpendingDayOfWeekComboBoxItem = _spendingDayOfWeekComboBoxSetup.GetItem((int) DayOfWeek.Sunday);
 
+            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
+
             _loading = false;
+
+            OkCommand = new RelayCommand(OnOk);
+            CancelCommand = new RelayCommand(OnCancel);
         }
 
-        public void OnViewLoaded(IBudgetItemView view, BudgetItem budgetItem)
+        public void OnViewLoaded(IBudgetExpenseView view, BudgetItem budgetItem)
         {
             _loading = true;
 
