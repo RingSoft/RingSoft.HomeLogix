@@ -49,7 +49,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void ManageBudget()
         {
-
+            View.ManageBudget();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,4 +1,5 @@
 ﻿using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
@@ -11,6 +12,8 @@ namespace RingSoft.HomeLogix.Budget
         public BudgetExpenseWindow()
         {
             InitializeComponent();
+
+            Loaded += (sender, args) => ViewModel.OnViewLoaded(this, new BudgetItem());
         }
 
         public void SetViewType(RecurringViewTypes viewType)

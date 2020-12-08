@@ -1,11 +1,10 @@
 ﻿using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.HomeLogix.DataAccess.Model;
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -117,20 +116,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private List<ComboBoxItem> _recurringTypeItemSource;
+        private ComboBoxControlSetup _recurringTypeComboBoxControlSetup;
 
-        public List<ComboBoxItem> RecurringTypeItemSource
+        public ComboBoxControlSetup RecurringTypeComboBoxControlSetup
         {
-            get => _recurringTypeItemSource;
+            get => _recurringTypeComboBoxControlSetup;
             set
             {
-                if (_recurringTypeItemSource == value)
+                if (_recurringTypeComboBoxControlSetup == value)
                     return;
 
-                _recurringTypeItemSource = value;
+                _recurringTypeComboBoxControlSetup = value;
                 OnPropertyChanged();
             }
         }
+
 
         private ComboBoxItem _recurringTypeComboBoxItem;
 
@@ -159,6 +159,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _startingDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _endingDate;
+
+        public DateTime? EndingDate
+        {
+            get => _endingDate;
+            set
+            {
+                if (_endingDate == value)
+                    return;
+
+                _endingDate = value;
                 OnPropertyChanged();
             }
         }
@@ -194,20 +209,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private List<ComboBoxItem> _spendingTypeItemSource;
+        private ComboBoxControlSetup _spendingTypeComboBoxControlSetup;
 
-        public List<ComboBoxItem> SpendingTypeItemSource
+        public ComboBoxControlSetup SpendingTypeComboBoxControlSetup
         {
-            get => _spendingTypeItemSource;
+            get => _spendingTypeComboBoxControlSetup;
             set
             {
-                if (_spendingTypeItemSource == value)
+                if (_spendingTypeComboBoxControlSetup == value)
                     return;
 
-                _spendingTypeItemSource = value;
+                _spendingTypeComboBoxControlSetup = value;
                 OnPropertyChanged();
             }
         }
+
 
         private ComboBoxItem _spendingTypeComboBoxItem;
 
@@ -225,20 +241,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private List<ComboBoxItem> _spendingDayOfWeekItemSource;
+        private ComboBoxControlSetup _spendingDayOfWeekComboBoxControlSetup;
 
-        public List<ComboBoxItem> SpendingDayOfWeekItemSource
+        public ComboBoxControlSetup SpendingDayOfWeekComboBoxControlSetup
         {
-            get => _spendingDayOfWeekItemSource;
+            get => _spendingDayOfWeekComboBoxControlSetup;
             set
             {
-                if (_spendingDayOfWeekItemSource == value)
+                if (_spendingDayOfWeekComboBoxControlSetup == value)
                     return;
 
-                _spendingDayOfWeekItemSource = value;
+                _spendingDayOfWeekComboBoxControlSetup = value;
                 OnPropertyChanged();
             }
         }
+
 
         private ComboBoxItem _spendingDayOfWeekComboBoxItem;
 
@@ -255,21 +272,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private DateTime? _lastTransactionDate;
-
-        public DateTime? LastTransactionDate
-        {
-            get => _lastTransactionDate;
-            set
-            {
-                if (_lastTransactionDate == value)
-                    return;
-
-                _lastTransactionDate = value;
-                OnPropertyChanged();
-            }
-        }
-
         public BudgetItem BudgetItem { get; private set; }
 
         public bool DialogResult { get; private set; }
@@ -279,32 +281,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private IBudgetExpenseView _view;
         private bool _loading;
-        private DataEntryComboBoxSetup _recurringTypeComboBoxSetup = new DataEntryComboBoxSetup();
-        private DataEntryComboBoxSetup _spendingTypeComboBoxSetup = new DataEntryComboBoxSetup();
-        private DataEntryComboBoxSetup _spendingDayOfWeekComboBoxSetup = new DataEntryComboBoxSetup();
 
         public BudgetExpenseViewModel()
         {
-            _loading = true;
-
-            RecurringPeriod = 1;
-
-            _recurringTypeComboBoxSetup.LoadFromEnum<BudgetItemRecurringTypes>();
-            RecurringTypeItemSource = _recurringTypeComboBoxSetup.Items;
-            RecurringTypeComboBoxItem = _recurringTypeComboBoxSetup.GetItem((int) BudgetItemRecurringTypes.Months);
-
-            _spendingTypeComboBoxSetup.LoadFromEnum<BudgetItemSpendingTypes>();
-            SpendingTypeItemSource = _spendingTypeComboBoxSetup.Items;
-            SpendingTypeComboBoxItem = _spendingTypeComboBoxSetup.GetItem((int) BudgetItemSpendingTypes.Month);
-
-            _spendingDayOfWeekComboBoxSetup.LoadFromEnum<DayOfWeek>();
-            SpendingDayOfWeekItemSource = _spendingDayOfWeekComboBoxSetup.Items;
-            SpendingDayOfWeekComboBoxItem = _spendingDayOfWeekComboBoxSetup.GetItem((int) DayOfWeek.Sunday);
-
-            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
-
-            _loading = false;
-
             OkCommand = new RelayCommand(OnOk);
             CancelCommand = new RelayCommand(OnCancel);
         }
@@ -315,6 +294,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _view = view;
             BudgetItem = budgetItem;
+            RecurringPeriod = 1;
+
+            RecurringTypeComboBoxControlSetup = new ComboBoxControlSetup();
+            RecurringTypeComboBoxControlSetup.LoadFromEnum<BudgetItemRecurringTypes>();
+            RecurringTypeComboBoxItem = RecurringTypeComboBoxControlSetup.GetItem((int)BudgetItemRecurringTypes.Months);
+
+            SpendingTypeComboBoxControlSetup = new ComboBoxControlSetup();
+            SpendingTypeComboBoxControlSetup.LoadFromEnum<BudgetItemSpendingTypes>();
+            SpendingTypeComboBoxItem = SpendingTypeComboBoxControlSetup.GetItem((int)BudgetItemSpendingTypes.Month);
+
+            SpendingDayOfWeekComboBoxControlSetup = new ComboBoxControlSetup();
+            SpendingDayOfWeekComboBoxControlSetup.LoadFromEnum<DayOfWeek>();
+            SpendingDayOfWeekComboBoxItem = SpendingDayOfWeekComboBoxControlSetup.GetItem((int)DayOfWeek.Sunday);
+
+            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
 
             _loading = false;
         }

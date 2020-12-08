@@ -62,6 +62,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public DateTime StartingDate { get; set; }
 
+        public DateTime? EndingDate { get; set; }
+
         public bool? DoEscrow { get; set; }
 
         public int? EscrowBankAccountId { get; set; }
@@ -72,7 +74,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public DayOfWeek SpendingDayOfWeek { get; set; }
 
-        public DateTime? LastTransactionDate { get; set; }
+        public DateTime? LastCompletedDate { get; set; }
 
         public DateTime? NextTransactionDate { get; set; }
     }
