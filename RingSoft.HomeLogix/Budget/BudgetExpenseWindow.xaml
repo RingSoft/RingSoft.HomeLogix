@@ -7,12 +7,14 @@
                 xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                 xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
                 mc:Ignorable="d"
-        Title="BudgetExpenseWindow" Height="450" Width="800">
+        Title="Budget Expense" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:BudgetExpenseViewModel x:Name="ViewModel"/>
     </Window.DataContext>
     <Grid Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -35,11 +37,11 @@
 
         <Label Grid.Row="1" Grid.Column="0" Content="Bank Account" Style="{StaticResource ControlLabel}"/>
 
-        <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Bank Off America" Width="200" HorizontalAlignment="Left"/>
+        <lc:AutoFillControl Grid.Row="1" Grid.Column="1" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Bank Of America" Width="200" HorizontalAlignment="Left"/>
 
         <Label Grid.Row="1" Grid.Column="2" Content="Amount" Style="{StaticResource ControlLabel}"/>
 
-        <dec:DecimalEditControl Grid.Row="1" Grid.Column="3" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+        <dec:DecimalEditControl Grid.Row="1" Grid.Column="3" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Recurs Every" Style="{StaticResource ControlLabel}"/>
 
@@ -47,12 +49,46 @@
             
             <dec:IntegerEditControl Value="{Binding Path=RecurringPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="100" DesignText="31" Width="50"/>
 
-            <dec:ComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Monthsxxx" Width="100"/>
+            <dec:ComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
 
         </StackPanel>
 
         <Label Grid.Row="3" Grid.Column="0" Content="Starting Date" Style="{StaticResource ControlLabel}"/>
 
-        <dec:DateEditControl Grid.Row="3" Grid.Column="1" Value="{Binding Path=StartingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <dec:DateEditControl Grid.Row="3" Grid.Column="1" Value="{Binding Path=StartingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" HorizontalAlignment="Left" DesignText="01/01/2020" Width="100"/>
+
+        <Label Grid.Row="3" Grid.Column="2" Content="Ending Date" Style="{StaticResource ControlLabel}"/>
+
+        <dec:DateEditControl Grid.Row="3" Grid.Column="3" Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
+
+        <StackPanel x:Name="EscrowStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
+
+            <CheckBox Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
+            <Label x:Name="EscrowLabel" Content="Escrow Bank Account" Style="{StaticResource ControlLabel}"/>
+
+            <lc:AutoFillControl x:Name="EscrowBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=EscrowBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Bank Of America" Width="200"/>
+
+        </StackPanel>
+
+        <StackPanel x:Name="SpendingTypeStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+
+            <Label Content="Spending Type" Style="{StaticResource ControlLabel}"/>
+
+            <dec:ComboBoxControl Setup="{Binding Path=SpendingTypeComboBoxControlSetup}" SelectedItem="{Binding Path=SpendingTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
+
+            <Label x:Name="SpendingDayOfWeekLabel" Content="Spending Day Of Week" Style="{StaticResource ControlLabel}"/>
+
+            <dec:ComboBoxControl x:Name="SpendingDayOfWeekComboBoxControl" Setup="{Binding Path=SpendingDayOfWeekComboBoxControlSetup}" SelectedItem="{Binding Path=SpendingDayOfWeekComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Wednesdayxxx" Width="120"/>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+
+            <Button Content="_OK" Command="{Binding Path=OkCommand}" IsDefault="True" Width="100"/>
+
+            <Button Content="_Cancel" Command="{Binding Path=CancelCommand}" Width="100" Margin="5,0,0,0"/>
+
+        </StackPanel>
     </Grid>
 </dec:BaseWindow>
