@@ -6,10 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Left.png" />
     <None Remove="Resources\RingSoft Logo.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Left.png" />
     <Resource Include="Resources\RingSoft Logo.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>

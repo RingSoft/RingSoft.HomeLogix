@@ -63,6 +63,16 @@ namespace RingSoft.App.Controls.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] Left {
+            get {
+                object obj = ResourceManager.GetObject("Left", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] RingSoft_Logo {
             get {
                 object obj = ResourceManager.GetObject("RingSoft_Logo", resourceCulture);
