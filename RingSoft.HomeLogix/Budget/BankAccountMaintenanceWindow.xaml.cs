@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.Budget
 
             TopHeaderControl.Loaded += (sender, args) =>
             {
-                TopHeaderControl.ButtonsControl.PreviousButton.ToolTipHeader =
+                TopHeaderControl.PreviousButton.ToolTipHeader =
                     "Goto Previous Bank Account (Alt + Left Arrow)";
             };
         }

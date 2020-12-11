@@ -2,6 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:RingSoft.App.Controls">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/DbMaintenanceToolTipTemplate.xaml"/>
+        <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/DbMaintenanceButtonTemplate.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <BitmapImage x:Key="LeftImage" UriSource="/RingSoft.App.Controls;component/Resources/Left.png" />
+
+    <Style TargetType="local:DbMaintenanceButton" x:Key="HeaderButton" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}">
+        <Setter Property="Width" Value="60"/>
+        <Setter Property="Height" Value="60"/>
+    </Style>
+
     <Style TargetType="{x:Type local:DbMaintenanceTopHeaderControl}">
         <Setter Property="Template">
             <Setter.Value>
@@ -9,9 +21,13 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid>
-                            <local:DbMaintenanceButtonsControl x:Name="ButtonsControl"/>
-                        </Grid>
+
+                        <StackPanel Orientation="Horizontal">
+
+                            <local:DbMaintenanceButton x:Name="PreviousButton" Style="{StaticResource HeaderButton}" Content="Previous" ImageSource="{StaticResource LeftImage }"/>
+
+                        </StackPanel>
+
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

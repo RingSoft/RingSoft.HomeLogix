@@ -33,10 +33,10 @@ namespace RingSoft.App.Controls
     ///     <MyNamespace:DbMaintenanceTopHeader/>
     ///
     /// </summary>
-    [TemplatePart (Name = "ButtonsControl", Type = typeof(DbMaintenanceButtonsControl))]
+    [TemplatePart(Name = "PreviousButton", Type = typeof(DbMaintenanceButton))]
     public class DbMaintenanceTopHeaderControl : Control
     {
-        public DbMaintenanceButtonsControl ButtonsControl { get; set; }
+        public DbMaintenanceButton PreviousButton { get; set; }
 
         static DbMaintenanceTopHeaderControl()
         {
@@ -45,7 +45,7 @@ namespace RingSoft.App.Controls
 
         public override void OnApplyTemplate()
         {
-            ButtonsControl = GetTemplateChild(nameof(ButtonsControl)) as DbMaintenanceButtonsControl;
+            PreviousButton = GetTemplateChild(nameof(PreviousButton)) as DbMaintenanceButton;
 
             base.OnApplyTemplate();
         }

@@ -66,5 +66,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <BitmapImage x:Key="LeftImage" UriSource="/RingSoft.App.Controls;component/Resources/Left.png" />
 </ResourceDictionary>
