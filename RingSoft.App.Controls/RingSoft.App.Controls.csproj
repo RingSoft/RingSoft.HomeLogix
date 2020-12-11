@@ -6,17 +6,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Erase.png" />
+    <None Remove="Resources\Exit.png" />
     <None Remove="Resources\Left.png" />
+    <None Remove="Resources\New file.png" />
     <None Remove="Resources\Right.png" />
     <None Remove="Resources\RingSoft Logo.png" />
+    <None Remove="Resources\save32.png" />
+    <None Remove="Resources\saveselect32.png" />
+    <None Remove="Resources\Search32.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Erase.png" />
+    <Resource Include="Resources\Exit.png" />
     <Resource Include="Resources\Left.png" />
+    <Resource Include="Resources\New file.png" />
     <Resource Include="Resources\Right.png" />
     <Resource Include="Resources\RingSoft Logo.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\save32.png" />
+    <Resource Include="Resources\saveselect32.png" />
+    <Resource Include="Resources\Search32.png" />
   </ItemGroup>
 
   <ItemGroup>
