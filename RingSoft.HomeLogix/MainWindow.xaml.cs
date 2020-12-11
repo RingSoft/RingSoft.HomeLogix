@@ -33,5 +33,11 @@ namespace RingSoft.HomeLogix
             var budgetExpenseWindow = new BudgetExpenseWindow(){Owner = this};
             budgetExpenseWindow.ShowDialog();
         }
+
+        public void ManageBankAccounts()
+        {
+            var bankAccountMaintenanceWindow = new BankAccountMaintenanceWindow{Owner = this};
+            bankAccountMaintenanceWindow.ShowDialog();
+        }
     }
 }

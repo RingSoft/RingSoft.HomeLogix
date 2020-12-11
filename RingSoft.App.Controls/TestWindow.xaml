@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:RingSoft.App.Controls"
         mc:Ignorable="d"
         Title="TestWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <local:DbMaintenanceTopHeaderControl DockPanel.Dock="Top"/>
+        <Grid>
+            <TextBox/>
+        </Grid>
+    </DockPanel>
 </Window>

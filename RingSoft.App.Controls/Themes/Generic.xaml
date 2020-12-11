@@ -8,4 +8,6 @@
         <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <Style TargetType="{x:Type local:DbMaintenanceWindow}" BasedOn="{StaticResource {x:Type Window}}"/>
+
 </ResourceDictionary>

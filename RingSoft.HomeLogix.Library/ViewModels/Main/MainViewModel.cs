@@ -9,6 +9,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         bool ChangeHousehold();
 
         void ManageBudget();
+
+        void ManageBankAccounts();
     }
 
     public class MainViewModel : INotifyPropertyChanged
@@ -17,11 +19,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public RelayCommand ChangeHouseholdCommand { get; }
         public RelayCommand ManageBudgetCommand { get; }
+        public RelayCommand ManageBankAccountsCommand { get; }
 
         public MainViewModel()
         {
             ChangeHouseholdCommand = new RelayCommand(ChangeHousehold);
             ManageBudgetCommand = new RelayCommand(ManageBudget);
+            ManageBankAccountsCommand = new RelayCommand(ManageBankAccounts);
         }
 
         public void OnViewLoaded(IMainView view)
@@ -50,6 +54,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private void ManageBudget()
         {
             View.ManageBudget();
+        }
+
+        private void ManageBankAccounts()
+        {
+            View.ManageBankAccounts();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
