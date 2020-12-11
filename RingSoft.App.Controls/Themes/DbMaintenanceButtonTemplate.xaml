@@ -24,9 +24,30 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="ToolTip">
+    </Style>
+
+    <Style TargetType="{x:Type local:DbMaintenanceButton}" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}" x:Key="SubButton">
+        <Setter Property="Template">
             <Setter.Value>
-                <local:DbMaintenanceToolTip/>
+                <ControlTemplate TargetType="{x:Type local:DbMaintenanceButton}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image x:Name="Image" Height="16" Width="16" VerticalAlignment="Center"/>
+                            <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="8"/>
+                                        <Setter Property="TextAlignment" Value="Left"/>
+                                        <Setter Property="Margin" Value="5"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>

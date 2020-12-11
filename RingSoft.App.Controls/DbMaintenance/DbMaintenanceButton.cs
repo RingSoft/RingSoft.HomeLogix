@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using RingSoft.DataEntryControls.Engine;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -56,28 +55,18 @@ namespace RingSoft.App.Controls
             dbMaintenanceButton.SetImage();
         }
 
-        public static readonly DependencyProperty ToolTipHeaderProperty =
-            DependencyProperty.RegisterAttached(nameof(ToolTipHeader), typeof(string), typeof(DbMaintenanceButton),
-                new FrameworkPropertyMetadata(null, ToolTipHeaderChangedCallback));
-
-        public string ToolTipHeader
-        {
-            get => (string)GetValue(ToolTipHeaderProperty);
-            set => SetValue(ToolTipHeaderProperty, value);
-        }
-
-        private static void ToolTipHeaderChangedCallback(DependencyObject obj,
-            DependencyPropertyChangedEventArgs args)
-        {
-            var dbMaintenanceButton = (DbMaintenanceButton)obj;
-            dbMaintenanceButton.SetToolTipProperties();
-        }
-
         public Image Image { get; set; }
+
+        public new DbMaintenanceToolTip  ToolTip { get; }
 
         static DbMaintenanceButton()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceButton), new FrameworkPropertyMetadata(typeof(DbMaintenanceButton)));
+        }
+
+        public DbMaintenanceButton()
+        {
+            base.ToolTip = ToolTip = new DbMaintenanceToolTip();
         }
 
         public override void OnApplyTemplate()
@@ -91,15 +80,17 @@ namespace RingSoft.App.Controls
 
         private void SetImage()
         {
-            if (Image != null && ImageSource != null)
-                Image.Source = ImageSource;
-        }
-
-        private void SetToolTipProperties()
-        {
-            if (ToolTip is DbMaintenanceToolTip dbMaintenanceToolTip)
+            if (Image != null)
             {
-                dbMaintenanceToolTip.HeaderText = ToolTipHeader;
+                if (ImageSource == null)
+                {
+                    Image.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Image.Source = ImageSource;
+                    Image.Visibility = Visibility.Visible;
+                }
             }
         }
     }

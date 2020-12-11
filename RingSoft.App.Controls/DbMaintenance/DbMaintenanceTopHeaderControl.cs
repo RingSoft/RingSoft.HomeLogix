@@ -34,9 +34,31 @@ namespace RingSoft.App.Controls
     ///
     /// </summary>
     [TemplatePart(Name = "PreviousButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "CustomStackPanel", Type = typeof(StackPanel))]
+    [TemplatePart(Name = "NextButton", Type = typeof(DbMaintenanceButton))]
     public class DbMaintenanceTopHeaderControl : Control
     {
+        public static readonly DependencyProperty CustomPanelProperty =
+            DependencyProperty.RegisterAttached(nameof(CustomPanel), typeof(DbMaintenanceCustomPanel),
+                typeof(DbMaintenanceTopHeaderControl),
+                new FrameworkPropertyMetadata(null, CustomPanelChangedCallback));
+
+        public DbMaintenanceCustomPanel CustomPanel
+        {
+            get => (DbMaintenanceCustomPanel)GetValue(CustomPanelProperty);
+            set => SetValue(CustomPanelProperty, value);
+        }
+
+        private static void CustomPanelChangedCallback(DependencyObject obj,
+            DependencyPropertyChangedEventArgs args)
+        {
+            var topHeaderControl = (DbMaintenanceTopHeaderControl)obj;
+            topHeaderControl.SetCustomPanel();
+        }
+
         public DbMaintenanceButton PreviousButton { get; set; }
+        public StackPanel CustomStackPanel { get; set; }
+        public DbMaintenanceButton NextButton { get; set; }
 
         static DbMaintenanceTopHeaderControl()
         {
@@ -47,7 +69,22 @@ namespace RingSoft.App.Controls
         {
             PreviousButton = GetTemplateChild(nameof(PreviousButton)) as DbMaintenanceButton;
 
+            CustomStackPanel = GetTemplateChild(nameof(CustomStackPanel)) as StackPanel;
+
+            NextButton = GetTemplateChild(nameof(NextButton)) as DbMaintenanceButton;
+
+            SetCustomPanel();
             base.OnApplyTemplate();
+        }
+
+        private void SetCustomPanel()
+        {
+            if (CustomStackPanel != null && CustomPanel != null)
+            {
+                CustomStackPanel.Children.Clear();
+                CustomStackPanel.Children.Add(CustomPanel);
+                UpdateLayout();
+            }
         }
     }
 }

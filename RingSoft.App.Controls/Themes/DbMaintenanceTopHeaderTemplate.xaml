@@ -8,6 +8,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <BitmapImage x:Key="LeftImage" UriSource="/RingSoft.App.Controls;component/Resources/Left.png" />
+    <BitmapImage x:Key="RightImage" UriSource="/RingSoft.App.Controls;component/Resources/Right.png" />
 
     <Style TargetType="local:DbMaintenanceButton" x:Key="HeaderButton" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}">
         <Setter Property="Width" Value="60"/>
@@ -25,6 +26,10 @@
                         <StackPanel Orientation="Horizontal">
 
                             <local:DbMaintenanceButton x:Name="PreviousButton" Style="{StaticResource HeaderButton}" Content="Previous" ImageSource="{StaticResource LeftImage }"/>
+
+                            <StackPanel x:Name="CustomStackPanel"/>
+
+                            <local:DbMaintenanceButton x:Name="NextButton" Style="{StaticResource HeaderButton}" Content="Next" ImageSource="{StaticResource RightImage }"/>
 
                         </StackPanel>
 

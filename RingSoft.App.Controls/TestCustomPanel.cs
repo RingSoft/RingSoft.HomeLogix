@@ -1,7 +1,5 @@
-﻿using RingSoft.DataEntryControls.WPF;
-using System.Windows;
+﻿using System.Windows;
 
-// ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
 {
     /// <summary>
@@ -11,14 +9,14 @@ namespace RingSoft.App.Controls
     /// Add this XmlNamespace attribute to the root element of the markup file where it is 
     /// to be used:
     ///
-    ///     xmlns:MyNamespace="clr-namespace:RingSoft.App.Controls.DbMaintenance"
+    ///     xmlns:MyNamespace="clr-namespace:RingSoft.App.Controls"
     ///
     ///
     /// Step 1b) Using this custom control in a XAML file that exists in a different project.
     /// Add this XmlNamespace attribute to the root element of the markup file where it is 
     /// to be used:
     ///
-    ///     xmlns:MyNamespace="clr-namespace:RingSoft.App.Controls.DbMaintenance;assembly=RingSoft.App.Controls.DbMaintenance"
+    ///     xmlns:MyNamespace="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
     ///
     /// You will also need to add a project reference from the project where the XAML file lives
     /// to this project and Rebuild to avoid compilation errors:
@@ -30,26 +28,14 @@ namespace RingSoft.App.Controls
     /// Step 2)
     /// Go ahead and use your control in the XAML file.
     ///
-    ///     <MyNamespace:DbMaintenanceWindow/>
+    ///     <MyNamespace:TestCustomPanel/>
     ///
     /// </summary>
-    public abstract class DbMaintenanceWindow : BaseWindow
+    public class TestCustomPanel : DbMaintenanceCustomPanel
     {
-        public abstract DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl { get; }
-
-        static DbMaintenanceWindow()
+        static TestCustomPanel()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceWindow), new FrameworkPropertyMetadata(typeof(DbMaintenanceWindow)));
-        }
-
-        public DbMaintenanceWindow()
-        {
-            Loaded += (sender, args) => OnLoaded();
-        }
-
-        protected virtual void OnLoaded()
-        {
-
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TestCustomPanel), new FrameworkPropertyMetadata(typeof(TestCustomPanel)));
         }
     }
 }

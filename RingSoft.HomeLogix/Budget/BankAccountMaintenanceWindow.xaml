@@ -3,11 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
-        xmlns:local="clr-namespace:RingSoft.HomeLogix.Budget"
         mc:Ignorable="d"
         Title="BankAccountMaintenanceWindow" Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="BankAccountWindowHeaderTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
         <Grid Margin="5">

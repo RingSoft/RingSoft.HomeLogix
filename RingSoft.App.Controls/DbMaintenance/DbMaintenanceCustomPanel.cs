@@ -1,5 +1,5 @@
-﻿using RingSoft.DataEntryControls.WPF;
-using System.Windows;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -30,26 +30,14 @@ namespace RingSoft.App.Controls
     /// Step 2)
     /// Go ahead and use your control in the XAML file.
     ///
-    ///     <MyNamespace:DbMaintenanceWindow/>
+    ///     <MyNamespace:DbMaintenanceCustomButtons/>
     ///
     /// </summary>
-    public abstract class DbMaintenanceWindow : BaseWindow
+    public class DbMaintenanceCustomPanel : Control
     {
-        public abstract DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl { get; }
-
-        static DbMaintenanceWindow()
+        static DbMaintenanceCustomPanel()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceWindow), new FrameworkPropertyMetadata(typeof(DbMaintenanceWindow)));
-        }
-
-        public DbMaintenanceWindow()
-        {
-            Loaded += (sender, args) => OnLoaded();
-        }
-
-        protected virtual void OnLoaded()
-        {
-
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceCustomPanel), new FrameworkPropertyMetadata(typeof(DbMaintenanceCustomPanel)));
         }
     }
 }
