@@ -35,7 +35,7 @@ namespace RingSoft.App.Controls
     ///
     /// </summary>
     [TemplatePart (Name = "HeaderTextBlock", Type = typeof(TextBlock))]
-    public class DbMaintenanceToolTip : Control
+    public class DbMaintenanceToolTip : ToolTip
     {
         public static readonly DependencyProperty HeaderTextProperty =
             DependencyProperty.RegisterAttached(nameof(HeaderText), typeof(string), typeof(DbMaintenanceToolTip),

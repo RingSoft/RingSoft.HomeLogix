@@ -12,7 +12,7 @@
                 <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="{x:Type local:DbMaintenanceToolTip}">
+            <Style TargetType="{x:Type local:DbMaintenanceToolTip}" BasedOn="{StaticResource {x:Type ToolTip}}">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type local:DbMaintenanceToolTip}">
@@ -50,34 +50,13 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="ToolTip" Value="{x:Type local:DbMaintenanceToolTip}" x:Name="DbMaintenanceToolTip"/>
-            </Style>
-
-            <!--<Style x:Key="DbMaintenanceButton" TargetType="Button">
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical">
-                                <Image Source="{Binding Path=(local:DbMaintenanceButtonProperties.Image), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" Height="32" Width="32"/>
-                                <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
-                                    <ContentPresenter.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="FontSize" Value="12"/>
-                                        </Style>
-                                    </ContentPresenter.Resources>
-                                </ContentPresenter>
-                            </StackPanel>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
                 <Setter Property="ToolTip">
                     <Setter.Value>
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Path=(local:DbMaintenanceButtonProperties.ToolTipHeader), RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" FontWeight="Bold"/>
-                        </StackPanel>
+                        <local:DbMaintenanceToolTip/>
                     </Setter.Value>
                 </Setter>
-            </Style>-->
+            </Style>
+
             <Style TargetType="local:DbMaintenanceButton" x:Key="DbMainButton" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}">
                 <Setter Property="Width" Value="60"/>
                 <Setter Property="Height" Value="60"/>

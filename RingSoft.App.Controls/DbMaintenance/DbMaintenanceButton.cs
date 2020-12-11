@@ -75,8 +75,6 @@ namespace RingSoft.App.Controls
 
         public Image Image { get; set; }
 
-        public DbMaintenanceToolTip DbMaintenanceToolTip { get; set; }
-
         static DbMaintenanceButton()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceButton), new FrameworkPropertyMetadata(typeof(DbMaintenanceButton)));
@@ -85,10 +83,8 @@ namespace RingSoft.App.Controls
         public override void OnApplyTemplate()
         {
             Image = GetTemplateChild(nameof(Image)) as Image;
-            DbMaintenanceToolTip = GetTemplateChild(nameof(DbMaintenanceToolTip)) as DbMaintenanceToolTip;
 
             SetImage();
-            SetToolTipProperties();
 
             base.OnApplyTemplate();
         }
@@ -101,8 +97,10 @@ namespace RingSoft.App.Controls
 
         private void SetToolTipProperties()
         {
-            if (DbMaintenanceToolTip != null && !ToolTipHeader.IsNullOrEmpty())
-                DbMaintenanceToolTip.HeaderText = ToolTipHeader;
+            if (ToolTip is DbMaintenanceToolTip dbMaintenanceToolTip)
+            {
+                dbMaintenanceToolTip.HeaderText = ToolTipHeader;
+            }
         }
     }
 }
