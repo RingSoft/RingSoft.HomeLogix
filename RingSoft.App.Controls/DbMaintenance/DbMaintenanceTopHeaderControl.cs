@@ -33,11 +33,21 @@ namespace RingSoft.App.Controls
     ///     <MyNamespace:DbMaintenanceTopHeader/>
     ///
     /// </summary>
+    [TemplatePart (Name = "ButtonsControl", Type = typeof(DbMaintenanceButtonsControl))]
     public class DbMaintenanceTopHeaderControl : Control
     {
+        public DbMaintenanceButtonsControl ButtonsControl { get; set; }
+
         static DbMaintenanceTopHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceTopHeaderControl), new FrameworkPropertyMetadata(typeof(DbMaintenanceTopHeaderControl)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            ButtonsControl = GetTemplateChild(nameof(ButtonsControl)) as DbMaintenanceButtonsControl;
+
+            base.OnApplyTemplate();
         }
     }
 }

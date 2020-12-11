@@ -20,6 +20,8 @@ namespace RingSoft.App.Controls
     /// </summary>
     public partial class DbMaintenanceButtonsControl : UserControl
     {
+        public DbMaintenanceButton PreviousButton => DbPreviousButton;
+
         public DbMaintenanceButtonsControl()
         {
             InitializeComponent();

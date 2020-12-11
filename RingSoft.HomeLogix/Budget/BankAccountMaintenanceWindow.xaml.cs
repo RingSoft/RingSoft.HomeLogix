@@ -7,11 +7,17 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMaintenanceWindow
     {
+        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
+
         public BankAccountMaintenanceWindow()
         {
             InitializeComponent();
-        }
 
-        public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                TopHeaderControl.ButtonsControl.PreviousButton.ToolTipHeader =
+                    "Goto Previous Bank Account (Alt + Left Arrow)";
+            };
+        }
     }
 }

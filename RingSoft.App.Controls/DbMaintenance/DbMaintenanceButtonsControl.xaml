@@ -65,6 +65,6 @@
     </UserControl.Resources>
 
     <StackPanel Orientation="Horizontal">
-        <local:DbMaintenanceButton Style="{StaticResource DbMainButton}" Content="Previous" ImageSource="{StaticResource LeftImage }" ToolTipHeader="Goto Previous Record (Alt + Left Arrow)"/>
+        <local:DbMaintenanceButton x:Name="DbPreviousButton" Style="{StaticResource DbMainButton}" Content="Previous" ImageSource="{StaticResource LeftImage }"/>
     </StackPanel>
 </UserControl>

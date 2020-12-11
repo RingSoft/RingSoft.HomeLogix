@@ -10,7 +10,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid>
-                            <local:DbMaintenanceButtonsControl x:Name="MaintenanceButtonsControl"/>
+                            <local:DbMaintenanceButtonsControl x:Name="ButtonsControl"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
