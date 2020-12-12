@@ -1,4 +1,5 @@
-﻿using RingSoft.HomeLogix.Budget;
+﻿using RingSoft.App.Controls;
+using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 
 namespace RingSoft.HomeLogix
@@ -13,6 +14,12 @@ namespace RingSoft.HomeLogix
             InitializeComponent();
 
             ContentRendered += (sender, args) => ViewModel.OnViewLoaded(this);
+
+            TestButton.Click += (sender, args) =>
+            {
+                var testWindow = new TestWindow {Owner = this};
+                testWindow.ShowDialog();
+            };
         }
 
         public bool ChangeHousehold()

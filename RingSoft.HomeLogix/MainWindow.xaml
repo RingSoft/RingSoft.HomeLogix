@@ -14,5 +14,6 @@
         <Button Command="{Binding ChangeHouseholdCommand}" Content="_Change Household" Height="20" Width="100"/>
         <Button Command="{Binding ManageBudgetCommand}" Content="_Manage Budget" Height="20" Width="100"/>
         <Button Command="{Binding ManageBankAccountsCommand}" Content="Manage _Bank Accounts" Height="20"/>
+        <Button x:Name="TestButton" Content="_Test" Height="20"/>
     </StackPanel>
 </ac:AppMainWindow>

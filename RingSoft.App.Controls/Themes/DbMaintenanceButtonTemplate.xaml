@@ -11,7 +11,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
                             <Image x:Name="Image" Height="32" Width="32"/>
-                            <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" RecognizesAccessKey="True">
                                 <ContentPresenter.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="12"/>
@@ -35,7 +35,7 @@
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Image x:Name="Image" Height="16" Width="16" VerticalAlignment="Center"/>
-                            <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}">
+                            <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" RecognizesAccessKey="True">
                                 <ContentPresenter.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="FontSize" Value="10"/>

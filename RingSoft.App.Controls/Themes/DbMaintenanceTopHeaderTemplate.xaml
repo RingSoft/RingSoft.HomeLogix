@@ -43,6 +43,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
+                                <local:DbMaintenanceButton Grid.Row="1" Grid.Column="1" x:Name="CloseButton" Style="{StaticResource MidButton}" Content="_Close" ImageSource="{StaticResource ExitImage}"/>
                             </Grid>
                             <StackPanel x:Name="CustomStackPanel"/>
 

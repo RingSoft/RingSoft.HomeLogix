@@ -34,6 +34,7 @@ namespace RingSoft.App.Controls
     ///
     /// </summary>
     [TemplatePart(Name = "PreviousButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "CloseButton", Type = typeof(DbMaintenanceButton))]
     [TemplatePart(Name = "CustomStackPanel", Type = typeof(StackPanel))]
     [TemplatePart(Name = "NextButton", Type = typeof(DbMaintenanceButton))]
     public class DbMaintenanceTopHeaderControl : Control
@@ -57,6 +58,7 @@ namespace RingSoft.App.Controls
         }
 
         public DbMaintenanceButton PreviousButton { get; set; }
+        public DbMaintenanceButton CloseButton { get; set; }
         public StackPanel CustomStackPanel { get; set; }
         public DbMaintenanceButton NextButton { get; set; }
 
@@ -69,11 +71,14 @@ namespace RingSoft.App.Controls
         {
             PreviousButton = GetTemplateChild(nameof(PreviousButton)) as DbMaintenanceButton;
 
+            CloseButton = GetTemplateChild(nameof(CloseButton)) as DbMaintenanceButton;
+
             CustomStackPanel = GetTemplateChild(nameof(CustomStackPanel)) as StackPanel;
 
             NextButton = GetTemplateChild(nameof(NextButton)) as DbMaintenanceButton;
 
             SetCustomPanel();
+
             base.OnApplyTemplate();
         }
 
