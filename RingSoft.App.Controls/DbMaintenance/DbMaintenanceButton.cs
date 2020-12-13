@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RingSoft.DataEntryControls.WPF;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -55,6 +58,33 @@ namespace RingSoft.App.Controls
             dbMaintenanceButton.SetImage();
         }
 
+        private static void VisibilityChangedCallback(DependencyObject obj,
+            DependencyPropertyChangedEventArgs args)
+        {
+            var dbMaintenanceButton = (DbMaintenanceButton)obj;
+            var grid = dbMaintenanceButton.GetParentOfType<Grid>();
+            if (grid != null && grid.RowDefinitions.Count <= 1)
+            {
+                var columnIndex = Grid.GetColumn(dbMaintenanceButton);
+                var columnDefinition = grid.ColumnDefinitions[columnIndex];
+                if (columnDefinition != null)
+                {
+                    switch (dbMaintenanceButton.Visibility)
+                    {
+                        case Visibility.Visible:
+                            columnDefinition.Width = new GridLength(1, GridUnitType.Star);
+                            break;
+                        case Visibility.Hidden:
+                        case Visibility.Collapsed:
+                            columnDefinition.Width = new GridLength(0);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+        }
+
         public Image Image { get; set; }
 
         public new DbMaintenanceToolTip  ToolTip { get; }
@@ -62,6 +92,8 @@ namespace RingSoft.App.Controls
         static DbMaintenanceButton()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceButton), new FrameworkPropertyMetadata(typeof(DbMaintenanceButton)));
+
+            VisibilityProperty.OverrideMetadata(typeof(DbMaintenanceButton), new FrameworkPropertyMetadata(VisibilityChangedCallback));
         }
 
         public DbMaintenanceButton()

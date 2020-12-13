@@ -34,6 +34,11 @@ namespace RingSoft.App.Controls
     ///
     /// </summary>
     [TemplatePart(Name = "PreviousButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "SaveButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "SaveSelectButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "DeleteButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "FindButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "NewButton", Type = typeof(DbMaintenanceButton))]
     [TemplatePart(Name = "CloseButton", Type = typeof(DbMaintenanceButton))]
     [TemplatePart(Name = "CustomStackPanel", Type = typeof(StackPanel))]
     [TemplatePart(Name = "NextButton", Type = typeof(DbMaintenanceButton))]
@@ -58,6 +63,11 @@ namespace RingSoft.App.Controls
         }
 
         public DbMaintenanceButton PreviousButton { get; set; }
+        public DbMaintenanceButton SaveButton { get; set; }
+        public DbMaintenanceButton SaveSelectButton { get; set; }
+        public DbMaintenanceButton DeleteButton { get; set; }
+        public DbMaintenanceButton FindButton { get; set; }
+        public DbMaintenanceButton NewButton { get; set; }
         public DbMaintenanceButton CloseButton { get; set; }
         public StackPanel CustomStackPanel { get; set; }
         public DbMaintenanceButton NextButton { get; set; }
@@ -71,6 +81,11 @@ namespace RingSoft.App.Controls
         {
             PreviousButton = GetTemplateChild(nameof(PreviousButton)) as DbMaintenanceButton;
 
+            SaveButton = GetTemplateChild(nameof(SaveButton)) as DbMaintenanceButton;
+            SaveSelectButton = GetTemplateChild(nameof(SaveSelectButton)) as DbMaintenanceButton;
+            DeleteButton = GetTemplateChild(nameof(DeleteButton)) as DbMaintenanceButton;
+            FindButton = GetTemplateChild(nameof(FindButton)) as DbMaintenanceButton;
+            NewButton = GetTemplateChild(nameof(NewButton)) as DbMaintenanceButton;
             CloseButton = GetTemplateChild(nameof(CloseButton)) as DbMaintenanceButton;
 
             CustomStackPanel = GetTemplateChild(nameof(CustomStackPanel)) as StackPanel;

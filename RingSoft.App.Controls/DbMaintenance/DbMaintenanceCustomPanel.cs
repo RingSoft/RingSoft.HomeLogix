@@ -38,6 +38,8 @@ namespace RingSoft.App.Controls
         static DbMaintenanceCustomPanel()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceCustomPanel), new FrameworkPropertyMetadata(typeof(DbMaintenanceCustomPanel)));
+
+            IsTabStopProperty.OverrideMetadata(typeof(DbMaintenanceCustomPanel), new FrameworkPropertyMetadata(false));
         }
     }
 }

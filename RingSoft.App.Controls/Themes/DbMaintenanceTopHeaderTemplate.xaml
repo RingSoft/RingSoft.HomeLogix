@@ -8,16 +8,20 @@
     </ResourceDictionary.MergedDictionaries>
 
     <BitmapImage x:Key="LeftImage" UriSource="/RingSoft.App.Controls;component/Resources/Left.png" />
+    <BitmapImage x:Key="SaveImage" UriSource="/RingSoft.App.Controls;component/Resources/save32.png" />
+    <BitmapImage x:Key="SaveSelectImage" UriSource="/RingSoft.App.Controls;component/Resources/saveselect32.png" />
+    <BitmapImage x:Key="DeleteImage" UriSource="/RingSoft.App.Controls;component/Resources/Erase.png" />
+    <BitmapImage x:Key="FindImage" UriSource="/RingSoft.App.Controls;component/Resources/Search32.png" />
+    <BitmapImage x:Key="NewImage" UriSource="/RingSoft.App.Controls;component/Resources/New file.png" />
     <BitmapImage x:Key="ExitImage" UriSource="/RingSoft.App.Controls;component/Resources/Exit.png" />
     <BitmapImage x:Key="RightImage" UriSource="/RingSoft.App.Controls;component/Resources/Right.png" />
 
     <Style TargetType="local:DbMaintenanceButton" x:Key="BigButton" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}">
         <Setter Property="Width" Value="60"/>
-        <Setter Property="Height" Value="60"/>
+        <!--<Setter Property="Height" Value="60"/>-->
     </Style>
 
     <Style TargetType="local:DbMaintenanceButton" x:Key="MidButton" BasedOn="{StaticResource SubButton}">
-        <Setter Property="Width" Value="60"/>
         <Setter Property="Height" Value="30"/>
     </Style>
 
@@ -29,22 +33,44 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
 
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Height="60">
 
                             <local:DbMaintenanceButton x:Name="PreviousButton" Style="{StaticResource BigButton}" Content="Previous" ImageSource="{StaticResource LeftImage }"/>
 
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
+                            <StackPanel>
 
-                                <local:DbMaintenanceButton Grid.Row="1" Grid.Column="1" x:Name="CloseButton" Style="{StaticResource MidButton}" Content="_Close" ImageSource="{StaticResource ExitImage}"/>
-                            </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <local:DbMaintenanceButton x:Name="SaveButton" Style="{StaticResource MidButton}" Content="_Save" ImageSource="{StaticResource SaveImage}"/>
+
+                                    <local:DbMaintenanceButton Grid.Column="1" x:Name="SaveSelectButton" Style="{StaticResource MidButton}" Content="Save/Se_lect" ImageSource="{StaticResource SaveSelectImage}"/>
+
+                                    <local:DbMaintenanceButton Grid.Column="2" x:Name="DeleteButton" Style="{StaticResource MidButton}" Content="_Delete" ImageSource="{StaticResource DeleteImage}"/>
+
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <local:DbMaintenanceButton x:Name="FindButton" Style="{StaticResource MidButton}" Content="_Find" ImageSource="{StaticResource FindImage}"/>
+
+                                    <local:DbMaintenanceButton Grid.Column="1" x:Name="NewButton" Style="{StaticResource MidButton}" Content="_New" ImageSource="{StaticResource NewImage}"/>
+
+                                    <local:DbMaintenanceButton Grid.Column="2" x:Name="CloseButton" Style="{StaticResource MidButton}" Content="_Close" ImageSource="{StaticResource ExitImage}"/>
+
+                                </Grid>
+
+                            </StackPanel>
+
                             <StackPanel x:Name="CustomStackPanel"/>
 
                             <local:DbMaintenanceButton x:Name="NextButton" Style="{StaticResource BigButton}" Content="Next" ImageSource="{StaticResource RightImage }"/>
@@ -55,6 +81,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="IsTabStop" Value="False"/>
     </Style>
 
 </ResourceDictionary>

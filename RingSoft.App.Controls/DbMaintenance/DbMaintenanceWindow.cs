@@ -1,5 +1,6 @@
 ﻿using RingSoft.DataEntryControls.WPF;
 using System.Windows;
+using System.Windows.Input;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -49,7 +50,9 @@ namespace RingSoft.App.Controls
 
         protected virtual void OnLoaded()
         {
+            DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
 
+            DbMaintenanceTopHeaderControl.SaveSelectButton.Click += (sender, args) => MessageBox.Show("Save/Select");
         }
     }
 }
