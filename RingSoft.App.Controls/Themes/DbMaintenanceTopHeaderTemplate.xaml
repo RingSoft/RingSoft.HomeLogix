@@ -22,7 +22,7 @@
     </Style>
 
     <Style TargetType="local:DbMaintenanceButton" x:Key="MidButton" BasedOn="{StaticResource SubButton}">
-        <Setter Property="Height" Value="30"/>
+        <!--<Setter Property="Height" Value="30"/>-->
     </Style>
 
     <Style TargetType="{x:Type local:DbMaintenanceTopHeaderControl}">
@@ -33,7 +33,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
 
-                        <StackPanel Orientation="Horizontal" Height="60">
+                        <StackPanel Orientation="Horizontal">
 
                             <local:DbMaintenanceButton x:Name="PreviousButton" Style="{StaticResource BigButton}" Content="Previous" ImageSource="{StaticResource LeftImage }"/>
 
@@ -79,6 +79,15 @@
 
                     </Border>
                 </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="LightBlue" Offset="0.2"/>
+                    <GradientStop Color="AliceBlue" Offset="0.5"/>
+                    <GradientStop Color="LightBlue" Offset="0.8"/>
+                </LinearGradientBrush>
             </Setter.Value>
         </Setter>
         <Setter Property="IsTabStop" Value="False"/>
