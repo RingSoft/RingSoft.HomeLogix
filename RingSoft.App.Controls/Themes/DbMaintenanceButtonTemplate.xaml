@@ -27,7 +27,7 @@
         </Setter>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="DarkGray"/>
         <Setter Property="Background" Value="{x:Null}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">

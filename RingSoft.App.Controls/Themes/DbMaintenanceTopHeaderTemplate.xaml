@@ -84,12 +84,15 @@
         <Setter Property="Background">
             <Setter.Value>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="LightBlue" Offset="0.2"/>
-                    <GradientStop Color="AliceBlue" Offset="0.5"/>
-                    <GradientStop Color="LightBlue" Offset="0.8"/>
+                    <GradientStop Color="AliceBlue" Offset="0.2"/>
+                    <GradientStop Color="LightSkyBlue" Offset="0.5"/>
+                    <GradientStop Color="AliceBlue" Offset="0.8"/>
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="IsTabStop" Value="False"/>
     </Style>
 

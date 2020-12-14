@@ -9,6 +9,19 @@
     </ResourceDictionary.MergedDictionaries>
 
     <dec:ComparisonConverter x:Key="ComparisonConverter"/>
+
+    <Style TargetType="Window">
+        <Setter Property="Background">
+            <Setter.Value>
+                <SolidColorBrush>
+                    <SolidColorBrush.Color>
+                        <Color A="255" R="191" G="219" B="255"/>
+                    </SolidColorBrush.Color>
+                </SolidColorBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="Label" x:Key="ControlLabel">
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Right"/>
@@ -49,10 +62,10 @@
     <Style TargetType="{x:Type DataGridRow}">
         <Style.Triggers>
             <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-                <Setter Property="Background" Value="Aqua" />
+                <Setter Property="Background" Value="LightSkyBlue" />
             </Trigger>
             <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-                <Setter Property="Background" Value="White" />
+                <Setter Property="Background" Value="AliceBlue" />
             </Trigger>
         </Style.Triggers>
     </Style>
