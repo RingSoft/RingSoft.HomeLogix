@@ -45,7 +45,10 @@ namespace RingSoft.App.Controls
 
         public DbMaintenanceWindow()
         {
-            Loaded += (sender, args) => OnLoaded();
+            Loaded += (sender, args) =>
+            {
+                OnLoaded();
+            };
         }
 
         protected virtual void OnLoaded()

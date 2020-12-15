@@ -10,7 +10,7 @@
 
     <dec:ComparisonConverter x:Key="ComparisonConverter"/>
 
-    <Style TargetType="Window">
+    <Style TargetType="Window" x:Key="BaseWindowStyle">
         <Setter Property="Background">
             <Setter.Value>
                 <SolidColorBrush>

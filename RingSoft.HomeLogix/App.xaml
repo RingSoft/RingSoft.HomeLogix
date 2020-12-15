@@ -4,6 +4,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:RingSoft.HomeLogix">
     <Application.Resources>
-        <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

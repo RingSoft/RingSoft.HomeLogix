@@ -31,7 +31,15 @@
         <Setter Property="Background" Value="{x:Null}"/>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="LightGoldenrodYellow"/>
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="LightGoldenrodYellow" Offset="0"/>
+                            <GradientStop Color="LightGoldenrodYellow" Offset="0.33"/>
+                            <GradientStop Color="Gold" Offset="0.5"/>
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
             </Trigger>
         </Style.Triggers>
     </Style>
