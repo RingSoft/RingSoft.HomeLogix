@@ -8,8 +8,17 @@
         WindowStartupLocation="CenterScreen"
         ShowInTaskbar="False"
         WindowStyle="None"
-        Background="AntiqueWhite"
+        AllowsTransparency="True"
+        Style="{StaticResource BaseWindowStyle}"
+        BorderThickness="0"
         Height="250" Width="400">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/AppStyles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

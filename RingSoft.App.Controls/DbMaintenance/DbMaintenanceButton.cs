@@ -63,23 +63,47 @@ namespace RingSoft.App.Controls
         {
             var dbMaintenanceButton = (DbMaintenanceButton)obj;
             var grid = dbMaintenanceButton.GetParentOfType<Grid>();
-            if (grid != null && grid.RowDefinitions.Count <= 1)
+            if (grid != null)
             {
-                var columnIndex = Grid.GetColumn(dbMaintenanceButton);
-                var columnDefinition = grid.ColumnDefinitions[columnIndex];
-                if (columnDefinition != null)
+                if (grid.RowDefinitions.Count <= 1)
                 {
-                    switch (dbMaintenanceButton.Visibility)
+                    var columnIndex = Grid.GetColumn(dbMaintenanceButton);
+                    var columnDefinition = grid.ColumnDefinitions[columnIndex];
+                    if (columnDefinition != null)
                     {
-                        case Visibility.Visible:
-                            columnDefinition.Width = new GridLength(1, GridUnitType.Star);
-                            break;
-                        case Visibility.Hidden:
-                        case Visibility.Collapsed:
-                            columnDefinition.Width = new GridLength(0);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        switch (dbMaintenanceButton.Visibility)
+                        {
+                            case Visibility.Visible:
+                                columnDefinition.Width = new GridLength(1, GridUnitType.Star);
+                                break;
+                            case Visibility.Hidden:
+                            case Visibility.Collapsed:
+                                columnDefinition.Width = new GridLength(0);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                }
+
+                if (grid.ColumnDefinitions.Count <= 1)
+                {
+                    var rowIndex = Grid.GetRow(dbMaintenanceButton);
+                    var rowDefinition = grid.RowDefinitions[rowIndex];
+                    if (rowDefinition != null)
+                    {
+                        switch (dbMaintenanceButton.Visibility)
+                        {
+                            case Visibility.Visible:
+                                rowDefinition.Height = new GridLength(1, GridUnitType.Star);
+                                break;
+                            case Visibility.Hidden:
+                            case Visibility.Collapsed:
+                                rowDefinition.Height = new GridLength(0);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
                 }
             }

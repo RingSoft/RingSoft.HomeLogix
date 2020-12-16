@@ -1,6 +1,7 @@
 ﻿using RingSoft.DataEntryControls.WPF;
 using System.Windows;
 using System.Windows.Input;
+using RingSoft.App.Library;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -38,6 +39,8 @@ namespace RingSoft.App.Controls
     {
         public abstract DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl { get; }
 
+        public abstract string ItemText { get; }
+
         static DbMaintenanceWindow()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceWindow), new FrameworkPropertyMetadata(typeof(DbMaintenanceWindow)));
@@ -47,6 +50,31 @@ namespace RingSoft.App.Controls
         {
             Loaded += (sender, args) =>
             {
+                DbMaintenanceTopHeaderControl.PreviousButton.ToolTip.HeaderText = "Previous (Alt + Left Arrow)";
+                DbMaintenanceTopHeaderControl.PreviousButton.ToolTip.DescriptionText =
+                    $"Go to the previous {ItemText} in the database.";
+
+                DbMaintenanceTopHeaderControl.SaveButton.ToolTip.HeaderText = "Save (Alt + S)";
+                DbMaintenanceTopHeaderControl.SaveButton.ToolTip.DescriptionText =
+                    $"Save this {ItemText} to the database.";
+
+                DbMaintenanceTopHeaderControl.SaveSelectButton.ToolTip.HeaderText = "Save/Select (Alt + L)";
+                DbMaintenanceTopHeaderControl.SaveSelectButton.ToolTip.DescriptionText =
+                    $"Save and select this {ItemText}.";
+
+                DbMaintenanceTopHeaderControl.DeleteButton.ToolTip.HeaderText = "Delete (Alt + D)";
+                DbMaintenanceTopHeaderControl.DeleteButton.ToolTip.DescriptionText =
+                    $"Delete this {ItemText} from the database.";
+
+                DbMaintenanceTopHeaderControl.FindButton.ToolTip.HeaderText = "Find (Alt + F)";
+                DbMaintenanceTopHeaderControl.FindButton.ToolTip.DescriptionText =
+                    $"Find {ItemText.GetArticle()} {ItemText} in the database.";
+
+
+                DbMaintenanceTopHeaderControl.NextButton.ToolTip.HeaderText = "Next (Alt + Right Arrow)";
+                DbMaintenanceTopHeaderControl.NextButton.ToolTip.DescriptionText =
+                    $"Go to the next {ItemText} in the database.";
+
                 OnLoaded();
             };
         }

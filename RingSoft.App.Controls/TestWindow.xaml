@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RingSoft.App.Controls"
         mc:Ignorable="d"
-        Title="TestWindow" Height="450" Width="800">
+        Style="{StaticResource BaseWindowStyle}"
+        Title="TestWindow" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <ResourceDictionary>
 
@@ -17,8 +18,22 @@
     </Window.Resources>
     <DockPanel>
         <local:DbMaintenanceTopHeaderControl DockPanel.Dock="Top"/>
-        <Grid>
-            <TextBox/>
-        </Grid>
+        <StackPanel>
+            <TextBox HorizontalAlignment="Left" Width="100"/>
+
+            <StackPanel>
+                <TextBlock x:Name="HeaderTextBlock" FontWeight="Bold" Text="Save"/>
+                <TextBlock x:Name="DescriptionTextBlock" Margin="20,5,5,5" Text="Save this item to the database."/>
+                <StackPanel.Background>
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5, 1">
+                        <GradientStop Offset="0" Color="AliceBlue"/>
+                        <GradientStop Offset="0.6" Color="#FFD5ECFF">
+                            
+                        </GradientStop>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+            </StackPanel>
+
+        </StackPanel>
     </DockPanel>
 </Window>

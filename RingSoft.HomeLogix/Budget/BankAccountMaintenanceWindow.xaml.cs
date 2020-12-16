@@ -8,23 +8,11 @@ namespace RingSoft.HomeLogix.Budget
     public partial class BankAccountMaintenanceWindow
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
+        public override string ItemText => "Bank Account";
 
         public BankAccountMaintenanceWindow()
         {
             InitializeComponent();
-        }
-
-        protected override void OnLoaded()
-        {
-            TopHeaderControl.PreviousButton.ToolTip.HeaderText =
-                "Goto Previous Bank Account (Alt + Left Arrow)";
-
-            if (TopHeaderControl.CustomPanel is BankCustomPanel bankCustomPanel)
-            {
-                bankCustomPanel.Button1.ToolTip.HeaderText = "This is working!";
-            }
-
-            base.OnLoaded();
         }
     }
 }

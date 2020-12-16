@@ -35,6 +35,7 @@ namespace RingSoft.App.Controls
     ///
     /// </summary>
     [TemplatePart (Name = "HeaderTextBlock", Type = typeof(TextBlock))]
+    [TemplatePart (Name = "DescriptionTextBlock", Type = typeof(TextBlock))]
     public class DbMaintenanceToolTip : ToolTip
     {
         public static readonly DependencyProperty HeaderTextProperty =
@@ -53,7 +54,26 @@ namespace RingSoft.App.Controls
             var dbMaintenanceToolTip = (DbMaintenanceToolTip)obj;
             dbMaintenanceToolTip.SetHeaderText();
         }
+
+        public static readonly DependencyProperty DescriptionTextProperty =
+            DependencyProperty.RegisterAttached(nameof(DescriptionText), typeof(string), typeof(DbMaintenanceToolTip),
+                new FrameworkPropertyMetadata(null, DescriptionTextChangedCallback));
+
+        public string DescriptionText
+        {
+            get => (string)GetValue(DescriptionTextProperty);
+            set => SetValue(DescriptionTextProperty, value);
+        }
+
+        private static void DescriptionTextChangedCallback(DependencyObject obj,
+            DependencyPropertyChangedEventArgs args)
+        {
+            var dbMaintenanceToolTip = (DbMaintenanceToolTip)obj;
+            dbMaintenanceToolTip.SetDescriptionText();
+        }
+
         public TextBlock HeaderTextBlock { get; set; }
+        public TextBlock DescriptionTextBlock { get; set; }
 
         static DbMaintenanceToolTip()
         {
@@ -63,8 +83,10 @@ namespace RingSoft.App.Controls
         public override void OnApplyTemplate()
         {
             HeaderTextBlock = GetTemplateChild(nameof(HeaderTextBlock)) as TextBlock;
-
+            DescriptionTextBlock = GetTemplateChild(nameof(DescriptionTextBlock)) as TextBlock;
+            
             SetHeaderText();
+            SetDescriptionText();
             base.OnApplyTemplate();
         }
 
@@ -72,6 +94,12 @@ namespace RingSoft.App.Controls
         {
             if (HeaderTextBlock != null && !HeaderText.IsNullOrEmpty())
                 HeaderTextBlock.Text = HeaderText;
+        }
+
+        private void SetDescriptionText()
+        {
+            if (DescriptionTextBlock != null && !DescriptionText.IsNullOrEmpty())
+                DescriptionTextBlock.Text = DescriptionText;
         }
     }
 }
