@@ -1,7 +1,6 @@
-﻿using RingSoft.DataEntryControls.WPF;
+﻿using RingSoft.App.Library;
+using RingSoft.DataEntryControls.WPF;
 using System.Windows;
-using System.Windows.Input;
-using RingSoft.App.Library;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -70,6 +69,12 @@ namespace RingSoft.App.Controls
                 DbMaintenanceTopHeaderControl.FindButton.ToolTip.DescriptionText =
                     $"Find {ItemText.GetArticle()} {ItemText} in the database.";
 
+                DbMaintenanceTopHeaderControl.NewButton.ToolTip.HeaderText = "New (Alt + N)";
+                DbMaintenanceTopHeaderControl.NewButton.ToolTip.DescriptionText =
+                    $"Clear existing {ItemText} data in this window and create a new {ItemText}.";
+
+                DbMaintenanceTopHeaderControl.CloseButton.ToolTip.HeaderText = "Close (Alt + C)";
+                DbMaintenanceTopHeaderControl.CloseButton.ToolTip.DescriptionText = "Close this window.";
 
                 DbMaintenanceTopHeaderControl.NextButton.ToolTip.HeaderText = "Next (Alt + Right Arrow)";
                 DbMaintenanceTopHeaderControl.NextButton.ToolTip.DescriptionText =
