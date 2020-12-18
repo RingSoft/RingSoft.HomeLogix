@@ -9,7 +9,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public BankAccount()
         {
             BudgetItems = new HashSet<BudgetItem>();
-            BudgetEscrowItems = new HashSet<BudgetItem>();
+            BudgetTransferFromItems = new HashSet<BudgetItem>();
         }
 
         [Required]
@@ -27,6 +27,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BudgetItem> BudgetItems { get; set; }
 
-        public virtual ICollection<BudgetItem> BudgetEscrowItems { get; set; }
+        public virtual ICollection<BudgetItem> BudgetTransferFromItems { get; set; }
     }
 }

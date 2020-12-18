@@ -7,7 +7,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
     public enum BudgetItemTypes
     {
         Income = 0,
-        Expense = 1
+        Expense = 1,
+        Transfer = 2
     }
 
     public enum BudgetItemRecurringTypes
@@ -66,9 +67,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public bool? DoEscrow { get; set; }
 
-        public int? EscrowBankAccountId { get; set; }
+        public int? TransferToBankAccountId { get; set; }
 
-        public virtual BankAccount EscrowBankAccount { get; set; }
+        public virtual BankAccount TransferToBankAccount { get; set; }
 
         public BudgetItemSpendingTypes SpendingType { get; set; }
 
