@@ -6,15 +6,18 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="BankAccountMaintenanceWindow" Height="450" Width="800">
-    <Window.Resources>
-    </Window.Resources>
+    <Window.DataContext>
+        <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
+    </Window.DataContext>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
         <Grid Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -26,11 +29,15 @@
 
             <Label Content="Bank Account ID" Style="{StaticResource ControlLabel}"/>
 
-            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" DesignText="123456" Width="50"/>
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" DesignText="123456" Width="50"/>
 
             <Label Grid.Row="0" Grid.Column="2" Content="Bank Account Name" Style="{StaticResource ControlLabel}"/>
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" DesignText="Bank Of America" Width="150"/>
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Bank Of America" Width="150"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Current Balance" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120"/>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

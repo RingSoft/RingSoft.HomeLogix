@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="1.13.15" />
+    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="1.13.15.1" />
     <PackageReference Include="RingSoft.DbMaintenance" Version="1.13.15" />
   </ItemGroup>
 

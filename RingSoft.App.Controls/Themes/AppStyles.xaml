@@ -2,7 +2,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
-                    xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF">
+                    xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                    xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/DbMaintenanceTopHeaderTemplate.xaml"/>
@@ -21,6 +22,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="lc:LookupWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
     <Style TargetType="Label" x:Key="ControlLabel">
         <Setter Property="VerticalAlignment" Value="Center"/>

@@ -1,6 +1,15 @@
-﻿using RingSoft.App.Library;
+﻿using System;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.WPF;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbMaintenance;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -34,11 +43,17 @@ namespace RingSoft.App.Controls
     ///     <MyNamespace:DbMaintenanceWindow/>
     ///
     /// </summary>
-    public abstract class DbMaintenanceWindow : BaseWindow
+    public abstract class DbMaintenanceWindow : BaseWindow, IDbMaintenanceView
     {
         public abstract DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl { get; }
 
         public abstract string ItemText { get; }
+
+        public abstract DbMaintenanceViewModelBase ViewModel { get; }
+
+        public event EventHandler<LookupSelectArgs> LookupFormReturn;
+
+        private bool _addOnFlyMode;
 
         static DbMaintenanceWindow()
         {
@@ -47,6 +62,8 @@ namespace RingSoft.App.Controls
 
         public DbMaintenanceWindow()
         {
+            ShowInTaskbar = false;
+
             Loaded += (sender, args) =>
             {
                 DbMaintenanceTopHeaderControl.PreviousButton.ToolTip.HeaderText = "Previous (Alt + Left Arrow)";
@@ -80,15 +97,148 @@ namespace RingSoft.App.Controls
                 DbMaintenanceTopHeaderControl.NextButton.ToolTip.DescriptionText =
                     $"Go to the next {ItemText} in the database.";
 
+                DbMaintenanceTopHeaderControl.PreviousButton.Command = ViewModel.PreviousCommand;
+                DbMaintenanceTopHeaderControl.NewButton.Command = ViewModel.NewCommand;
+                DbMaintenanceTopHeaderControl.SaveButton.Command = ViewModel.SaveCommand;
+                DbMaintenanceTopHeaderControl.DeleteButton.Command = ViewModel.DeleteCommand;
+                DbMaintenanceTopHeaderControl.FindButton.Command = ViewModel.FindCommand;
+                DbMaintenanceTopHeaderControl.SaveSelectButton.Click += (o, eventArgs) => ViewModel.OnSelectButton();
+                DbMaintenanceTopHeaderControl.NextButton.Command = ViewModel.NextCommand;
+                DbMaintenanceTopHeaderControl.CloseButton.Click += (o, eventArgs) => CloseWindow();
+
+                PreviewKeyDown += DbMaintenanceWindow_PreviewKeyDown;
+
+                Closing += (o, eventArgs) => ViewModel.OnWindowClosing(eventArgs);
+
                 OnLoaded();
             };
         }
 
         protected virtual void OnLoaded()
         {
-            DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
+            ViewModel.OnViewLoaded(this);
 
-            DbMaintenanceTopHeaderControl.SaveSelectButton.Click += (sender, args) => MessageBox.Show("Save/Select");
+            if (!_addOnFlyMode)
+                DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
+        }
+
+        protected void RegisterFormKeyControl(AutoFillControl keyAutoFillControl)
+        {
+            BindingOperations.SetBinding(keyAutoFillControl, AutoFillControl.IsDirtyProperty, new Binding
+            {
+                Source = ViewModel,
+                Path = new PropertyPath(nameof(ViewModel.KeyValueDirty)),
+                Mode = BindingMode.TwoWay
+            });
+
+            BindingOperations.SetBinding(keyAutoFillControl, AutoFillControl.SetupProperty, new Binding
+            {
+                Source = ViewModel,
+                Path = new PropertyPath(nameof(ViewModel.KeyAutoFillSetup))
+            });
+
+            BindingOperations.SetBinding(keyAutoFillControl, AutoFillControl.ValueProperty, new Binding
+            {
+                Source = ViewModel,
+                Path = new PropertyPath(nameof(ViewModel.KeyAutoFillValue)),
+                Mode = BindingMode.TwoWay
+            });
+
+            keyAutoFillControl.LostFocus += (sender, args) => ViewModel.OnKeyControlLeave();
+        }
+
+        private void DbMaintenanceWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+            {
+                switch (e.Key)
+                {
+                    case Key.Left:
+                        ViewModel.OnGotoPreviousButton();
+                        e.Handled = true;
+                        break;
+                    case Key.Right:
+                        ViewModel.OnGotoNextButton();
+                        e.Handled = true;
+                        break;
+                }
+            }
+        }
+
+        public void InitializeFromLookupData(LookupAddViewArgs e)
+        {
+            switch (e.LookupFormMode)
+            {
+                case LookupFormModes.Add:
+                case LookupFormModes.View:
+                    _addOnFlyMode = true;
+                    break;
+            }
+            ViewModel.InitializeFromLookupData(e);
+        }
+
+        public virtual void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        {
+            MessageBox.Show(text, caption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
+        }
+
+        public virtual void ResetViewForNewRecord()
+        {
+        }
+
+        public void OnRecordSelected()
+        {
+            if (FocusManager.GetFocusedElement(this) is TextBox textBox)
+                textBox.SelectAll();
+        }
+
+        public void ShowFindLookupWindow(LookupDefinitionBase lookupDefinition, bool allowAdd, bool allowView, string initialSearchFor,
+            PrimaryKeyValue initialSearchForPrimaryKey)
+        {
+            var lookupWindow =
+                new LookupWindow(lookupDefinition, allowAdd, allowView, initialSearchFor)
+                { InitialSearchForPrimaryKeyValue = initialSearchForPrimaryKey };
+
+            lookupWindow.LookupSelect += (sender, args) =>
+            {
+                LookupFormReturn?.Invoke(this, args);
+            };
+            lookupWindow.Owner = this;
+            lookupWindow.ShowDialog();
+        }
+
+        public void CloseWindow()
+        {
+            Close();
+        }
+
+        public MessageButtons ShowYesNoCancelMessage(string text, string caption)
+        {
+            var result = MessageBox.Show(text, caption, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    return MessageButtons.Yes;
+                case MessageBoxResult.No:
+                    return MessageButtons.No;
+            }
+
+
+            return MessageButtons.Cancel;
+        }
+
+        public bool ShowYesNoMessage(string text, string caption)
+        {
+            if (MessageBox.Show(text, caption, MessageBoxButton.YesNo, MessageBoxImage.Question) ==
+                MessageBoxResult.Yes)
+                return true;
+
+            return false;
+        }
+
+        public void ShowRecordSavedMessage()
+        {
+            MessageBox.Show("Record Saved!", "Record Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
