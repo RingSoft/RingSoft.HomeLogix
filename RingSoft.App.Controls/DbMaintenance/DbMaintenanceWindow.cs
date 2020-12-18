@@ -66,7 +66,7 @@ namespace RingSoft.App.Controls
 
             Loaded += (sender, args) =>
             {
-                DbMaintenanceTopHeaderControl.PreviousButton.ToolTip.HeaderText = "Previous (Alt + Left Arrow)";
+                DbMaintenanceTopHeaderControl.PreviousButton.ToolTip.HeaderText = "Previous (Ctrl + Left Arrow)";
                 DbMaintenanceTopHeaderControl.PreviousButton.ToolTip.DescriptionText =
                     $"Go to the previous {ItemText} in the database.";
 
@@ -93,7 +93,7 @@ namespace RingSoft.App.Controls
                 DbMaintenanceTopHeaderControl.CloseButton.ToolTip.HeaderText = "Close (Alt + C)";
                 DbMaintenanceTopHeaderControl.CloseButton.ToolTip.DescriptionText = "Close this window.";
 
-                DbMaintenanceTopHeaderControl.NextButton.ToolTip.HeaderText = "Next (Alt + Right Arrow)";
+                DbMaintenanceTopHeaderControl.NextButton.ToolTip.HeaderText = "Next (Ctrl + Right Arrow)";
                 DbMaintenanceTopHeaderControl.NextButton.ToolTip.DescriptionText =
                     $"Go to the next {ItemText} in the database.";
 
@@ -149,7 +149,7 @@ namespace RingSoft.App.Controls
 
         private void DbMaintenanceWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 switch (e.Key)
                 {
