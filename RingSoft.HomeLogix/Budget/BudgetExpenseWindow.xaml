@@ -9,7 +9,7 @@
                 mc:Ignorable="d"
         Title="Budget Expense" SizeToContent="WidthAndHeight">
     <Window.DataContext>
-        <vm:BudgetExpenseViewModel x:Name="ViewModel"/>
+        <vm:BudgetItemViewModel x:Name="ViewModel"/>
     </Window.DataContext>
     <Grid Margin="5">
         <Grid.RowDefinitions>

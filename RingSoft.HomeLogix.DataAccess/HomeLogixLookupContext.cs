@@ -41,8 +41,17 @@ namespace RingSoft.HomeLogix.DataAccess
         protected override void InitializeLookupDefinitions()
         {
             BudgetItemsLookup = new LookupDefinition<BudgetItemLookup, BudgetItem>(BudgetItems);
-            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget Item",
-                p => p.Description, 50);
+            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget\r\nItem",
+                p => p.Description, 25);
+            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item\r\nType",
+                p => p.Type, 20);
+            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.RecurringPeriod, "Recurs\r\nEvery",
+                p => p.RecurringPeriod, 10);
+            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.RecurringType, "Recurring\r\nType",
+                p => p.RecurringType, 20);
+            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Amount, "Amount",
+                p => p.Amount, 15);
+
             BudgetItems.HasLookupDefinition(BudgetItemsLookup);
 
             BankAccountsLookup = new LookupDefinition<BankAccountLookup, BankAccount>(BankAccounts);

@@ -78,5 +78,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public DateTime? LastCompletedDate { get; set; }
 
         public DateTime? NextTransactionDate { get; set; }
+
+        public decimal? MonthlyAmount { get; set; }
     }
 }

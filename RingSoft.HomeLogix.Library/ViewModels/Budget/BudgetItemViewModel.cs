@@ -5,6 +5,8 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.App.Library;
+using RingSoft.DbMaintenance;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -16,14 +18,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         MonthlySpendingWeekly = 3
     }
 
-    public interface IBudgetExpenseView
+    public interface IBudgetExpenseView : IDbMaintenanceView
     {
         void SetViewType(RecurringViewTypes viewType);
-        void OnValidationFail(FieldDefinition failedFieldDefinition);
-        void CloseWindow();
     }
 
-    public class BudgetExpenseViewModel : INotifyPropertyChanged
+    public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
     {
         private int _id;
 
@@ -272,21 +272,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        public BudgetItem BudgetItem { get; private set; }
-
-        public bool DialogResult { get; private set; }
-
-        public RelayCommand OkCommand { get; }
-        public RelayCommand CancelCommand { get; }
-
         private IBudgetExpenseView _view;
         private bool _loading;
-
-        public BudgetExpenseViewModel()
-        {
-            OkCommand = new RelayCommand(OnOk);
-            CancelCommand = new RelayCommand(OnCancel);
-        }
 
         public void OnViewLoaded(IBudgetExpenseView view, BudgetItem budgetItem)
         {
@@ -386,24 +373,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 DoEscrow = null;
             }
-        }
-
-        private void OnOk()
-        {
-            DialogResult = true;
-            _view.CloseWindow();
-        }
-
-        private void OnCancel()
-        {
-            _view.CloseWindow();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
