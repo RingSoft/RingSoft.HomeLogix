@@ -8,7 +8,7 @@
                 xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
                 mc:Ignorable="d"
         Title="Budget Expense" SizeToContent="WidthAndHeight">
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:BudgetItemViewModel x:Name="ViewModel"/>
     </Window.DataContext>
     <Grid Margin="5">
@@ -90,5 +90,5 @@
             <Button Content="_Cancel" Command="{Binding Path=CancelCommand}" Width="100" Margin="5,0,0,0"/>
 
         </StackPanel>
-    </Grid>
+    </Grid>-->
 </dec:BaseWindow>

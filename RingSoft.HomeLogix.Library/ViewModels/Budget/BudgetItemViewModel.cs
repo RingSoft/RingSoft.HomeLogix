@@ -1,12 +1,11 @@
-﻿using RingSoft.DataEntryControls.Engine;
+﻿using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using RingSoft.App.Library;
-using RingSoft.DbMaintenance;
+using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -15,16 +14,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         Escrow = 0,
         DayOrWeek = 1,
         MonthlySpendingMonthly = 2,
-        MonthlySpendingWeekly = 3
+        MonthlySpendingWeekly = 3,
+        Income = 4,
+        Transfer = 5
     }
 
-    public interface IBudgetExpenseView : IDbMaintenanceView
+    public interface IBudgetItemView : IDbMaintenanceView
     {
         void SetViewType(RecurringViewTypes viewType);
     }
 
     public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
     {
+        public override TableDefinition<BudgetItem> TableDefinition => AppGlobals.LookupContext.BudgetItems;
+
         private int _id;
 
         public int Id
@@ -39,6 +42,45 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 OnPropertyChanged();
             }
         }
+
+        private ComboBoxControlSetup _budgetItemTypeComboBoxControlSetup;
+
+        public ComboBoxControlSetup BudgetItemTypeComboBoxControlSetup
+        {
+            get => _budgetItemTypeComboBoxControlSetup;
+            set
+            {
+                if (_budgetItemTypeComboBoxControlSetup == value)
+                    return;
+
+                _budgetItemTypeComboBoxControlSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private ComboBoxItem _budgetItemTypeComboBoxItem;
+
+        public ComboBoxItem BudgetItemTypeComboBoxItem
+        {
+            get => _budgetItemTypeComboBoxItem;
+            set
+            {
+                if (_budgetItemTypeComboBoxItem == value)
+                    return;
+
+                _budgetItemTypeComboBoxItem = value;
+                SetViewMode();
+                OnPropertyChanged();
+            }
+        }
+
+        public BudgetItemTypes BudgetItemType
+        {
+            get => (BudgetItemTypes)BudgetItemTypeComboBoxItem.NumericValue;
+            set => BudgetItemTypeComboBoxItem = BudgetItemTypeComboBoxControlSetup.GetItem((int) value);
+        }
+
 
         private string _description;
 
@@ -148,6 +190,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public BudgetItemRecurringTypes RecurringType
+        {
+            get => (BudgetItemRecurringTypes)RecurringTypeComboBoxItem.NumericValue;
+            set => RecurringTypeComboBoxItem = RecurringTypeComboBoxControlSetup.GetItem((int)value);
+        }
+
         private DateTime _startingDate;
 
         public DateTime StartingDate
@@ -241,6 +289,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public BudgetItemSpendingTypes SpendingType
+        {
+            get => (BudgetItemSpendingTypes)SpendingTypeComboBoxItem.NumericValue;
+            set => SpendingTypeComboBoxItem = SpendingTypeComboBoxControlSetup.GetItem((int)value);
+        }
+
         private ComboBoxControlSetup _spendingDayOfWeekComboBoxControlSetup;
 
         public ComboBoxControlSetup SpendingDayOfWeekComboBoxControlSetup
@@ -272,45 +326,46 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private IBudgetExpenseView _view;
+        public DayOfWeek SpendingDayOfWeekType
+        {
+            get => (DayOfWeek)SpendingDayOfWeekComboBoxItem.NumericValue;
+            set => SpendingDayOfWeekComboBoxItem = SpendingDayOfWeekComboBoxControlSetup.GetItem((int)value);
+        }
+
+        private IBudgetItemView _view;
         private bool _loading;
 
-        public void OnViewLoaded(IBudgetExpenseView view, BudgetItem budgetItem)
+        protected override void Initialize()
         {
+            if (View is IBudgetItemView budgetExpenseView)
+                _view = budgetExpenseView;
+
             _loading = true;
 
-            _view = view;
-            BudgetItem = budgetItem;
-            
+            BudgetItemTypeComboBoxControlSetup = new ComboBoxControlSetup();
+            BudgetItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
+
             RecurringTypeComboBoxControlSetup = new ComboBoxControlSetup();
             RecurringTypeComboBoxControlSetup.LoadFromEnum<BudgetItemRecurringTypes>();
-            
+
             SpendingTypeComboBoxControlSetup = new ComboBoxControlSetup();
             SpendingTypeComboBoxControlSetup.LoadFromEnum<BudgetItemSpendingTypes>();
-            
+
             SpendingDayOfWeekComboBoxControlSetup = new ComboBoxControlSetup();
             SpendingDayOfWeekComboBoxControlSetup.LoadFromEnum<DayOfWeek>();
 
             BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
 
-            if (budgetItem.Id == 0)
-            {
-                RecurringPeriod = 1;
-                RecurringTypeComboBoxItem =
-                    RecurringTypeComboBoxControlSetup.GetItem((int) BudgetItemRecurringTypes.Months);
-
-                StartingDate = DateTime.Today;
-                ResetSpendingPattern();
-            }
-
             _loading = false;
+
             SetViewMode();
+            base.Initialize();
         }
 
         private void ResetSpendingPattern()
         {
-            SpendingTypeComboBoxItem = SpendingTypeComboBoxControlSetup.GetItem((int)BudgetItemSpendingTypes.Month);
-            SpendingDayOfWeekComboBoxItem = SpendingDayOfWeekComboBoxControlSetup.GetItem((int)DayOfWeek.Sunday);
+            SpendingType = BudgetItemSpendingTypes.Month;
+            SpendingDayOfWeekType = DayOfWeek.Sunday;
         }
 
         private void SetViewMode()
@@ -318,42 +373,56 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
-            var recurringType = (BudgetItemRecurringTypes) RecurringTypeComboBoxItem.NumericValue;
-            var spendingType = (BudgetItemSpendingTypes) SpendingTypeComboBoxItem.NumericValue;
-            
             RecurringViewTypes recurringViewType;
-            switch (recurringType)
+            switch (BudgetItemType)
             {
-                case BudgetItemRecurringTypes.Days:
-                case BudgetItemRecurringTypes.Weeks:
-                    recurringViewType = RecurringViewTypes.DayOrWeek;
+                case BudgetItemTypes.Income:
+                    recurringViewType = RecurringViewTypes.Income;
                     SetEscrow(false);
                     ResetSpendingPattern();
                     break;
-                case BudgetItemRecurringTypes.Months:
-                    if (RecurringPeriod > 1)
+                case BudgetItemTypes.Expense:
+                    switch (RecurringType)
                     {
-                        recurringViewType = RecurringViewTypes.Escrow;
-                        SetEscrow(true);
-                        ResetSpendingPattern();
-                    }
-                    else
-                    {
-                        switch (spendingType)
-                        {
-                            case BudgetItemSpendingTypes.Week:
-                                recurringViewType = RecurringViewTypes.MonthlySpendingWeekly;
-                                break;
-                            default:
-                                recurringViewType = RecurringViewTypes.MonthlySpendingMonthly;
-                                break;
-                        }
-                        SetEscrow(false);
+                        case BudgetItemRecurringTypes.Days:
+                        case BudgetItemRecurringTypes.Weeks:
+                            recurringViewType = RecurringViewTypes.DayOrWeek;
+                            SetEscrow(false);
+                            ResetSpendingPattern();
+                            break;
+                        case BudgetItemRecurringTypes.Months:
+                            if (RecurringPeriod > 1)
+                            {
+                                recurringViewType = RecurringViewTypes.Escrow;
+                                SetEscrow(true);
+                                ResetSpendingPattern();
+                            }
+                            else
+                            {
+                                switch (SpendingType)
+                                {
+                                    case BudgetItemSpendingTypes.Week:
+                                        recurringViewType = RecurringViewTypes.MonthlySpendingWeekly;
+                                        break;
+                                    default:
+                                        recurringViewType = RecurringViewTypes.MonthlySpendingMonthly;
+                                        break;
+                                }
+                                SetEscrow(false);
+                            }
+                            break;
+                        case BudgetItemRecurringTypes.Years:
+                            recurringViewType = RecurringViewTypes.Escrow;
+                            SetEscrow(true);
+                            ResetSpendingPattern();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                     break;
-                case BudgetItemRecurringTypes.Years:
-                    recurringViewType = RecurringViewTypes.Escrow;
-                    SetEscrow(true);
+                case BudgetItemTypes.Transfer:
+                    recurringViewType = RecurringViewTypes.Transfer;
+                    SetEscrow(false);
                     ResetSpendingPattern();
                     break;
                 default:
@@ -373,6 +442,45 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 DoEscrow = null;
             }
+        }
+
+        protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void LoadFromEntity(BudgetItem entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override BudgetItem GetEntityData()
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void ClearData()
+        {
+            _loading = true;
+
+            BudgetItemType = BudgetItemTypes.Expense;
+            RecurringPeriod = 1;
+            RecurringType = BudgetItemRecurringTypes.Months;
+            StartingDate = DateTime.Today;
+
+            _loading = false;
+
+            SetViewMode();
+        }
+
+        protected override bool SaveEntity(BudgetItem entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override bool DeleteEntity()
+        {
+            throw new NotImplementedException();
         }
     }
 }
