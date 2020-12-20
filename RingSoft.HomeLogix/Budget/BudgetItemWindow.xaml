@@ -11,9 +11,6 @@
         Style="{StaticResource BaseWindowStyle}"
         Title="Budget Item" SizeToContent="WidthAndHeight">
     <Window.Resources>
-        <Style TargetType="dec:ComboBoxControl">
-            <Setter Property="Height" Value="20"/>
-        </Style>
     </Window.Resources>
     <Window.DataContext>
         <vm:BudgetItemViewModel x:Name="BudgetItemViewModel"/>
@@ -74,7 +71,7 @@
 
             <dec:DateEditControl Grid.Row="3" Grid.Column="3" Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
 
-            <StackPanel x:Name="TransferToStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
+            <StackPanel x:Name="TransferToStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
 
                 <CheckBox x:Name="EscrowCheckBox" Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Visibility="Visible"/>
 

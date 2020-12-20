@@ -79,6 +79,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public DateTime? NextTransactionDate { get; set; }
 
-        public decimal? MonthlyAmount { get; set; }
+        public decimal? SpendingAmount { get; set; }
     }
 }

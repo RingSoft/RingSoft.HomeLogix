@@ -21,7 +21,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
     public interface IBudgetItemView : IDbMaintenanceView
     {
-        void SetViewType(RecurringViewTypes viewType);
+        void SetViewType();
     }
 
     public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
@@ -81,21 +81,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             set => BudgetItemTypeComboBoxItem = BudgetItemTypeComboBoxControlSetup.GetItem((int) value);
         }
 
-
-        private string _description;
-
-        public string Description
-        {
-            get => _description;
-            set
-            {
-                if (_description == value)
-                    return;
-
-                _description = value;
-                OnPropertyChanged();
-            }
-        }
 
         private AutoFillSetup _bankAutoFillSetup;
 
@@ -363,6 +348,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public bool ItemTypeAmountVisible { get; set; }
+        public bool TransferToVisible { get; set; }
+        public bool EscrowVisible { get; set; }
+        public bool TransferToBankVisible { get; set; }
+        public bool SpendingTypeVisible { get; set; }
+        public bool SpendingDayOfWeekVisible { get; set; }
+
         private IBudgetItemView _view;
         private bool _loading;
 
@@ -389,7 +381,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _loading = false;
 
-            SetViewMode();
             base.Initialize();
         }
 
@@ -404,11 +395,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
-            RecurringViewTypes recurringViewType;
+            ItemTypeAmountVisible = TransferToVisible = EscrowVisible =
+                TransferToBankVisible = SpendingTypeVisible = SpendingDayOfWeekVisible = false;
+
             switch (BudgetItemType)
             {
                 case BudgetItemTypes.Income:
-                    recurringViewType = RecurringViewTypes.Income;
                     SetEscrow(false);
                     ResetSpendingPattern();
                     break;
@@ -417,14 +409,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         case BudgetItemRecurringTypes.Days:
                         case BudgetItemRecurringTypes.Weeks:
-                            recurringViewType = RecurringViewTypes.DayOrWeek;
                             SetEscrow(false);
                             ResetSpendingPattern();
                             break;
                         case BudgetItemRecurringTypes.Months:
                             if (RecurringPeriod > 1)
                             {
-                                recurringViewType = RecurringViewTypes.Escrow;
                                 SetEscrow(true);
                                 ResetSpendingPattern();
                             }
@@ -433,17 +423,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 switch (SpendingType)
                                 {
                                     case BudgetItemSpendingTypes.Week:
-                                        recurringViewType = RecurringViewTypes.MonthlySpendingWeekly;
+                                        SpendingTypeVisible = SpendingDayOfWeekVisible = true;
                                         break;
                                     default:
-                                        recurringViewType = RecurringViewTypes.MonthlySpendingMonthly;
+                                        SpendingTypeVisible = true;
                                         break;
                                 }
                                 SetEscrow(false);
                             }
                             break;
                         case BudgetItemRecurringTypes.Years:
-                            recurringViewType = RecurringViewTypes.Escrow;
                             SetEscrow(true);
                             ResetSpendingPattern();
                             break;
@@ -452,40 +441,47 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                     break;
                 case BudgetItemTypes.Transfer:
-                    recurringViewType = RecurringViewTypes.Transfer;
                     SetEscrow(false);
+                    TransferToVisible = TransferToBankVisible = true;
                     ResetSpendingPattern();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            CalculateItemTypeAmount();
-            _view.SetViewType(recurringViewType);
+            if (BudgetItemType != BudgetItemTypes.Transfer)
+                CalculateItemTypeAmount();
+
+            _view.SetViewType();
         }
 
         private void CalculateItemTypeAmount()
         {
+            var itemTypeAmountVisible = false;
             switch (RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
                     ItemTypeAmountLabel = "Monthly Amount";
+                    itemTypeAmountVisible = true;
                     break;
                 case BudgetItemRecurringTypes.Weeks:
                     ItemTypeAmountLabel = "Monthly Amount";
+                    itemTypeAmountVisible = true;
                     break;
                 case BudgetItemRecurringTypes.Months:
                     if (RecurringPeriod > 1)
-                        CalculateEscrow();
+                        itemTypeAmountVisible = CalculateEscrow();
                     else
                     {
                         switch (SpendingType)
                         {
                             case BudgetItemSpendingTypes.Day:
                                 ItemTypeAmountLabel = "Daily Amount";
+                                itemTypeAmountVisible = true;
                                 break;
                             case BudgetItemSpendingTypes.Week:
                                 ItemTypeAmountLabel = "Weekly Amount";
+                                itemTypeAmountVisible = true;
                                 break;
                             default:
                                 ItemTypeAmountLabel = string.Empty;
@@ -495,21 +491,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     break;
                 case BudgetItemRecurringTypes.Years:
-                    CalculateEscrow();
+                    itemTypeAmountVisible = CalculateEscrow();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            ItemTypeAmountVisible = itemTypeAmountVisible;
         }
 
-        private void CalculateEscrow()
+        private bool CalculateEscrow()
         {
             var escrow = DoEscrow != null && DoEscrow != false;
 
             if (escrow || BudgetItemType != BudgetItemTypes.Expense)
             {
                 ItemTypeAmountLabel = "Monthly Amount";
+                return true;
             }
+
+            return false;
         }
 
         private void SetEscrow(bool value)
@@ -517,16 +518,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (value)
             {
                 DoEscrow ??= false;
+                TransferToVisible = true;
+                EscrowVisible = true;
             }
             else
             {
                 DoEscrow = null;
+                TransferToVisible = false;
+                EscrowVisible = false;
             }
+
+            var escrow = DoEscrow != null && DoEscrow != false;
+            if (escrow)
+                TransferToBankVisible = true;
         }
 
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            throw new NotImplementedException();
+            Id = newEntity.Id;
+            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
+            KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
+            return budgetItem;
         }
 
         protected override void LoadFromEntity(BudgetItem entity)
@@ -544,9 +556,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = true;
 
             BudgetItemType = BudgetItemTypes.Expense;
+            BankAutoFillValue = null;
+            Amount = 0;
             RecurringPeriod = 1;
             RecurringType = BudgetItemRecurringTypes.Months;
             StartingDate = DateTime.Today;
+            EndingDate = null;
+
+            SpendingType = BudgetItemSpendingTypes.Month;
 
             _loading = false;
 

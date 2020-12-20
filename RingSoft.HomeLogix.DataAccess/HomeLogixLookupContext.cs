@@ -42,7 +42,7 @@ namespace RingSoft.HomeLogix.DataAccess
         {
             BudgetItemsLookup = new LookupDefinition<BudgetItemLookup, BudgetItem>(BudgetItems);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget\r\nItem",
-                p => p.Description, 25);
+                p => p.Description, 35);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item\r\nType",
                 p => p.Type, 20);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.RecurringPeriod, "Recurs\r\nEvery",

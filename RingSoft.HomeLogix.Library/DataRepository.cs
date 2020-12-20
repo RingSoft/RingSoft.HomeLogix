@@ -13,6 +13,12 @@ namespace RingSoft.HomeLogix.Library
         bool SaveBankAccount(BankAccount bankAccount);
 
         bool DeleteBankAccount(int bankAccountId);
+
+        BudgetItem GetBudgetItem(int budgetItemId);
+
+        bool SaveBudgetItem(BudgetItem budgetItem);
+
+        bool DeleteBudgetItem(int budgetItemId);
     }
 
     public class DataRepository : IDataRepository
@@ -41,6 +47,25 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             var bankAccount = context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
             return context.DbContext.DeleteEntity(context.BankAccounts, bankAccount, "Deleting Bank Account");
+        }
+
+        public BudgetItem GetBudgetItem(int budgetItemId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
+        }
+
+        public bool SaveBudgetItem(BudgetItem budgetItem)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.DbContext.SaveEntity(context.BudgetItems, budgetItem, "Saving Budget Item");
+        }
+
+        public bool DeleteBudgetItem(int budgetItemId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var budgetItem = context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
+            return context.DbContext.DeleteEntity(context.BudgetItems, budgetItem, "Deleting Budget Item");
         }
     }
 }
