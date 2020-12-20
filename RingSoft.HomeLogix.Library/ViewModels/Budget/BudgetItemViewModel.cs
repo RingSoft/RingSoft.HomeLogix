@@ -332,32 +332,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             set => SpendingDayOfWeekComboBoxItem = SpendingDayOfWeekComboBoxControlSetup.GetItem((int)value);
         }
 
-        private decimal _monthlyAmount;
+        private string _itemTypeAmountLabel;
 
-        public decimal MonthlyAmount
+        public string ItemTypeAmountLabel
         {
-            get => _monthlyAmount;
+            get => _itemTypeAmountLabel;
             set
             {
-                if (_monthlyAmount == value)
+                if (_itemTypeAmountLabel == value)
                     return;
 
-                _monthlyAmount = value;
+                _itemTypeAmountLabel = value;
                 OnPropertyChanged();
             }
         }
 
-        private decimal? _spendingTypeAmount;
 
-        public decimal? SpendingTypeAmount
+        private decimal? _itemTypeAmount;
+
+        public decimal? ItemTypeAmount
         {
-            get => _spendingTypeAmount;
+            get => _itemTypeAmount;
             set
             {
-                if (_spendingTypeAmount == value)
+                if (_itemTypeAmount == value)
                     return;
 
-                _spendingTypeAmount = value;
+                _itemTypeAmount = value;
                 OnPropertyChanged();
             }
         }
@@ -459,7 +460,56 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
+            CalculateItemTypeAmount();
             _view.SetViewType(recurringViewType);
+        }
+
+        private void CalculateItemTypeAmount()
+        {
+            switch (RecurringType)
+            {
+                case BudgetItemRecurringTypes.Days:
+                    ItemTypeAmountLabel = "Monthly Amount";
+                    break;
+                case BudgetItemRecurringTypes.Weeks:
+                    ItemTypeAmountLabel = "Monthly Amount";
+                    break;
+                case BudgetItemRecurringTypes.Months:
+                    if (RecurringPeriod > 1)
+                        CalculateEscrow();
+                    else
+                    {
+                        switch (SpendingType)
+                        {
+                            case BudgetItemSpendingTypes.Day:
+                                ItemTypeAmountLabel = "Daily Amount";
+                                break;
+                            case BudgetItemSpendingTypes.Week:
+                                ItemTypeAmountLabel = "Weekly Amount";
+                                break;
+                            default:
+                                ItemTypeAmountLabel = string.Empty;
+                                break;
+                        }
+                    }
+
+                    break;
+                case BudgetItemRecurringTypes.Years:
+                    CalculateEscrow();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void CalculateEscrow()
+        {
+            var escrow = DoEscrow != null && DoEscrow != false;
+
+            if (escrow || BudgetItemType != BudgetItemTypes.Expense)
+            {
+                ItemTypeAmountLabel = "Monthly Amount";
+            }
         }
 
         private void SetEscrow(bool value)

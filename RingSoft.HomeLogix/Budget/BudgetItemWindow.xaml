@@ -78,9 +78,9 @@
 
                 <CheckBox x:Name="EscrowCheckBox" Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Visibility="Visible"/>
 
-                <Label x:Name="EscrowLabel" Content="Transfer To Bank Account" Style="{StaticResource ControlLabel}"/>
+                <Label x:Name="TransferToLabel" Content="Transfer To Bank Account" Style="{StaticResource ControlLabel}"/>
 
-                <lc:AutoFillControl x:Name="EscrowBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225"/>
+                <lc:AutoFillControl x:Name="TransferToBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225"/>
 
             </StackPanel>
 
@@ -96,11 +96,9 @@
 
             </StackPanel>
 
-            <Label Grid.Row="5" Grid.Column="0" x:Name="PeriodAmountLabel" Content="Monthly Amount" Style="{StaticResource ControlLabel}"/>
+            <Label Grid.Row="5" Grid.Column="0" x:Name="ItemTypeAmountLabel" Content="{Binding Path=ItemTypeAmountLabel}" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
 
-            <dec:DecimalReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="MonthlyAmountControl" FormatType="Currency" Value="{Binding Path=MonthlyAmount}" DesignText="$123,456,789.00" Width="120" TextAlignment="Left"/>
-
-            <dec:DecimalReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="PeriodAmountControl"/>
+            <dec:DecimalReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="ItemTypeAmountControl" FormatType="Currency" Value="{Binding Path=ItemTypeAmount}" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" Visibility="Collapsed"/>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>
