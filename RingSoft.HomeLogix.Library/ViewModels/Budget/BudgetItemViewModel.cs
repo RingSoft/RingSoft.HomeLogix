@@ -242,17 +242,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private AutoFillValue _escrowBankAccountAutoFillValue;
+        private AutoFillValue _transferToBankAccountAutoFillValue;
 
-        public AutoFillValue EscrowBankAccountAutoFillValue
+        public AutoFillValue TransferToBankAccountAutoFillValue
         {
-            get => _escrowBankAccountAutoFillValue;
+            get => _transferToBankAccountAutoFillValue;
             set
             {
-                if (_escrowBankAccountAutoFillValue == value)
+                if (_transferToBankAccountAutoFillValue == value)
                     return;
 
-                _escrowBankAccountAutoFillValue = value;
+                _transferToBankAccountAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
@@ -330,6 +330,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             get => (DayOfWeek)SpendingDayOfWeekComboBoxItem.NumericValue;
             set => SpendingDayOfWeekComboBoxItem = SpendingDayOfWeekComboBoxControlSetup.GetItem((int)value);
+        }
+
+        private decimal _monthlyAmount;
+
+        public decimal MonthlyAmount
+        {
+            get => _monthlyAmount;
+            set
+            {
+                if (_monthlyAmount == value)
+                    return;
+
+                _monthlyAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal? _spendingTypeAmount;
+
+        public decimal? SpendingTypeAmount
+        {
+            get => _spendingTypeAmount;
+            set
+            {
+                if (_spendingTypeAmount == value)
+                    return;
+
+                _spendingTypeAmount = value;
+                OnPropertyChanged();
+            }
         }
 
         private IBudgetItemView _view;
