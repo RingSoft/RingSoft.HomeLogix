@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -52,7 +53,10 @@ namespace RingSoft.HomeLogix.Library
         public BudgetItem GetBudgetItem(int budgetItemId)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
+            return context.BudgetItems
+                .Include(i => i.BankAccount)
+                .Include(i => i.TransferToBankAccount)
+                .FirstOrDefault(f => f.Id == budgetItemId);
         }
 
         public bool SaveBudgetItem(BudgetItem budgetItem)

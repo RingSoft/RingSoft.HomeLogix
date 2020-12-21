@@ -543,18 +543,75 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override void LoadFromEntity(BudgetItem entity)
         {
-            throw new NotImplementedException();
+            _loading = true;
+
+            BudgetItemType = entity.Type;
+            BankAutoFillValue =
+                new AutoFillValue(
+                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
+                    entity.BankAccount.Description);
+            Amount = entity.Amount;
+            RecurringPeriod = entity.RecurringPeriod;
+            RecurringType = entity.RecurringType;
+            StartingDate = entity.StartingDate;
+            EndingDate = entity.EndingDate;
+            DoEscrow = entity.DoEscrow;
+
+            if (entity.TransferToBankAccount != null)
+            {
+                TransferToBankAccountAutoFillValue = new AutoFillValue(
+                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.TransferToBankAccount),
+                    entity.TransferToBankAccount.Description);
+            }
+
+            SpendingType = entity.SpendingType;
+            SpendingDayOfWeekType = entity.SpendingDayOfWeek;
+
+            _loading = false;
+            SetViewMode();
         }
 
         protected override BudgetItem GetEntityData()
         {
-            throw new NotImplementedException();
+            var description = string.Empty;
+            if (KeyAutoFillValue != null)
+                description = KeyAutoFillValue.Text;
+
+            var bankAccountId = 0;
+            if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
+                bankAccountId = AppGlobals.LookupContext.BankAccounts
+                    .GetEntityFromPrimaryKeyValue(BankAutoFillValue.PrimaryKeyValue).Id;
+
+            int? transferToBankAccountId = null;
+            if (TransferToBankAccountAutoFillValue != null &&
+                TransferToBankAccountAutoFillValue.PrimaryKeyValue.IsValid)
+                transferToBankAccountId = AppGlobals.LookupContext.BankAccounts
+                    .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id;
+
+            var budgetItem = new BudgetItem
+            {
+                Id = Id,
+                Description = description,
+                Type = BudgetItemType,
+                BankAccountId = bankAccountId,
+                Amount = Amount,
+                RecurringPeriod = RecurringPeriod,
+                RecurringType = RecurringType,
+                StartingDate = StartingDate,
+                EndingDate = EndingDate,
+                DoEscrow = DoEscrow,
+                TransferToBankAccountId = transferToBankAccountId,
+                SpendingType = SpendingType,
+                SpendingDayOfWeek = SpendingDayOfWeekType
+            };
+            return budgetItem;
         }
 
         protected override void ClearData()
         {
             _loading = true;
 
+            Id = 0;
             BudgetItemType = BudgetItemTypes.Expense;
             BankAutoFillValue = null;
             Amount = 0;
@@ -562,8 +619,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RecurringType = BudgetItemRecurringTypes.Months;
             StartingDate = DateTime.Today;
             EndingDate = null;
-
             SpendingType = BudgetItemSpendingTypes.Month;
+            SpendingDayOfWeekType = DayOfWeek.Sunday;
+            
+            TransferToBankAccountAutoFillValue = null;
 
             _loading = false;
 
@@ -572,12 +631,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BudgetItem entity)
         {
-            throw new NotImplementedException();
+            return AppGlobals.DataRepository.SaveBudgetItem(entity);
         }
 
         protected override bool DeleteEntity()
         {
-            throw new NotImplementedException();
+            return AppGlobals.DataRepository.DeleteBudgetItem(Id);
         }
     }
 }

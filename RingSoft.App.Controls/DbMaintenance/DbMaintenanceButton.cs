@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using RingSoft.DataEntryControls.WPF;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using RingSoft.DataEntryControls.WPF;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls

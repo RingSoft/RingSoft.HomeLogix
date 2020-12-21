@@ -41,12 +41,14 @@ namespace RingSoft.HomeLogix.DataAccess
         protected override void InitializeLookupDefinitions()
         {
             BudgetItemsLookup = new LookupDefinition<BudgetItemLookup, BudgetItem>(BudgetItems);
-            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget\r\nItem",
+            BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget Item",
                 p => p.Description, 35);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item\r\nType",
                 p => p.Type, 20);
+
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.RecurringPeriod, "Recurs\r\nEvery",
-                p => p.RecurringPeriod, 10);
+                p => p.RecurringPeriod, 10).HasHorizontalAlignmentType(LookupColumnAlignmentTypes.Left);
+
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.RecurringType, "Recurring\r\nType",
                 p => p.RecurringType, 20);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Amount, "Amount",
@@ -64,9 +66,20 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void SetupModel()
         {
+            BankAccounts.HasRecordDescription("Bank Account").HasDescription("Bank Account");
+
             BankAccounts.GetFieldDefinition(p => p.CurrentBalance)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .HasDescription("Current Balance");
+
+            BudgetItems.GetFieldDefinition(p => p.BankAccountId)
+                .HasDescription("Bank Account");
+
+            BudgetItems.GetFieldDefinition(p => p.Amount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId)
+                .HasDescription("Transfer To Bank Account");
         }
 
     }

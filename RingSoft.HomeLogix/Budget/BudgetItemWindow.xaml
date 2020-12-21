@@ -47,7 +47,7 @@
 
             <Label Grid.Row="1" Grid.Column="2" Content="Bank Account" Style="{StaticResource ControlLabel}"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="BankAccountControl" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Amount" Style="{StaticResource ControlLabel}"/>
 
@@ -71,7 +71,7 @@
 
             <dec:DateEditControl Grid.Row="3" Grid.Column="3" Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
 
-            <StackPanel x:Name="TransferToStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+            <StackPanel x:Name="TransferToStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
 
                 <CheckBox x:Name="EscrowCheckBox" Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Visibility="Visible"/>
 

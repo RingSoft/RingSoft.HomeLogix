@@ -15,7 +15,6 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.DoEscrow).HasColumnType(SqliteConstants.BoolColumnType);
             builder.Property(p => p.EndingDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.Index).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.LastCompletedDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.NextTransactionDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.RecurringPeriod).HasColumnType(SqliteConstants.IntegerColumnType);

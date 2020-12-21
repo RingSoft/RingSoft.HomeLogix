@@ -2,6 +2,8 @@
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Windows;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix.Budget
 {
@@ -61,6 +63,20 @@ namespace RingSoft.HomeLogix.Budget
             DescriptionControl.Focus();
 
             base.ResetViewForNewRecord();
+        }
+
+        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        {
+            var table = AppGlobals.LookupContext.BudgetItems;
+
+            if (fieldDefinition == table.GetFieldDefinition(p => p.Description))
+                DescriptionControl.Focus();
+            else if (fieldDefinition == table.GetFieldDefinition(p => p.BankAccountId))
+                BankAccountControl.Focus();
+            else if (fieldDefinition == table.GetFieldDefinition(p => p.TransferToBankAccountId))
+                TransferToBankAccount.Focus();
+
+            base.OnValidationFail(fieldDefinition, text, caption);
         }
     }
 }

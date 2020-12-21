@@ -37,9 +37,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public int Id { get; set; }
 
         [Required]
-        public int Index { get; set; }
-
-        [Required]
         public BudgetItemTypes Type { get; set; }
 
         [Required]
