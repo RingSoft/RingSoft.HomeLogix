@@ -6,6 +6,7 @@ using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -637,6 +638,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override bool DeleteEntity()
         {
             return AppGlobals.DataRepository.DeleteBudgetItem(Id);
+        }
+
+        public override bool ValidateEntityProperty(FieldDefinition fieldDefinition, string valueToValidate)
+        {
+            return base.ValidateEntityProperty(fieldDefinition, valueToValidate);
         }
     }
 }
