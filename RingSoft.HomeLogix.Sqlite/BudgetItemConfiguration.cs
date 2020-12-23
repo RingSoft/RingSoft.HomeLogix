@@ -11,13 +11,18 @@ namespace RingSoft.HomeLogix.Sqlite
         {
             builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.CurrentMonthAmount).HasColumnType(SqliteConstants.DecimalColumnType);
+            builder.Property(p => p.CurrentYearAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
             builder.Property(p => p.DoEscrow).HasColumnType(SqliteConstants.BoolColumnType);
             builder.Property(p => p.EndingDate).HasColumnType(SqliteConstants.DateColumnType);
+            builder.Property(p => p.EscrowBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.LastCompletedDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.MonthlyAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.NextTransactionDate).HasColumnType(SqliteConstants.DateColumnType);
+            builder.Property(p => p.Notes).HasColumnType(SqliteConstants.MemoColumnType);
+            builder.Property(p => p.Recalculate).HasColumnType(SqliteConstants.BoolColumnType);
             builder.Property(p => p.RecurringPeriod).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.RecurringType).HasColumnType(SqliteConstants.ByteColumnType);
             builder.Property(p => p.StartingDate).HasColumnType(SqliteConstants.DateColumnType);
@@ -26,11 +31,13 @@ namespace RingSoft.HomeLogix.Sqlite
 
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.BudgetItems)
-                .HasForeignKey(p => p.BankAccountId);
+                .HasForeignKey(p => p.BankAccountId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.TransferToBankAccount)
                 .WithMany(p => p.BudgetTransferFromItems)
-                .HasForeignKey(p => p.TransferToBankAccountId);
+                .HasForeignKey(p => p.TransferToBankAccountId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

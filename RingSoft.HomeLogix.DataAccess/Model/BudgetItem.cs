@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace RingSoft.HomeLogix.DataAccess.Model
 {
@@ -55,7 +57,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public DateTime? EndingDate { get; set; }
 
-        public bool? DoEscrow { get; set; }
+        [Required]
+        [DefaultValue(false)]
+        public bool DoEscrow { get; set; }
 
         public int? TransferToBankAccountId { get; set; }
 
@@ -66,5 +70,24 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public DateTime? NextTransactionDate { get; set; }
 
         public decimal? MonthlyAmount { get; set; }
+
+        public decimal? CurrentMonthAmount { get; set; }
+
+        public decimal? CurrentYearAmount { get; set; }
+
+        public decimal? EscrowBalance { get; set; }
+
+        [Required]
+        [DefaultValue(false)]
+        public bool Recalculate { get; set; }
+
+        public string Notes { get; set; }
+
+        public virtual ICollection<BudgetItemTransaction> BudgetTransactions { get; set; }
+
+        public BudgetItem()
+        {
+            BudgetTransactions = new HashSet<BudgetItemTransaction>();
+        }
     }
 }

@@ -51,6 +51,7 @@ namespace RingSoft.HomeLogix.Sqlite
                 .HasColumnType(SqliteConstants.StringColumnType);
 
             modelBuilder.ApplyConfiguration(new BudgetItemConfiguration());
+            modelBuilder.ApplyConfiguration(new BudgetItemTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
 
             base.OnModelCreating(modelBuilder);

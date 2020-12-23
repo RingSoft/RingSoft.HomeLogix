@@ -212,9 +212,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private bool? _doEscrow;
+        private bool _doEscrow;
 
-        public bool? DoEscrow
+        public bool DoEscrow
         {
             get => _doEscrow;
             set
@@ -366,9 +366,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void CalculateEscrow()
         {
-            var escrow = DoEscrow != null && DoEscrow != false;
-
-            if (escrow || BudgetItemType != BudgetItemTypes.Expense)
+            if (DoEscrow || BudgetItemType != BudgetItemTypes.Expense)
             {
                 //Calculate
             }
@@ -376,22 +374,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void SetEscrow(bool value)
         {
-            if (value)
-            {
-                DoEscrow ??= false;
-                TransferToVisible = true;
-                EscrowVisible = true;
-            }
-            else
-            {
-                DoEscrow = null;
-                TransferToVisible = false;
-                EscrowVisible = false;
-            }
-
-            var escrow = DoEscrow != null && DoEscrow != false;
-            if (escrow)
-                TransferToBankVisible = true;
+            DoEscrow = value;
+            TransferToVisible = value;
+            EscrowVisible = value;
+            
+            if (DoEscrow)
+                TransferToBankVisible = value;
         }
 
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)

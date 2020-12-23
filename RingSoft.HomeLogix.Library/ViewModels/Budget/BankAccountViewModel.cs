@@ -26,9 +26,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _currentBalance;
+        private decimal? _currentBalance;
 
-        public decimal CurrentBalance
+        public decimal? CurrentBalance
         {
             get => _currentBalance;
             set
