@@ -23,13 +23,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         Years = 3
     }
 
-    public enum BudgetItemSpendingTypes
-    {
-        Month = 0,
-        Day = 1,
-        Week = 2
-    }
-
     public class BudgetItem
     {
         [Required]
@@ -68,14 +61,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual BankAccount TransferToBankAccount { get; set; }
 
-        public BudgetItemSpendingTypes SpendingType { get; set; }
-
-        public DayOfWeek SpendingDayOfWeek { get; set; }
-
         public DateTime? LastCompletedDate { get; set; }
 
         public DateTime? NextTransactionDate { get; set; }
 
-        public decimal? SpendingAmount { get; set; }
+        public decimal? MonthlyAmount { get; set; }
     }
 }

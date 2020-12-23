@@ -81,21 +81,9 @@
 
             </StackPanel>
 
-            <StackPanel x:Name="SpendingTypeStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+            <Label Grid.Row="5" Grid.Column="0" x:Name="MonthlyAmountLabel" Content="Monthly Amount" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
 
-                <Label Content="Spending Type" Style="{StaticResource ControlLabel}"/>
-
-                <dec:ComboBoxControl Setup="{Binding Path=SpendingTypeComboBoxControlSetup}" SelectedItem="{Binding Path=SpendingTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
-
-                <Label x:Name="SpendingDayOfWeekLabel" Content="Spending Day Of Week" Style="{StaticResource ControlLabel}"/>
-
-                <dec:ComboBoxControl x:Name="SpendingDayOfWeekComboBoxControl" Setup="{Binding Path=SpendingDayOfWeekComboBoxControlSetup}" SelectedItem="{Binding Path=SpendingDayOfWeekComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Wednesdayxxx" Width="120"/>
-
-            </StackPanel>
-
-            <Label Grid.Row="5" Grid.Column="0" x:Name="ItemTypeAmountLabel" Content="{Binding Path=ItemTypeAmountLabel}" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
-
-            <dec:DecimalReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="ItemTypeAmountControl" FormatType="Currency" Value="{Binding Path=ItemTypeAmount}" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" Visibility="Collapsed"/>
+            <dec:DecimalReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="MonthlyAmountControl" FormatType="Currency" Value="{Binding Path=MonthlyAmount}" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" Visibility="Collapsed"/>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

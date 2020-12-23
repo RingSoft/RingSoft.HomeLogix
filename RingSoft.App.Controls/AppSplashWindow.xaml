@@ -6,7 +6,6 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        ShowInTaskbar="False"
         WindowStyle="None"
         AllowsTransparency="True"
         Style="{StaticResource BaseWindowStyle}"

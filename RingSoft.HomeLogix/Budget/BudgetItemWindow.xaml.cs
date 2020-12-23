@@ -41,21 +41,11 @@ namespace RingSoft.HomeLogix.Budget
             TransferToBankAccount.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Hidden;
 
-            SpendingTypeStackPanel.Visibility =
-                BudgetItemViewModel.SpendingTypeVisible ? Visibility.Visible : Visibility.Collapsed;
+            MonthlyAmountLabel.Visibility =
+                BudgetItemViewModel.MonthlyAmountVisible ? Visibility.Visible : Visibility.Collapsed;
 
-            SpendingDayOfWeekLabel.Visibility =
-                BudgetItemViewModel.SpendingDayOfWeekVisible ? Visibility.Visible : Visibility.Hidden;
-
-            SpendingDayOfWeekComboBoxControl.Visibility = BudgetItemViewModel.SpendingDayOfWeekVisible
-                ? Visibility.Visible
-                : Visibility.Hidden;
-
-            ItemTypeAmountLabel.Visibility =
-                BudgetItemViewModel.ItemTypeAmountVisible ? Visibility.Visible : Visibility.Collapsed;
-
-            ItemTypeAmountControl.Visibility =
-                BudgetItemViewModel.ItemTypeAmountVisible ? Visibility.Visible : Visibility.Collapsed;
+            MonthlyAmountControl.Visibility =
+                BudgetItemViewModel.MonthlyAmountVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public override void ResetViewForNewRecord()

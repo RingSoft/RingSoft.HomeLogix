@@ -16,12 +16,10 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.EndingDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.LastCompletedDate).HasColumnType(SqliteConstants.DateColumnType);
+            builder.Property(p => p.MonthlyAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.NextTransactionDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.RecurringPeriod).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.RecurringType).HasColumnType(SqliteConstants.ByteColumnType);
-            builder.Property(p => p.SpendingAmount).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.SpendingDayOfWeek).HasColumnType(SqliteConstants.ByteColumnType);
-            builder.Property(p => p.SpendingType).HasColumnType(SqliteConstants.ByteColumnType);
             builder.Property(p => p.StartingDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.TransferToBankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.Type).HasColumnType(SqliteConstants.ByteColumnType);
