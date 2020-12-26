@@ -5,9 +5,9 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Sqlite
 {
-    public class BankAccountTransactionConfiguration : IEntityTypeConfiguration<BankAccountTransaction>
+    public class BankAccountTransactionConfiguration : IEntityTypeConfiguration<BankAccountRegisterItem>
     {
-        public void Configure(EntityTypeBuilder<BankAccountTransaction> builder)
+        public void Configure(EntityTypeBuilder<BankAccountRegisterItem> builder)
         {
             builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
@@ -18,12 +18,12 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.TransferToBankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
 
             builder.HasOne(p => p.BankAccount)
-                .WithMany(p => p.Transactions)
+                .WithMany(p => p.RegisterItems)
                 .HasForeignKey(p => p.BankAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.TransferToBankAccount)
-                .WithMany(p => p.BankAccountTransferFromTransactions)
+                .WithMany(p => p.BankAccountTransferFromRegisterItems)
                 .HasForeignKey(p => p.TransferToBankAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

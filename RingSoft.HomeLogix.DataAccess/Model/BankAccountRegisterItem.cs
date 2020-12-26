@@ -5,38 +5,40 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 {
     public enum BankAccountTransactionTypes
     {
-        Miscellaneous = 0,
-        TansferToBankAccount = 1,
-        MonthlyEscrow = 2
+        BudgetItem = 0,
+        Miscellaneous = 1,
+        TansferToBankAccount = 2,
+        MonthlyEscrow = 3
     }
 
-    public class BankAccountTransaction
+    public class BankAccountRegisterItem
     {
         [Required]
         [Key]
+        public string RegisterId { get; set; }
+
+        [Required]
         public int BankAccountId { get; set; }
 
         public virtual BankAccount BankAccount { get; set; }
 
         [Required]
-        [Key]
         public BankAccountTransactionTypes TransactionType { get; set; }
-
-        [Required]
-        [Key]
-        public int TransactionId { get; set; }
 
         [Required]
         public DateTime TransactionDate { get; set; }
 
-        [Required]
+        public int? BudgetItemId { get; set; }
+
+        public virtual BudgetItem BudgetItem { get; set; }
+
         [MaxLength(50)]
         public string Description { get; set; }
 
         [Required]
         public decimal Amount { get; set; }
 
-        public int TransferToBankAccountId { get; set; }
+        public int? TransferToBankAccountId { get; set; }
 
         public virtual BankAccount TransferToBankAccount { get; set; }
     }

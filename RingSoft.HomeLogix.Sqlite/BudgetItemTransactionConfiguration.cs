@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.TransactionDate).HasColumnType(SqliteConstants.DateColumnType);
 
             builder.HasOne(p => p.BudgetItem)
-                .WithMany(p => p.BudgetTransactions)
+                .WithMany(p => p.RegisterItems)
                 .HasForeignKey(p => p.BudgetItemId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
