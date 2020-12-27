@@ -18,20 +18,20 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.TransactionType).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.TransferToBankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
 
-            //builder.HasOne(p => p.BankAccount)
-            //    .WithMany(p => p.RegisterItems)
-            //    .HasForeignKey(p => p.BankAccountId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.BankAccount)
+                .WithMany(p => p.RegisterItems)
+                .HasForeignKey(p => p.BankAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.HasOne(p => p.BudgetItem)
-            //    .WithMany(p => p.RegisterItems)
-            //    .HasForeignKey(p => p.BudgetItemId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.BudgetItem)
+                .WithMany(p => p.RegisterItems)
+                .HasForeignKey(p => p.BudgetItemId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //builder.HasOne(p => p.TransferToBankAccount)
-            //    .WithMany(p => p.BankAccountTransferFromRegisterItems)
-            //    .HasForeignKey(p => p.TransferToBankAccountId)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(p => p.TransferToBankAccount)
+                .WithMany(p => p.BankAccountTransferFromRegisterItems)
+                .HasForeignKey(p => p.TransferToBankAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

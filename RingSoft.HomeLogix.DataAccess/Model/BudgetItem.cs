@@ -83,11 +83,11 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string Notes { get; set; }
 
-        //public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
+        public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
 
         public BudgetItem()
         {
-            //RegisterItems = new HashSet<BankAccountRegisterItem>();
+            RegisterItems = new HashSet<BankAccountRegisterItem>();
         }
     }
 }

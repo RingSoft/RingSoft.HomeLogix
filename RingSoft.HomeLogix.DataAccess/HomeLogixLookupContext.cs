@@ -14,6 +14,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<BudgetItem> BudgetItems { get; set; }
         public TableDefinition<BankAccount> BankAccounts { get; set; }
+        public TableDefinition<BankAccountRegisterItem> BankAccountRegisterItems { get; set; }
 
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }

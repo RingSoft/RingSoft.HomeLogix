@@ -23,6 +23,7 @@ namespace RingSoft.HomeLogix.Sqlite
         public virtual DbSet<SystemMaster> SystemMaster { get; set; }
         public virtual DbSet<BudgetItem> BudgetItems { get; set; }
         public virtual DbSet<BankAccount> BankAccounts { get; set; }
+        public virtual DbSet<BankAccountRegisterItem> BankAccountRegisterItems { get; set; }
         //-----------------------------------------------------------------------
 
         private static HomeLogixLookupContext _lookupContext;
@@ -54,7 +55,7 @@ namespace RingSoft.HomeLogix.Sqlite
 
             modelBuilder.ApplyConfiguration(new BudgetItemConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
-            //modelBuilder.ApplyConfiguration(new BankAccountRegisterItemConfiguration());
+            modelBuilder.ApplyConfiguration(new BankAccountRegisterItemConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
