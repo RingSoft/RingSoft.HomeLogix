@@ -15,6 +15,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
     {
         [Required]
         [Key]
+        [MaxLength(50)]
         public string RegisterId { get; set; }
 
         [Required]

@@ -13,6 +13,8 @@ namespace RingSoft.HomeLogix.Sqlite
 
         //Add-Migration <Name>
 
+        //Remove-Migration <Name>
+
         public DbContext DbContext => this;
 
         public bool IsDesignTime { get; set; }
@@ -51,8 +53,8 @@ namespace RingSoft.HomeLogix.Sqlite
                 .HasColumnType(SqliteConstants.StringColumnType);
 
             modelBuilder.ApplyConfiguration(new BudgetItemConfiguration());
-            modelBuilder.ApplyConfiguration(new BudgetItemTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
+            //modelBuilder.ApplyConfiguration(new BankAccountRegisterItemConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
