@@ -44,9 +44,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private ComboBoxControlSetup _budgetItemTypeComboBoxControlSetup;
+        private TextComboBoxControlSetup _budgetItemTypeComboBoxControlSetup;
 
-        public ComboBoxControlSetup BudgetItemTypeComboBoxControlSetup
+        public TextComboBoxControlSetup BudgetItemTypeComboBoxControlSetup
         {
             get => _budgetItemTypeComboBoxControlSetup;
             set
@@ -60,9 +60,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private ComboBoxItem _budgetItemTypeComboBoxItem;
+        private TextComboBoxItem _budgetItemTypeComboBoxItem;
 
-        public ComboBoxItem BudgetItemTypeComboBoxItem
+        public TextComboBoxItem BudgetItemTypeComboBoxItem
         {
             get => _budgetItemTypeComboBoxItem;
             set
@@ -144,9 +144,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private ComboBoxControlSetup _recurringTypeComboBoxControlSetup;
+        private TextComboBoxControlSetup _recurringTypeComboBoxControlSetup;
 
-        public ComboBoxControlSetup RecurringTypeComboBoxControlSetup
+        public TextComboBoxControlSetup RecurringTypeComboBoxControlSetup
         {
             get => _recurringTypeComboBoxControlSetup;
             set
@@ -160,9 +160,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private ComboBoxItem _recurringTypeComboBoxItem;
+        private TextComboBoxItem _recurringTypeComboBoxItem;
 
-        public ComboBoxItem RecurringTypeComboBoxItem
+        public TextComboBoxItem RecurringTypeComboBoxItem
         {
             get => _recurringTypeComboBoxItem;
             set
@@ -274,10 +274,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _loading = true;
 
-            BudgetItemTypeComboBoxControlSetup = new ComboBoxControlSetup();
+            BudgetItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             BudgetItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
 
-            RecurringTypeComboBoxControlSetup = new ComboBoxControlSetup();
+            RecurringTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             RecurringTypeComboBoxControlSetup.LoadFromEnum<BudgetItemRecurringTypes>();
 
             BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);

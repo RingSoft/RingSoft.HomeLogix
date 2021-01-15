@@ -43,7 +43,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Type" Style="{StaticResource ControlLabel}"/>
 
-            <dec:ComboBoxControl Grid.Row="1" Grid.Column="1" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
+            <dec:TextComboBoxControl Grid.Row="1" Grid.Column="1" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
 
             <Label Grid.Row="1" Grid.Column="2" Content="Bank Account" Style="{StaticResource ControlLabel}"/>
 
@@ -59,7 +59,7 @@
 
                 <dec:IntegerEditControl Value="{Binding Path=RecurringPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="100" DesignText="31" Width="50"/>
 
-                <dec:ComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
+                <dec:TextComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
 
             </StackPanel>
 
