@@ -23,6 +23,9 @@ namespace RingSoft.HomeLogix.Library
     }
     public class AppGlobals
     {
+        public const int BudgetItemIncomeType = (int) BudgetItemTypes.Income;
+        public const int BudgetItemExpenseType = (int) BudgetItemTypes.Expense;
+        public const int BudgetItemTransferType = (int) BudgetItemTypes.Transfer;
         public static HomeLogixLookupContext LookupContext { get; private set; }
 
         public static IDataRepository DataRepository { get; set; }
@@ -34,7 +37,7 @@ namespace RingSoft.HomeLogix.Library
         public static void InitSettings()
         {
             RingSoftAppGlobals.AppTitle = "HomeLogix";
-            RingSoftAppGlobals.AppCopyright = "©2020 by Peter Ringering";
+            RingSoftAppGlobals.AppCopyright = "©2021 by Peter Ringering";
             RingSoftAppGlobals.AppVersion = "0.80.00";
         }
 

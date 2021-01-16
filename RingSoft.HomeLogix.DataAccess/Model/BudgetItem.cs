@@ -77,10 +77,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public decimal? EscrowBalance { get; set; }
 
-        [Required]
-        [DefaultValue(false)]
-        public bool Recalculate { get; set; }
-
         public string Notes { get; set; }
 
         public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }

@@ -5,21 +5,13 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
+using System.ComponentModel;
+using System.Linq;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-    public enum RecurringViewTypes
-    {
-        Escrow = 0,
-        DayOrWeek = 1,
-        MonthlySpendingMonthly = 2,
-        MonthlySpendingWeekly = 3,
-        Income = 4,
-        Transfer = 5
-    }
-
     public interface IBudgetItemView : IDbMaintenanceView
     {
         void SetViewType();
@@ -260,9 +252,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         public bool MonthlyAmountVisible { get; set; }
-        public bool TransferToVisible { get; set; }
         public bool EscrowVisible { get; set; }
         public bool TransferToBankVisible { get; set; }
+
+        public ViewModelInput ViewModelInput { get; set; }
+
 
         private IBudgetItemView _view;
         private bool _loading;
@@ -273,6 +267,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _view = budgetExpenseView;
 
             _loading = true;
+
+            if (LookupAddViewArgs != null && LookupAddViewArgs.InputParameter is ViewModelInput viewModelInput)
+            {
+                ViewModelInput = viewModelInput;
+            }
+            else
+            {
+                ViewModelInput = new ViewModelInput();
+            }
+            ViewModelInput.BudgetItemViewModels.Add(this);
 
             BudgetItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             BudgetItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
@@ -292,7 +296,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
-            MonthlyAmountVisible = TransferToVisible = EscrowVisible = TransferToBankVisible = false;
+            MonthlyAmountVisible = EscrowVisible = TransferToBankVisible = false;
 
             switch (BudgetItemType)
             {
@@ -325,7 +329,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     break;
                 case BudgetItemTypes.Transfer:
                     SetEscrow(false);
-                    TransferToVisible = TransferToBankVisible = true;
+                    TransferToBankVisible = true;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -375,11 +379,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void SetEscrow(bool value)
         {
             DoEscrow = value;
-            TransferToVisible = value;
             EscrowVisible = value;
-            
-            if (DoEscrow)
-                TransferToBankVisible = value;
         }
 
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
@@ -387,6 +387,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Id = newEntity.Id;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
+
+            ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             return budgetItem;
         }
 
@@ -415,6 +417,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _loading = false;
             SetViewMode();
+
+            if (ReadOnlyMode)
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox("This Budget Item is being modified in another window.  Editing not allowed.", "Editing Not Allowed", RsMessageBoxIcons.Exclamation);
+            }
         }
 
         protected override BudgetItem GetEntityData()
@@ -486,6 +493,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public override bool ValidateEntityProperty(FieldDefinition fieldDefinition, string valueToValidate)
         {
             return base.ValidateEntityProperty(fieldDefinition, valueToValidate);
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            base.OnWindowClosing(e);
+            if (!e.Cancel)
+                ViewModelInput.BudgetItemViewModels.Remove(this);
         }
     }
 }

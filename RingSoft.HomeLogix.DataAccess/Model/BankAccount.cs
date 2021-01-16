@@ -18,10 +18,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public decimal? CurrentBalance { get; set; }
 
-        public decimal? BudgetMonthDeposits { get; set; }
-
-        public decimal? BudgetMonthWithdrawals { get; set; }
-
         public decimal? CurrentMonthDeposits { get; set; }
 
         public decimal? CurrentMonthWithdrawals { get; set; }
@@ -43,10 +39,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BankAccount EscrowToBankAccount { get; set; }
 
         public string Notes { get; set; }
-
-        [Required]
-        [DefaultValue(false)]
-        public bool Recalculate { get; set; }
 
         public virtual ICollection<BudgetItem> BudgetItems { get; set; }
 

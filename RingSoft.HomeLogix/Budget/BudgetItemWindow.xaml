@@ -71,11 +71,11 @@
 
             <dec:DateEditControl Grid.Row="3" Grid.Column="3" Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
 
+            <CheckBox x:Name="EscrowCheckBox" Grid.Row="4" Grid.Column="0" Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Visibility="Collapsed"/>
+
             <StackPanel x:Name="TransferToStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
 
-                <CheckBox x:Name="EscrowCheckBox" Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Visibility="Visible"/>
-
-                <Label x:Name="TransferToLabel" Content="Transfer To Bank Account" Style="{StaticResource ControlLabel}"/>
+                <Label Content="Transfer To Bank Account" Style="{StaticResource ControlLabel}"/>
 
                 <lc:AutoFillControl x:Name="TransferToBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225"/>
 
