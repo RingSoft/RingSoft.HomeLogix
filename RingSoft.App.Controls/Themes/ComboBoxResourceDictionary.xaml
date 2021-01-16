@@ -203,6 +203,7 @@
             Template="{StaticResource ComboBoxTextBox}" 
             HorizontalAlignment="Left" 
             VerticalAlignment="Center" 
+            VerticalContentAlignment="Center"
             Margin="3,3,23,3"
             Focusable="True" 
             Background="Transparent"

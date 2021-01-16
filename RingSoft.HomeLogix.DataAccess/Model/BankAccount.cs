@@ -36,6 +36,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public decimal? EscrowBalance { get; set; }
 
+        public int? EscrowDayOfMonth { get; set; }
+
+        public int? EscrowToBankAccountId { get; set; }
+
+        public virtual BankAccount EscrowToBankAccount { get; set; }
+
         public string Notes { get; set; }
 
         [Required]
@@ -50,12 +56,15 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         
         public virtual ICollection<BankAccountRegisterItem> BankAccountTransferFromRegisterItems { get; set; }
 
+        public virtual ICollection<BankAccount> EscrowFromBankAccounts { get; set; }
+
         public BankAccount()
         {
             BudgetItems = new HashSet<BudgetItem>();
             BudgetTransferFromItems = new HashSet<BudgetItem>();
             RegisterItems = new HashSet<BankAccountRegisterItem>();
             BankAccountTransferFromRegisterItems = new HashSet<BankAccountRegisterItem>();
+            EscrowFromBankAccounts = new HashSet<BankAccount>();
         }
     }
 }

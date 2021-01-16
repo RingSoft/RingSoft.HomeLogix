@@ -18,11 +18,18 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.CurrentYearWithdrawals).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
             builder.Property(p => p.EscrowBalance).HasColumnType(SqliteConstants.DecimalColumnType);
+            builder.Property(p => p.EscrowDayOfMonth).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.EscrowToBankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.LowestBalanceAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.LowestBalanceDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.Notes).HasColumnType(SqliteConstants.MemoColumnType);
             builder.Property(p => p.Recalculate).HasColumnType(SqliteConstants.BoolColumnType);
+
+            builder.HasOne(p => p.EscrowToBankAccount)
+                .WithMany(p => p.EscrowFromBankAccounts)
+                .HasForeignKey(p => p.EscrowToBankAccountId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
