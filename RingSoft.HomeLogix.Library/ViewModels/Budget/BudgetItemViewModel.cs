@@ -215,7 +215,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _doEscrow = value;
-                SetViewMode();
+                SetViewMode(true);
                 OnPropertyChanged();
             }
         }
@@ -291,7 +291,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.Initialize();
         }
 
-        private void SetViewMode()
+        private void SetViewMode(bool fromSetEscrow = false)
         {
             if (_loading)
                 return;
@@ -301,34 +301,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             switch (BudgetItemType)
             {
                 case BudgetItemTypes.Income:
-                    SetEscrow(false);
+                    EscrowVisible = false;
                     break;
                 case BudgetItemTypes.Expense:
                     switch (RecurringType)
                     {
                         case BudgetItemRecurringTypes.Days:
                         case BudgetItemRecurringTypes.Weeks:
-                            SetEscrow(false);
+                            EscrowVisible = false;
+                            DoEscrow = false;
                             break;
                         case BudgetItemRecurringTypes.Months:
                             if (RecurringPeriod > 1)
                             {
-                                SetEscrow(true);
+                                EscrowVisible = true;
+                                if (!fromSetEscrow)
+                                    DoEscrow = true;
                             }
                             else
                             {
-                                SetEscrow(false);
+                                EscrowVisible = false;
                             }
                             break;
                         case BudgetItemRecurringTypes.Years:
-                            SetEscrow(true);
+                            EscrowVisible = true;
+                            if (!fromSetEscrow)
+                                DoEscrow = true;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                     break;
                 case BudgetItemTypes.Transfer:
-                    SetEscrow(false);
+                    EscrowVisible = false;
+                    DoEscrow = false;
                     TransferToBankVisible = true;
                     break;
                 default:
@@ -336,50 +342,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             if (BudgetItemType != BudgetItemTypes.Transfer)
-                CalculateMonthlyAmount();
+                SetMonthlyAmountVisibility();
 
             _view.SetViewType();
         }
 
-        private void CalculateMonthlyAmount()
+        private void SetMonthlyAmountVisibility()
         {
-            var monthlyAmountVisible = true;
+            var monthlyAmountVisible = false;
             switch (RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
-                    break;
                 case BudgetItemRecurringTypes.Weeks:
+                    monthlyAmountVisible = true;
                     break;
                 case BudgetItemRecurringTypes.Months:
-                    if (RecurringPeriod > 1)
-                        CalculateEscrow();
-                    else
-                    {
-                        monthlyAmountVisible = false;
-                    }
+                    if (RecurringPeriod > 1 && DoEscrow)
+                        monthlyAmountVisible = true;
                     break;
                 case BudgetItemRecurringTypes.Years:
-                    CalculateEscrow();
+                    if (DoEscrow)
+                        monthlyAmountVisible = true;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
             MonthlyAmountVisible = monthlyAmountVisible;
-        }
-
-        private void CalculateEscrow()
-        {
-            if (DoEscrow || BudgetItemType != BudgetItemTypes.Expense)
-            {
-                //Calculate
-            }
-        }
-
-        private void SetEscrow(bool value)
-        {
-            DoEscrow = value;
-            EscrowVisible = value;
         }
 
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
