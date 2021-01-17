@@ -30,16 +30,13 @@ namespace RingSoft.HomeLogix.Budget
 
         public void SetViewType()
         {
-            EscrowCheckBox.Visibility = BudgetItemViewModel.EscrowVisible ? Visibility.Visible : Visibility.Collapsed;
+            EscrowStackPanel.Visibility = BudgetItemViewModel.EscrowVisible ? Visibility.Visible : Visibility.Collapsed;
+
+            EscrowLabel.Visibility = EscrowBox.Visibility =
+                BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
 
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;
-
-            MonthlyAmountLabel.Visibility =
-                BudgetItemViewModel.MonthlyAmountVisible ? Visibility.Visible : Visibility.Collapsed;
-
-            MonthlyAmountControl.Visibility =
-                BudgetItemViewModel.MonthlyAmountVisible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public override void ResetViewForNewRecord()

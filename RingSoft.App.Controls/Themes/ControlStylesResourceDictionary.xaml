@@ -45,12 +45,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style TargetType="TabControl">
-        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
-        <Setter Property="BorderBrush" Value="Black"/>
-        <Setter Property="BorderThickness" Value="1"/>
-    </Style>
-
     <Style TargetType="TabItem" x:Key="{x:Type TabItem}">
         <Setter Property="Template">
             <Setter.Value>

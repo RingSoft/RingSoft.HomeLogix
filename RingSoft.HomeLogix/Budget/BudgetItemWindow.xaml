@@ -11,6 +11,14 @@
         Style="{StaticResource BaseWindowStyle}"
         Title="Budget Item" SizeToContent="WidthAndHeight">
     <Window.Resources>
+        <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
+            <Setter Property="DesignText" Value="$123,456,789.00"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="dec:DateReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DateReadOnlyBox}}">
+            <Setter Property="DesignText" Value="01/01/2021"/>
+        </Style>
     </Window.Resources>
     <Window.DataContext>
         <vm:BudgetItemViewModel x:Name="BudgetItemViewModel"/>
@@ -19,6 +27,9 @@
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
         <Grid Margin="5">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -41,52 +52,83 @@
 
             <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="DescriptionControl" DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Type" Style="{StaticResource ControlLabel}"/>
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                <TabItem Header="Details">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-            <dec:TextComboBoxControl Grid.Row="1" Grid.Column="1" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Type" Style="{StaticResource ControlLabel}"/>
 
-            <Label Grid.Row="1" Grid.Column="2" Content="Bank Account" Style="{StaticResource ControlLabel}"/>
+                        <dec:TextComboBoxControl Grid.Row="0" Grid.Column="1" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
 
-            <lc:AutoFillControl Grid.Row="1" Grid.Column="3" x:Name="BankAccountControl" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Bank Account" Style="{StaticResource ControlLabel}"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Content="Amount" Style="{StaticResource ControlLabel}"/>
+                        <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
-            <dec:DecimalEditControl Grid.Row="2" Grid.Column="1" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+                        <Label Grid.Row="1" Grid.Column="0" Content="Amount" Style="{StaticResource ControlLabel}"/>
 
-            <Label Grid.Row="2" Grid.Column="2" Content="Recurs Every" Style="{StaticResource ControlLabel}"/>
+                        <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
 
-            <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
+                        <Label Grid.Row="1" Grid.Column="2" Content="Recurs Every" Style="{StaticResource ControlLabel}"/>
 
-                <dec:IntegerEditControl Value="{Binding Path=RecurringPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="100" DesignText="31" Width="50"/>
+                        <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
 
-                <dec:TextComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
+                            <dec:IntegerEditControl Value="{Binding Path=RecurringPeriod, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="100" DesignText="31" Width="50"/>
 
-            </StackPanel>
+                            <dec:TextComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Starting Date" Style="{StaticResource ControlLabel}"/>
+                        </StackPanel>
 
-            <dec:DateEditControl Grid.Row="3" Grid.Column="1" Value="{Binding Path=StartingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" HorizontalAlignment="Left" DesignText="01/01/2020" Width="100"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Starting Date" Style="{StaticResource ControlLabel}"/>
 
-            <Label Grid.Row="3" Grid.Column="2" Content="Ending Date" Style="{StaticResource ControlLabel}"/>
+                        <dec:DateEditControl Grid.Row="2" Grid.Column="1" Value="{Binding Path=StartingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" HorizontalAlignment="Left" DesignText="01/01/2020" Width="100"/>
 
-            <dec:DateEditControl Grid.Row="3" Grid.Column="3" Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
+                        <Label Grid.Row="2" Grid.Column="2" Content="Ending Date" Style="{StaticResource ControlLabel}"/>
 
-            <StackPanel x:Name="TransferToStackPanel" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
+                        <dec:DateEditControl Grid.Row="2" Grid.Column="3" Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
 
-                <Label Content="Transfer To Bank Account" Style="{StaticResource ControlLabel}"/>
+                        <StackPanel x:Name="TransferToStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
 
-                <lc:AutoFillControl x:Name="TransferToBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225"/>
+                            <Label Content="Transfer To Bank Account" Style="{StaticResource ControlLabel}"/>
 
-            </StackPanel>
+                            <lc:AutoFillControl x:Name="TransferToBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225"/>
 
-            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+                        </StackPanel>
 
-                <CheckBox x:Name="EscrowCheckBox" Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Visibility="Collapsed"/>
+                        <StackPanel x:Name="EscrowStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
 
-                <Label x:Name="MonthlyAmountLabel" Content="Monthly Amount" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
+                            <CheckBox Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 
-                <dec:DecimalReadOnlyBox x:Name="MonthlyAmountControl" FormatType="Currency" Value="{Binding Path=MonthlyAmount}" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" Visibility="Collapsed"/>
-            </StackPanel>
+                            <Label x:Name="EscrowLabel" Content="Balance" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
+
+                            <dec:DecimalReadOnlyBox x:Name="EscrowBox" FormatType="Currency" Value="{Binding Path=EscrowBalance}" Visibility="Collapsed"/>
+
+                        </StackPanel>
+
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+            
+            <Label Grid.Row="2" Grid.Column="0" Content="Monthly Amount" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Currency" Value="{Binding Path=MonthlyAmount}"/>
+
+            <Label Grid.Row="2" Grid.Column="2" Content="Yearly Amount" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" FormatType="Currency" Value="{Binding YearlyAmount}"/>
+
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

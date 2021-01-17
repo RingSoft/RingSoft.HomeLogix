@@ -220,6 +220,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private decimal? _escrowBalance;
+
+        public decimal? EscrowBalance
+        {
+            get => _escrowBalance;
+            set
+            {
+                if (_escrowBalance == value)
+                    return;
+
+                _escrowBalance = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private AutoFillValue _transferToBankAccountAutoFillValue;
 
         public AutoFillValue TransferToBankAccountAutoFillValue
@@ -247,6 +263,96 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _monthlyAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _yearlyAmount;
+
+        public decimal YearlyAmount
+        {
+            get => _yearlyAmount;
+            set
+            {
+                if (_yearlyAmount == value)
+                    return;
+
+                _yearlyAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal? _currentMonthAmount;
+
+        public decimal? CurrentMonthAmount
+        {
+            get => _currentMonthAmount;
+            set
+            {
+                if (_currentMonthAmount == value)
+                    return;
+
+                _currentMonthAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal? _currentYearAmount;
+
+        public decimal? CurrentYearAmount
+        {
+            get => _currentYearAmount;
+            set
+            {
+                if (_currentYearAmount == value)
+                    return;
+
+                _currentYearAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _lastCompletedDate;
+
+        public DateTime? LastCompletedDate
+        {
+            get => _lastCompletedDate;
+            set
+            {
+                if (_lastCompletedDate == value)
+                    return;
+
+                _lastCompletedDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _nextTransactionDate;
+
+        public DateTime? NextTransactionDate
+        {
+            get => _nextTransactionDate;
+            set
+            {
+                if (_nextTransactionDate == value)
+                    return;
+
+                _nextTransactionDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _notes;
+
+        public string Notes
+        {
+            get => _notes;
+            set
+            {
+                if (_notes == value)
+                    return;
+
+                _notes = value;
                 OnPropertyChanged();
             }
         }
