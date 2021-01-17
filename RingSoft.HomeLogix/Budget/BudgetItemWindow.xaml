@@ -18,6 +18,8 @@
         </Style>
         <Style TargetType="dec:DateReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DateReadOnlyBox}}">
             <Setter Property="DesignText" Value="01/01/2021"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
     </Window.Resources>
     <Window.DataContext>
@@ -28,7 +30,7 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="200"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -118,8 +120,12 @@
 
                     </Grid>
                 </TabItem>
-            </TabControl>
+                <dec:DataEntryMemoTabItem Header="Notes">
 
+                    <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                </dec:DataEntryMemoTabItem>
+            </TabControl>
             
             <Label Grid.Row="2" Grid.Column="0" Content="Monthly Amount" Style="{StaticResource ControlLabel}"/>
 
@@ -128,6 +134,22 @@
             <Label Grid.Row="2" Grid.Column="2" Content="Yearly Amount" Style="{StaticResource ControlLabel}"/>
 
             <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" FormatType="Currency" Value="{Binding YearlyAmount}"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Month To Date Amount" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" FormatType="Currency" Value="{Binding CurrentMonthAmount}"/>
+
+            <Label Grid.Row="3" Grid.Column="2" Content="Year To Date Amount" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" FormatType="Currency" Value="{Binding CurrentYearAmount}"/>
+
+            <Label Grid.Row="4" Grid.Column="0" Content="Last Completed Date" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DateReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding LastCompletedDate}"/>
+
+            <Label Grid.Row="4" Grid.Column="2" Content="Next Transaction Date" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DateReadOnlyBox Grid.Row="4" Grid.Column="3" Value="{Binding NextTransactionDate}"/>
 
         </Grid>
     </DockPanel>

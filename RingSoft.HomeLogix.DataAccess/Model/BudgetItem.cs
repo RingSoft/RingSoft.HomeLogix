@@ -67,13 +67,17 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public DateTime? LastCompletedDate { get; set; }
 
-        public DateTime? NextTransactionDate { get; set; }
+        [Required]
+        public DateTime NextTransactionDate { get; set; }
 
-        public decimal? MonthlyAmount { get; set; }
+        [Required]
+        public decimal MonthlyAmount { get; set; }
 
-        public decimal? CurrentMonthAmount { get; set; }
+        [Required]
+        public decimal CurrentMonthAmount { get; set; }
 
-        public decimal? CurrentYearAmount { get; set; }
+        [Required]
+        public decimal CurrentYearAmount { get; set; }
 
         public decimal? EscrowBalance { get; set; }
 

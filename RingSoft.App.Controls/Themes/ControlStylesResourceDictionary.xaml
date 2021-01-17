@@ -158,6 +158,9 @@
     <Style TargetType="dec:DecimalReadOnlyBox" x:Key="{x:Type dec:DecimalReadOnlyBox}"
            BasedOn="{StaticResource {x:Type dec:ReadOnlyBox}}" />
 
+    <Style TargetType="dec:DateReadOnlyBox" x:Key="{x:Type dec:DateReadOnlyBox}"
+           BasedOn="{StaticResource {x:Type dec:ReadOnlyBox}}" />
+
     <Style TargetType="Label" x:Key="ControlLabel">
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Right" />

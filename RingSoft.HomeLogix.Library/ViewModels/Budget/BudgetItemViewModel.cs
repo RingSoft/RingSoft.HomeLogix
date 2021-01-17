@@ -252,9 +252,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal? _monthlyAmount;
+        private decimal _monthlyAmount;
 
-        public decimal? MonthlyAmount
+        public decimal MonthlyAmount
         {
             get => _monthlyAmount;
             set
@@ -282,9 +282,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal? _currentMonthAmount;
+        private decimal _currentMonthAmount;
 
-        public decimal? CurrentMonthAmount
+        public decimal CurrentMonthAmount
         {
             get => _currentMonthAmount;
             set
@@ -297,9 +297,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal? _currentYearAmount;
+        private decimal _currentYearAmount;
 
-        public decimal? CurrentYearAmount
+        public decimal CurrentYearAmount
         {
             get => _currentYearAmount;
             set
@@ -327,9 +327,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private DateTime? _nextTransactionDate;
+        private DateTime _nextTransactionDate;
 
-        public DateTime? NextTransactionDate
+        public DateTime NextTransactionDate
         {
             get => _nextTransactionDate;
             set
@@ -357,7 +357,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        public bool MonthlyAmountVisible { get; set; }
         public bool EscrowVisible { get; set; }
         public bool TransferToBankVisible { get; set; }
 
@@ -402,7 +401,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
-            MonthlyAmountVisible = EscrowVisible = TransferToBankVisible = false;
+            EscrowVisible = TransferToBankVisible = false;
 
             switch (BudgetItemType)
             {
@@ -447,35 +446,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (BudgetItemType != BudgetItemTypes.Transfer)
-                SetMonthlyAmountVisibility();
-
             _view.SetViewType();
         }
 
-        private void SetMonthlyAmountVisibility()
-        {
-            var monthlyAmountVisible = false;
-            switch (RecurringType)
-            {
-                case BudgetItemRecurringTypes.Days:
-                case BudgetItemRecurringTypes.Weeks:
-                    monthlyAmountVisible = true;
-                    break;
-                case BudgetItemRecurringTypes.Months:
-                    if (RecurringPeriod > 1 && DoEscrow)
-                        monthlyAmountVisible = true;
-                    break;
-                case BudgetItemRecurringTypes.Years:
-                    if (DoEscrow)
-                        monthlyAmountVisible = true;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            MonthlyAmountVisible = monthlyAmountVisible;
-        }
 
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
@@ -566,7 +539,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RecurringType = BudgetItemRecurringTypes.Months;
             StartingDate = DateTime.Today;
             EndingDate = null;
-            MonthlyAmount = null;
+            MonthlyAmount = 0;
             
             TransferToBankAccountAutoFillValue = null;
 
