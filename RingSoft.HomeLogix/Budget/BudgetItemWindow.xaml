@@ -124,6 +124,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 
                 <Grid.ColumnDefinitions>
@@ -154,14 +155,22 @@
                 <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" FormatType="Currency"
                                         Value="{Binding CurrentYearAmount}" />
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Last Completed Date" Style="{StaticResource ControlLabel}" />
+                <Label Grid.Row="2" Grid.Column="0" Content="Current Month Percent" Style="{StaticResource ControlLabel}"/>
 
-                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding LastCompletedDate}" />
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Percent" Value="{Binding CurrentMonthPercent}" DesignText="99.99%" Width="50" TextAlignment="Left"/>
 
-                <Label Grid.Row="2" Grid.Column="2" Content="Next Transaction Date"
-                       Style="{StaticResource ControlLabel}" />
+                <Label Grid.Row="2" Grid.Column="2" Content="Month To Date Percent" Style="{StaticResource ControlLabel}"/>
 
-                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding NextTransactionDate}" />
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" FormatType="Percent" Value="{Binding MonthToDatePercent}" DesignText="99.99%" Width="50" TextAlignment="Left"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Monthly Percent Difference" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="50" TextAlignment="Left"/>
+
+                <Label Grid.Row="3" Grid.Column="2" Content="Monthly Amount Remaining" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
+
             </Grid>
         </Grid>
     </DockPanel>

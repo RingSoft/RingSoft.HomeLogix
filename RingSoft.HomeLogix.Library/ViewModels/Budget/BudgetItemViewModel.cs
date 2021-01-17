@@ -312,32 +312,63 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private DateTime? _lastCompletedDate;
+        private decimal _currentMonthPercent;
 
-        public DateTime? LastCompletedDate
+        public decimal CurrentMonthPercent
         {
-            get => _lastCompletedDate;
+            get => _currentMonthPercent;
             set
             {
-                if (_lastCompletedDate == value)
+                if (_currentMonthPercent == value)
                     return;
 
-                _lastCompletedDate = value;
+                _currentMonthPercent = value;
                 OnPropertyChanged();
             }
         }
 
-        private DateTime _nextTransactionDate;
 
-        public DateTime NextTransactionDate
+        private decimal _monthToDatePercent;
+
+        public decimal MonthToDatePercent
         {
-            get => _nextTransactionDate;
+            get => _monthToDatePercent;
             set
             {
-                if (_nextTransactionDate == value)
+                if (_monthToDatePercent == value)
                     return;
 
-                _nextTransactionDate = value;
+                _monthToDatePercent = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _monthlyPercentDifference;
+
+        public decimal MonthlyPercentDifference
+        {
+            get => _monthlyPercentDifference;
+            set
+            {
+                if (_monthlyPercentDifference == value)
+                    return;
+
+                _monthlyPercentDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _monthlyAmountRemaining;
+
+        public decimal MonthlyAmountRemaining
+        {
+            get => _monthlyAmountRemaining;
+            set
+            {
+                if (_monthlyAmountRemaining == value)
+                    return;
+
+                _monthlyAmountRemaining = value;
                 OnPropertyChanged();
             }
         }
