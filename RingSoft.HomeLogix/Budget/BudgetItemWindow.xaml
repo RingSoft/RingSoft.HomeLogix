@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item" SizeToContent="WidthAndHeight">
+        Title="Budget Item" Height="400" SizeToContent="Width">
     <Window.Resources>
         <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
             <Setter Property="DesignText" Value="$123,456,789.00"/>
@@ -30,31 +30,23 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="200"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
 
-            <Label Content="Budget Item ID" Style="{StaticResource ControlLabel}"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Budget Item ID" Style="{StaticResource ControlLabel}" />
 
-            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="123456" Width="75" HorizontalAlignment="Left"/>
+                <dec:StringReadOnlyBox Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       DesignText="123456" Width="75" HorizontalAlignment="Left" />
 
-            <Label Grid.Row="0" Grid.Column="2" Content="Description" Style="{StaticResource ControlLabel}"/>
+                <Label Content="Description" Style="{StaticResource ControlLabel}" />
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="DescriptionControl" DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left"/>
+                <lc:AutoFillControl x:Name="DescriptionControl"
+                                    DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left" />
+            </StackPanel>
 
-            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+            <TabControl Grid.Row="1" Grid.Column="0">
                 <TabItem Header="Details">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -126,31 +118,51 @@
 
                 </dec:DataEntryMemoTabItem>
             </TabControl>
-            
-            <Label Grid.Row="2" Grid.Column="0" Content="Monthly Amount" Style="{StaticResource ControlLabel}"/>
 
-            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Currency" Value="{Binding Path=MonthlyAmount}"/>
+            <Grid Grid.Row="2" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Grid.Row="0" Grid.Column="0" Content="Monthly Amount" Style="{StaticResource ControlLabel}" />
 
-            <Label Grid.Row="2" Grid.Column="2" Content="Yearly Amount" Style="{StaticResource ControlLabel}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" FormatType="Currency"
+                                        Value="{Binding Path=MonthlyAmount}" />
 
-            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" FormatType="Currency" Value="{Binding YearlyAmount}"/>
+                <Label Grid.Row="0" Grid.Column="2" Content="Yearly Amount" Style="{StaticResource ControlLabel}" />
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Month To Date Amount" Style="{StaticResource ControlLabel}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" FormatType="Currency"
+                                        Value="{Binding YearlyAmount}" />
 
-            <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" FormatType="Currency" Value="{Binding CurrentMonthAmount}"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Month To Date Amount"
+                       Style="{StaticResource ControlLabel}" />
 
-            <Label Grid.Row="3" Grid.Column="2" Content="Year To Date Amount" Style="{StaticResource ControlLabel}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" FormatType="Currency"
+                                        Value="{Binding CurrentMonthAmount}" />
 
-            <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" FormatType="Currency" Value="{Binding CurrentYearAmount}"/>
+                <Label Grid.Row="1" Grid.Column="2" Content="Year To Date Amount" Style="{StaticResource ControlLabel}" />
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Last Completed Date" Style="{StaticResource ControlLabel}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" FormatType="Currency"
+                                        Value="{Binding CurrentYearAmount}" />
 
-            <dec:DateReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding LastCompletedDate}"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Last Completed Date" Style="{StaticResource ControlLabel}" />
 
-            <Label Grid.Row="4" Grid.Column="2" Content="Next Transaction Date" Style="{StaticResource ControlLabel}"/>
+                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding LastCompletedDate}" />
 
-            <dec:DateReadOnlyBox Grid.Row="4" Grid.Column="3" Value="{Binding NextTransactionDate}"/>
+                <Label Grid.Row="2" Grid.Column="2" Content="Next Transaction Date"
+                       Style="{StaticResource ControlLabel}" />
 
+                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding NextTransactionDate}" />
+            </Grid>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>
