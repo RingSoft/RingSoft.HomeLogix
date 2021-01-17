@@ -46,7 +46,7 @@
                                     DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left" />
             </StackPanel>
 
-            <TabControl Grid.Row="1" Grid.Column="0">
+            <TabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0">
                 <TabItem Header="Details">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -102,9 +102,9 @@
 
                         <StackPanel x:Name="EscrowStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
 
-                            <CheckBox Content="Escrow" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+                            <CheckBox Content="Escrow Monthly" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
 
-                            <Label x:Name="EscrowLabel" Content="Balance" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
+                            <Label x:Name="EscrowLabel" Margin="20,0,0,0" Content="Escrow Account Balance" Style="{StaticResource ControlLabel}" Visibility="Collapsed"/>
 
                             <dec:DecimalReadOnlyBox x:Name="EscrowBox" FormatType="Currency" Value="{Binding Path=EscrowBalance}" Visibility="Collapsed"/>
 

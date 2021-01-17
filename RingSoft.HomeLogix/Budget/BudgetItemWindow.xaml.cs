@@ -41,6 +41,7 @@ namespace RingSoft.HomeLogix.Budget
 
         public override void ResetViewForNewRecord()
         {
+            TabControl.SelectedIndex = 0;
             DescriptionControl.Focus();
 
             base.ResetViewForNewRecord();

@@ -478,6 +478,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             _view.SetViewType();
+
+            var budgetItemData = new BudgetItemProcessorData
+            {
+                BudgetItem = GetEntityData()
+            };
+
+            BudgetItemProcessor.CalculateBudgetItem(budgetItemData);
+
+            EscrowBalance = budgetItemData.BudgetItem.EscrowBalance;
+            MonthlyAmount = budgetItemData.BudgetItem.MonthlyAmount;
+            YearlyAmount = budgetItemData.YearlyAmount;
         }
 
 
@@ -547,7 +558,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Type = BudgetItemType,
                 BankAccountId = bankAccountId,
                 Amount = Amount,
-                RecurringPeriod = RecurringPeriod,
+                RecurringPeriod = RecurringPeriod == 0?1:RecurringPeriod,
                 RecurringType = RecurringType,
                 StartingDate = StartingDate,
                 EndingDate = EndingDate,
