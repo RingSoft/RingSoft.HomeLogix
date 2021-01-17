@@ -116,6 +116,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _amount = value;
+
+                SetViewMode();
                 OnPropertyChanged();
             }
         }
@@ -388,6 +390,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public DateTime? LastCompletedDate { get; private set; }
+
+        public DateTime NextTransactionDate { get; private set; }
+
         public bool EscrowVisible { get; set; }
         public bool TransferToBankVisible { get; set; }
 
@@ -489,6 +495,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowBalance = budgetItemData.BudgetItem.EscrowBalance;
             MonthlyAmount = budgetItemData.BudgetItem.MonthlyAmount;
             YearlyAmount = budgetItemData.YearlyAmount;
+            CurrentMonthPercent = budgetItemData.CurrentMonthPercent;
+            MonthToDatePercent = budgetItemData.MonthToDatePercent;
+            MonthlyPercentDifference = budgetItemData.MonthlyPercentDifference;
+            MonthlyAmountRemaining = budgetItemData.MonthlyAmountRemaining;
         }
 
 
@@ -517,6 +527,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             StartingDate = entity.StartingDate;
             EndingDate = entity.EndingDate;
             DoEscrow = entity.DoEscrow;
+            LastCompletedDate = entity.LastCompletedDate;
+            NextTransactionDate = entity.NextTransactionDate;
+            MonthlyAmount = entity.MonthlyAmount;
+            CurrentMonthAmount = entity.CurrentMonthAmount;
+            CurrentYearAmount = entity.CurrentYearAmount;
+            EscrowBalance = entity.EscrowBalance;
+            Notes = entity.Notes;
 
             if (entity.TransferToBankAccount != null)
             {
@@ -564,7 +581,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 EndingDate = EndingDate,
                 DoEscrow = DoEscrow,
                 TransferToBankAccountId = transferToBankAccountId,
-                MonthlyAmount = MonthlyAmount
+                LastCompletedDate = LastCompletedDate,
+                NextTransactionDate = NextTransactionDate,
+                MonthlyAmount = MonthlyAmount,
+                CurrentMonthAmount = CurrentMonthAmount,
+                CurrentYearAmount = CurrentYearAmount,
+                Notes = Notes
             };
             return budgetItem;
         }
