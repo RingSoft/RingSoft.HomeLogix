@@ -37,7 +37,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Current Balance" Style="{StaticResource ControlLabel}"/>
 
-            <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBankBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120"/>
+            <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120"/>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

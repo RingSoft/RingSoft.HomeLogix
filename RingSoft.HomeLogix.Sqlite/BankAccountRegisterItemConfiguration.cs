@@ -9,13 +9,14 @@ namespace RingSoft.HomeLogix.Sqlite
     {
         public void Configure(EntityTypeBuilder<BankAccountRegisterItem> builder)
         {
-            builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType);
+            builder.Property(p => p.ActualAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
+            builder.Property(p => p.ItemDate).HasColumnType(SqliteConstants.DateColumnType);
+            builder.Property(p => p.ItemType).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.ProjectedAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.RegisterId).HasColumnType(SqliteConstants.StringColumnType);
-            builder.Property(p => p.TransactionDate).HasColumnType(SqliteConstants.DateColumnType);
-            builder.Property(p => p.TransactionType).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.TransferToBankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
 
             builder.HasOne(p => p.BankAccount)

@@ -16,23 +16,19 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [MaxLength(50)]
         public string Description { get; set; }
 
-        public int? EscrowToBankAccountId { get; set; }
-
-        public virtual BankAccount EscrowToBankAccount { get; set; }
-
-        public int? EscrowDayOfMonth { get; set; }
-
         [Required]
         [DefaultValue(0)]
         public decimal CurrentBalance { get; set; }
 
         public decimal? EscrowBalance { get; set; }
 
-        public DateTime? ProjectedLowestBankBalanceDate { get; set; }
+        public decimal ProjectedBalance { get; set; }
+
+        public DateTime? ProjectedLowestBalanceDate { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal ProjectedLowestBankBalanceAmount { get; set; }
+        public decimal ProjectedLowestBalanceAmount { get; set; }
 
         [Required]
         [DefaultValue(0)]
@@ -58,6 +54,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(0)]
         public decimal CurrentYearWithdrawals { get; set; }
 
+        public int? EscrowToBankAccountId { get; set; }
+
+        public virtual BankAccount EscrowToBankAccount { get; set; }
+
+        public int? EscrowDayOfMonth { get; set; }
+        
         public string Notes { get; set; }
 
         public virtual ICollection<BudgetItem> BudgetItems { get; set; }

@@ -27,78 +27,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private AutoFillSetup _escrowBankAccountAutoFillSetup;
+        private decimal _currentProjectedEndingBalance;
 
-        public AutoFillSetup EscrowBankAccountAutoFillSetup
+        public decimal CurrentProjectedEndingBalance
         {
-            get => _escrowBankAccountAutoFillSetup;
+            get => _currentProjectedEndingBalance;
             set
             {
-                if (_escrowBankAccountAutoFillSetup == value)
+                if (_currentProjectedEndingBalance == value)
                     return;
 
-                _escrowBankAccountAutoFillSetup = value;
+
+                _currentProjectedEndingBalance = value;
                 OnPropertyChanged();
             }
         }
 
-        private AutoFillValue _escrowBankAccountAutoFillValue;
+        private decimal _currentBalance;
 
-        public AutoFillValue EscrowBankAccountAutoFillValue
+        public decimal CurrentBalance
         {
-            get => _escrowBankAccountAutoFillValue;
+            get => _currentBalance;
             set
             {
-                if (_escrowBankAccountAutoFillValue == value)
-                    return;
-                
-                _escrowBankAccountAutoFillValue = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _escrowDayOfMonth;
-
-        public int EscrowDayOfMonth
-        {
-            get => _escrowDayOfMonth;
-            set
-            {
-                if (_escrowDayOfMonth == value)
+                if (_currentBalance == value)
                     return;
 
-                _escrowDayOfMonth = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private decimal _oldBalance;
-
-        public decimal OldBalance
-        {
-            get => _oldBalance;
-            set
-            {
-                if (_oldBalance == value)
-                    return;
-
-
-                _oldBalance = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private decimal _currentBankBalance;
-
-        public decimal CurrentBankBalance
-        {
-            get => _currentBankBalance;
-            set
-            {
-                if (_currentBankBalance == value)
-                    return;
-
-                _currentBankBalance = value;
+                _currentBalance = value;
                 OnPropertyChanged();
             }
         }
@@ -119,48 +74,64 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _projectedBankBalance;
+        private decimal _newProjectedBalance;
 
-        public decimal ProjectedBankBalance
+        public decimal NewProjectedBalance
         {
-            get => _projectedBankBalance;
+            get => _newProjectedBalance;
             set
             {
-                if (_projectedBankBalance == value)
+                if (_newProjectedBalance == value)
                     return;
 
 
-                _projectedBankBalance = value;
+                _newProjectedBalance = value;
                 OnPropertyChanged();
             }
         }
 
-        private DateTime? _projectedLowestBankBalanceDate;
+        private decimal _projectedChange;
 
-        public DateTime? ProjectedLowestBankBalanceDate
+        public decimal ProjectedChange
         {
-            get => _projectedLowestBankBalanceDate;
+            get => _projectedChange;
             set
             {
-                if (_projectedLowestBankBalanceDate == value)
+                if (_projectedChange == value)
                     return;
 
-                _projectedLowestBankBalanceDate = value;
+                _projectedChange = value;
                 OnPropertyChanged();
             }
         }
 
-        private decimal _projectedLowestBankBalanceAmount;
 
-        public decimal ProjectedLowestBankBalanceAmount
+        private DateTime? _projectedLowestBalanceDate;
+
+        public DateTime? ProjectedLowestBalanceDate
         {
-            get => _projectedLowestBankBalanceAmount;
+            get => _projectedLowestBalanceDate;
             set
             {
-                if (_projectedLowestBankBalanceAmount == value)
+                if (_projectedLowestBalanceDate == value)
                     return;
 
-                _projectedLowestBankBalanceAmount = value;
+                _projectedLowestBalanceDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _projectedLowestBalanceAmount;
+
+        public decimal ProjectedLowestBalanceAmount
+        {
+            get => _projectedLowestBalanceAmount;
+            set
+            {
+                if (_projectedLowestBalanceAmount == value)
+                    return;
+
+                _projectedLowestBalanceAmount = value;
                 OnPropertyChanged();
             }
         }
@@ -301,6 +272,51 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private AutoFillSetup _escrowBankAccountAutoFillSetup;
+
+        public AutoFillSetup EscrowBankAccountAutoFillSetup
+        {
+            get => _escrowBankAccountAutoFillSetup;
+            set
+            {
+                if (_escrowBankAccountAutoFillSetup == value)
+                    return;
+
+                _escrowBankAccountAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _escrowBankAccountAutoFillValue;
+
+        public AutoFillValue EscrowBankAccountAutoFillValue
+        {
+            get => _escrowBankAccountAutoFillValue;
+            set
+            {
+                if (_escrowBankAccountAutoFillValue == value)
+                    return;
+
+                _escrowBankAccountAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _escrowDayOfMonth;
+
+        public int EscrowDayOfMonth
+        {
+            get => _escrowDayOfMonth;
+            set
+            {
+                if (_escrowDayOfMonth == value)
+                    return;
+
+                _escrowDayOfMonth = value;
+                OnPropertyChanged();
+            }
+        }
+
         private string _notes;
 
         public string Notes
@@ -332,7 +348,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override void LoadFromEntity(BankAccount entity)
         {
-            CurrentBankBalance = entity.CurrentBalance;
+            CurrentBalance = entity.CurrentBalance;
         }
 
         protected override BankAccount GetEntityData()
@@ -341,7 +357,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 Id = Id,
                 Description = KeyAutoFillValue.Text,
-                CurrentBalance = CurrentBankBalance
+                CurrentBalance = CurrentBalance
             };
 
             return bankAccount;
@@ -350,7 +366,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override void ClearData()
         {
             Id = 0;
-            CurrentBankBalance = 0;
+            CurrentBalance = 0;
         }
 
         protected override bool SaveEntity(BankAccount entity)
