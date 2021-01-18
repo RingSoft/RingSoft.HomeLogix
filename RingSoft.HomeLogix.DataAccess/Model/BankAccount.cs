@@ -16,27 +16,47 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [MaxLength(50)]
         public string Description { get; set; }
 
-        public decimal? CurrentBalance { get; set; }
-
-        public decimal? CurrentMonthDeposits { get; set; }
-
-        public decimal? CurrentMonthWithdrawals { get; set; }
-
-        public decimal? CurrentYearDeposits { get; set; }
-
-        public decimal? CurrentYearWithdrawals { get; set; }
-
-        public DateTime? LowestBalanceDate { get; set; }
-
-        public decimal? LowestBalanceAmount { get; set; }
-
-        public decimal? EscrowBalance { get; set; }
-
-        public int? EscrowDayOfMonth { get; set; }
-
         public int? EscrowToBankAccountId { get; set; }
 
         public virtual BankAccount EscrowToBankAccount { get; set; }
+
+        public int? EscrowDayOfMonth { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal CurrentBalance { get; set; }
+
+        public decimal? EscrowBalance { get; set; }
+
+        public DateTime? ProjectedLowestBankBalanceDate { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal ProjectedLowestBankBalanceAmount { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal MonthlyBudgetDeposits { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal MonthlyBudgetWithdrawals { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal CurrentMonthDeposits { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal CurrentMonthWithdrawals { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal CurrentYearDeposits { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal CurrentYearWithdrawals { get; set; }
 
         public string Notes { get; set; }
 
