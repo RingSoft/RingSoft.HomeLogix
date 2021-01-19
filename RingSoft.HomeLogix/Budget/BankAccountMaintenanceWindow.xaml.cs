@@ -1,12 +1,13 @@
 ﻿using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
 {
     /// <summary>
     /// Interaction logic for BankAccountMaintenanceWindow.xaml
     /// </summary>
-    public partial class BankAccountMaintenanceWindow
+    public partial class BankAccountMaintenanceWindow : IBankAccountView
     {
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Bank Account";
@@ -23,6 +24,11 @@ namespace RingSoft.HomeLogix.Budget
         {
             BankAccountControl.Focus();
             base.ResetViewForNewRecord();
+        }
+
+        public void EnableRegisterGrid(bool value)
+        {
+            
         }
     }
 }

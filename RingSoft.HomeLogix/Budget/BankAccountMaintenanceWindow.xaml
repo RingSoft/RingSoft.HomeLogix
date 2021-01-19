@@ -9,16 +9,26 @@
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="BankAccountMaintenanceWindow" Height="450" Width="800">
+        SizeToContent="Width"
+        Title="BankAccountMaintenanceWindow" Height="450">
     <Window.DataContext>
         <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
     </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
+            <Setter Property="DesignText" Value="$123,456,789.00"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="FormatType" Value="Currency"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+    </Window.Resources>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -33,11 +43,14 @@
 
             <Label Grid.Row="0" Grid.Column="2" Content="Bank Account Name" Style="{StaticResource ControlLabel}"/>
 
-            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Bank Of America" Width="150"/>
+            <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Current Balance" Style="{StaticResource ControlLabel}"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Current Projected Ending Balance" Style="{StaticResource ControlLabel}"/>
 
-            <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120"/>
+            <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}"/>
+            <Label Grid.Row="1" Grid.Column="2" Content="Current Balance" Style="{StaticResource ControlLabel}"/>
+
+            <dec:DecimalEditControl Grid.Row="1" Grid.Column="3" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

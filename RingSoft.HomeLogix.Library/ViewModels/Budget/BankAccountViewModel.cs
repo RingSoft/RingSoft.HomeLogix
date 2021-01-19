@@ -1,15 +1,30 @@
 ﻿using System;
+using System.Linq;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public interface IBankAccountView : IDbMaintenanceView
+    {
+        void EnableRegisterGrid(bool value);
+    }
+
+    public class NewRegisterItem
+    {
+    }
+
     public class BankAccountViewModel : AppDbMaintenanceViewModel<BankAccount>
     {
         public override TableDefinition<BankAccount> TableDefinition => AppGlobals.LookupContext.BankAccounts;
+
+        public IBankAccountView BankAccountView { get; private set; }
 
         #region Properties
 
@@ -320,9 +335,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private int _escrowDayOfMonth;
+        private int? _escrowDayOfMonth;
 
-        public int EscrowDayOfMonth
+        public int? EscrowDayOfMonth
         {
             get => _escrowDayOfMonth;
             set
@@ -352,10 +367,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         #endregion
 
+        public RelayCommand AddNewRegisterItemCommand { get; }
+
+        public RelayCommand GenerateRegisterItemsFromBudgetCommand { get; }
+
         private bool _loading;
+
+        public BankAccountViewModel()
+        {
+            AddNewRegisterItemCommand = new RelayCommand(AddNewRegisterItem);
+
+            GenerateRegisterItemsFromBudgetCommand = new RelayCommand(GenerateRegisterItemsFromBudget);
+        }
 
         protected override void Initialize()
         {
+            BankAccountView = View as IBankAccountView;
+            if (BankAccountView == null)
+                throw new Exception($"Bank Account View interface must be of type '{nameof(IBankAccountView)}'.");
+
+            BankAccountView.EnableRegisterGrid(false);
+
+
             EscrowBankAccountAutoFillSetup =
                 new AutoFillSetup(
                     AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
@@ -391,6 +424,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowDayOfMonth = 1;
             Notes = string.Empty;
 
+            RegisterGridManager.SetupForNewRecord();
+            BankAccountView.EnableRegisterGrid(false);
+
             _loading = false;
         }
 
@@ -420,11 +456,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowBankAccountAutoFillValue = null;
             if (entity.EscrowToBankAccount != null)
             {
-
+                var escrowPrimaryKeyValue =
+                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.EscrowToBankAccount);
+                EscrowBankAccountAutoFillValue =
+                    new AutoFillValue(escrowPrimaryKeyValue, entity.EscrowToBankAccount.Description);
             }
             
-            //EscrowDayOfMonth = entity.EscrowDayOfMonth;
+            EscrowDayOfMonth = entity.EscrowDayOfMonth;
             Notes = entity.Notes;
+
+            RegisterGridManager.LoadGrid(entity.RegisterItems);
+            BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
             _loading = false;
             CalculateTotals();
@@ -450,7 +492,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //MonthlyBudgetDeposits = 0;
             //MonthlyBudgetWithdrawals = 0;
             //EscrowBalance = entity.EscrowBalance;
+            //RegisterGridManager.Refresh
             CalculateTotals();
+        }
+
+        private void AddNewRegisterItem()
+        {
+            //TODO
+        }
+
+        private void GenerateRegisterItemsFromBudget()
+        {
+            //TODO
         }
 
         protected override BankAccount GetEntityData()
@@ -459,14 +512,41 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 Id = Id,
                 Description = KeyAutoFillValue.Text,
-                CurrentBalance = CurrentBalance
+                ProjectedEndingBalance = NewProjectedEndingBalance,
+                CurrentBalance = CurrentBalance,
+                EscrowBalance = EscrowBalance,
+                ProjectedLowestBalanceDate = ProjectedLowestBalanceDate,
+                ProjectedLowestBalanceAmount = ProjectedLowestBalanceAmount,
+                MonthlyBudgetDeposits = MonthlyBudgetDeposits,
+                MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals,
+                CurrentMonthDeposits = CurrentMonthDeposits,
+                CurrentMonthWithdrawals = CurrentMonthWithdrawals,
+                EscrowDayOfMonth = EscrowDayOfMonth,
+                Notes = Notes
             };
 
+            if (EscrowBankAccountAutoFillValue != null)
+            {
+                bankAccount.EscrowToBankAccountId = AppGlobals.LookupContext.BankAccounts
+                    .GetEntityFromPrimaryKeyValue(EscrowBankAccountAutoFillValue.PrimaryKeyValue).Id;
+            }
+
+            
             return bankAccount;
+        }
+
+        protected override AutoFillValue GetAutoFillValueForNullableForeignKeyField(FieldDefinition fieldDefinition)
+        {
+            if (fieldDefinition ==
+                AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId))
+                return EscrowBankAccountAutoFillValue;
+
+            return base.GetAutoFillValueForNullableForeignKeyField(fieldDefinition);
         }
 
         protected override bool SaveEntity(BankAccount entity)
         {
+            //var registerItems = RegisterGridManager.GetEntityList();
             return AppGlobals.DataRepository.SaveBankAccount(entity);
         }
 
