@@ -9,6 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\bank.png" />
+    <None Remove="Resources\bank_check.png" />
+    <None Remove="Resources\card_visa.png" />
+    <None Remove="Resources\stock_index_down.png" />
+    <None Remove="Resources\stock_index_up.png" />
+    <None Remove="Resources\transfer_left_right.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,6 +30,15 @@
     <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\bank.png" />
+    <Resource Include="Resources\bank_check.png" />
+    <Resource Include="Resources\card_visa.png" />
+    <Resource Include="Resources\stock_index_down.png" />
+    <Resource Include="Resources\stock_index_up.png" />
+    <Resource Include="Resources\transfer_left_right.png" />
   </ItemGroup>
 
 </Project>

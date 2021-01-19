@@ -26,6 +26,15 @@ namespace RingSoft.HomeLogix.Library
         public const int BudgetItemIncomeType = (int) BudgetItemTypes.Income;
         public const int BudgetItemExpenseType = (int) BudgetItemTypes.Expense;
         public const int BudgetItemTransferType = (int) BudgetItemTypes.Transfer;
+
+        public const int BudgetItemLineTypeId = (int)BankAccountRegisterItemTypes.BudgetItem;
+        public const int MiscellaneousLineTypeId = (int)BankAccountRegisterItemTypes.Miscellaneous;
+        public const int TransferToBankAccountLineTypeId = (int)BankAccountRegisterItemTypes.TansferToBankAccount;
+        public const int MonthlyEscrowLineTypeId = (int)BankAccountRegisterItemTypes.MonthlyEscrow;
+
+        public const int BankTransactionTypeDepositId = 0;
+        public const int BankTransactionWithdrawalId = 1;
+
         public static HomeLogixLookupContext LookupContext { get; private set; }
 
         public static IDataRepository DataRepository { get; set; }

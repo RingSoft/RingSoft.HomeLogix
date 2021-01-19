@@ -17,13 +17,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         Difference = BankAccountRegisterGridManager.DifferenceColumnId
     }
 
+    public enum TransactionTypes
+    {
+        Deposit = AppGlobals.BankTransactionTypeDepositId,
+        Withdrawal = AppGlobals.BankTransactionWithdrawalId
+    }
+
     public class BankAccountRegisterGridManager : DbMaintenanceDataEntryGridManager<BankAccountRegisterItem>
     {
-        public const int BudgetItemLineTypeId = (int) BankAccountRegisterItemTypes.BudgetItem;
-        public const int MiscellaneousLineTypeId = (int) BankAccountRegisterItemTypes.Miscellaneous;
-        public const int TransferToBankAccountLineTypeId = (int) BankAccountRegisterItemTypes.TansferToBankAccount;
-        public const int MonthlyEscrowLineTypeId = (int) BankAccountRegisterItemTypes.MonthlyEscrow;
-
         public const int ItemTypeColumnId = 0;
         public const int DateColumnId = 1;
         public const int DescriptionColumnId = 2;
