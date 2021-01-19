@@ -11,6 +11,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         public override TableDefinition<BankAccount> TableDefinition => AppGlobals.LookupContext.BankAccounts;
 
+        #region Properties
 
         private int _id;
 
@@ -54,6 +55,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentBalance = value;
+
+                CalculateTotals();
+                OnPropertyChanged();
+            }
+        }
+
+        private BankAccountRegisterGridManager _registerGridManager;
+
+        public BankAccountRegisterGridManager RegisterGridManager
+        {
+            get => _registerGridManager;
+            set
+            {
+                if (_registerGridManager == value)
+                    return;
+
+                _registerGridManager = value;
                 OnPropertyChanged();
             }
         }
@@ -74,33 +92,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _newProjectedBalance;
+        private decimal _newProjectedEndingBalance;
 
-        public decimal NewProjectedBalance
+        public decimal NewProjectedEndingBalance
         {
-            get => _newProjectedBalance;
+            get => _newProjectedEndingBalance;
             set
             {
-                if (_newProjectedBalance == value)
+                if (_newProjectedEndingBalance == value)
                     return;
 
 
-                _newProjectedBalance = value;
+                _newProjectedEndingBalance = value;
                 OnPropertyChanged();
             }
         }
 
-        private decimal _projectedChange;
+        private decimal _projectedEndingBalanceDifference;
 
-        public decimal ProjectedChange
+        public decimal ProjectedEndingBalanceDifference
         {
-            get => _projectedChange;
+            get => _projectedEndingBalanceDifference;
             set
             {
-                if (_projectedChange == value)
+                if (_projectedEndingBalanceDifference == value)
                     return;
 
-                _projectedChange = value;
+                _projectedEndingBalanceDifference = value;
                 OnPropertyChanged();
             }
         }
@@ -332,10 +350,48 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        #endregion
+
+        private bool _loading;
 
         protected override void Initialize()
         {
+            EscrowBankAccountAutoFillSetup =
+                new AutoFillSetup(
+                    AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
+
             base.Initialize();
+        }
+
+        protected override void ClearData()
+        {
+            _loading = true;
+
+            Id = 0;
+            CurrentProjectedEndingBalance = 0;
+            CurrentBalance = 0;
+            NewProjectedEndingBalance = 0;
+            ProjectedEndingBalanceDifference = 0;
+            EscrowBalance = null;
+            ProjectedLowestBalanceDate = null;
+            ProjectedLowestBalanceAmount = 0;
+            
+            MonthlyBudgetDeposits = 0;
+            MonthlyBudgetWithdrawals = 0;
+            MonthlyBudgetDifference = 0;
+            
+            CurrentMonthDeposits = 0;
+            CurrentMonthWithdrawals = 0;
+            CurrentMonthDifference = 0;
+            CurrentYearDeposits = 0;
+            CurrentYearWithdrawals = 0;
+            CurrentYearDifference = 0;
+
+            EscrowBankAccountAutoFillValue = null;
+            EscrowDayOfMonth = 1;
+            Notes = string.Empty;
+
+            _loading = false;
         }
 
         protected override BankAccount PopulatePrimaryKeyControls(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)
@@ -348,7 +404,53 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override void LoadFromEntity(BankAccount entity)
         {
+            _loading = true;
+
+            CurrentProjectedEndingBalance = entity.ProjectedEndingBalance;
             CurrentBalance = entity.CurrentBalance;
+            EscrowBalance = entity.EscrowBalance;
+            MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
+            MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
+
+            CurrentMonthDeposits = entity.CurrentMonthDeposits;
+            CurrentMonthWithdrawals = entity.CurrentMonthWithdrawals;
+            CurrentYearDeposits = entity.CurrentYearDeposits;
+            CurrentYearWithdrawals = entity.CurrentYearWithdrawals;
+            
+            EscrowBankAccountAutoFillValue = null;
+            if (entity.EscrowToBankAccount != null)
+            {
+
+            }
+            
+            //EscrowDayOfMonth = entity.EscrowDayOfMonth;
+            Notes = entity.Notes;
+
+            _loading = false;
+            CalculateTotals();
+        }
+
+        private void CalculateTotals()
+        {
+            if (_loading)
+                return;
+
+            //NewProjectedEndingBalance = 0;
+            ProjectedEndingBalanceDifference = NewProjectedEndingBalance - CurrentProjectedEndingBalance;
+            //ProjectedLowestBalanceDate = null;
+            //ProjectedLowestBalanceAmount = 0;
+            
+            MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
+            CurrentMonthDifference = CurrentMonthDeposits - CurrentMonthWithdrawals;
+            CurrentYearDifference = CurrentYearDeposits - CurrentYearWithdrawals;
+        }
+
+        public void RefreshBudgetTotals()
+        {
+            //MonthlyBudgetDeposits = 0;
+            //MonthlyBudgetWithdrawals = 0;
+            //EscrowBalance = entity.EscrowBalance;
+            CalculateTotals();
         }
 
         protected override BankAccount GetEntityData()
@@ -361,12 +463,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             };
 
             return bankAccount;
-        }
-
-        protected override void ClearData()
-        {
-            Id = 0;
-            CurrentBalance = 0;
         }
 
         protected override bool SaveEntity(BankAccount entity)

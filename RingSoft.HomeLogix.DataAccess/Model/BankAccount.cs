@@ -22,7 +22,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public decimal? EscrowBalance { get; set; }
 
-        public decimal ProjectedBalance { get; set; }
+        public decimal ProjectedEndingBalance { get; set; }
 
         public DateTime? ProjectedLowestBalanceDate { get; set; }
 
