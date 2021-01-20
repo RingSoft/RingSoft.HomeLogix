@@ -96,7 +96,7 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem Header="Statistics">
+                <TabItem Header="Statistics" Height="16" VerticalAlignment="Bottom">
 
                     <Grid>
                         <Grid.RowDefinitions>
@@ -114,17 +114,53 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="0" Grid.Column="0" Content="Current Month Deposits"/>
+                        <Label Grid.Row="0" Grid.Column="0" Content="Month To Date Deposits"/>
 
                         <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentMonthDeposits}"/>
 
-                        <Label Grid.Row="0" Grid.Column="2" Content="Current Month Withdrawals"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Month To Date Withdrawals"/>
 
                         <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding Path=CurrentMonthWithdrawals}"/>
 
-                        <Label Grid.Row="0" Grid.Column="4" Content="Current Month Difference"/>
+                        <Label Grid.Row="0" Grid.Column="4" Content="Month To Date Difference"/>
 
                         <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding CurrentMonthDifference}"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Previous Month Deposits"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding Path=PreviousMonthDeposits}"/>
+
+                        <Label Grid.Row="1" Grid.Column="2" Content="Previous Month Withdrawals"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding PreviousMonthWithdrawals}"/>
+
+                        <Label Grid.Row="1" Grid.Column="4" Content="Previous Month Difference"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="5" Value="{Binding PreviousMonthDifference}"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Content="Year To Date Deposits"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Path=CurrentYearDeposits}"/>
+
+                        <Label Grid.Row="2" Grid.Column="2" Content="Year To Date Withdrawals"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding Path=CurrentYearWithdrawals}"/>
+
+                        <Label Grid.Row="2" Grid.Column="4" Content="Year To Date Difference"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5" Value="{Binding Path=CurrentYearDifference}"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" Content="Previous Year Deposits"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" Value="{Binding Path=PreviousYearDeposits}"/>
+
+                        <Label Grid.Row="3" Grid.Column="2" Content="Previous Year Withdrawals"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" Value="{Binding Path=PreviousYearWithdrawals}"/>
+
+                        <Label Grid.Row="3" Grid.Column="4" Content="Previous Year Difference"/>
+
+                        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="5" Value="{Binding Path=PreviousYearDifference}"/>
 
                     </Grid>
                 </TabItem>
