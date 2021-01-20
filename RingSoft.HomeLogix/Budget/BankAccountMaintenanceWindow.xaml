@@ -30,6 +30,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -49,7 +50,7 @@
 
             <Label Grid.Row="1" Grid.Column="0" Content="Current Projected Ending Balance" Style="{StaticResource ControlLabel}"/>
 
-            <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}"/>
+            <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" TextAlignment="Left"/>
             <Label Grid.Row="1" Grid.Column="2" Content="Bank Balance" Style="{StaticResource ControlLabel}"/>
 
             <dec:DecimalEditControl Grid.Row="1" Grid.Column="3" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
@@ -95,7 +96,76 @@
                     </Grid>
 
                 </TabItem>
+                <dec:DataEntryMemoTabItem Header="Notes">
+                    <Grid>
+                        <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </Grid>
+                </dec:DataEntryMemoTabItem>
             </TabControl>
+
+            <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Escrow Balance" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding Path= EscrowBalance}"/>
+
+                <Label Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}"/>
+
+                <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100"/>
+
+                <Label Grid.Row="1" Grid.Column="2" Content="Projected Lowest Balance Amount" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=ProjectedLowestBalanceAmount}"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Monthly Budget Deposits" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Path=MonthlyBudgetDeposits}"/>
+
+                <Label Grid.Row="2" Grid.Column="2" Content="Monthly Budget Withdrawals" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding Path=MonthlyBudgetWithdrawals}"/>
+
+                <Label Grid.Row="2" Grid.Column="4" Content="Monthly Budget Difference" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5" Value="{Binding Path=MonthlyBudgetDifference}"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Current Month Deposits" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" Value="{Binding CurrentMonthDeposits}"/>
+
+                <Label Grid.Row="3" Grid.Column="2" Content="Current Month Withdrawals" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" Value="{Binding Path=CurrentMonthWithdrawals}"/>
+
+                <Label Grid.Row="3" Grid.Column="4" Content="Current Month Difference" Style="{StaticResource ControlLabel}"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="5" Value="{Binding CurrentMonthDifference}"/>
+
+            </Grid>
         </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>
