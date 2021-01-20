@@ -23,7 +23,7 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Label Content="Select a Household"/>
+        <Label Content="Select a Household" HorizontalAlignment="Left"/>
 
         <ListBox x:Name="ListBox" Grid.Row="1" Grid.Column="0" Height="150" ItemsSource="{Binding Items}" SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="300">
             <ListBox.ItemTemplate>

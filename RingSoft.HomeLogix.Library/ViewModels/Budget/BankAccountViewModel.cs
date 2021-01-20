@@ -260,6 +260,51 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private decimal _previousMonthDeposits;
+
+        public decimal PreviousMonthDeposits
+        {
+            get => _previousMonthDeposits;
+            set
+            {
+                if (_previousMonthDeposits == value)
+                    return;
+
+                _previousMonthDeposits = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _previousMonthWithdrawals;
+
+        public decimal PreviousMonthWithdrawals
+        {
+            get => _previousMonthWithdrawals;
+            set
+            {
+                if (_previousMonthWithdrawals == value)
+                    return;
+
+                _previousMonthWithdrawals = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _previousMonthDifference;
+
+        public decimal PreviousMonthDifference
+        {
+            get => _previousMonthDifference;
+            set
+            {
+                if (_previousMonthDifference == value)
+                    return;
+
+                _previousMonthDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
         private decimal _currentYearDeposits;
 
         public decimal CurrentYearDeposits
@@ -301,6 +346,52 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentYearDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _previousYearDeposits;
+
+        public decimal PreviousYearDeposits
+        {
+            get => _previousYearDeposits;
+            set
+            {
+                if (_previousYearDeposits == value)
+                    return;
+
+                _previousYearDeposits = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private decimal _previousYearWithdrawals;   
+
+        public decimal PreviousYearWithdrawals
+        {
+            get => _previousYearWithdrawals;
+            set
+            {
+                if (_previousYearWithdrawals == value)
+                    return;
+
+                _previousYearWithdrawals = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _previousYearDifference;
+
+        public decimal PreviousYearDifference
+        {
+            get => _previousYearDifference;
+            set
+            {
+                if (_previousYearDifference == value)
+                    return;
+
+                _previousYearDifference = value;
                 OnPropertyChanged();
             }
         }
@@ -418,6 +509,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CurrentMonthDeposits = 0;
             CurrentMonthWithdrawals = 0;
             CurrentMonthDifference = 0;
+            PreviousMonthDeposits = 0;
+            PreviousMonthWithdrawals = 0;
+            PreviousMonthDifference = 0;
             CurrentYearDeposits = 0;
             CurrentYearWithdrawals = 0;
             CurrentYearDifference = 0;
@@ -452,6 +546,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             CurrentMonthDeposits = entity.CurrentMonthDeposits;
             CurrentMonthWithdrawals = entity.CurrentMonthWithdrawals;
+            PreviousMonthDeposits = entity.PreviousMonthDeposits;
+            PreviousMonthWithdrawals = entity.PreviousMonthWithdrawals;
             CurrentYearDeposits = entity.CurrentYearDeposits;
             CurrentYearWithdrawals = entity.CurrentYearWithdrawals;
             
@@ -486,6 +582,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
             CurrentMonthDifference = CurrentMonthDeposits - CurrentMonthWithdrawals;
+            PreviousMonthDifference = PreviousMonthDeposits - PreviousMonthWithdrawals;
             CurrentYearDifference = CurrentYearDeposits - CurrentYearWithdrawals;
         }
 
@@ -523,6 +620,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals,
                 CurrentMonthDeposits = CurrentMonthDeposits,
                 CurrentMonthWithdrawals = CurrentMonthWithdrawals,
+                PreviousMonthDeposits = PreviousMonthDeposits,
+                PreviousMonthWithdrawals = PreviousMonthWithdrawals,
+                CurrentYearDeposits = CurrentYearDeposits,
+                CurrentYearWithdrawals = CurrentYearWithdrawals,
                 EscrowDayOfMonth = EscrowDayOfMonth,
                 Notes = Notes
             };

@@ -299,6 +299,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private decimal _previousMonthAmount;
+
+        public decimal PreviousMonthAmount
+        {
+            get => _previousMonthAmount;
+            set
+            {
+                if (_previousMonthAmount == value)
+                    return;
+
+                _previousMonthAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private decimal _currentYearAmount;
 
         public decimal CurrentYearAmount
@@ -310,6 +326,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentYearAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _previousYearAmount;
+
+        public decimal PreviousYearAmount
+        {
+            get => _previousYearAmount;
+            set
+            {
+                if (_previousYearAmount == value)
+                    return;
+
+                _previousYearAmount = value;
                 OnPropertyChanged();
             }
         }
@@ -531,7 +562,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             NextTransactionDate = entity.NextTransactionDate;
             MonthlyAmount = entity.MonthlyAmount;
             CurrentMonthAmount = entity.CurrentMonthAmount;
+            PreviousMonthAmount = entity.PreviousMonthAmount;
             CurrentYearAmount = entity.CurrentYearAmount;
+            PreviousYearAmount = entity.PreviousYearAmount;
             EscrowBalance = entity.EscrowBalance;
             Notes = entity.Notes;
 
@@ -585,7 +618,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 NextTransactionDate = NextTransactionDate,
                 MonthlyAmount = MonthlyAmount,
                 CurrentMonthAmount = CurrentMonthAmount,
+                PreviousMonthAmount = PreviousMonthAmount,
                 CurrentYearAmount = CurrentYearAmount,
+                PreviousYearAmount = PreviousYearAmount,
                 Notes = Notes
             };
             return budgetItem;

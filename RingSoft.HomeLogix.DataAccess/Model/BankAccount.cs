@@ -48,11 +48,27 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         [DefaultValue(0)]
+        public decimal PreviousMonthDeposits { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal PreviousMonthWithdrawals { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
         public decimal CurrentYearDeposits { get; set; }
 
         [Required]
         [DefaultValue(0)]
         public decimal CurrentYearWithdrawals { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal PreviousYearDeposits { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public decimal PreviousYearWithdrawals { get; set; }
 
         public int? EscrowToBankAccountId { get; set; }
 

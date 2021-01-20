@@ -77,7 +77,13 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public decimal CurrentMonthAmount { get; set; }
 
         [Required]
+        public decimal PreviousMonthAmount { get; set; }
+
+        [Required]
         public decimal CurrentYearAmount { get; set; }
+
+        [Required]
+        public decimal PreviousYearAmount { get; set; }
 
         public decimal? EscrowBalance { get; set; }
 
