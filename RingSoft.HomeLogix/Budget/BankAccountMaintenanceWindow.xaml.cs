@@ -28,7 +28,7 @@ namespace RingSoft.HomeLogix.Budget
 
         public void EnableRegisterGrid(bool value)
         {
-            RegisterGrid.IsEnabled = value;
+            //RegisterGrid.IsEnabled = value;
         }
     }
 }

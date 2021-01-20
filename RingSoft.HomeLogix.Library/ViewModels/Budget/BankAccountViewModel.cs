@@ -393,6 +393,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 new AutoFillSetup(
                     AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
 
+            RegisterGridManager = new BankAccountRegisterGridManager(this);
+
             base.Initialize();
         }
 

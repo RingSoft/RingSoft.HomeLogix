@@ -11,8 +11,7 @@
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        SizeToContent="Width"
-        Title="BankAccountMaintenanceWindow" Height="450">
+        Title="BankAccountMaintenanceWindow" Width="1000" Height="600">
     <Window.DataContext>
         <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
     </Window.DataContext>
@@ -37,6 +36,7 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Label Content="Bank Account ID" Style="{StaticResource ControlLabel}"/>
@@ -50,11 +50,11 @@
             <Label Grid.Row="1" Grid.Column="0" Content="Current Projected Ending Balance" Style="{StaticResource ControlLabel}"/>
 
             <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}"/>
-            <Label Grid.Row="1" Grid.Column="2" Content="Current Balance" Style="{StaticResource ControlLabel}"/>
+            <Label Grid.Row="1" Grid.Column="2" Content="Bank Balance" Style="{StaticResource ControlLabel}"/>
 
             <dec:DecimalEditControl Grid.Row="1" Grid.Column="3" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
 
-            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4">
+            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5">
 
                 <TabItem Header="Register">
 
@@ -69,9 +69,27 @@
                             <Button Content="_Generate Items From Budget" Command="{Binding GenerateRegisterItemsFromBudgetCommand}" Margin="5,0,0,0" Height="25" Width="185"/>
                         </StackPanel>
 
-                        <deg:DataEntryGrid Grid.Row="1" x:Name="RegisterGrid" CanUserAddRows="False" Manager="{Binding RegisterGridManager}">
+                        <deg:DataEntryGrid Grid.Row="1" x:Name="RegisterGrid" DataEntryCanUserAddRows="False" Manager="{Binding RegisterGridManager}">
                             <deg:DataEntryGrid.Columns>
+
                                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ItemTypeColumnId}" ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="{x:Static lib:AppGlobals.MiscellaneousLineTypeId}" Width="110"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DateColumnId}" Header="Date" DesignText="01/01/2020" Width="75"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DescriptionColumnId}" Header="Description" DesignText="Transfer To Joe's Checking Account" Width="225"/>
+
+                                <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.TransactionTypeColumnId}" ContentTemplate="{StaticResource BankRegisterTransactionType}" Header="Transaction&#10;Type" DesignerSelectedId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.AmountColumnId}" Header="Amount" DesignText="$123,456.78" Alignment="Right" Width="80"/>
+
+                                <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.CompletedColumnId}" Header="Completed" Width="75"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.BalanceColumnId}" Header="Balance" DesignText="$123,456.78" Alignment="Right" Width="80"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ActualAmountColumnId}" Header="Actual&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DifferenceColumnId}" Header="Difference" DesignText="$1,234.56" Alignment="Right" Width="70"/>
+
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>
                     </Grid>

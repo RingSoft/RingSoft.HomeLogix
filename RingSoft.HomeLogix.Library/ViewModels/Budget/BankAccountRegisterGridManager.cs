@@ -10,7 +10,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         Date = BankAccountRegisterGridManager.DateColumnId,
         Description = BankAccountRegisterGridManager.DescriptionColumnId,
         TransactionType = BankAccountRegisterGridManager.TransactionTypeColumnId,
-        ProjectedAmount = BankAccountRegisterGridManager.ProjectedAmountColumnId,
+        Amount = BankAccountRegisterGridManager.AmountColumnId,
         Completed = BankAccountRegisterGridManager.CompletedColumnId,
         Balance = BankAccountRegisterGridManager.BalanceColumnId,
         ActualAmount = BankAccountRegisterGridManager.ActualAmountColumnId,
@@ -29,7 +29,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public const int DateColumnId = 1;
         public const int DescriptionColumnId = 2;
         public const int TransactionTypeColumnId = 3;
-        public const int ProjectedAmountColumnId = 4;
+        public const int AmountColumnId = 4;
         public const int CompletedColumnId = 5;
         public const int BalanceColumnId = 6;
         public const int ActualAmountColumnId = 7;

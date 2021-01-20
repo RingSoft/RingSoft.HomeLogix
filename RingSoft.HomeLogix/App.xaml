@@ -79,6 +79,32 @@
 
             </dec:DataEntryCustomContentTemplate>
 
+            <dec:DataEntryCustomContentTemplate x:Key="BankRegisterTransactionType">
+
+                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BankTransactionTypeDepositId}" HotKey="D">
+                    <dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/stock_index_up.png"  Width="16" Height="16"/>
+                                <TextBlock Text="Deposit" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                </dec:DataEntryCustomContentTemplateItem>
+
+                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" HotKey="D">
+                    <dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/stock_index_down.png"  Width="16" Height="16"/>
+                                <TextBlock Text="Withdrawal" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                </dec:DataEntryCustomContentTemplateItem>
+
+            </dec:DataEntryCustomContentTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 
