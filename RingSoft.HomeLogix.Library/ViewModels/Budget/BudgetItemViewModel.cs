@@ -660,12 +660,54 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             bankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
                             break;
                         case BudgetItemTypes.Transfer:
-                            bankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
-                            if (transferToBankAccount != null)
-                                transferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
+                    }
+                }
+                else
+                {
+                    _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+                    switch (BudgetItemType)
+                    {
+                        case BudgetItemTypes.Income:
+                            _dbBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                            bankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Expense:
+                            _dbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                            bankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Transfer:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                if (BudgetItemType == BudgetItemTypes.Transfer)
+                {
+                    if (transferToBankAccount != null)
+                    {
+                        if (DbBankAccountId != 0)
+                            _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+
+                        if (DbTransferToBankId != null && DbTransferToBankId != transferToBankAccountId)
+                            _dbTransferBankAccount =
+                                AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
+
+                        if (bankAccountId == DbBankAccountId)
+                        {
+                            if (_dbTransferBankAccount == null)
+                            {
+                                bankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                                transferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            }
+                        }
+                        else
+                        {
+                            
+                        }
                     }
                 }
             }
