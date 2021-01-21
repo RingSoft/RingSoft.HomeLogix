@@ -21,6 +21,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         public override TableDefinition<BudgetItem> TableDefinition => AppGlobals.LookupContext.BudgetItems;
 
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -421,9 +423,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        #endregion
+
         public DateTime? LastCompletedDate { get; private set; }
 
         public DateTime NextTransactionDate { get; private set; }
+
+        public decimal DbMonthlyAmount { get; private set; }
+
+        public int DbBankAccountId { get; private set; }
+
+        public int? DbTransferToBankId { get; private set; }
 
         public bool EscrowVisible { get; set; }
         public bool TransferToBankVisible { get; set; }
@@ -433,6 +443,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private IBudgetItemView _view;
         private bool _loading;
+        private BankAccount _dbBankAccount, _dbTransferBankAccount;
 
         protected override void Initialize()
         {
@@ -462,6 +473,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = false;
 
             base.Initialize();
+        }
+
+        protected override void ClearData()
+        {
+            _loading = true;
+
+            Id = 0;
+            BudgetItemType = BudgetItemTypes.Expense;
+            BankAutoFillValue = null;
+            DbBankAccountId = 0;
+            Amount = 0;
+            RecurringPeriod = 1;
+            RecurringType = BudgetItemRecurringTypes.Months;
+            StartingDate = DateTime.Today;
+            EndingDate = null;
+            DbMonthlyAmount = MonthlyAmount = 0;
+
+            TransferToBankAccountAutoFillValue = null;
+            DbTransferToBankId = 0;
+
+            _loading = false;
+
+            SetViewMode();
         }
 
         private void SetViewMode(bool fromSetEscrow = false)
@@ -532,12 +566,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyAmountRemaining = budgetItemData.MonthlyAmountRemaining;
         }
 
-
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
+
+            DbMonthlyAmount = budgetItem.MonthlyAmount;
+            DbBankAccountId = budgetItem.BankAccountId;
+            DbTransferToBankId = budgetItem.TransferToBankAccountId;
 
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             return budgetItem;
@@ -552,6 +589,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 new AutoFillValue(
                     AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
                     entity.BankAccount.Description);
+
             Amount = entity.Amount;
             RecurringPeriod = entity.RecurringPeriod;
             RecurringType = entity.RecurringType;
@@ -601,12 +639,44 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 transferToBankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id;
 
+            BankAccount bankAccount = null;
+            BankAccount transferToBankAccount = null;
+            if (bankAccountId != 0)
+            {
+                bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccountId, false);
+                if (transferToBankAccountId != null)
+                {
+                    transferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)transferToBankAccountId, false);
+                }
+
+                if (bankAccountId == DbBankAccountId)
+                {
+                    switch (BudgetItemType)
+                    {
+                        case BudgetItemTypes.Income:
+                            bankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Expense:
+                            bankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Transfer:
+                            bankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                            if (transferToBankAccount != null)
+                                transferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
+
             var budgetItem = new BudgetItem
             {
                 Id = Id,
                 Description = description,
                 Type = BudgetItemType,
                 BankAccountId = bankAccountId,
+                BankAccount = bankAccount,
                 Amount = Amount,
                 RecurringPeriod = RecurringPeriod == 0?1:RecurringPeriod,
                 RecurringType = RecurringType,
@@ -614,6 +684,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 EndingDate = EndingDate,
                 DoEscrow = DoEscrow,
                 TransferToBankAccountId = transferToBankAccountId,
+                TransferToBankAccount = transferToBankAccount,
                 LastCompletedDate = LastCompletedDate,
                 NextTransactionDate = NextTransactionDate,
                 MonthlyAmount = MonthlyAmount,
@@ -626,30 +697,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return budgetItem;
         }
 
-        protected override void ClearData()
-        {
-            _loading = true;
-
-            Id = 0;
-            BudgetItemType = BudgetItemTypes.Expense;
-            BankAutoFillValue = null;
-            Amount = 0;
-            RecurringPeriod = 1;
-            RecurringType = BudgetItemRecurringTypes.Months;
-            StartingDate = DateTime.Today;
-            EndingDate = null;
-            MonthlyAmount = 0;
-            
-            TransferToBankAccountAutoFillValue = null;
-
-            _loading = false;
-
-            SetViewMode();
-        }
-
         protected override bool SaveEntity(BudgetItem entity)
         {
-            return AppGlobals.DataRepository.SaveBudgetItem(entity);
+            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, _dbBankAccount, _dbTransferBankAccount);
+
+            _dbBankAccount = _dbTransferBankAccount = null;
+
+            return result;
         }
 
         protected override bool DeleteEntity()

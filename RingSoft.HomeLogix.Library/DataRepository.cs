@@ -9,7 +9,7 @@ namespace RingSoft.HomeLogix.Library
     {
         [CanBeNull] SystemMaster GetSystemMaster();
 
-        BankAccount GetBankAccount(int bankAccountId);
+        BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
         bool SaveBankAccount(BankAccount bankAccount);
 
@@ -17,7 +17,7 @@ namespace RingSoft.HomeLogix.Library
 
         BudgetItem GetBudgetItem(int budgetItemId);
 
-        bool SaveBudgetItem(BudgetItem budgetItem);
+        bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount);
 
         bool DeleteBudgetItem(int budgetItemId);
     }
@@ -31,10 +31,21 @@ namespace RingSoft.HomeLogix.Library
             return context.SystemMaster.FirstOrDefault();
         }
 
-        public BankAccount GetBankAccount(int bankAccountId)
+        public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+
+            if (getRelatedEntities)
+            {
+                return context.BankAccounts.Include(i => i.RegisterItems)
+                    .ThenInclude(ti => ti.BudgetItem)
+                    .ThenInclude(ti => ti.TransferToBankAccount)
+                    .Include(i => i.EscrowToBankAccount)
+                    .FirstOrDefault(f => f.Id == bankAccountId);
+            }
+
+            return context.BankAccounts.Include(i => i.EscrowToBankAccount)
+                .FirstOrDefault(f => f.Id == bankAccountId);
         }
 
         public bool SaveBankAccount(BankAccount bankAccount)
@@ -59,10 +70,25 @@ namespace RingSoft.HomeLogix.Library
                 .FirstOrDefault(f => f.Id == budgetItemId);
         }
 
-        public bool SaveBudgetItem(BudgetItem budgetItem)
+        public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.DbContext.SaveEntity(context.BudgetItems, budgetItem, "Saving Budget Item");
+            if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem, "Saving Budget Item"))
+                return false;
+
+            if (dbBankAccount != null)
+            {
+                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbBankAccount, "Saving Bank Account"))
+                    return false;
+            }
+
+            if (dbTransferToBankAccount != null)
+            {
+                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbTransferToBankAccount, "Saving Transfer To Bank Account"))
+                    return false;
+            }
+
+            return context.DbContext.SaveEfChanges("Saving Budget Item");
         }
 
         public bool DeleteBudgetItem(int budgetItemId)
