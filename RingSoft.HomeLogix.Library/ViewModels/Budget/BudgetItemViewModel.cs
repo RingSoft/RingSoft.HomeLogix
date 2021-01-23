@@ -552,7 +552,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var budgetItemData = new BudgetItemProcessorData
             {
-                BudgetItem = GetEntityData()
+                BudgetItem = GetBudgetItem()
             };
 
             BudgetItemProcessor.CalculateBudgetItem(budgetItemData);
@@ -624,10 +624,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BudgetItem GetEntityData()
         {
-            var description = string.Empty;
-            if (KeyAutoFillValue != null)
-                description = KeyAutoFillValue.Text;
-
             var newBankAccountId = 0;
             if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
                 newBankAccountId = AppGlobals.LookupContext.BankAccounts
@@ -649,7 +645,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     newTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)newTransferToBankAccountId, false);
                 }
 
-                if (newBankAccountId == DbBankAccountId)
+                if (newBankAccountId == DbBankAccountId || DbBankAccountId == 0)
                 {
                     switch (BudgetItemType)
                     {
@@ -690,13 +686,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     if (newTransferToBankAccount != null && newBankAccount != null)
                     {
                         if (DbBankAccountId != 0)
+                        {
                             _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+                        }
 
                         if (DbTransferToBankId != null && DbTransferToBankId != newTransferToBankAccountId)
                             _dbTransferToBankAccount =
                                 AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
 
-                        if (newBankAccountId == DbBankAccountId)
+                        if (newBankAccountId == DbBankAccountId || DbBankAccountId == 0)
                         {
                             //Same transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
@@ -732,21 +730,51 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
+            var budgetItem = GetBudgetItem();
+            if (DbBankAccountId == newTransferToBankAccountId)
+            {
+                budgetItem.BankAccountId = DbBankAccountId;
+                budgetItem.BankAccount = _dbBankAccount;
+                _dbBankAccount = null;
+            }
+            else
+            {
+                budgetItem.BankAccountId = newBankAccountId;
+                budgetItem.BankAccount = newBankAccount;
+            }
+
+            if (DbTransferToBankId == newBankAccountId)
+            {
+                budgetItem.TransferToBankAccountId = DbTransferToBankId;
+                budgetItem.TransferToBankAccount = _dbTransferToBankAccount;
+                _dbTransferToBankAccount = null;
+            }
+            else
+            {
+                budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
+                budgetItem.TransferToBankAccount = newTransferToBankAccount;
+            }
+
+            return budgetItem;
+        }
+
+        private BudgetItem GetBudgetItem()
+        {
+            var description = string.Empty;
+            if (KeyAutoFillValue != null)
+                description = KeyAutoFillValue.Text;
+
             var budgetItem = new BudgetItem
             {
                 Id = Id,
                 Description = description,
                 Type = BudgetItemType,
-                BankAccountId = newBankAccountId,
-                BankAccount = newBankAccount,
                 Amount = Amount,
-                RecurringPeriod = RecurringPeriod == 0?1:RecurringPeriod,
+                RecurringPeriod = RecurringPeriod == 0 ? 1 : RecurringPeriod,
                 RecurringType = RecurringType,
                 StartingDate = StartingDate,
                 EndingDate = EndingDate,
                 DoEscrow = DoEscrow,
-                TransferToBankAccountId = newTransferToBankAccountId,
-                TransferToBankAccount = newTransferToBankAccount,
                 LastCompletedDate = LastCompletedDate,
                 NextTransactionDate = NextTransactionDate,
                 MonthlyAmount = MonthlyAmount,
