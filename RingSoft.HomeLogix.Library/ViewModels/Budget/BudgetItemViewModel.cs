@@ -718,6 +718,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             }
                             else
                             {
+                                var swap = false;
                                 if (newTransferToBankAccount.Id != _dbTransferToBankAccount.Id)
                                 {
                                     //Different transfer to bank account.
@@ -725,6 +726,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                     if (newBankAccount.Id == _dbTransferToBankAccount.Id)
                                     {
                                         //Swap.
+                                        swap = true;
                                         newTransferToBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
                                         newBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
                                     }
@@ -733,7 +735,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                         _dbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
                                     }
                                 }
-                                else if (_dbBankAccount.Id != newBankAccountId)
+                                if (_dbBankAccount.Id != newBankAccountId && !swap)
                                 {
                                     _dbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
                                     newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
