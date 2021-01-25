@@ -73,7 +73,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public BudgetItemTypes BudgetItemType
         {
             get => (BudgetItemTypes)BudgetItemTypeComboBoxItem.NumericValue;
-            set => BudgetItemTypeComboBoxItem = BudgetItemTypeComboBoxControlSetup.GetItem((int) value);
+            set => BudgetItemTypeComboBoxItem = BudgetItemTypeComboBoxControlSetup.GetItem((int)value);
         }
 
 
@@ -443,7 +443,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private IBudgetItemView _view;
         private bool _loading;
-        private BudgetItemBankAccountData _budgetItemBankAccountData;
+        private BankAccount _dbBankAccount, _dbTransferToBankAccount;
 
         protected override void Initialize()
         {
@@ -624,7 +624,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BudgetItem GetEntityData()
         {
-            var budgetItem = GetBudgetItem();
             var newBankAccountId = 0;
             if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
                 newBankAccountId = AppGlobals.LookupContext.BankAccounts
@@ -636,13 +635,133 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 newTransferToBankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id;
 
+            BankAccount newBankAccount = null;
+            BankAccount newTransferToBankAccount = null;
+            if (newBankAccountId != 0)
+            {
+                newBankAccount = AppGlobals.DataRepository.GetBankAccount(newBankAccountId, false);
+                if (newTransferToBankAccountId != null)
+                {
+                    newTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)newTransferToBankAccountId, false);
+                }
+
+                if (newBankAccountId == DbBankAccountId || DbBankAccountId == 0)
+                {
+                    switch (BudgetItemType)
+                    {
+                        case BudgetItemTypes.Income:
+                            newBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Expense:
+                            newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Transfer:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+                else
+                {
+                    _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+                    switch (BudgetItemType)
+                    {
+                        case BudgetItemTypes.Income:
+                            _dbBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                            newBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Expense:
+                            _dbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                            newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
+                            break;
+                        case BudgetItemTypes.Transfer:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                if (BudgetItemType == BudgetItemTypes.Transfer)
+                {
+                    if (newTransferToBankAccount != null && newBankAccount != null)
+                    {
+                        //_dbBankAccount is Old Transfer From Bank Account.
+                        _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+
+                        if (DbTransferToBankId != null)
+                            _dbTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
+
+                        if (newBankAccountId == DbBankAccountId || DbBankAccountId == 0)
+                        {
+                            //Same transfer from (new) bank account
+                            newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                            if (_dbTransferToBankAccount == null)
+                            {
+                                //Same new transfer to bank account.
+                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            }
+                            else
+                            {
+                                //Different transfer to bank account.
+                                _dbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                            }
+                        }
+                        else
+                        {
+                            //Different transfer from (new) bank account
+                            newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
+                            if (_dbTransferToBankAccount == null)
+                            {
+                                //Same new transfer to bank account.
+                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            }
+                            else
+                            {
+                                var swap = false;
+                                if (newTransferToBankAccount.Id != _dbTransferToBankAccount.Id)
+                                {
+                                    //Different transfer to bank account.
+                                    newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                                    if (newBankAccount.Id == _dbTransferToBankAccount.Id)
+                                    {
+                                        //Swap.
+                                        swap = true;
+                                        newTransferToBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                                        newBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                    }
+                                    else if (_dbTransferToBankAccount.Id != newTransferToBankAccount.Id)
+                                    {
+                                        _dbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                    }
+                                }
+                                if (_dbBankAccount.Id != newBankAccountId && !swap)
+                                {
+                                    _dbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                                    newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var budgetItem = GetBudgetItem();
+            if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
+            {
+                _dbBankAccount = null;
+            }
             budgetItem.BankAccountId = newBankAccountId;
+            budgetItem.BankAccount = newBankAccount;
+
+            if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
+            {
+                _dbTransferToBankAccount = null;
+            }
             budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
+            budgetItem.TransferToBankAccount = newTransferToBankAccount;
 
-            _budgetItemBankAccountData =
-                new BudgetItemBankAccountData(budgetItem, DbMonthlyAmount, DbBankAccountId, DbTransferToBankId);
-
-            return BudgetItemProcessor.GetBudgetItem(_budgetItemBankAccountData);
+            return budgetItem;
         }
 
         private BudgetItem GetBudgetItem()
@@ -676,10 +795,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BudgetItem entity)
         {
-            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, _budgetItemBankAccountData.DbBankAccount,
-                _budgetItemBankAccountData.DbTransferToBank);
+            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, _dbBankAccount, _dbTransferToBankAccount);
 
-            _budgetItemBankAccountData = null;
+            _dbBankAccount = _dbTransferToBankAccount = null;
 
             return result;
         }
