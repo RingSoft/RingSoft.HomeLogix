@@ -433,7 +433,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public int DbBankAccountId { get; private set; }
 
+        public BankAccount DbBankAccount { get; private set; }
+
         public int? DbTransferToBankId { get; private set; }
+
+        public BankAccount DbTransferToBankAccount { get; private set; }
 
         public bool EscrowVisible { get; set; }
         public bool TransferToBankVisible { get; set; }
@@ -443,7 +447,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private IBudgetItemView _view;
         private bool _loading;
-        private BankAccount _dbBankAccount, _dbTransferToBankAccount;
 
         protected override void Initialize()
         {
@@ -663,15 +666,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
-                    _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+                    DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
                     switch (BudgetItemType)
                     {
                         case BudgetItemTypes.Income:
-                            _dbBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                            DbBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
                             newBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                             break;
                         case BudgetItemTypes.Expense:
-                            _dbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                            DbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
                             break;
                         case BudgetItemTypes.Transfer:
@@ -685,17 +688,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     if (newTransferToBankAccount != null && newBankAccount != null)
                     {
-                        //_dbBankAccount is Old Transfer From Bank Account.
-                        _dbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+                        //DbBankAccount is Old Transfer From Bank Account.
+                        DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
 
                         if (DbTransferToBankId != null)
-                            _dbTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
+                            DbTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
 
                         if (newBankAccountId == DbBankAccountId || DbBankAccountId == 0)
                         {
                             //Same transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
-                            if (_dbTransferToBankAccount == null)
+                            if (DbTransferToBankAccount == null)
                             {
                                 //Same new transfer to bank account.
                                 newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
@@ -703,7 +706,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             else
                             {
                                 //Different transfer to bank account.
-                                _dbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                DbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
                                 newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                             }
                         }
@@ -711,7 +714,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             //Different transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
-                            if (_dbTransferToBankAccount == null)
+                            if (DbTransferToBankAccount == null)
                             {
                                 //Same new transfer to bank account.
                                 newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
@@ -719,25 +722,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             else
                             {
                                 var swap = false;
-                                if (newTransferToBankAccount.Id != _dbTransferToBankAccount.Id)
+                                if (newTransferToBankAccount.Id != DbTransferToBankAccount.Id)
                                 {
                                     //Different transfer to bank account.
                                     newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
-                                    if (newBankAccount.Id == _dbTransferToBankAccount.Id)
+                                    if (newBankAccount.Id == DbTransferToBankAccount.Id)
                                     {
                                         //Swap.
                                         swap = true;
                                         newTransferToBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
                                         newBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
                                     }
-                                    else if (_dbTransferToBankAccount.Id != newTransferToBankAccount.Id)
+                                    else if (DbTransferToBankAccount.Id != newTransferToBankAccount.Id)
                                     {
-                                        _dbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                        DbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
                                     }
                                 }
-                                if (_dbBankAccount.Id != newBankAccountId && !swap)
+                                if (DbBankAccount.Id != newBankAccountId && !swap)
                                 {
-                                    _dbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                                    DbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
                                     newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
                                 }
                             }
@@ -749,14 +752,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var budgetItem = GetBudgetItem();
             if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
             {
-                _dbBankAccount = null;
+                DbBankAccount = null;
             }
             budgetItem.BankAccountId = newBankAccountId;
             budgetItem.BankAccount = newBankAccount;
 
             if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
             {
-                _dbTransferToBankAccount = null;
+                DbTransferToBankAccount = null;
             }
             budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
             budgetItem.TransferToBankAccount = newTransferToBankAccount;
@@ -795,9 +798,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BudgetItem entity)
         {
-            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, _dbBankAccount, _dbTransferToBankAccount);
+            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount);
 
-            _dbBankAccount = _dbTransferToBankAccount = null;
+            DbBankAccount = DbTransferToBankAccount = null;
 
             return result;
         }

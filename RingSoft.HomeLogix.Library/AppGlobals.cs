@@ -41,6 +41,8 @@ namespace RingSoft.HomeLogix.Library
 
         public static Household LoggedInHousehold { get; set; }
 
+        public static bool UnitTesting { get; set; }
+
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
         public static void InitSettings()
@@ -53,7 +55,7 @@ namespace RingSoft.HomeLogix.Library
         public static void Initialize()
         
         {
-            DataRepository = new DataRepository();
+            DataRepository ??= new DataRepository();
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
@@ -63,15 +65,18 @@ namespace RingSoft.HomeLogix.Library
 
             LookupContext.Initialize(new HomeLogixDbContext(LookupContext));
 
-            AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));
-
-            MasterDbContext.ConnectToMaster();
-
-            var defaultHousehold = MasterDbContext.GetDefaultHousehold();
-            if (defaultHousehold != null)
+            if (!UnitTesting)
             {
-                if (LoginToHousehold(defaultHousehold))
-                    LoggedInHousehold = defaultHousehold;
+                AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));
+
+                MasterDbContext.ConnectToMaster();
+
+                var defaultHousehold = MasterDbContext.GetDefaultHousehold();
+                if (defaultHousehold != null)
+                {
+                    if (LoginToHousehold(defaultHousehold))
+                        LoggedInHousehold = defaultHousehold;
+                }
             }
         }
 
