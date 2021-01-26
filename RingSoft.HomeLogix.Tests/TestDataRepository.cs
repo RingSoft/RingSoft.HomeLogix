@@ -1,24 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using RingSoft.DbLookup.AutoFill;
-using RingSoft.HomeLogix.DataAccess.Model;
+﻿using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
-using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace RingSoft.HomeLogix.Tests
 {
     public class TestDataRepository : IDataRepository
     {
-        public const int JointCheckingBankAccountId = 1;
-        public const int JaneCheckingBankAccountId = 2;
-        public const int JuniorCheckingBankAccountId = 3;
-        public const int SavingsBankAccountId = 4;
-
-        public const int JohnIncomeBudgetItemId = 1;
-        public const int JaneIncomeBudgetItemId = 2;
-        public const int HousePaymentBudgetItemId = 3;
-        public const int GroceriesBudgetItemId = 4;
-        public const int TransferBudgetItemId = 5;
         public List<BankAccount> BankAccounts { get; }
 
         public List<BudgetItem> BudgetItems { get; }
@@ -29,19 +17,6 @@ namespace RingSoft.HomeLogix.Tests
             BudgetItems = new List<BudgetItem>();
         }
 
-        public void Initialize()
-        {
-            CreateBankAccounts();
-        }
-
-        private void CreateBankAccounts()
-        {
-            var bankAccountViewModel = new BankAccountViewModel();
-            bankAccountViewModel.Id = JointCheckingBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Joint Checking Account");
-            bankAccountViewModel.DoSave();
-        }
-
         public SystemMaster GetSystemMaster()
         {
             throw new System.NotImplementedException();
@@ -49,7 +24,8 @@ namespace RingSoft.HomeLogix.Tests
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
-            return BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+            var result = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+            return result;
         }
 
         public bool SaveBankAccount(BankAccount bankAccount)
@@ -111,6 +87,9 @@ namespace RingSoft.HomeLogix.Tests
                 if (budgetItem.Id == 0)
                     budgetItem.Id = BudgetItems.Count + 1;
 
+                budgetItem.BankAccount ??= GetBankAccount(budgetItem.BankAccountId);
+                budgetItem.TransferToBankAccount ??= budgetItem.TransferToBankAccountId == null?null: GetBankAccount((int)budgetItem.TransferToBankAccountId);
+
                 BudgetItems.Add(budgetItem);
             }
             else
@@ -119,6 +98,23 @@ namespace RingSoft.HomeLogix.Tests
                 existingBudgetItem.Description = budgetItem.Description;
                 existingBudgetItem.BankAccountId = budgetItem.BankAccountId;
                 existingBudgetItem.BankAccount = budgetItem.BankAccount;
+                existingBudgetItem.Amount = budgetItem.Amount;
+                existingBudgetItem.RecurringPeriod = budgetItem.RecurringPeriod;
+                existingBudgetItem.RecurringType = budgetItem.RecurringType;
+                existingBudgetItem.StartingDate = budgetItem.StartingDate;
+                existingBudgetItem.EndingDate = budgetItem.EndingDate;
+                existingBudgetItem.DoEscrow = budgetItem.DoEscrow;
+                existingBudgetItem.TransferToBankAccountId = budgetItem.TransferToBankAccountId;
+                existingBudgetItem.TransferToBankAccount = budgetItem.TransferToBankAccount;
+                existingBudgetItem.LastCompletedDate = budgetItem.LastCompletedDate;
+                existingBudgetItem.NextTransactionDate = budgetItem.NextTransactionDate;
+                existingBudgetItem.MonthlyAmount = budgetItem.MonthlyAmount;
+                existingBudgetItem.CurrentMonthAmount = budgetItem.CurrentMonthAmount;
+                existingBudgetItem.PreviousMonthAmount = budgetItem.PreviousMonthAmount;
+                existingBudgetItem.CurrentYearAmount = budgetItem.CurrentYearAmount;
+                existingBudgetItem.PreviousYearAmount = budgetItem.PreviousYearAmount;
+                existingBudgetItem.EscrowBalance = budgetItem.EscrowBalance;
+                existingBudgetItem.Notes = budgetItem.Notes;
             }
 
             if (dbBankAccount != null)
