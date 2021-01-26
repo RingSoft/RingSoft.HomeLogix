@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using RingSoft.DataEntryControls.Engine;
+
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace RingSoft.HomeLogix.DataAccess.Model
@@ -95,6 +97,11 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             RegisterItems = new HashSet<BankAccountRegisterItem>();
             BankAccountTransferFromRegisterItems = new HashSet<BankAccountRegisterItem>();
             EscrowFromBankAccounts = new HashSet<BankAccount>();
+        }
+
+        public override string ToString()
+        {
+            return string.IsNullOrEmpty(Description) ? base.ToString() : Description;
         }
     }
 }

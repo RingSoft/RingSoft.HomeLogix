@@ -95,5 +95,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         {
             RegisterItems = new HashSet<BankAccountRegisterItem>();
         }
+
+        public override string ToString()
+        {
+            return string.IsNullOrEmpty(Description) ? base.ToString() : Description;
+        }
     }
 }
