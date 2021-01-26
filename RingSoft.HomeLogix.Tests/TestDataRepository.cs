@@ -24,8 +24,38 @@ namespace RingSoft.HomeLogix.Tests
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
-            var result = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
-            return result;
+            var bankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+            if (bankAccount != null)
+            {
+                var result = new BankAccount
+                {
+                    Id = bankAccount.Id,
+                    Description = bankAccount.Description,
+                    CurrentBalance = bankAccount.CurrentBalance,
+                    EscrowBalance = bankAccount.EscrowBalance,
+                    ProjectedEndingBalance = bankAccount.ProjectedEndingBalance,
+                    ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate,
+                    ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount,
+                    MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits,
+                    MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals,
+                    CurrentMonthDeposits = bankAccount.CurrentMonthDeposits,
+                    CurrentMonthWithdrawals = bankAccount.CurrentMonthWithdrawals,
+                    PreviousMonthDeposits = bankAccount.PreviousMonthDeposits,
+                    PreviousMonthWithdrawals = bankAccount.PreviousMonthWithdrawals,
+                    CurrentYearDeposits = bankAccount.CurrentYearDeposits,
+                    CurrentYearWithdrawals = bankAccount.CurrentYearWithdrawals,
+                    PreviousYearDeposits = bankAccount.PreviousYearDeposits,
+                    PreviousYearWithdrawals = bankAccount.PreviousYearWithdrawals,
+                    EscrowToBankAccountId = bankAccount.EscrowToBankAccountId,
+                    EscrowToBankAccount = null,
+                    EscrowDayOfMonth = bankAccount.EscrowDayOfMonth,
+                    Notes = bankAccount.Notes
+                };
+
+                return result;
+            }
+
+            return null;
         }
 
         public bool SaveBankAccount(BankAccount bankAccount)
@@ -33,7 +63,7 @@ namespace RingSoft.HomeLogix.Tests
             if (bankAccount.Id == 0)
                 bankAccount.Id = BankAccounts.Count + 1;
 
-            var existingBankAccount = GetBankAccount(bankAccount.Id);
+            var existingBankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccount.Id);
             if (existingBankAccount != null)
                 BankAccounts.Remove(existingBankAccount);
 
@@ -44,7 +74,7 @@ namespace RingSoft.HomeLogix.Tests
 
         public bool DeleteBankAccount(int bankAccountId)
         {
-            var bankAccount = GetBankAccount(bankAccountId);
+            var bankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
             if (bankAccount != null)
                 BankAccounts.Remove(bankAccount);
 
@@ -53,15 +83,42 @@ namespace RingSoft.HomeLogix.Tests
 
         public BudgetItem GetBudgetItem(int budgetItemId)
         {
-            var result = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
+            var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
 
-            if (result != null)
+            if (budgetItem != null)
             {
+                var result = new BudgetItem
+                {
+                    Id = budgetItem.Id,
+                    Type = budgetItem.Type,
+                    Description = budgetItem.Description,
+                    BankAccountId = budgetItem.BankAccountId,
+                    BankAccount = null,
+                    Amount = budgetItem.MonthlyAmount,
+                    RecurringPeriod = budgetItem.RecurringPeriod,
+                    RecurringType = budgetItem.RecurringType,
+                    StartingDate = budgetItem.StartingDate,
+                    EndingDate = budgetItem.EndingDate,
+                    DoEscrow = budgetItem.DoEscrow,
+                    TransferToBankAccountId = budgetItem.TransferToBankAccountId,
+                    TransferToBankAccount = null,
+                    LastCompletedDate = budgetItem.LastCompletedDate,
+                    NextTransactionDate = budgetItem.NextTransactionDate,
+                    MonthlyAmount = budgetItem.MonthlyAmount,
+                    CurrentMonthAmount = budgetItem.CurrentMonthAmount,
+                    PreviousMonthAmount = budgetItem.PreviousMonthAmount,
+                    CurrentYearAmount = budgetItem.CurrentYearAmount,
+                    PreviousYearAmount = budgetItem.PreviousYearAmount,
+                    EscrowBalance = budgetItem.EscrowBalance,
+                    Notes = budgetItem.Notes,
+                };
                 result.BankAccount = GetBankAccount(result.BankAccountId, false);
                 if (result.TransferToBankAccountId != null)
                     result.TransferToBankAccount = GetBankAccount((int) result.TransferToBankAccountId, false);
+
+                return result;
             }
-            return result;
+            return null;
         }
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount)
@@ -71,7 +128,7 @@ namespace RingSoft.HomeLogix.Tests
                 budgetItem.Id = BudgetItems.Count + 1;
             }
 
-            var existingBudgetItem = GetBudgetItem(budgetItem.Id);
+            var existingBudgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItem.Id);
             if (existingBudgetItem != null) 
                 BudgetItems.Remove(existingBudgetItem);
 
@@ -94,7 +151,7 @@ namespace RingSoft.HomeLogix.Tests
 
         public bool DeleteBudgetItem(int budgetItemId)
         {
-            var budgetItem = GetBudgetItem(budgetItemId);
+            var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             if (budgetItem != null)
                 BudgetItems.Remove(budgetItem);
 

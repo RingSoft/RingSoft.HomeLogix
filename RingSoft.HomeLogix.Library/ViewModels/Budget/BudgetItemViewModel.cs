@@ -741,7 +741,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 if (DbBankAccount.Id != newBankAccountId && !swap)
                                 {
                                     DbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
-                                    newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
                                 }
                             }
                         }
