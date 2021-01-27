@@ -194,6 +194,63 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         [TestMethod]
+        public void TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo()
+        {
+            var dataRepository = new TestDataRepository();
+            AppGlobals.DataRepository = dataRepository;
+
+            CreateBankAccounts();
+
+            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+
+            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+            
+            budgetItemViewModel.Id = TransferBudgetItemId;
+            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
+
+            var bankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var monthlyWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
+
+            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+                bankAccount.Description);
+
+            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
+            budgetItemViewModel.Amount = 100;
+            budgetItemViewModel.RecurringPeriod = 1;
+            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+
+            bankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var monthlyDeposits = bankAccount.MonthlyBudgetDeposits;
+
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+                bankAccount.Description);
+
+
+            budgetItemViewModel.DoSave(true);
+            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+
+            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+
+            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+
+            Assert.AreEqual(oldJointMonthlyWithdrawals + newMonthlyAmount, newJointMonthlyWithdrawals,
+                nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
+
+            Assert.AreEqual(oldJaneMonthlyDeposits + newMonthlyAmount, newJaneMonthlyDeposits,
+                nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
+        }
+
+        [TestMethod]
         public void TestBudgetItemIncome_Change()
         {
             var dataRepository = new TestDataRepository();
@@ -265,7 +322,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.RecurringPeriod = 2;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
             budgetItemViewModel.StartingDate = DateTime.Parse("02/05/2021");
-            
+
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Jane's Income Budget Item");
 
