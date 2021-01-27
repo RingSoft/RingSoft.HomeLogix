@@ -94,7 +94,7 @@ namespace RingSoft.HomeLogix.Tests
                     Description = budgetItem.Description,
                     BankAccountId = budgetItem.BankAccountId,
                     BankAccount = null,
-                    Amount = budgetItem.MonthlyAmount,
+                    Amount = budgetItem.Amount,
                     RecurringPeriod = budgetItem.RecurringPeriod,
                     RecurringType = budgetItem.RecurringType,
                     StartingDate = budgetItem.StartingDate,

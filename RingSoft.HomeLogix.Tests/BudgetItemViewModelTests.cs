@@ -191,7 +191,60 @@ namespace RingSoft.HomeLogix.Tests
 
             Assert.AreEqual(oldSavingsMonthlyDeposits + newMonthlyAmount, newSavingsMonthlyDeposits,
                 nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+        }
 
+        [TestMethod]
+        public void TestBudgetItemIncome_Change()
+        {
+            var dataRepository = new TestDataRepository();
+            AppGlobals.DataRepository = dataRepository;
+
+            CreateBankAccounts();
+
+            CreateAndTestBudgetItems(dataRepository);
+
+            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+
+            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+            var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+
+            var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
+            budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
+            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+
+            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
+                janeBankAccount.Description);
+
+            budgetItemViewModel.Amount = 600;
+            budgetItemViewModel.DoSave(true);
+            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+
+            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+
+            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+            var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+
+            Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJointMonthlyWithdrawals, newJointMonthlyWithdrawals,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
+                nameof(TestBudgetItemIncome_Change));
         }
 
         private static void CreateAndTestBudgetItems(IDataRepository dataRepository)
