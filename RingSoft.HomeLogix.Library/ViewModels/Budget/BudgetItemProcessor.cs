@@ -64,17 +64,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         throw new ArgumentOutOfRangeException();
                 }
 
-                var startDate = budgetItem.StartingDate.AddMonths(-months);
+                var startDate = budgetItem.LastCompletedDate ?? budgetItem.StartingDate;
                 var currentDate = budgetItem.LastCompletedDate;
+                //var startDate = budgetItem.StartingDate.AddMonths(-months);
+                //var currentDate = budgetItem.LastCompletedDate;
                 if (currentDate == null)
                 {
                     var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId, false);
                     currentDate = bankAccount.LastGenerationDate;
                 }
 
-                var difference = currentDate - startDate;
-                var monthsAccrued = Math.Floor(difference.Value.TotalDays / 30);
-                budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal) monthsAccrued);
+                var difference = startDate - currentDate;
+                var monthsToGo = Math.Floor(difference.Value.TotalDays / 30);
+                var monthsAccrued = months - monthsToGo;
+                budgetItem.EscrowBalance = budgetItem.MonthlyAmount * (decimal)monthsAccrued;
+                if (budgetItem.EscrowBalance > budgetItem.Amount)
+                    budgetItem.EscrowBalance = budgetItem.Amount;
+                if (budgetItem.EscrowBalance < 0)
+                    budgetItem.EscrowBalance = 0;
             }
 
             processorData.YearlyAmount = Math.Round(monthlyAmount * 12,
@@ -120,7 +127,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (monthlyAmount.Equals(0))
                 monthlyAmount = dailyAmount * 30;
 
-            budgetItem.MonthlyAmount = Math.Round(monthlyAmount, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
+            budgetItem.MonthlyAmount = budgetItem.DoEscrow ? monthlyAmount : Math.Round(monthlyAmount, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
+                
             return monthlyAmount;
         }
     }

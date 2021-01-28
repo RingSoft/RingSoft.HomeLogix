@@ -567,6 +567,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 budgetItemData.BudgetItem.BankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(BankAutoFillValue.PrimaryKeyValue).Id;
             }
+            else
+            {
+                budgetItemData.BudgetItem.DoEscrow = false;
+            }
 
             BudgetItemProcessor.CalculateBudgetItem(budgetItemData);
 
