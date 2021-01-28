@@ -205,6 +205,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _endingDate = value;
+                SetViewMode();
                 OnPropertyChanged();
             }
         }

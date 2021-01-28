@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using RingSoft.App.Library;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -65,23 +66,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
 
                 var startDate = budgetItem.LastCompletedDate ?? budgetItem.StartingDate;
-                var currentDate = budgetItem.LastCompletedDate;
+                //var currentDate = budgetItem.LastCompletedDate;
                 //var startDate = budgetItem.StartingDate.AddMonths(-months);
                 //var currentDate = budgetItem.LastCompletedDate;
-                if (currentDate == null)
-                {
-                    var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId, false);
-                    currentDate = bankAccount.LastGenerationDate;
-                }
+                //if (currentDate == null)
+                //{
+                var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId, false);
+                var currentDate = bankAccount.LastGenerationDate;
+                //}
 
-                var difference = startDate - currentDate;
-                var monthsToGo = Math.Floor(difference.Value.TotalDays / 30);
-                var monthsAccrued = months - monthsToGo;
-                budgetItem.EscrowBalance = budgetItem.MonthlyAmount * (decimal)monthsAccrued;
+                var monthsToGo =
+                    RingSoftAppGlobals.CalculateMonthsInTimeSpan(startDate, (DateTime) currentDate);
+
+                var monthsAccrued = months - Math.Ceiling(monthsToGo);
+                budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal) monthsAccrued,
+                    CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
+
                 if (budgetItem.EscrowBalance > budgetItem.Amount)
                     budgetItem.EscrowBalance = budgetItem.Amount;
                 if (budgetItem.EscrowBalance < 0)
                     budgetItem.EscrowBalance = 0;
+
+                if (budgetItem.EndingDate != null && startDate > (DateTime) budgetItem.EndingDate)
+                    budgetItem.EscrowBalance = 0;
+                budgetItem.MonthlyAmount = Math.Round(budgetItem.MonthlyAmount,
+                    CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
             }
 
             processorData.YearlyAmount = Math.Round(monthlyAmount * 12,
