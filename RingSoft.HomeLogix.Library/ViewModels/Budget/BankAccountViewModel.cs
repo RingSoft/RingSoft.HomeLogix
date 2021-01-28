@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
@@ -456,6 +457,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private DateTime? _lastGenerationDate;
+
+        public DateTime? LastGenerationDate
+        {
+            get => _lastGenerationDate;
+            private set
+            {
+                if (value == null)
+                {
+                    var newDate = DateTime.Today;
+                    _lastGenerationDate =
+                        newDate.AddDays(DateTime.DaysInMonth(newDate.Year, newDate.Month) - newDate.Day);
+                }
+                else
+                {
+                    _lastGenerationDate = value;
+                }
+            }
+        }
+
+
         #endregion
 
         public RelayCommand AddNewRegisterItemCommand { get; }
@@ -469,6 +491,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             AddNewRegisterItemCommand = new RelayCommand(AddNewRegisterItem);
 
             GenerateRegisterItemsFromBudgetCommand = new RelayCommand(GenerateRegisterItemsFromBudget);
+
+            LastGenerationDate = null;
         }
 
         protected override void Initialize()
@@ -519,6 +543,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowBankAccountAutoFillValue = null;
             EscrowDayOfMonth = 1;
             Notes = string.Empty;
+            LastGenerationDate = null;
 
             RegisterGridManager.SetupForNewRecord();
             BankAccountView.EnableRegisterGrid(false);
@@ -562,6 +587,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             
             EscrowDayOfMonth = entity.EscrowDayOfMonth;
             Notes = entity.Notes;
+            LastGenerationDate = entity.LastGenerationDate;
+            if (LastGenerationDate == DateTime.MinValue)
+                LastGenerationDate = null;
 
             RegisterGridManager.LoadGrid(entity.RegisterItems);
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
@@ -607,6 +635,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BankAccount GetEntityData()
         {
+            Debug.Assert(LastGenerationDate != null, nameof(LastGenerationDate) + " != null");
             var bankAccount = new BankAccount
             {
                 Id = Id,
@@ -625,7 +654,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 CurrentYearDeposits = CurrentYearDeposits,
                 CurrentYearWithdrawals = CurrentYearWithdrawals,
                 EscrowDayOfMonth = EscrowDayOfMonth,
-                Notes = Notes
+                Notes = Notes,
+                LastGenerationDate = (DateTime)LastGenerationDate
             };
 
             if (EscrowBankAccountAutoFillValue != null)

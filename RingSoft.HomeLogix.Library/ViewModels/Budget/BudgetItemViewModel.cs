@@ -189,6 +189,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _startingDate = value;
+                SetViewMode();
                 OnPropertyChanged();
             }
         }
@@ -447,6 +448,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private IBudgetItemView _view;
         private bool _loading;
+        private bool _dbDoEscrow;
+        private BankAccount _escrowToBankAccount;
 
         protected override void Initialize()
         {
@@ -486,6 +489,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemType = BudgetItemTypes.Expense;
             BankAutoFillValue = null;
             DbBankAccountId = 0;
+            DoEscrow = false;
             Amount = 0;
             RecurringPeriod = 1;
             RecurringType = BudgetItemRecurringTypes.Months;
@@ -558,6 +562,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 BudgetItem = GetBudgetItem()
             };
 
+            if (EscrowVisible)
+            {
+                budgetItemData.BudgetItem.BankAccountId = AppGlobals.LookupContext.BankAccounts
+                    .GetEntityFromPrimaryKeyValue(BankAutoFillValue.PrimaryKeyValue).Id;
+            }
+
             BudgetItemProcessor.CalculateBudgetItem(budgetItemData);
 
             EscrowBalance = budgetItemData.BudgetItem.EscrowBalance;
@@ -578,6 +588,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DbMonthlyAmount = budgetItem.MonthlyAmount;
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
+            _dbDoEscrow = budgetItem.DoEscrow;
 
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             return budgetItem;
@@ -643,6 +654,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (newBankAccountId != 0)
             {
                 newBankAccount = AppGlobals.DataRepository.GetBankAccount(newBankAccountId, false);
+                var newBankDoEscrow = DoEscrow && BudgetItemType == BudgetItemTypes.Expense &&
+                               newBankAccount?.EscrowToBankAccount != null;
+
+                bool dbBankDoEscrow;
+
                 if (newTransferToBankAccountId != null)
                 {
                     newTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)newTransferToBankAccountId, false);
@@ -653,10 +669,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     switch (BudgetItemType)
                     {
                         case BudgetItemTypes.Income:
-                            newBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                            if (newBankAccount != null)
+                                newBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
                             break;
                         case BudgetItemTypes.Expense:
-                            newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                            if (newBankAccount != null)
+                            {
+                                newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
+                            }
+
                             break;
                         case BudgetItemTypes.Transfer:
                             break;
@@ -667,15 +688,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 else
                 {
                     DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+                    dbBankDoEscrow = _dbDoEscrow && BudgetItemType == BudgetItemTypes.Expense &&
+                                          DbBankAccount.EscrowToBankAccount != null;
                     switch (BudgetItemType)
                     {
                         case BudgetItemTypes.Income:
                             DbBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
-                            newBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                            if (newBankAccount != null) 
+                                newBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                             break;
                         case BudgetItemTypes.Expense:
+                            if (dbBankDoEscrow)
+                            {
+                                
+                            }
                             DbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
-                            newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
+
+                            if (newBankAccount != null)
+                            {
+                                newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
+                            }
+
                             break;
                         case BudgetItemTypes.Transfer:
                             break;
@@ -714,35 +747,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             //Different transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
-                            if (DbTransferToBankAccount == null)
+                            var swap = false;
+                            if (newTransferToBankAccount.Id != DbTransferToBankAccount.Id)
                             {
-                                //Same new transfer to bank account.
-                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - DbMonthlyAmount;
+                                //Different transfer to bank account.
+                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                                if (newBankAccount.Id == DbTransferToBankAccount.Id)
+                                {
+                                    //Swap.
+                                    swap = true;
+                                    newTransferToBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
+                                    newBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                }
+                                else if (DbTransferToBankAccount.Id != newTransferToBankAccount.Id)
+                                {
+                                    DbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
+                                }
                             }
-                            else
+                            if (DbBankAccount.Id != newBankAccountId && !swap)
                             {
-                                var swap = false;
-                                if (newTransferToBankAccount.Id != DbTransferToBankAccount.Id)
-                                {
-                                    //Different transfer to bank account.
-                                    newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
-                                    if (newBankAccount.Id == DbTransferToBankAccount.Id)
-                                    {
-                                        //Swap.
-                                        swap = true;
-                                        newTransferToBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
-                                        newBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
-                                    }
-                                    else if (DbTransferToBankAccount.Id != newTransferToBankAccount.Id)
-                                    {
-                                        DbTransferToBankAccount.MonthlyBudgetDeposits -= DbMonthlyAmount;
-                                    }
-                                }
-                                if (DbBankAccount.Id != newBankAccountId && !swap)
-                                {
-                                    DbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
-                                    //newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - DbMonthlyAmount;
-                                }
+                                DbBankAccount.MonthlyBudgetWithdrawals -= DbMonthlyAmount;
                             }
                         }
                     }

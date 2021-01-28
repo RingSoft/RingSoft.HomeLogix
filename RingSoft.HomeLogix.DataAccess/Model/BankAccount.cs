@@ -77,6 +77,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BankAccount EscrowToBankAccount { get; set; }
 
         public int? EscrowDayOfMonth { get; set; }
+
+        [Required]
+        public DateTime LastGenerationDate { get; set; }
         
         public string Notes { get; set; }
 

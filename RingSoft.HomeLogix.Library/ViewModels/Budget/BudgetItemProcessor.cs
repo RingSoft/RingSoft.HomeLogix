@@ -51,7 +51,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var monthlyAmount = CalculateBudgetItemMonthlyAmount(budgetItem);
             if (processorData.BudgetItem.DoEscrow)
             {
+                var months = 1;
+                switch (budgetItem.RecurringType)
+                {
+                    case BudgetItemRecurringTypes.Months:
+                        months = budgetItem.RecurringPeriod;
+                        break;
+                    case BudgetItemRecurringTypes.Years:
+                        months = budgetItem.RecurringPeriod * 12;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
+                var startDate = budgetItem.StartingDate.AddMonths(-months);
+                var currentDate = budgetItem.LastCompletedDate;
+                if (currentDate == null)
+                {
+                    var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId, false);
+                    currentDate = bankAccount.LastGenerationDate;
+                }
+
+                var difference = currentDate - startDate;
+                var monthsAccrued = Math.Floor(difference.Value.TotalDays / 30);
+                budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal) monthsAccrued);
             }
 
             processorData.YearlyAmount = Math.Round(monthlyAmount * 12,
@@ -76,14 +99,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     dailyAmount = dailyAmount / 7;
                     break;
                 case BudgetItemRecurringTypes.Months:
-                    monthlyAmount = budgetItem.Amount / budgetItem.RecurringPeriod;
+                    if (!(budgetItem.RecurringPeriod > 1 && !budgetItem.DoEscrow))
+                        monthlyAmount = budgetItem.Amount / budgetItem.RecurringPeriod;
                     break;
                 case BudgetItemRecurringTypes.Years:
-                    //Convert to amount per year.
-                    monthlyAmount = budgetItem.Amount / budgetItem.RecurringPeriod;
+                    if (budgetItem.DoEscrow)
+                    {
+                        //Convert to amount per year.
+                        monthlyAmount = budgetItem.Amount / budgetItem.RecurringPeriod;
 
-                    //Convert to amount per month.
-                    monthlyAmount = monthlyAmount / 12;
+                        //Convert to amount per month.
+                        monthlyAmount = monthlyAmount / 12;
+                    }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

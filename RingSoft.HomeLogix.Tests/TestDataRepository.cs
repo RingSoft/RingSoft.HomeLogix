@@ -49,8 +49,12 @@ namespace RingSoft.HomeLogix.Tests
                     EscrowToBankAccountId = bankAccount.EscrowToBankAccountId,
                     EscrowToBankAccount = null,
                     EscrowDayOfMonth = bankAccount.EscrowDayOfMonth,
+                    LastGenerationDate = bankAccount.LastGenerationDate,
                     Notes = bankAccount.Notes
                 };
+
+                if (result.EscrowToBankAccountId != null)
+                    result.EscrowToBankAccount = GetBankAccount((int) result.EscrowToBankAccountId, false);
 
                 return result;
             }
