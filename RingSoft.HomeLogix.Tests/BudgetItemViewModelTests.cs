@@ -362,7 +362,7 @@ namespace RingSoft.HomeLogix.Tests
             Assert.AreEqual(oldSavingsEscrowBalance + escrowDifference, newSavingsEscrowBalance,
                 nameof(TestChangeBudgetItemEscrow_AmountChange));
 
-            Assert.AreEqual(oldJaneMonthlyWithdrawals + oldMonthlyAmount, newJaneMonthlyWithdrawals,
+            Assert.AreEqual(oldJaneMonthlyWithdrawals + monthlyDifference, newJaneMonthlyWithdrawals,
                 nameof(TestChangeBudgetItemEscrow_AmountChange));
 
             Assert.AreEqual(oldEscrowBalance + escrowDifference, escrowToSavingsBudgetItem.EscrowBalance, 

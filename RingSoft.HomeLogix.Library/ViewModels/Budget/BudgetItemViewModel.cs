@@ -740,7 +740,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         newBankAccount.MonthlyBudgetWithdrawals += escrowBalance - dbEscrowBalance;
                     }
 
-                    escrowToBank.EscrowBalance += escrowBalance - dbEscrowBalance;
+                    var escrowToBankBalance = (decimal) 0;
+                    if (escrowToBank.EscrowBalance != null)
+                        escrowToBankBalance = (decimal) escrowToBank.EscrowBalance;
+
+                    escrowToBankBalance += escrowBalance - dbEscrowBalance;
+                    escrowToBank.EscrowBalance = escrowToBankBalance;
                 }
 
                 if (BudgetItemType == BudgetItemTypes.Transfer)

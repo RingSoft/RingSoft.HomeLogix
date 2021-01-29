@@ -73,9 +73,6 @@ namespace RingSoft.HomeLogix.Tests
 
             BankAccounts.Add(bankAccount);
 
-            if (bankAccount.EscrowToBankAccount != null)
-                SaveBankAccount(escrowBankAccount);
-
             return true;
         }
 
