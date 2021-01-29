@@ -451,6 +451,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _dbDoEscrow;
         private decimal? _dbEscrowBalance;
         private BankAccount _escrowToBankAccount;
+        private BankAccount _dbEscrowToBankAccount;
 
         protected override void Initialize()
         {
@@ -719,7 +720,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
-                if (DoEscrow && newBankAccount != null)
+                if ((DoEscrow || _dbDoEscrow) && newBankAccount != null)
                 {
                     var escrowBalance = (decimal) 0;
                     var dbEscrowBalance = (decimal)0;
@@ -730,22 +731,41 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     if (_dbEscrowBalance != null)
                         dbEscrowBalance = (decimal)_dbEscrowBalance;
 
-                    _escrowToBankAccount = newBankAccount.EscrowToBankAccount;
-
                     var escrowToBank = newBankAccount;
+                    _escrowToBankAccount = newBankAccount.EscrowToBankAccount;
+                    var newMonthlyBudgetWithdrawals = escrowBalance - dbEscrowBalance;
+
+                    if (newBankAccountId != DbBankAccountId && DbBankAccountId != 0)
+                    {
+                        if (_escrowToBankAccount != null && DbBankAccount.EscrowToBankAccount != null &&
+                            _escrowToBankAccount.Id != DbBankAccount.EscrowToBankAccount.Id)
+                        {
+                            var dbEscrowToBank = DbBankAccount;
+                            _dbEscrowToBankAccount = DbBankAccount.EscrowToBankAccount;
+                            if (_dbEscrowToBankAccount != null)
+                            {
+                                dbEscrowToBank = _dbEscrowToBankAccount;
+                            }
+                            dbEscrowBalance = 0;
+                        }
+
+                        DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                        newMonthlyBudgetWithdrawals = MonthlyAmount;
+                    }
+
                     if (_escrowToBankAccount != null)
                     {
                         escrowToBank = _escrowToBankAccount;
                         _escrowToBankAccount.MonthlyBudgetDeposits += escrowBalance - dbEscrowBalance;
-                        newBankAccount.MonthlyBudgetWithdrawals += escrowBalance - dbEscrowBalance;
+                        newBankAccount.MonthlyBudgetWithdrawals += newMonthlyBudgetWithdrawals;
                     }
 
-                    var escrowToBankBalance = (decimal) 0;
+                    var escrowToBankEscrowBalance = (decimal)0;
                     if (escrowToBank.EscrowBalance != null)
-                        escrowToBankBalance = (decimal) escrowToBank.EscrowBalance;
+                        escrowToBankEscrowBalance = (decimal)escrowToBank.EscrowBalance;
 
-                    escrowToBankBalance += escrowBalance - dbEscrowBalance;
-                    escrowToBank.EscrowBalance = escrowToBankBalance;
+                    escrowToBankEscrowBalance += escrowBalance - dbEscrowBalance;
+                    escrowToBank.EscrowBalance = escrowToBankEscrowBalance;
                 }
 
                 if (BudgetItemType == BudgetItemTypes.Transfer)
