@@ -342,8 +342,8 @@ namespace RingSoft.HomeLogix.Tests
 
             budgetItemViewModel.Amount = 600;
 
-            var escrowDi = budgetItemViewModel.MonthlyAmount;
-            var newEscrowBalance = budgetItemViewModel.EscrowBalance;
+            var monthlyDifference = budgetItemViewModel.MonthlyAmount - oldMonthlyAmount;
+            var escrowDifference = budgetItemViewModel.EscrowBalance - oldEscrowBalance;
 
             budgetItemViewModel.DoSave(true);
 
@@ -351,20 +351,22 @@ namespace RingSoft.HomeLogix.Tests
             var newSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
             var newSavingsEscrowBalance = savingsBankAccount.EscrowBalance;
 
+            escrowToSavingsBudgetItem = dataRepository.GetBudgetItem(EscrowToSavingsBudgetItemId);
+
             janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
             var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            Assert.AreEqual(oldSavingsMonthlyDeposits + newMonthlyAmount, newSavingsMonthlyDeposits,
+            Assert.AreEqual(oldSavingsMonthlyDeposits + monthlyDifference, newSavingsMonthlyDeposits,
                 nameof(TestChangeBudgetItemEscrow_AmountChange));
 
-            Assert.AreEqual(oldSavingsEscrowBalance, newSavingsEscrowBalance,
-                nameof(TestBudgetItemIncome_Change));
+            Assert.AreEqual(oldSavingsEscrowBalance + escrowDifference, newSavingsEscrowBalance,
+                nameof(TestChangeBudgetItemEscrow_AmountChange));
 
-            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
-                nameof(TestBudgetItemIncome_Change));
+            Assert.AreEqual(oldJaneMonthlyWithdrawals + oldMonthlyAmount, newJaneMonthlyWithdrawals,
+                nameof(TestChangeBudgetItemEscrow_AmountChange));
 
-            Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
-                nameof(TestBudgetItemIncome_Change));
+            Assert.AreEqual(oldEscrowBalance + escrowDifference, escrowToSavingsBudgetItem.EscrowBalance, 
+                nameof(TestChangeBudgetItemEscrow_AmountChange));
         }
 
         private static void CreateAndTestBudgetItems()
@@ -521,7 +523,7 @@ namespace RingSoft.HomeLogix.Tests
 
             Assert.AreEqual((decimal)83.33, budgetItemViewModel.MonthlyAmount, "Escrow Initial Monthly Amount");
 
-            Assert.AreEqual((decimal)83.33, budgetItemViewModel.EscrowBalance, "Initial Savings Escrow Balance");
+            Assert.AreEqual((decimal)83.33, budgetItemViewModel.EscrowBalance, "Initial Budget Item Escrow Balance");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
             var monthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
@@ -536,6 +538,9 @@ namespace RingSoft.HomeLogix.Tests
             bankAccount = AppGlobals.DataRepository.GetBankAccount(SavingsBankAccountId);
             Assert.AreEqual((decimal)83.33, bankAccount.MonthlyBudgetDeposits,
                 "Savings Monthly Deposits Changed By Escrow");
+
+            Assert.AreEqual((decimal)83.33, bankAccount.EscrowBalance,
+                "Savings Initial Escrow Balance");
         }
 
         private void CreateAndTestBankAccounts()
