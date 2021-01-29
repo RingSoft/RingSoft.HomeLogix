@@ -17,7 +17,8 @@ namespace RingSoft.HomeLogix.Library
 
         BudgetItem GetBudgetItem(int budgetItemId);
 
-        bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount);
+        bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
+            BankAccount escrowBankAccount);
 
         bool DeleteBudgetItem(int budgetItemId);
     }
@@ -70,7 +71,8 @@ namespace RingSoft.HomeLogix.Library
                 .FirstOrDefault(f => f.Id == budgetItemId);
         }
 
-        public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount)
+        public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
+            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount)
         {
             var context = AppGlobals.GetNewDbContext();
             if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem, "Saving Budget Item"))
@@ -85,6 +87,13 @@ namespace RingSoft.HomeLogix.Library
             if (dbTransferToBankAccount != null)
             {
                 if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbTransferToBankAccount, "Saving Transfer To Bank Account"))
+                    return false;
+            }
+
+            if (escrowBankAccount != null)
+            {
+                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, escrowBankAccount,
+                    "Saving Escrow Bank Account"))
                     return false;
             }
 

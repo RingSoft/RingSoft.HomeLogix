@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Media;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
@@ -8,19 +10,24 @@ namespace RingSoft.HomeLogix.Tests
 {
     public class TestDbMaintenanceView : IDbMaintenanceView
     {
+        private string _ownerName;
+
+        public TestDbMaintenanceView(string ownerName)
+        {
+            _ownerName = ownerName;
+        }
         public void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
         {
-            Console.WriteLine($"Validation Fail: {text}");
+            Debug.WriteLine($"{_ownerName} Validation Fail: {text}");
+            SystemSounds.Exclamation.Play();
         }
 
         public void ResetViewForNewRecord()
         {
-            Console.WriteLine(nameof(ResetViewForNewRecord));
         }
 
         public void OnRecordSelected()
         {
-            Console.WriteLine(nameof(OnRecordSelected));
         }
 
         public void ShowFindLookupWindow(LookupDefinitionBase lookupDefinition, bool allowAdd, bool allowView, string initialSearchFor,
@@ -36,24 +43,23 @@ namespace RingSoft.HomeLogix.Tests
 
         public MessageButtons ShowYesNoCancelMessage(string text, string caption)
         {
-            Console.WriteLine($"Show YesNoCancel Message:  {text}");
+            Debug.WriteLine($"{_ownerName} Show YesNoCancel Message:  {text}");
             return MessageButtons.Yes;
         }
 
         public bool ShowYesNoMessage(string text, string caption)
         {
-            Console.WriteLine($"ShowYesNoMessage: {text}");
+            Debug.WriteLine($"{_ownerName} ShowYesNoMessage: {text}");
             return true;
         }
 
         public void ShowRecordSavedMessage()
         {
-            Console.WriteLine("Record Saved");
         }
 
         public void SetReadOnlyMode(bool readOnlyValue)
         {
-            Console.WriteLine(nameof(SetReadOnlyMode));
+            Debug.WriteLine($"{_ownerName} {nameof(SetReadOnlyMode)}");
         }
 
         public event EventHandler<LookupSelectArgs> LookupFormReturn;

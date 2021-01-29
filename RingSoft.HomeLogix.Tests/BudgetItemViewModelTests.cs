@@ -14,6 +14,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             
         }
+
+        public TestBudgetItemView(string ownerName) : base(ownerName)
+        {
+        }
     }
 
     [TestClass]
@@ -59,7 +63,8 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+            budgetItemViewModel.OnViewLoaded(
+                new TestBudgetItemView(nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)));
 
             var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
             budgetItemViewModel.UnitTestLoadFromEntity(transferBudgetItem);
@@ -134,7 +139,8 @@ namespace RingSoft.HomeLogix.Tests
             var oldSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+            budgetItemViewModel.OnViewLoaded(
+                new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo)));
 
             var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
             budgetItemViewModel.UnitTestLoadFromEntity(transferBudgetItem);
@@ -210,7 +216,8 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+            budgetItemViewModel.OnViewLoaded(
+                new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo)));
             
             budgetItemViewModel.Id = TransferBudgetItemId;
             budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
@@ -269,7 +276,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(TestBudgetItemIncome_Change)));
 
             var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
             budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
@@ -304,10 +311,66 @@ namespace RingSoft.HomeLogix.Tests
                 nameof(TestBudgetItemIncome_Change));
         }
 
+        [TestMethod]
+        public void TestChangeBudgetItemEscrow_AmountChange()
+        {
+            var dataRepository = new TestDataRepository();
+            AppGlobals.DataRepository = dataRepository;
+
+            CreateAndTestBankAccounts();
+
+            CreateAndTestBudgetItems();
+
+            var savingsBankAccount = dataRepository.GetBankAccount(SavingsBankAccountId);
+            var oldSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
+            var oldSavingsEscrowBalance = savingsBankAccount.EscrowBalance;
+
+            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(TestChangeBudgetItemEscrow_AmountChange)));
+
+            var escrowToSavingsBudgetItem = dataRepository.GetBudgetItem(EscrowToSavingsBudgetItemId);
+            budgetItemViewModel.UnitTestLoadFromEntity(escrowToSavingsBudgetItem);
+            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+            var oldEscrowBalance = budgetItemViewModel.EscrowBalance;
+
+            //budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+            //    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
+            //    janeBankAccount.Description);
+
+            budgetItemViewModel.Amount = 600;
+
+            var escrowDi = budgetItemViewModel.MonthlyAmount;
+            var newEscrowBalance = budgetItemViewModel.EscrowBalance;
+
+            budgetItemViewModel.DoSave(true);
+
+            savingsBankAccount = dataRepository.GetBankAccount(SavingsBankAccountId);
+            var newSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
+            var newSavingsEscrowBalance = savingsBankAccount.EscrowBalance;
+
+            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+
+            Assert.AreEqual(oldSavingsMonthlyDeposits + newMonthlyAmount, newSavingsMonthlyDeposits,
+                nameof(TestChangeBudgetItemEscrow_AmountChange));
+
+            Assert.AreEqual(oldSavingsEscrowBalance, newSavingsEscrowBalance,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
+                nameof(TestBudgetItemIncome_Change));
+        }
+
         private static void CreateAndTestBudgetItems()
         {
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView());
+            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(CreateAndTestBudgetItems)));
 
             budgetItemViewModel.Id = JaneIncomeBudgetItemId;
             budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Income");
@@ -460,18 +523,25 @@ namespace RingSoft.HomeLogix.Tests
 
             Assert.AreEqual((decimal)83.33, budgetItemViewModel.EscrowBalance, "Initial Savings Escrow Balance");
 
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var monthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
+
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Escrow To Savings Budget Item");
 
-            //bankAccount = AppGlobals.DataRepository.GetBankAccount(SavingsBankAccountId);
-            //Assert.AreEqual((decimal)1285.71, bankAccount.MonthlyBudgetWithdrawals,
-            //    "Jane's Checking Initial Monthly Withdrawals");
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            Assert.AreEqual( monthlyBudgetWithdrawals + (decimal)83.33, bankAccount.MonthlyBudgetWithdrawals,
+                "Jane's Checking Monthly Withdrawals Changed by Escrow");
+
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(SavingsBankAccountId);
+            Assert.AreEqual((decimal)83.33, bankAccount.MonthlyBudgetDeposits,
+                "Savings Monthly Deposits Changed By Escrow");
         }
 
         private void CreateAndTestBankAccounts()
         {
             var bankAccountViewModel = new BankAccountViewModel();
-            bankAccountViewModel.OnViewLoaded(new TestBankAccountView());
+            bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
 
             bankAccountViewModel.Id = SavingsBankAccountId;
             bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Savings Account");
