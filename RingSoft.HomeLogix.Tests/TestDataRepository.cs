@@ -126,7 +126,8 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
-            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount)
+            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount,
+            BankAccount dbEscrowBankAccount)
         {
             if (budgetItem.Id == 0)
             {
@@ -153,6 +154,9 @@ namespace RingSoft.HomeLogix.Tests
 
             if (escrowBankAccount != null)
                 SaveBankAccount(escrowBankAccount);
+
+            if (dbEscrowBankAccount != null)
+                SaveBankAccount(dbEscrowBankAccount);
 
             return true;
         }

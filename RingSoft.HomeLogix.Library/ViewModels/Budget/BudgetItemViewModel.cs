@@ -500,6 +500,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _dbMonthlyAmount = MonthlyAmount = 0;
             _dbEscrowBalance = null;
             _dbDoEscrow = false;
+            _escrowToBankAccount = null;
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
@@ -724,6 +725,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     var escrowBalance = (decimal) 0;
                     var dbEscrowBalance = (decimal)0;
+                    var dbMonthlyAmount = _dbMonthlyAmount;
 
                     if (EscrowBalance != null)
                         escrowBalance = (decimal)EscrowBalance;
@@ -733,7 +735,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     var escrowToBank = newBankAccount;
                     _escrowToBankAccount = newBankAccount.EscrowToBankAccount;
-                    var newMonthlyBudgetWithdrawals = escrowBalance - dbEscrowBalance;
+                    var newMonthlyBudgetWithdrawals = MonthlyAmount - _dbMonthlyAmount;
 
                     if (newBankAccountId != DbBankAccountId && DbBankAccountId != 0)
                     {
@@ -745,8 +747,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             if (_dbEscrowToBankAccount != null)
                             {
                                 dbEscrowToBank = _dbEscrowToBankAccount;
+                                _dbEscrowToBankAccount.MonthlyBudgetDeposits -= dbMonthlyAmount;
                             }
-                            dbEscrowBalance = 0;
+
+                            dbEscrowToBank.EscrowBalance -= dbEscrowBalance;
+                            dbMonthlyAmount = dbEscrowBalance = 0;
                         }
 
                         DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
@@ -756,7 +761,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     if (_escrowToBankAccount != null)
                     {
                         escrowToBank = _escrowToBankAccount;
-                        _escrowToBankAccount.MonthlyBudgetDeposits += escrowBalance - dbEscrowBalance;
+                        _escrowToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - dbMonthlyAmount;
                         newBankAccount.MonthlyBudgetWithdrawals += newMonthlyBudgetWithdrawals;
                     }
 
@@ -874,7 +879,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BudgetItem entity)
         {
-            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount, _escrowToBankAccount);
+            var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount,
+                _escrowToBankAccount, _dbEscrowToBankAccount);
 
             DbBankAccount = DbTransferToBankAccount = null;
 

@@ -530,7 +530,7 @@ namespace RingSoft.HomeLogix.Tests
                 "Saving Income To Junior's Savings Budget Item");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
-            Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
+            Assert.AreEqual(400, bankAccount.MonthlyBudgetDeposits,
                 "Junior's Initial Savings Deposit");
 
             //-----------------------------------------------------------------------------------------------------------
@@ -540,18 +540,16 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneSavingsEscrowBalance = janeSavingsBankAccount.EscrowBalance;
 
             var janeCheckingBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var oldJaneMonthlyWithdrawals = janeCheckingBankAccount.MonthlyBudgetWithdrawals;
+            var oldJaneCheckingMonthlyWithdrawals = janeCheckingBankAccount.MonthlyBudgetWithdrawals;
 
             var juniorCheckingBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
-            var oldJuniorMonthlyWithdrawals = juniorCheckingBankAccount.MonthlyBudgetWithdrawals;
+            var oldJuniorCheckingMonthlyWithdrawals = juniorCheckingBankAccount.MonthlyBudgetWithdrawals;
 
             var juniorSavingsBankAccount = dataRepository.GetBankAccount(JuniorSavingsBankAccountId);
             var oldJuniorSavingsMonthlyDeposits = juniorSavingsBankAccount.MonthlyBudgetDeposits;
+            var oldJuniorSavingsEscrowBalance = juniorSavingsBankAccount.EscrowBalance;
 
-            budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.OnViewLoaded(
-                new TestBudgetItemView(nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange)));
-
+            budgetItemViewModel.OnNewButton();
             var escrowToSavingsBudgetItem = dataRepository.GetBudgetItem(EscrowToJaneSavingsBudgetItemId);
             budgetItemViewModel.UnitTestLoadFromEntity(escrowToSavingsBudgetItem);
             var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
@@ -559,7 +557,6 @@ namespace RingSoft.HomeLogix.Tests
 
             budgetItemViewModel.Amount = 600;
 
-            var monthlyDifference = budgetItemViewModel.MonthlyAmount - oldMonthlyAmount;
             var escrowDifference = budgetItemViewModel.EscrowBalance - oldEscrowBalance;
 
             budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
@@ -567,32 +564,49 @@ namespace RingSoft.HomeLogix.Tests
                 juniorCheckingBankAccount.Description);
 
             budgetItemViewModel.DoSave(true);
-
-            janeSavingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
-            var newSavingsMonthlyDeposits = janeSavingsBankAccount.MonthlyBudgetDeposits;
-            var newSavingsEscrowBalance = janeSavingsBankAccount.EscrowBalance;
-
+            
             escrowToSavingsBudgetItem = dataRepository.GetBudgetItem(EscrowToJaneSavingsBudgetItemId);
 
+            Assert.AreEqual(oldEscrowBalance + escrowDifference,
+                escrowToSavingsBudgetItem.MonthlyAmount,
+                nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
+
+            janeSavingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+            var newJaneSavingsMonthlyDeposits = janeSavingsBankAccount.MonthlyBudgetDeposits;
+            var newJaneSavingsEscrowBalance = janeSavingsBankAccount.EscrowBalance;
+
             janeCheckingBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneMonthlyWithdrawals = janeCheckingBankAccount.MonthlyBudgetWithdrawals;
+            var newJaneCheckingMonthlyWithdrawals = janeCheckingBankAccount.MonthlyBudgetWithdrawals;
 
-            Assert.AreEqual(oldJaneSavingsMonthlyDeposits + monthlyDifference, newSavingsMonthlyDeposits,
+            Assert.AreEqual(oldJaneSavingsMonthlyDeposits - oldMonthlyAmount,
+                newJaneSavingsMonthlyDeposits,
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
 
-            Assert.AreEqual(oldJaneSavingsEscrowBalance + escrowDifference, newSavingsEscrowBalance,
+            Assert.AreEqual(oldJaneSavingsEscrowBalance - oldEscrowBalance,
+                newJaneSavingsEscrowBalance,
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
 
-            Assert.AreEqual(oldJaneMonthlyWithdrawals - oldMonthlyAmount, newJaneMonthlyWithdrawals,
+            Assert.AreEqual(oldJaneCheckingMonthlyWithdrawals - oldMonthlyAmount,
+                newJaneCheckingMonthlyWithdrawals,
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
 
-            juniorCheckingBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var newJointMonthlyWithdrawals = juniorCheckingBankAccount.MonthlyBudgetWithdrawals;
+            juniorCheckingBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+            var newJuniorCheckingMonthlyWithdrawals = juniorCheckingBankAccount.MonthlyBudgetWithdrawals;
 
-            Assert.AreEqual(oldJuniorMonthlyWithdrawals + budgetItemViewModel.MonthlyAmount, newJointMonthlyWithdrawals,
+            juniorSavingsBankAccount = dataRepository.GetBankAccount(JuniorSavingsBankAccountId);
+            var newJuniorSavingsMonthlyDeposits = juniorSavingsBankAccount.MonthlyBudgetDeposits;
+            var newJuniorSavingsEscrowBalance = juniorSavingsBankAccount.EscrowBalance;
+
+            Assert.AreEqual(oldJuniorCheckingMonthlyWithdrawals + budgetItemViewModel.MonthlyAmount,
+                newJuniorCheckingMonthlyWithdrawals,
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
 
-            Assert.AreEqual(oldEscrowBalance + escrowDifference, escrowToSavingsBudgetItem.EscrowBalance,
+            Assert.AreEqual(oldJuniorSavingsMonthlyDeposits + budgetItemViewModel.MonthlyAmount,
+                newJuniorSavingsMonthlyDeposits,
+                nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
+
+            Assert.AreEqual(oldJuniorSavingsEscrowBalance + budgetItemViewModel.MonthlyAmount,
+                newJuniorSavingsEscrowBalance,
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
         }
 
