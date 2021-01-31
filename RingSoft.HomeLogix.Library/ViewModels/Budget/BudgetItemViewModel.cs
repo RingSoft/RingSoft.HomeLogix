@@ -448,7 +448,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private IBudgetItemView _view;
         private bool _loading;
         private decimal _dbMonthlyAmount;
-        private bool _dbDoEscrow;
         private decimal? _dbEscrowBalance;
         private BankAccount _escrowToBankAccount;
         private BankAccount _dbEscrowToBankAccount;
@@ -499,7 +498,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
             _dbEscrowBalance = null;
-            _dbDoEscrow = false;
             _escrowToBankAccount = null;
 
             TransferToBankAccountAutoFillValue = null;
@@ -599,7 +597,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _dbMonthlyAmount = budgetItem.MonthlyAmount;
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
-            _dbDoEscrow = budgetItem.DoEscrow;
             _dbEscrowBalance = budgetItem.EscrowBalance;
 
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
@@ -705,7 +702,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 newBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                             break;
                         case BudgetItemTypes.Expense:
-                            if (!_dbDoEscrow)
+                            if (!DoEscrow)
                                 DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
 
                             if (newBankAccount != null && !DoEscrow)
@@ -721,7 +718,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
-                if ((DoEscrow || _dbDoEscrow) && newBankAccount != null)
+                if (DoEscrow && newBankAccount != null)
                 {
                     var escrowBalance = (decimal) 0;
                     var dbEscrowBalance = (decimal)0;
