@@ -527,7 +527,7 @@ namespace RingSoft.HomeLogix.Tests
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
         }
 
-        private static void CreateAndTestBudgetItems()
+        private static void CreateAndTestBudgetItems(bool doEscrow = true)
         {
             var budgetItemViewModel = new BudgetItemViewModel();
             budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(CreateAndTestBudgetItems)));
@@ -678,10 +678,14 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.RecurringPeriod = 6;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
             budgetItemViewModel.StartingDate = bankAccount.LastGenerationDate.AddMonths(5).AddDays(1);
+            budgetItemViewModel.DoEscrow = doEscrow;
 
-            Assert.AreEqual((decimal)83.33, budgetItemViewModel.MonthlyAmount, "Escrow Initial Monthly Amount");
+            decimal expectedEscrowValue = doEscrow ? (decimal)83.33 : 0;
 
-            Assert.AreEqual((decimal)83.33, budgetItemViewModel.EscrowBalance, "Initial Budget Item Escrow Balance");
+            Assert.AreEqual(expectedEscrowValue, budgetItemViewModel.MonthlyAmount, "Escrow Initial Monthly Amount");
+
+            Assert.AreEqual(expectedEscrowValue, budgetItemViewModel.EscrowBalance,
+                "Initial Budget Item Escrow Balance");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
             var monthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
@@ -690,14 +694,14 @@ namespace RingSoft.HomeLogix.Tests
                 "Saving Escrow To Jane's Savings Budget Item");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            Assert.AreEqual( monthlyBudgetWithdrawals + (decimal)83.33, bankAccount.MonthlyBudgetWithdrawals,
+            Assert.AreEqual( monthlyBudgetWithdrawals + expectedEscrowValue, bankAccount.MonthlyBudgetWithdrawals,
                 "Jane's Checking Monthly Withdrawals Changed by Escrow");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneSavingsBankAccountId);
-            Assert.AreEqual((decimal)83.33, bankAccount.MonthlyBudgetDeposits,
+            Assert.AreEqual(expectedEscrowValue, bankAccount.MonthlyBudgetDeposits,
                 "Jane's Savings Monthly Deposits Changed By Escrow");
 
-            Assert.AreEqual((decimal)83.33, bankAccount.EscrowBalance,
+            Assert.AreEqual(expectedEscrowValue, bankAccount.EscrowBalance,
                 "Jane's Savings Initial Escrow Balance");
 
             //-----------------------------------------------------------------------------------------------------------
