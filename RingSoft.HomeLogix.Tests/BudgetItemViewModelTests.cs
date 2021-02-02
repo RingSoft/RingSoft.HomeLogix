@@ -746,18 +746,20 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.RecurringPeriod = 2;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
             budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+            budgetItemViewModel.DoEscrow = doEscrow;
 
-            Assert.AreEqual(300, budgetItemViewModel.MonthlyAmount, "Junior's Initial Monthly Expense");
+            expectedEscrowValue = doEscrow ? (decimal) 300 : 0;
+            Assert.AreEqual(expectedEscrowValue, budgetItemViewModel.MonthlyAmount, "Junior's Initial Monthly Expense");
 
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Expense To Junior's Checking Budget Item");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorCheckingBankAccountId);
-            Assert.AreEqual(300, bankAccount.MonthlyBudgetWithdrawals,
+            Assert.AreEqual(expectedEscrowValue, bankAccount.MonthlyBudgetWithdrawals,
                 "Junior's Room/Board Expense");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
-            Assert.AreEqual(300, bankAccount.MonthlyBudgetDeposits,
+            Assert.AreEqual(expectedEscrowValue, bankAccount.MonthlyBudgetDeposits,
                 "Junior's Escrow");
 
             //-----------------------------------------------------------------------------------------------------------
@@ -785,6 +787,63 @@ namespace RingSoft.HomeLogix.Tests
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
             Assert.AreEqual(400, bankAccount.MonthlyBudgetDeposits,
                 "Junior's Initial Savings Deposit");
+
+            //-----------------------------------------------------------------------------------------------------------
+
+            budgetItemViewModel.OnNewButton();
+            budgetItemViewModel.Id = SallyAllowanceBudgetItemId;
+            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Monthly Allowance");
+
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
+            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+                bankAccount.Description);
+
+            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
+            budgetItemViewModel.Amount = 100;
+            budgetItemViewModel.RecurringPeriod = 1;
+            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+
+            Assert.AreEqual(100, budgetItemViewModel.MonthlyAmount, "Sally's Monthly Allowance");
+
+            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+                "Saving Sally's Allowance Budget Item");
+
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
+            Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
+                "Sally's Allowance Deposit");
+
+            //-----------------------------------------------------------------------------------------------------------
+
+            budgetItemViewModel.OnNewButton();
+            budgetItemViewModel.Id = SallyGameFeeBudgetItemId;
+            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Game Fee");
+
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
+            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+                bankAccount.Description);
+
+            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
+            budgetItemViewModel.Amount = 600;
+            budgetItemViewModel.RecurringPeriod = 1;
+            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Years;
+            budgetItemViewModel.StartingDate = DateTime.Parse("08/01/2021");
+            budgetItemViewModel.DoEscrow = doEscrow;
+
+            var monthlyAmount = doEscrow ? (decimal)50 : 0;
+            Assert.AreEqual(monthlyAmount, budgetItemViewModel.MonthlyAmount, "Sally's Initial Monthly Expense");
+
+            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+                "Saving Expense To Sally's Checking Budget Item");
+
+            Assert.AreEqual(monthlyAmount, bankAccount.MonthlyBudgetWithdrawals,
+                "Junior's Room/Board Expense");
+
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
+            Assert.AreEqual(monthlyAmount, bankAccount.MonthlyBudgetDeposits,
+                "Junior's Escrow");
         }
 
         private void CreateAndTestBankAccounts()
