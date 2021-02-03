@@ -462,7 +462,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public DateTime? LastGenerationDate
         {
             get => _lastGenerationDate;
-            private set
+            set
             {
                 if (value == null)
                 {

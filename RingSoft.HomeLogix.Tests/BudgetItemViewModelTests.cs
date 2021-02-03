@@ -810,7 +810,7 @@ namespace RingSoft.HomeLogix.Tests
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Sally's Allowance Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
             Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
                 "Sally's Allowance Deposit");
 
@@ -824,6 +824,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
                 bankAccount.Description);
+            bankAccount.LastGenerationDate = DateTime.Parse("01/01/2021");
 
             budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
             budgetItemViewModel.Amount = 600;
@@ -832,18 +833,23 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.StartingDate = DateTime.Parse("08/01/2021");
             budgetItemViewModel.DoEscrow = doEscrow;
 
-            var monthlyAmount = doEscrow ? (decimal)50 : 0;
-            Assert.AreEqual(monthlyAmount, budgetItemViewModel.MonthlyAmount, "Sally's Initial Monthly Expense");
+            Assert.AreEqual(0, budgetItemViewModel.MonthlyAmount, "Sally's Initial Monthly Expense");
 
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Expense To Sally's Checking Budget Item");
 
-            Assert.AreEqual(monthlyAmount, bankAccount.MonthlyBudgetWithdrawals,
-                "Junior's Room/Board Expense");
+            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(SallyGameFeeBudgetItemId);
+            Assert.AreEqual(250, budgetItem.EscrowBalance);
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
-            Assert.AreEqual(monthlyAmount, bankAccount.MonthlyBudgetDeposits,
-                "Junior's Escrow");
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
+
+            Assert.AreEqual(250, bankAccount.EscrowBalance);
+
+            Assert.AreEqual(0, bankAccount.MonthlyBudgetWithdrawals,
+                "Sally's Monthly Withdrawals Expense");
+
+            Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
+                "Sally's Escrow");
         }
 
         private void CreateAndTestBankAccounts()
