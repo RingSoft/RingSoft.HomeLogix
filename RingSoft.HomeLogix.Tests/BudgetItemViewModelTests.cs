@@ -824,7 +824,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
                 bankAccount.Description);
-            bankAccount.LastGenerationDate = DateTime.Parse("01/01/2021");
+            bankAccount.LastGenerationDate = DateTime.Parse("12/31/2020");
 
             budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
             budgetItemViewModel.Amount = 600;
@@ -833,17 +833,19 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.StartingDate = DateTime.Parse("08/01/2021");
             budgetItemViewModel.DoEscrow = doEscrow;
 
-            Assert.AreEqual(0, budgetItemViewModel.MonthlyAmount, "Sally's Initial Monthly Expense");
+            decimal monthlyAmount = doEscrow ? 50 : 0;
+            Assert.AreEqual(monthlyAmount, budgetItemViewModel.MonthlyAmount, "Sally's Initial Monthly Expense");
 
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Expense To Sally's Checking Budget Item");
 
+            expectedEscrowValue = doEscrow ? 300 : 0;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(SallyGameFeeBudgetItemId);
-            Assert.AreEqual(250, budgetItem.EscrowBalance);
+            Assert.AreEqual(expectedEscrowValue, budgetItem.EscrowBalance);
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
 
-            Assert.AreEqual(250, bankAccount.EscrowBalance);
+            Assert.AreEqual(expectedEscrowValue, bankAccount.EscrowBalance);
 
             Assert.AreEqual(0, bankAccount.MonthlyBudgetWithdrawals,
                 "Sally's Monthly Withdrawals Expense");

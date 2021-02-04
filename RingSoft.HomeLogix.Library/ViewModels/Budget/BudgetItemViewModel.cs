@@ -451,6 +451,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private decimal? _dbEscrowBalance;
         private BankAccount _escrowToBankAccount;
         private BankAccount _dbEscrowToBankAccount;
+        private bool _dbDoEscrow;
 
         protected override void Initialize()
         {
@@ -490,7 +491,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemType = BudgetItemTypes.Expense;
             BankAutoFillValue = null;
             DbBankAccountId = 0;
-            DoEscrow = false;
+            DoEscrow = _dbDoEscrow = false;
             Amount = 0;
             RecurringPeriod = 1;
             RecurringType = BudgetItemRecurringTypes.Months;
@@ -598,6 +599,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
             _dbEscrowBalance = budgetItem.EscrowBalance;
+            _dbDoEscrow = budgetItem.DoEscrow;
 
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             return budgetItem;
@@ -768,6 +770,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     escrowToBankEscrowBalance += escrowBalance - dbEscrowBalance;
                     escrowToBank.EscrowBalance = escrowToBankEscrowBalance;
+                }
+                else if (_dbDoEscrow)
+                {
+                    decimal dbEscrowBalance = 0;
+                    if (_dbEscrowBalance != null)
+                        dbEscrowBalance = (decimal)_dbEscrowBalance;
+
+                    if (DbBankAccount != null && DbBankAccount.EscrowToBankAccount != null)
+
                 }
 
                 if (BudgetItemType == BudgetItemTypes.Transfer)
