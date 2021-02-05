@@ -771,14 +771,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     escrowToBankEscrowBalance += escrowBalance - dbEscrowBalance;
                     escrowToBank.EscrowBalance = escrowToBankEscrowBalance;
                 }
-                else if (_dbDoEscrow)
+                else if (_dbDoEscrow && newBankAccount != null)
                 {
                     decimal dbEscrowBalance = 0;
                     if (_dbEscrowBalance != null)
                         dbEscrowBalance = (decimal)_dbEscrowBalance;
 
-                    if (DbBankAccount != null && DbBankAccount.EscrowToBankAccount != null)
+                    var dbEscrowToBank = newBankAccount;
+                    if (DbBankAccount != null && DbBankAccount.Id != newBankAccountId)
+                    {
+                        dbEscrowToBank = DbBankAccount;
+                    }
+                    _dbEscrowToBankAccount = dbEscrowToBank.EscrowToBankAccount;
+                    if (_dbEscrowToBankAccount != null)
+                    {
+                        dbEscrowToBank = _dbEscrowToBankAccount;
+                        _dbEscrowToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                    }
 
+                    dbEscrowToBank.EscrowBalance -= dbEscrowBalance;
+                    EscrowBalance = 0;
                 }
 
                 if (BudgetItemType == BudgetItemTypes.Transfer)

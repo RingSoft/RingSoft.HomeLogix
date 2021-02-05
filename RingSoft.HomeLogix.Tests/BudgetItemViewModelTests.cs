@@ -527,6 +527,62 @@ namespace RingSoft.HomeLogix.Tests
                 nameof(TestChangeBudgetItemEscrow_Bank_DifferentEscrowToAndAmountChange));
         }
 
+        [TestMethod]
+        public void TestUnEscrow()
+        {
+            var dataRepository = new TestDataRepository();
+            AppGlobals.DataRepository = dataRepository;
+
+            CreateAndTestBankAccounts();
+
+            CreateAndTestBudgetItems();
+
+            var janeSavingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+            var oldJaneSavingsMonthlyDeposits = janeSavingsBankAccount.MonthlyBudgetDeposits;
+            var oldJaneSavingsEscrowBalance = janeSavingsBankAccount.EscrowBalance;
+
+            var janeCheckingBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var oldJaneCheckingMonthlyWithdrawals = janeCheckingBankAccount.MonthlyBudgetWithdrawals;
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.OnViewLoaded(
+                new TestBudgetItemView(nameof(TestUnEscrow)));
+            var escrowToSavingsBudgetItem = dataRepository.GetBudgetItem(EscrowToJaneSavingsBudgetItemId);
+
+            budgetItemViewModel.UnitTestLoadFromEntity(escrowToSavingsBudgetItem);
+            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+            var oldEscrowBalance = budgetItemViewModel.EscrowBalance;
+
+            budgetItemViewModel.DoEscrow = false;
+
+            budgetItemViewModel.DoSave(true);
+
+            escrowToSavingsBudgetItem = dataRepository.GetBudgetItem(EscrowToJaneSavingsBudgetItemId);
+
+            Assert.AreEqual(0,
+                escrowToSavingsBudgetItem.MonthlyAmount,
+                nameof(TestUnEscrow));
+
+            janeSavingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+            var newJaneSavingsMonthlyDeposits = janeSavingsBankAccount.MonthlyBudgetDeposits;
+            var newJaneSavingsEscrowBalance = janeSavingsBankAccount.EscrowBalance;
+
+            janeCheckingBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneCheckingMonthlyWithdrawals = janeCheckingBankAccount.MonthlyBudgetWithdrawals;
+
+            Assert.AreEqual(oldJaneSavingsMonthlyDeposits - oldMonthlyAmount,
+                newJaneSavingsMonthlyDeposits,
+                nameof(TestUnEscrow));
+
+            Assert.AreEqual(oldJaneSavingsEscrowBalance - oldEscrowBalance,
+                newJaneSavingsEscrowBalance,
+                nameof(TestUnEscrow));
+
+            Assert.AreEqual(oldJaneCheckingMonthlyWithdrawals - oldMonthlyAmount,
+                newJaneCheckingMonthlyWithdrawals,
+                nameof(TestUnEscrow));
+        }
+
         private static void CreateAndTestBudgetItems(bool doEscrow = true)
         {
             var budgetItemViewModel = new BudgetItemViewModel();
