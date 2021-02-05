@@ -909,7 +909,45 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool DeleteEntity()
         {
-            return AppGlobals.DataRepository.DeleteBudgetItem(Id);
+            DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
+            switch (BudgetItemType)
+            {
+                case BudgetItemTypes.Income:
+                    DbBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                    break;
+                case BudgetItemTypes.Expense:
+                    if (_dbDoEscrow)
+                    {
+                        var dbEscrowToBank = DbBankAccount;
+                        _dbEscrowToBankAccount = dbEscrowToBank.EscrowToBankAccount;
+                        if (_dbEscrowToBankAccount != null)
+                        {
+                            dbEscrowToBank = _dbEscrowToBankAccount;
+                            _dbEscrowToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                        }
+                        decimal dbEscrowBalance = 0;
+                        if (_dbEscrowBalance != null)
+                            dbEscrowBalance = (decimal)_dbEscrowBalance;
+
+                        dbEscrowToBank.EscrowBalance -= dbEscrowBalance;
+                    }
+
+                    DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                    break;
+                case BudgetItemTypes.Transfer:
+                    DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                    if (DbTransferToBankId != null)
+                    {
+                        DbTransferToBankAccount =
+                            AppGlobals.DataRepository.GetBankAccount((int) DbTransferToBankId, false);
+                        DbTransferToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount, _dbEscrowToBankAccount);
         }
 
         public override bool ValidateEntityProperty(FieldDefinition fieldDefinition, string valueToValidate)

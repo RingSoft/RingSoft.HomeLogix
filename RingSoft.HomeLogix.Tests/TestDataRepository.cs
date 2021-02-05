@@ -161,8 +161,18 @@ namespace RingSoft.HomeLogix.Tests
             return true;
         }
 
-        public bool DeleteBudgetItem(int budgetItemId)
+        public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount,
+            BankAccount dbTransferToBankAccount, BankAccount dbEscrowBankAccount)
         {
+            if (dbBankAccount != null)
+                SaveBankAccount(dbBankAccount);
+
+            if (dbTransferToBankAccount != null)
+                SaveBankAccount(dbTransferToBankAccount);
+
+            if (dbEscrowBankAccount != null)
+                SaveBankAccount(dbEscrowBankAccount);
+
             var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             if (budgetItem != null)
                 BudgetItems.Remove(budgetItem);
