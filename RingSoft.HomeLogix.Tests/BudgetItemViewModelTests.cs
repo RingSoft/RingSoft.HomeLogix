@@ -603,6 +603,7 @@ namespace RingSoft.HomeLogix.Tests
 
             var janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
             var oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+            var oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
             var budgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
             budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
@@ -614,6 +615,38 @@ namespace RingSoft.HomeLogix.Tests
 
             Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
                 "Delete Income, Update Deposits");
+
+            budgetItem = dataRepository.GetBudgetItem(GroceriesBudgetItemId);
+            budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+
+            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Expense");
+
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+
+            Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
+                "Delete Expense, Update Withdrawals");
+
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+
+            var jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var oldJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+
+            budgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+            budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+
+            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Transfer");
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+
+            newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+            Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
+                "Delete Transfer, Update Deposits");
+
+            var newJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+            Assert.AreEqual(oldJointWithdrawals - budgetItem.MonthlyAmount, newJointWithdrawals,
+                "Delete Transfer, Update Withdrawals");
         }
 
         private static void CreateAndTestBudgetItems(bool doEscrow = true)
