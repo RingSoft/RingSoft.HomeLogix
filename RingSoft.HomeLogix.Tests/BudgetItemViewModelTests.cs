@@ -647,6 +647,15 @@ namespace RingSoft.HomeLogix.Tests
             var newJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
             Assert.AreEqual(oldJointWithdrawals - budgetItem.MonthlyAmount, newJointWithdrawals,
                 "Delete Transfer, Update Withdrawals");
+
+            oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+            var janeSavingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId, false);
+            oldJaneDeposits = janeSavingsBankAccount.MonthlyBudgetDeposits;
+            var oldEscrowAmount = janeSavingsBankAccount.EscrowBalance;
+
+            budgetItem = dataRepository.GetBudgetItem(EscrowToJaneSavingsBudgetItemId);
+            budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Escrow");
         }
 
         private static void CreateAndTestBudgetItems(bool doEscrow = true)
