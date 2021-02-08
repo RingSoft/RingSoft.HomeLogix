@@ -656,6 +656,21 @@ namespace RingSoft.HomeLogix.Tests
             budgetItem = dataRepository.GetBudgetItem(EscrowToJaneSavingsBudgetItemId);
             budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Escrow");
+
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeSavingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+            newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+            newJaneDeposits = janeSavingsBankAccount.MonthlyBudgetDeposits;
+            var newEscrowAmount = janeSavingsBankAccount.EscrowBalance;
+
+            Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits, 
+                "Delete Escrow, Update Deposits.");
+
+            Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
+                "Delete Escrow, Update Withdrawals.");
+
+            Assert.AreEqual(oldEscrowAmount - budgetItem.EscrowBalance, newEscrowAmount,
+                "Delete Escrow, Update Escrow");
         }
 
         private static void CreateAndTestBudgetItems(bool doEscrow = true)

@@ -503,6 +503,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
+            DbTransferToBankAccount = null;
 
             _loading = false;
 
