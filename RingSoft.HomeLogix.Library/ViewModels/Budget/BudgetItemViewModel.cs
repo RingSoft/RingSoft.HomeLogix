@@ -503,7 +503,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
-            DbTransferToBankAccount = null;
 
             _loading = false;
 
@@ -903,7 +902,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount,
                 _escrowToBankAccount, _dbEscrowToBankAccount);
 
-            DbBankAccount = DbTransferToBankAccount = null;
+            if (result)
+                DbBankAccount = DbTransferToBankAccount = null;
 
             return result;
         }
@@ -948,7 +948,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            return AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount, _dbEscrowToBankAccount);
+            var result = AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount, _dbEscrowToBankAccount);
+
+            if (result)
+                DbBankAccount = DbTransferToBankAccount = null;
+
+            return result;
         }
 
         public override bool ValidateEntityProperty(FieldDefinition fieldDefinition, string valueToValidate)

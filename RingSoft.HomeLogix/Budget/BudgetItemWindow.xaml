@@ -64,7 +64,7 @@
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Type"/>
 
-                        <dec:TextComboBoxControl Grid.Row="0" Grid.Column="1" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
+                        <dec:TextComboBoxControl Grid.Row="0" Grid.Column="1" x:Name="BudgetItemTypeComboBox" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
 
                         <Label Grid.Row="0" Grid.Column="2" Content="Bank Account"/>
 
