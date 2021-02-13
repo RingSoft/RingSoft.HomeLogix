@@ -76,6 +76,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             set => BudgetItemTypeComboBoxItem = BudgetItemTypeComboBoxControlSetup.GetItem((int)value);
         }
 
+        private bool _budgetItemTypeEnabled;
+
+        public bool BudgetItemTypeEnabled
+        {
+            get => _budgetItemTypeEnabled;
+            set
+            {
+                if (_budgetItemTypeEnabled == value)
+                    return;
+
+                _budgetItemTypeEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private AutoFillSetup _bankAutoFillSetup;
 
@@ -453,6 +468,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private BankAccount _dbEscrowToBankAccount;
         private bool _dbDoEscrow;
 
+        public BudgetItemViewModel()
+        {
+            BudgetItemTypeEnabled = true;
+        }
+
         protected override void Initialize()
         {
             if (View is IBudgetItemView budgetExpenseView)
@@ -503,6 +523,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
+            BudgetItemTypeEnabled = true;
 
             _loading = false;
 
@@ -602,6 +623,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _dbDoEscrow = budgetItem.DoEscrow;
 
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
+            BudgetItemTypeEnabled = false;
             return budgetItem;
         }
 
