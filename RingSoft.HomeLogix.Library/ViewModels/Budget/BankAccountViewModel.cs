@@ -658,7 +658,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastGenerationDate = (DateTime)LastGenerationDate
             };
 
-            if (EscrowBankAccountAutoFillValue != null)
+            if (EscrowBankAccountAutoFillValue != null && EscrowBankAccountAutoFillValue.PrimaryKeyValue != null &&
+                EscrowBankAccountAutoFillValue.PrimaryKeyValue.IsValid)
             {
                 bankAccount.EscrowToBankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(EscrowBankAccountAutoFillValue.PrimaryKeyValue).Id;
