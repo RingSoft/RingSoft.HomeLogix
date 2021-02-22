@@ -661,7 +661,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             _loading = false;
-            SetViewMode(false, false);
+            SetViewMode(true, false);
 
             if (ReadOnlyMode)
             {
