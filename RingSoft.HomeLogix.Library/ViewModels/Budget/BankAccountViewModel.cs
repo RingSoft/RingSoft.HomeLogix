@@ -630,7 +630,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void GenerateRegisterItemsFromBudget()
         {
-            //TODO
+            var budgetItems = AppGlobals.DataRepository.GetBudgetItemsForBankAccount(Id);
+            if (budgetItems == null)
+                return;
+
+
         }
 
         protected override BankAccount GetEntityData()

@@ -925,7 +925,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _escrowToBankAccount, _dbEscrowToBankAccount);
 
             if (result)
-                DbBankAccount = DbTransferToBankAccount = null;
+                DbBankAccount = DbTransferToBankAccount = _escrowToBankAccount = _dbEscrowToBankAccount = null;
 
             return result;
         }
@@ -973,7 +973,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var result = AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount, _dbEscrowToBankAccount);
 
             if (result)
-                DbBankAccount = DbTransferToBankAccount = null;
+                DbBankAccount = DbTransferToBankAccount = _dbEscrowToBankAccount = null;
 
             return result;
         }

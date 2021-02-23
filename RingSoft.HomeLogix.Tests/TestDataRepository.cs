@@ -85,6 +85,11 @@ namespace RingSoft.HomeLogix.Tests
             return true;
         }
 
+        public IEnumerable<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public BudgetItem GetBudgetItem(int budgetItemId)
         {
             var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);

@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
+using System.Linq;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -14,6 +15,8 @@ namespace RingSoft.HomeLogix.Library
         bool SaveBankAccount(BankAccount bankAccount);
 
         bool DeleteBankAccount(int bankAccountId);
+
+        IEnumerable<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId);
 
         BudgetItem GetBudgetItem(int budgetItemId);
 
@@ -61,6 +64,13 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             var bankAccount = context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
             return context.DbContext.DeleteEntity(context.BankAccounts, bankAccount, "Deleting Bank Account");
+        }
+
+        public IEnumerable<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BudgetItems.Include(i => i.TransferToBankAccount)
+                .Where(w => w.BankAccountId == bankAccountId);
         }
 
         public BudgetItem GetBudgetItem(int budgetItemId)
