@@ -32,10 +32,12 @@ namespace RingSoft.HomeLogix.Budget
     ///     <MyNamespace:BankCustomPanel/>
     ///
     /// </summary>
-    [TemplatePart(Name = "Button1", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "GenerateButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "AddButton", Type = typeof(DbMaintenanceButton))]
     public class BankCustomPanel : DbMaintenanceCustomPanel
     {
-        public DbMaintenanceButton Button1 { get; set; }
+        public DbMaintenanceButton GenerateButton { get; set; }
+        public DbMaintenanceButton AddButton { get; set; }
 
         static BankCustomPanel()
         {
@@ -44,7 +46,17 @@ namespace RingSoft.HomeLogix.Budget
 
         public override void OnApplyTemplate()
         {
-            Button1 = GetTemplateChild(nameof(Button1)) as DbMaintenanceButton;
+            GenerateButton = GetTemplateChild(nameof(GenerateButton)) as DbMaintenanceButton;
+            AddButton = GetTemplateChild(nameof(AddButton)) as DbMaintenanceButton;
+
+            GenerateButton.ToolTip.HeaderText = "Generate Register Items From Budget (Alt + G)";
+            GenerateButton.ToolTip.DescriptionText = "Generate register items from budget.";
+
+            if (AddButton != null)
+            {
+                AddButton.ToolTip.HeaderText = "Add New Register Item (Alt + A)";
+                AddButton.ToolTip.DescriptionText = "Add a new miscellaneous item to the register.";
+            }
 
             base.OnApplyTemplate();
         }

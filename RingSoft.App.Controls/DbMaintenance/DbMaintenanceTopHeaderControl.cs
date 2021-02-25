@@ -40,7 +40,7 @@ namespace RingSoft.App.Controls
     [TemplatePart(Name = "FindButton", Type = typeof(DbMaintenanceButton))]
     [TemplatePart(Name = "NewButton", Type = typeof(DbMaintenanceButton))]
     [TemplatePart(Name = "CloseButton", Type = typeof(DbMaintenanceButton))]
-    [TemplatePart(Name = "CustomStackPanel", Type = typeof(StackPanel))]
+    [TemplatePart(Name = "CustomDockPanel", Type = typeof(DockPanel))]
     [TemplatePart(Name = "NextButton", Type = typeof(DbMaintenanceButton))]
     public class DbMaintenanceTopHeaderControl : Control
     {
@@ -69,7 +69,7 @@ namespace RingSoft.App.Controls
         public DbMaintenanceButton FindButton { get; set; }
         public DbMaintenanceButton NewButton { get; set; }
         public DbMaintenanceButton CloseButton { get; set; }
-        public StackPanel CustomStackPanel { get; set; }
+        public DockPanel CustomDockPanel { get; set; }
         public DbMaintenanceButton NextButton { get; set; }
 
         static DbMaintenanceTopHeaderControl()
@@ -88,7 +88,7 @@ namespace RingSoft.App.Controls
             NewButton = GetTemplateChild(nameof(NewButton)) as DbMaintenanceButton;
             CloseButton = GetTemplateChild(nameof(CloseButton)) as DbMaintenanceButton;
 
-            CustomStackPanel = GetTemplateChild(nameof(CustomStackPanel)) as StackPanel;
+            CustomDockPanel = GetTemplateChild(nameof(CustomDockPanel)) as DockPanel;
 
             NextButton = GetTemplateChild(nameof(NextButton)) as DbMaintenanceButton;
 
@@ -99,10 +99,10 @@ namespace RingSoft.App.Controls
 
         private void SetCustomPanel()
         {
-            if (CustomStackPanel != null && CustomPanel != null)
+            if (CustomDockPanel != null && CustomPanel != null)
             {
-                CustomStackPanel.Children.Clear();
-                CustomStackPanel.Children.Add(CustomPanel);
+                CustomDockPanel.Children.Clear();
+                CustomDockPanel.Children.Add(CustomPanel);
                 UpdateLayout();
             }
         }

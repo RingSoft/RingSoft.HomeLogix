@@ -18,6 +18,16 @@ namespace RingSoft.HomeLogix.Budget
             InitializeComponent();
 
             RegisterFormKeyControl(BankAccountControl);
+
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is BankCustomPanel bankCustomPanel)
+                {
+                    bankCustomPanel.GenerateButton.Command =
+                        BankAccountViewModel.GenerateRegisterItemsFromBudgetCommand;
+                    bankCustomPanel.AddButton.Command = BankAccountViewModel.AddNewRegisterItemCommand;
+                }
+            };
         }
 
         public override void ResetViewForNewRecord()

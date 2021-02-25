@@ -16,12 +16,20 @@
         <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
     </Window.DataContext>
     <Window.Resources>
-        <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
-            <Setter Property="DesignText" Value="$123,456,789.00"/>
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="FormatType" Value="Currency"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/Budget/BankAccountWindowHeaderTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
+                <Setter Property="DesignText" Value="$123,456,789.00"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="FormatType" Value="Currency"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+        </ResourceDictionary>
     </Window.Resources>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
@@ -61,24 +69,11 @@
 
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <StackPanel Orientation="Horizontal" Margin="0,5">
-                            <Button Content="_Add New Item" Command="{Binding AddNewRegisterItemCommand}" Width="185" Height="25"/>
-                            <Button Content="_Generate Items From Budget" Command="{Binding GenerateRegisterItemsFromBudgetCommand}" Margin="5,0,0,0" Height="25" Width="185"/>
-                            <Label Content="Escrow Bank Account"/>
-
-                            <lc:AutoFillControl Setup="{Binding EscrowBankAccountAutoFillSetup}" Value="{Binding Path=EscrowBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" DesignText="Jane's Savings Account" Width="225"/>
-
-                            <Label Content="Escrow Day of the Month"/>
-
-                            <dec:IntegerEditControl Value="{Binding Path=EscrowDayOfMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="30" DesignText="30" Width="25"/>
-
-                        </StackPanel>
-
-                        <deg:DataEntryGrid Grid.Row="1" x:Name="RegisterGrid" DataEntryCanUserAddRows="False" Manager="{Binding RegisterGridManager}">
+                        <deg:DataEntryGrid x:Name="RegisterGrid" DataEntryCanUserAddRows="False" Manager="{Binding RegisterGridManager}">
                             <deg:DataEntryGrid.Columns>
 
                                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ItemTypeColumnId}" ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="{x:Static lib:AppGlobals.MiscellaneousLineTypeId}" Width="110"/>
@@ -101,6 +96,19 @@
 
                             </deg:DataEntryGrid.Columns>
                         </deg:DataEntryGrid>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5">
+
+                            <Label Content="Escrow Bank Account"/>
+
+                            <lc:AutoFillControl Setup="{Binding EscrowBankAccountAutoFillSetup}" Value="{Binding Path=EscrowBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" DesignText="Jane's Savings Account" Width="225"/>
+
+                            <Label Content="Escrow Day of the Month"/>
+
+                            <dec:IntegerEditControl Value="{Binding Path=EscrowDayOfMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="30" DesignText="30" Width="25"/>
+
+                        </StackPanel>
+
 
                     </Grid>
 
@@ -173,6 +181,7 @@
 
                     </Grid>
                 </TabItem>
+                
                 <dec:DataEntryMemoTabItem Header="Notes">
                     <Grid>
                         <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

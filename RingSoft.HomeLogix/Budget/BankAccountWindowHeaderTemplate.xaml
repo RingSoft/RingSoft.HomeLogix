@@ -3,9 +3,8 @@
                     xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                     xmlns:local="clr-namespace:RingSoft.HomeLogix.Budget">
 
-    <Style TargetType="{x:Type ac:DbMaintenanceButton}" BasedOn="{StaticResource SubButton}" x:Key="CustomButtonStyle">
-        <Setter Property="Height" Value="20"/>
-    </Style>
+    <BitmapImage x:Key="GearsImage" UriSource="/RingSoft.HomeLogix;component/Resources/gears.png" />
+    <BitmapImage x:Key="AddImage" UriSource="/RingSoft.HomeLogix;component/Resources/add.png" />
 
     <Style TargetType="{x:Type local:BankCustomPanel}">
         <Setter Property="Template">
@@ -15,9 +14,18 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
 
-                        <StackPanel Orientation="Vertical" Width="100">
-                            <ac:DbMaintenanceButton x:Name="Button1" Style="{StaticResource CustomButtonStyle}" Content="Button1" ImageSource="{StaticResource LeftImage}"/>
-                        </StackPanel>
+                        <Grid VerticalAlignment="Stretch">
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <ac:DbMaintenanceButton x:Name="GenerateButton" Content="_Generate Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
+
+                            <ac:DbMaintenanceButton Grid.Row="1" x:Name="AddButton" Content="_Add Register Item" ImageSource="{StaticResource AddImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                        </Grid>
 
                     </Border>
                 </ControlTemplate>

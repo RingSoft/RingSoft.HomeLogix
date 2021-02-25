@@ -5,9 +5,12 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
+using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -442,6 +445,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private LookupDefinition<BudgetItemLookup, BudgetItem> _budgetItemsLookupDefinition;
+
+        public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookupDefinition
+        {
+            get => _budgetItemsLookupDefinition;
+            set
+            {
+                if (_budgetItemsLookupDefinition == value)
+                    return;
+
+                _budgetItemsLookupDefinition = value;
+                OnPropertyChanged(nameof(BudgetItemsLookupDefinition), false);
+            }
+        }
+
+        private LookupCommand _budgetItemsLookupCommand;
+
+        public LookupCommand BudgetItemsLookupCommand
+        {
+            get => _budgetItemsLookupCommand;
+            set
+            {
+                if (_budgetItemsLookupCommand == value)
+                    return;
+
+                _budgetItemsLookupCommand = value;
+                OnPropertyChanged(nameof(BudgetItemsLookupCommand), false);
+            }
+        }
+
         private string _notes;
 
         public string Notes
@@ -484,6 +517,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public RelayCommand GenerateRegisterItemsFromBudgetCommand { get; }
 
+        public RelayCommand BudgetItemsAddModifyCommand { get; }
+
         private bool _loading;
 
         public BankAccountViewModel()
@@ -491,6 +526,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             AddNewRegisterItemCommand = new RelayCommand(AddNewRegisterItem);
 
             GenerateRegisterItemsFromBudgetCommand = new RelayCommand(GenerateRegisterItemsFromBudget);
+
+            BudgetItemsAddModifyCommand = new RelayCommand(OnAddModifyBudgetItems);
 
             LastGenerationDate = null;
         }
@@ -507,6 +544,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowBankAccountAutoFillSetup =
                 new AutoFillSetup(
                     AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
+
+            BudgetItemsLookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
 
             RegisterGridManager = new BankAccountRegisterGridManager(this);
 
@@ -548,6 +587,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RegisterGridManager.SetupForNewRecord();
             BankAccountView.EnableRegisterGrid(false);
 
+            BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Clear);
+
             _loading = false;
         }
 
@@ -556,6 +597,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Id = newEntity.Id;
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, bankAccount.Description);
+
+            BudgetItemsLookupDefinition.FilterDefinition.ClearFixedFilters();
+            BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
+                Id).SetEndLogic(EndLogics.Or);
+            BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
+                Conditions.Equals, Id);
+
+            BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
             return bankAccount;
         }
 
@@ -691,6 +741,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override bool DeleteEntity()
         {
             return AppGlobals.DataRepository.DeleteBankAccount(Id);
+        }
+
+        public void OnAddModifyBudgetItems()
+        {
+            if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
+                BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
     }
 }
