@@ -475,6 +475,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private LookupDataSourceChanged _budgetItemsDataSourceChanged;
+
+        public LookupDataSourceChanged BudgetItemsDataSourceChanged
+        {
+            get => _budgetItemsDataSourceChanged;
+            set
+            {
+                if (_budgetItemsDataSourceChanged == value)
+                    return;
+
+                _budgetItemsDataSourceChanged = value;
+                OnPropertyChanged();
+                RefreshBudgetTotals();
+            }
+        }
+
+
         private string _notes;
 
         public string Notes
@@ -666,9 +683,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void RefreshBudgetTotals()
         {
-            //MonthlyBudgetDeposits = 0;
-            //MonthlyBudgetWithdrawals = 0;
-            //EscrowBalance = entity.EscrowBalance;
+            var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
+
+            MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits;
+            MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
+            EscrowBalance = bankAccount.EscrowBalance;
+
             //RegisterGridManager.Refresh
             CalculateTotals();
         }

@@ -9,6 +9,7 @@
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+        xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="BankAccountMaintenanceWindow" Width="1000" Height="600">
@@ -182,6 +183,28 @@
                     </Grid>
                 </TabItem>
                 
+                <TabItem Header="Budget">
+                    <DockPanel>
+                        <Button Content="_Add/Modify" Command="{Binding BudgetItemsAddModifyCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+
+                        <lc:LookupControl LookupDefinition="{Binding BudgetItemsLookupDefinition}" Command="{Binding BudgetItemsLookupCommand}" DataSourceChanged="{Binding Path=BudgetItemsDataSourceChanged, Mode=OneWayToSource}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:BudgetItemLookup}}" Header="Budget Item" DesignText="Very Large Description" Width="300"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:BudgetItemLookup}}" Header="Item&#10;Type" DesignText="Income xxx" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf RecurringPeriod, Type={x:Type lm:BudgetItemLookup}}" Header="Recurring&#10;Period" DesignText="100" Width="50"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf RecurringType, Type={x:Type lm:BudgetItemLookup}}" Header="Recurring&#10;Type" DesignText="Months(s) xxx" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Amount, Type={x:Type lm:BudgetItemLookup}}" Header="Amount" DesignText="$123,456,789.00" Width="100" TextAlignment="Right"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
+                </TabItem>
+
                 <dec:DataEntryMemoTabItem Header="Notes">
                     <Grid>
                         <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
