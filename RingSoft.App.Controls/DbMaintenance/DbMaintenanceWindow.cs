@@ -171,7 +171,8 @@ namespace RingSoft.App.Controls
             {
                 case LookupFormModes.Add:
                 case LookupFormModes.View:
-                    _addOnFlyMode = true;
+                    if (!e.FromLookupControl)
+                        _addOnFlyMode = true;
                     break;
             }
             ViewModel.InitializeFromLookupData(e);
@@ -239,6 +240,27 @@ namespace RingSoft.App.Controls
         public void ShowRecordSavedMessage()
         {
             MessageBox.Show("Record Saved!", "Record Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        protected override void OnReadOnlyModeSet(bool readOnlyValue)
+        {
+            if (readOnlyValue)
+            {
+                var focusedElement = FocusManager.GetFocusedElement(this);
+                if (focusedElement == null || !focusedElement.IsEnabled)
+                    DbMaintenanceTopHeaderControl.NextButton.Focus();
+
+                DbMaintenanceTopHeaderControl.SaveSelectButton.Content = "Se_lect";
+            }
+            else
+            {
+                DbMaintenanceTopHeaderControl.SaveSelectButton.Content = "Save/Se_lect";
+                if (DbMaintenanceTopHeaderControl.IsKeyboardFocusWithin)
+                    WPFControlsGlobals.SendKey(Key.Tab);
+            }
+
+            DbMaintenanceTopHeaderControl.ReadOnlyMode = readOnlyValue;
+            base.OnReadOnlyModeSet(readOnlyValue);
         }
     }
 }

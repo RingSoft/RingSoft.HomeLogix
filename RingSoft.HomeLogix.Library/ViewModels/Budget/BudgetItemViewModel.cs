@@ -7,6 +7,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
@@ -496,7 +497,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RecurringTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             RecurringTypeComboBoxControlSetup.LoadFromEnum<BudgetItemRecurringTypes>();
 
-            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
+            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup)
+            {
+                AddViewParameter = ViewModelInput
+            };
 
             _loading = false;
 
@@ -509,7 +513,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             Id = 0;
             BudgetItemType = BudgetItemTypes.Expense;
+
             BankAutoFillValue = null;
+            if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
+            {
+                if (LookupAddViewArgs.ParentWindowPrimaryKeyValue.TableDefinition ==
+                    AppGlobals.LookupContext.BankAccounts)
+                {
+                    var bankAccount =
+                        AppGlobals.LookupContext.BankAccounts.GetEntityFromPrimaryKeyValue(LookupAddViewArgs
+                            .ParentWindowPrimaryKeyValue);
+                    bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccount.Id, false);
+
+                    BankAutoFillValue =
+                        new AutoFillValue(LookupAddViewArgs.ParentWindowPrimaryKeyValue, bankAccount.Description);
+                }
+            }
+
+
             DbBankAccountId = 0;
             DoEscrow = _dbDoEscrow = false;
             Amount = 0;

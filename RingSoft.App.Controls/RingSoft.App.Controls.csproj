@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Down.png" />
     <None Remove="Resources\Erase.png" />
     <None Remove="Resources\Exit.png" />
     <None Remove="Resources\Left.png" />
@@ -18,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Down.png" />
     <Resource Include="Resources\Erase.png" />
     <Resource Include="Resources\Exit.png" />
     <Resource Include="Resources\Left.png" />
@@ -32,8 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="1.13.23" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="1.13.23.3" />
+    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="1.13.24" />
+    <PackageReference Include="RingSoft.DbMaintenance" Version="1.13.24" />
   </ItemGroup>
 
   <ItemGroup>

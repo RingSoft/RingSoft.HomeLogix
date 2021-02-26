@@ -10,6 +10,7 @@
     <BitmapImage x:Key="LeftImage" UriSource="/RingSoft.App.Controls;component/Resources/Left.png" />
     <BitmapImage x:Key="SaveImage" UriSource="/RingSoft.App.Controls;component/Resources/save32.png" />
     <BitmapImage x:Key="SaveSelectImage" UriSource="/RingSoft.App.Controls;component/Resources/saveselect32.png" />
+    <BitmapImage x:Key="DownImage" UriSource="/RingSoft.App.Controls;component/Resources/Down.png" />
     <BitmapImage x:Key="DeleteImage" UriSource="/RingSoft.App.Controls;component/Resources/Erase.png" />
     <BitmapImage x:Key="FindImage" UriSource="/RingSoft.App.Controls;component/Resources/Search32.png" />
     <BitmapImage x:Key="NewImage" UriSource="/RingSoft.App.Controls;component/Resources/New file.png" />
@@ -97,6 +98,14 @@
         <Setter Property="BorderBrush" Value="Black"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="IsTabStop" Value="False"/>
+        <Style.Triggers>
+            <Trigger Property="ReadOnlyMode" Value="True">
+                <Setter Property="SaveSelectImage" Value="{StaticResource DownImage}"/>
+            </Trigger>
+            <Trigger Property="ReadOnlyMode" Value="False">
+                <Setter Property="SaveSelectImage" Value="{StaticResource SaveSelectImage}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using RingSoft.DataEntryControls.WPF;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -42,7 +44,7 @@ namespace RingSoft.App.Controls
     [TemplatePart(Name = "CloseButton", Type = typeof(DbMaintenanceButton))]
     [TemplatePart(Name = "CustomDockPanel", Type = typeof(DockPanel))]
     [TemplatePart(Name = "NextButton", Type = typeof(DbMaintenanceButton))]
-    public class DbMaintenanceTopHeaderControl : Control
+    public class DbMaintenanceTopHeaderControl : Control, IReadOnlyControl
     {
         public static readonly DependencyProperty CustomPanelProperty =
             DependencyProperty.RegisterAttached(nameof(CustomPanel), typeof(DbMaintenanceCustomPanel),
@@ -60,6 +62,34 @@ namespace RingSoft.App.Controls
         {
             var topHeaderControl = (DbMaintenanceTopHeaderControl)obj;
             topHeaderControl.SetCustomPanel();
+        }
+
+        public static readonly DependencyProperty ReadOnlyModeProperty =
+            DependencyProperty.RegisterAttached(nameof(ReadOnlyMode), typeof(bool),
+                typeof(DbMaintenanceTopHeaderControl));
+
+        public bool ReadOnlyMode
+        {
+            get => (bool)GetValue(ReadOnlyModeProperty);
+            set => SetValue(ReadOnlyModeProperty, value);
+        }
+
+        public static readonly DependencyProperty SaveSelectImageProperty =
+            DependencyProperty.RegisterAttached(nameof(SaveSelectImage), typeof(ImageSource), typeof(DbMaintenanceTopHeaderControl),
+                new FrameworkPropertyMetadata(null, SaveSelectImageChangedCallback));
+
+        public ImageSource SaveSelectImage
+        {
+            get => (ImageSource)GetValue(SaveSelectImageProperty);
+            set => SetValue(SaveSelectImageProperty, value);
+        }
+
+        private static void SaveSelectImageChangedCallback(DependencyObject obj,
+            DependencyPropertyChangedEventArgs args)
+        {
+            var topHeaderControl = (DbMaintenanceTopHeaderControl)obj;
+            if (topHeaderControl.SaveSelectButton != null)
+                topHeaderControl.SaveSelectButton.ImageSource = topHeaderControl.SaveSelectImage;
         }
 
         public DbMaintenanceButton PreviousButton { get; set; }
@@ -105,6 +135,10 @@ namespace RingSoft.App.Controls
                 CustomDockPanel.Children.Add(CustomPanel);
                 UpdateLayout();
             }
+        }
+
+        public void SetReadOnlyMode(bool readOnlyValue)
+        {
         }
     }
 }

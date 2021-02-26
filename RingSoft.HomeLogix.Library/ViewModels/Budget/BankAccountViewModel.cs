@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using RingSoft.App.Library;
@@ -530,6 +531,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         #endregion
 
+        public ViewModelInput ViewModelInput { get; set; }
+
         public RelayCommand AddNewRegisterItemCommand { get; }
 
         public RelayCommand GenerateRegisterItemsFromBudgetCommand { get; }
@@ -557,6 +560,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BankAccountView.EnableRegisterGrid(false);
 
+            if (LookupAddViewArgs != null && LookupAddViewArgs.InputParameter is ViewModelInput viewModelInput)
+            {
+                ViewModelInput = viewModelInput;
+            }
+            else
+            {
+                ViewModelInput = new ViewModelInput();
+            }
+            ViewModelInput.BankAccountViewModels.Add(this);
 
             EscrowBankAccountAutoFillSetup =
                 new AutoFillSetup(
@@ -621,8 +633,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
                 Conditions.Equals, Id);
 
-            BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
+            ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             return bankAccount;
         }
 
@@ -663,6 +676,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _loading = false;
             CalculateTotals();
+
+            if (ReadOnlyMode)
+                ControlsGlobals.UserInterface.ShowMessageBox(
+                    "This Bank Account is being modified in another window.  Editing not allowed.", "Editing not allowed",
+                    RsMessageBoxIcons.Exclamation);
         }
 
         private void CalculateTotals()
@@ -767,6 +785,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
                 BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            base.OnWindowClosing(e);
+            if (!e.Cancel)
+                ViewModelInput.BankAccountViewModels.Remove(this);
         }
     }
 }

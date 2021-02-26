@@ -38,6 +38,10 @@ namespace RingSoft.HomeLogix
             {
                 ShowAddOnTheFlyWindow(new BankAccountMaintenanceWindow(), e);
             }
+            else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BudgetItems)
+            {
+                ShowAddOnTheFlyWindow(new BudgetItemWindow(), e);
+            }
         }
 
         private void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
