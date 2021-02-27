@@ -49,12 +49,12 @@ namespace RingSoft.HomeLogix.Budget
             GenerateButton = GetTemplateChild(nameof(GenerateButton)) as DbMaintenanceButton;
             AddButton = GetTemplateChild(nameof(AddButton)) as DbMaintenanceButton;
 
-            GenerateButton.ToolTip.HeaderText = "Generate Register Items From Budget (Alt + G)";
+            GenerateButton.ToolTip.HeaderText = "Generate Register Items From Budget (Alt + R)";
             GenerateButton.ToolTip.DescriptionText = "Generate register items from budget.";
 
             if (AddButton != null)
             {
-                AddButton.ToolTip.HeaderText = "Add New Register Item (Alt + A)";
+                AddButton.ToolTip.HeaderText = "Add New Register Item (Alt + I)";
                 AddButton.ToolTip.DescriptionText = "Add a new miscellaneous item to the register.";
             }
 

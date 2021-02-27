@@ -190,15 +190,17 @@
                         <lc:LookupControl LookupDefinition="{Binding BudgetItemsLookupDefinition}" Command="{Binding BudgetItemsLookupCommand}" DataSourceChanged="{Binding Path=BudgetItemsDataSourceChanged, Mode=OneWayToSource}">
                             <lc:LookupControl.LookupColumns>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:BudgetItemLookup}}" Header="Budget Item" DesignText="Very Large Description" Width="350"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:BudgetItemLookup}}" Header="Budget Item" DesignText="Very Large Description" Width="300"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:BudgetItemLookup}}" Header="Item&#10;Type" DesignText="Income xxx" Width="100"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf RecurringPeriod, Type={x:Type lm:BudgetItemLookup}}" Header="Recurring&#10;Period" DesignText="100" Width="100" TextAlignment="Center"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf RecurringPeriod, Type={x:Type lm:BudgetItemLookup}}" Header="Recurs&#10;Every" DesignText="100" Width="100" TextAlignment="Center"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf RecurringType, Type={x:Type lm:BudgetItemLookup}}" Header="Recurring&#10;Type" DesignText="Months(s) xxx" Width="100"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Amount, Type={x:Type lm:BudgetItemLookup}}" Header="Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type lm:BudgetItemLookup}}" Header="Monthly&#10;Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 
                             </lc:LookupControl.LookupColumns>
                         </lc:LookupControl>

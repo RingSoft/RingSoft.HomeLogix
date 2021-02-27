@@ -81,6 +81,9 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId)
                 .HasDescription("Transfer To Bank Account");
+
+            BudgetItems.GetFieldDefinition(p => p.MonthlyAmount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
         }
 
     }

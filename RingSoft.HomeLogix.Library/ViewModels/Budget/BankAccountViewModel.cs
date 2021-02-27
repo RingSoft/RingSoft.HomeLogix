@@ -575,6 +575,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
 
             BudgetItemsLookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
+            BudgetItemsLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
 
             RegisterGridManager = new BankAccountRegisterGridManager(this);
 
