@@ -850,7 +850,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             //Same transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - _dbMonthlyAmount;
-                            if (DbTransferToBankAccount == null)
+                            if (newTransferToBankAccount.Id == DbTransferToBankId || DbTransferToBankId == 0)
                             {
                                 //Same new transfer to bank account.
                                 newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - _dbMonthlyAmount;
