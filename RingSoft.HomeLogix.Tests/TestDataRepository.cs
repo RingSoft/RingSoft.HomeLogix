@@ -111,8 +111,6 @@ namespace RingSoft.HomeLogix.Tests
                     DoEscrow = budgetItem.DoEscrow,
                     TransferToBankAccountId = budgetItem.TransferToBankAccountId,
                     TransferToBankAccount = null,
-                    LastCompletedDate = budgetItem.LastCompletedDate,
-                    NextTransactionDate = budgetItem.NextTransactionDate,
                     MonthlyAmount = budgetItem.MonthlyAmount,
                     CurrentMonthAmount = budgetItem.CurrentMonthAmount,
                     PreviousMonthAmount = budgetItem.PreviousMonthAmount,

@@ -52,8 +52,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public BudgetItemRecurringTypes RecurringType { get; set; }
 
-        [Required]
-        public DateTime StartingDate { get; set; }
+        public DateTime? StartingDate { get; set; }
 
         public DateTime? EndingDate { get; set; }
 
@@ -64,11 +63,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public int? TransferToBankAccountId { get; set; }
 
         public virtual BankAccount TransferToBankAccount { get; set; }
-
-        public DateTime? LastCompletedDate { get; set; }
-
-        [Required]
-        public DateTime NextTransactionDate { get; set; }
 
         [Required]
         public decimal MonthlyAmount { get; set; }
