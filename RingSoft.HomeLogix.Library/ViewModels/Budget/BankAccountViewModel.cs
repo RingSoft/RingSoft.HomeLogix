@@ -107,7 +107,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _escrowBalance = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(EscrowBalance), false);
             }
         }
 
@@ -124,7 +124,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
 
                 _newProjectedEndingBalance = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(NewProjectedEndingBalance), false);
             }
         }
 
@@ -139,7 +139,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _projectedEndingBalanceDifference = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProjectedEndingBalanceDifference), false);
             }
         }
 
@@ -155,7 +155,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _projectedLowestBalanceDate = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProjectedLowestBalanceDate), false);
             }
         }
 
@@ -170,7 +170,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _projectedLowestBalanceAmount = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(ProjectedLowestBalanceAmount), false);
             }
         }
 
@@ -186,7 +186,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _monthlyBudgetDeposits = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(MonthlyBudgetDeposits), false);
             }
         }
 
@@ -201,7 +201,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _monthlyBudgetWithdrawals = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(MonthlyBudgetWithdrawals), false);
             }
         }
 
@@ -216,7 +216,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _monthlyBudgetDifference = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(MonthlyBudgetDifference), false);
             }
         }
 
@@ -231,7 +231,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentMonthDeposits = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentMonthDeposits), false);
             }
         }
 
@@ -246,7 +246,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentMonthWithdrawals = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentMonthWithdrawals), false);
             }
         }
 
@@ -261,7 +261,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
                 
                 _currentMonthDifference = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentMonthDifference), false);
             }
         }
 
@@ -276,7 +276,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _previousMonthDeposits = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviousMonthDeposits), false);
             }
         }
 
@@ -291,7 +291,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _previousMonthWithdrawals = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviousMonthWithdrawals), false);
             }
         }
 
@@ -306,7 +306,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _previousMonthDifference = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviousMonthDifference), false);
             }
         }
 
@@ -321,7 +321,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentYearDeposits = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentYearDeposits), false);
             }
         }
 
@@ -336,7 +336,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentYearWithdrawals = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentYearWithdrawals), false);
             }
         }
 
@@ -351,7 +351,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _currentYearDifference = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(CurrentYearDifference), false);
             }
         }
 
@@ -366,7 +366,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _previousYearDeposits = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviousYearDeposits), false);
             }
         }
 
@@ -382,7 +382,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _previousYearWithdrawals = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviousYearWithdrawals), false);
             }
         }
 
@@ -397,7 +397,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _previousYearDifference = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(PreviousYearDifference), false);
             }
         }
 
@@ -487,7 +487,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _budgetItemsDataSourceChanged = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(BudgetItemsDataSourceChanged), false);
                 RefreshBudgetTotals();
             }
         }
@@ -793,6 +793,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnWindowClosing(e);
             if (!e.Cancel)
                 ViewModelInput.BankAccountViewModels.Remove(this);
+        }
+
+        protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
+        {
+            if (raiseDirtyFlag)
+            {
+
+            }
+            base.OnPropertyChanged(propertyName, raiseDirtyFlag);
         }
     }
 }

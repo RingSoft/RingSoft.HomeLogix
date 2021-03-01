@@ -92,6 +92,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 budgetItem.MonthlyAmount = Math.Round(budgetItem.MonthlyAmount,
                     CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
             }
+            else if (!budgetItem.DoEscrow)
+            {
+                budgetItem.EscrowBalance = 0;
+            }
 
             processorData.YearlyAmount = Math.Round(monthlyAmount * 12,
                 CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);

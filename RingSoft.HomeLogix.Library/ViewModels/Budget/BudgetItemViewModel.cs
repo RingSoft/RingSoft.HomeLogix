@@ -2,14 +2,13 @@
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.ComponentModel;
 using System.Linq;
-using RingSoft.DbLookup.DataProcessor;
-using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -205,7 +204,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _startingDate = value;
-                SetViewMode();
+                SetViewMode(true);
                 OnPropertyChanged();
             }
         }
@@ -257,22 +256,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 OnPropertyChanged();
             }
         }
-
-        private bool _doEscrowEnabled;
-
-        public bool DoEscrowEnabled
-        {
-            get => _doEscrowEnabled;
-            set
-            {
-                if (_doEscrowEnabled == value)
-                    return;
-
-                _doEscrowEnabled = value;
-                OnPropertyChanged(nameof(DoEscrowEnabled), false);
-            }
-        }
-
 
         private decimal? _escrowBalance;
 
@@ -499,7 +482,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public BudgetItemViewModel()
         {
-            DoEscrowEnabled = DateControlsEnabled = BudgetItemTypeEnabled = true;
+            DateControlsEnabled = BudgetItemTypeEnabled = true;
         }
 
         protected override void Initialize()
@@ -572,7 +555,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
-            DoEscrowEnabled = DateControlsEnabled = BudgetItemTypeEnabled = true;
+            DateControlsEnabled = BudgetItemTypeEnabled = true;
 
             _loading = false;
 
@@ -636,7 +619,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 BudgetItem = GetBudgetItem()
             };
 
-            if (EscrowVisible)
+            if (EscrowVisible && BankAutoFillValue?.PrimaryKeyValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
             {
                 budgetItemData.BudgetItem.BankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(BankAutoFillValue.PrimaryKeyValue).Id;
@@ -683,7 +666,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (StartingDate == null)
             {
-                DoEscrowEnabled = DateControlsEnabled = false;
+                DateControlsEnabled = false;
             }
 
             return budgetItem;
@@ -731,7 +714,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 if (StartingDate != null)
                 {
-                    DoEscrowEnabled = DateControlsEnabled = true;
+                    DateControlsEnabled = true;
                 }
             }
         }
