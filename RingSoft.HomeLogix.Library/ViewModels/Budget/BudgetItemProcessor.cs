@@ -50,53 +50,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var budgetItem = processorData.BudgetItem;
 
             var monthlyAmount = CalculateBudgetItemMonthlyAmount(budgetItem);
-            if (processorData.BudgetItem.DoEscrow && budgetItem.StartingDate != null)
-            {
-                var months = 1;
-                switch (budgetItem.RecurringType)
-                {
-                    case BudgetItemRecurringTypes.Months:
-                        months = budgetItem.RecurringPeriod;
-                        break;
-                    case BudgetItemRecurringTypes.Years:
-                        months = budgetItem.RecurringPeriod * 12;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                var startDate = budgetItem.StartingDate;
-                //var currentDate = budgetItem.LastCompletedDate;
-                //var startDate = budgetItem.StartingDate.AddMonths(-months);
-                //var currentDate = budgetItem.LastCompletedDate;
-                //if (currentDate == null)
-                //{
-                var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId, false);
-                var currentDate = bankAccount.LastGenerationDate;
-                //}
-
-                var monthsToGo =
-                    RingSoftAppGlobals.CalculateMonthsInTimeSpan((DateTime)startDate, (DateTime) currentDate);
-
-                var monthsAccrued = months - Math.Ceiling(monthsToGo);
-                budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal) monthsAccrued,
-                    CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
-
-                if (budgetItem.EscrowBalance > budgetItem.Amount)
-                    budgetItem.EscrowBalance = budgetItem.Amount;
-                if (budgetItem.EscrowBalance < 0)
-                    budgetItem.EscrowBalance = 0;
-
-                if (budgetItem.EndingDate != null && startDate > (DateTime) budgetItem.EndingDate)
-                    budgetItem.EscrowBalance = 0;
-                budgetItem.MonthlyAmount = Math.Round(budgetItem.MonthlyAmount,
-                    CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
-            }
-            else if (!budgetItem.DoEscrow)
-            {
-                budgetItem.EscrowBalance = 0;
-            }
-
             processorData.YearlyAmount = Math.Round(monthlyAmount * 12,
                 CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
         }
@@ -140,7 +93,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (monthlyAmount.Equals(0))
                 monthlyAmount = dailyAmount * 30;
 
-            budgetItem.MonthlyAmount = budgetItem.DoEscrow ? monthlyAmount : Math.Round(monthlyAmount, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
+            budgetItem.MonthlyAmount = Math.Round(monthlyAmount, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
                 
             return monthlyAmount;
         }
