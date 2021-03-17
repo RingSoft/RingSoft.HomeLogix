@@ -134,7 +134,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _amount = value;
 
-                SetViewMode();
+                SetViewMode(true);
                 OnPropertyChanged();
             }
         }
@@ -550,7 +550,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             StartingDate = DateTime.Today;
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
-            EscrowBalance = _dbEscrowBalance = null;
+            _dbEscrowBalance = null;
             _escrowToBankAccount = null;
 
             TransferToBankAccountAutoFillValue = null;
@@ -562,7 +562,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             SetViewMode();
         }
 
-        private void SetViewMode(bool fromSetEscrow = false)
+        private void SetViewMode(bool fromSetEscrow = false, bool calculateEscrowBalance = true)
         {
             if (_loading)
                 return;
@@ -631,6 +631,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BudgetItemProcessor.CalculateBudgetItem(budgetItemData);
 
+            if (calculateEscrowBalance)
+                EscrowBalance = budgetItemData.BudgetItem.EscrowBalance;
+
+            if (MaintenanceMode == DbMaintenanceModes.AddMode && StartingDate == null)
+                EscrowBalance = 0;
+
             MonthlyAmount = budgetItemData.BudgetItem.MonthlyAmount;
             YearlyAmount = budgetItemData.YearlyAmount;
             CurrentMonthPercent = budgetItemData.CurrentMonthPercent;
@@ -660,6 +666,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
+            StartingDate = budgetItem.StartingDate;
 
             if (StartingDate == null)
             {
@@ -682,7 +689,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Amount = entity.Amount;
             RecurringPeriod = entity.RecurringPeriod;
             RecurringType = entity.RecurringType;
-            StartingDate = entity.StartingDate;
             EndingDate = entity.EndingDate;
             DoEscrow = entity.DoEscrow;
             MonthlyAmount = entity.MonthlyAmount;
@@ -701,7 +707,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             _loading = false;
-            SetViewMode(true);
+            SetViewMode(true, false);
 
             if (ReadOnlyMode)
             {
@@ -749,7 +755,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 newBankAccount.MonthlyBudgetDeposits += MonthlyAmount - _dbMonthlyAmount;
                             break;
                         case BudgetItemTypes.Expense:
-                            if (newBankAccount != null)
+                            if (newBankAccount != null && !DoEscrow)
                             {
                                 newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - _dbMonthlyAmount;
                             }
@@ -764,12 +770,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 else
                 {
                     DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
-                    
+
                     switch (BudgetItemType)
                     {
                         case BudgetItemTypes.Income:
                             DbBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
-                            if (newBankAccount != null) 
+                            if (newBankAccount != null)
                                 newBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                             break;
                         case BudgetItemTypes.Expense:
@@ -791,7 +797,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 if (DoEscrow && newBankAccount != null)
                 {
-                    var escrowBalance = (decimal) 0;
+                    var escrowBalance = (decimal)0;
                     var dbEscrowBalance = (decimal)0;
                     var dbMonthlyAmount = _dbMonthlyAmount;
 
@@ -992,6 +998,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             dbEscrowToBank = _dbEscrowToBankAccount;
                             _dbEscrowToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                            DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
                         }
                         decimal dbEscrowBalance = 0;
                         if (_dbEscrowBalance != null)
@@ -999,15 +1006,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                         dbEscrowToBank.EscrowBalance -= dbEscrowBalance;
                     }
-
-                    DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                    else
+                    {
+                        DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                    }
                     break;
                 case BudgetItemTypes.Transfer:
                     DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
                     if (DbTransferToBankId != null)
                     {
                         DbTransferToBankAccount =
-                            AppGlobals.DataRepository.GetBankAccount((int) DbTransferToBankId, false);
+                            AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
                         DbTransferToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
                     }
 
