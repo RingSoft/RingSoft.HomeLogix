@@ -654,6 +654,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
+            _loading = true;
             Id = newEntity.Id;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
@@ -673,6 +674,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 DateControlsEnabled = false;
             }
 
+            _loading = false;
             return budgetItem;
         }
 
@@ -976,7 +978,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _escrowToBankAccount, _dbEscrowToBankAccount);
 
             if (result)
+            {
                 DbBankAccount = DbTransferToBankAccount = _escrowToBankAccount = _dbEscrowToBankAccount = null;
+                if (entity.BankAccountId != DbBankAccountId && LookupAddViewArgs != null)
+                    PopulatePrimaryKeyControls(entity,
+                        AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity));
+            }
 
             return result;
         }
