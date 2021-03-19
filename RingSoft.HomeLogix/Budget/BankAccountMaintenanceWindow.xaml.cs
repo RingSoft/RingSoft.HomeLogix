@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System;
+using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
@@ -39,6 +40,18 @@ namespace RingSoft.HomeLogix.Budget
         public void EnableRegisterGrid(bool value)
         {
             //RegisterGrid.IsEnabled = value;
+        }
+
+        public DateTime? GetGenerateToDate(DateTime nextGenerateToDate)
+        {
+            var generateToWindow = new BankAccountGenerateToWindow
+            {
+                GenerateToDate = nextGenerateToDate
+            };
+            if (generateToWindow.ShowDialog() == true)
+                return generateToWindow.GenerateToDate;
+
+            return null;
         }
     }
 }

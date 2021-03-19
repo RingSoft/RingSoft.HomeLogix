@@ -19,6 +19,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     public interface IBankAccountView : IDbMaintenanceView
     {
         void EnableRegisterGrid(bool value);
+
+        DateTime? GetGenerateToDate(DateTime nextGenerateToDate);
     }
 
     public class NewRegisterItem
@@ -719,6 +721,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void GenerateRegisterItemsFromBudget()
         {
+            var lastGenerationDate = LastGenerationDate;
+            if (lastGenerationDate == null)
+            {
+                lastGenerationDate = DateTime.Today;
+            }
+            var generateToDate = BankAccountView.GetGenerateToDate(lastGenerationDate.Value.AddMonths(1));
+
+            if (generateToDate == null)
+                return;
+            
             var budgetItems = AppGlobals.DataRepository.GetBudgetItemsForBankAccount(Id);
             if (budgetItems == null)
                 return;

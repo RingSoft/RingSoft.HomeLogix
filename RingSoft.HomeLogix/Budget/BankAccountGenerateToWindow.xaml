@@ -1,0 +1,19 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.Budget.BankAccountGenerateToWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                mc:Ignorable="d"
+        Title="Bank Account Register Generate To" SizeToContent="WidthAndHeight"
+        Style="{StaticResource BaseWindowStyle}"
+                DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <StackPanel Margin="5">
+        <Label HorizontalAlignment="Left" Content="Generate Register Items from budget up to the following date:"/>
+        <dec:DateEditControl Value="{Binding Path=GenerateToDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowNullValue="False" HorizontalAlignment="Left" DesignText="12/31/2021" Width="100"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="OkButton" Content="_OK" IsDefault="True" Width="50"/>
+            <Button x:Name="CancelButton" Content="_Cancel" Width="50"/>
+        </StackPanel>
+    </StackPanel>
+</dec:BaseWindow>
