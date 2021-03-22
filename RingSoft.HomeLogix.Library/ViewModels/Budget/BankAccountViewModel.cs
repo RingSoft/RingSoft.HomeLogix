@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -735,7 +736,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (budgetItems == null)
                 return;
 
+            var registerItems = new List<BankAccountRegisterItem>();
+            foreach (var budgetItem in budgetItems)
+            {
+                registerItems.AddRange(
+                    BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem, generateToDate.Value));
+            }
 
+            RegisterGridManager.AddGeneratedRegisterItems(registerItems.OrderBy(o => o.ItemDate));
         }
 
         protected override BankAccount GetEntityData()

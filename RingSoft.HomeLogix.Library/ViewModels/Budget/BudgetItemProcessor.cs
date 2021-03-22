@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using RingSoft.App.Library;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -143,6 +144,67 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             budgetItem.MonthlyAmount = budgetItem.DoEscrow ? monthlyAmount : Math.Round(monthlyAmount, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
 
             return monthlyAmount;
+        }
+
+        public static List<BankAccountRegisterItem> GenerateBankAccountRegisterItems(BudgetItem budgetItem,
+            DateTime generateToDate)
+        {
+            var result = new List<BankAccountRegisterItem>();
+
+            if (budgetItem.StartingDate != null)
+            {
+                var amount = budgetItem.Amount;
+                switch (budgetItem.Type)
+                {
+                    case BudgetItemTypes.Income:
+                        break;
+                    case BudgetItemTypes.Expense:
+                    case BudgetItemTypes.Transfer:
+                        amount = -amount;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                while (budgetItem.StartingDate < generateToDate)
+                {
+                    var registerItem = new BankAccountRegisterItem
+                    {
+                        RegisterId = Guid.NewGuid().ToString(),
+                        BankAccountId = budgetItem.BankAccountId,
+                        ItemType = BankAccountRegisterItemTypes.BudgetItem,
+                        ItemDate = budgetItem.StartingDate.Value,
+                        BudgetItemId = budgetItem.Id,
+                        BudgetItem = budgetItem,
+                        TransferToBankAccountId = budgetItem.TransferToBankAccountId,
+                        Description = budgetItem.Description,
+                        ProjectedAmount = amount
+                    };
+
+                    switch (budgetItem.RecurringType)
+                    {
+                        case BudgetItemRecurringTypes.Days:
+                            budgetItem.StartingDate = budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod);
+                            break;
+                        case BudgetItemRecurringTypes.Weeks:
+                            budgetItem.StartingDate =
+                                budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod * 7);
+                            break;
+                        case BudgetItemRecurringTypes.Months:
+                            budgetItem.StartingDate =
+                                budgetItem.StartingDate.Value.AddMonths(budgetItem.RecurringPeriod);
+                            break;
+                        case BudgetItemRecurringTypes.Years:
+                            budgetItem.StartingDate =
+                                budgetItem.StartingDate.Value.AddYears(budgetItem.RecurringPeriod);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    result.Add(registerItem);
+                }
+            }
+            return result;
         }
     }
 }

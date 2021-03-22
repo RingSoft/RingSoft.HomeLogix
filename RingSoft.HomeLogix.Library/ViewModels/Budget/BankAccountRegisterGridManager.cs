@@ -1,4 +1,6 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System;
+using System.Collections.Generic;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -49,7 +51,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override DbMaintenanceDataEntryGridRow<BankAccountRegisterItem> ConstructNewRowFromEntity(BankAccountRegisterItem entity)
         {
-            throw new System.NotImplementedException();
+            switch (entity.ItemType)
+            {
+                case BankAccountRegisterItemTypes.BudgetItem:
+                    return new BankAccountRegisterGridBudgetItemRow(this);
+                case BankAccountRegisterItemTypes.Miscellaneous:
+                    break;
+                case BankAccountRegisterItemTypes.TansferToBankAccount:
+                    break;
+                case BankAccountRegisterItemTypes.MonthlyEscrow:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            throw new ArgumentOutOfRangeException();
+        }
+
+        public void AddGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> registerItems)
+        {
+            LoadGrid(registerItems);
         }
     }
 }
