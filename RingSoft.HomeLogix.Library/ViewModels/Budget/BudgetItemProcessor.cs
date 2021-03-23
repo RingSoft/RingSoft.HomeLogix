@@ -146,8 +146,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return monthlyAmount;
         }
 
-        public static List<BankAccountRegisterItem> GenerateBankAccountRegisterItems(BudgetItem budgetItem,
-            DateTime generateToDate)
+        public static List<BankAccountRegisterItem> GenerateBankAccountRegisterItems(int bankAccountId,
+            BudgetItem budgetItem, DateTime generateToDate)
         {
             var result = new List<BankAccountRegisterItem>();
 
@@ -159,8 +159,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     case BudgetItemTypes.Income:
                         break;
                     case BudgetItemTypes.Expense:
-                    case BudgetItemTypes.Transfer:
                         amount = -amount;
+                        break;
+                    case BudgetItemTypes.Transfer:
+                        if (budgetItem.BankAccountId == bankAccountId)
+                            amount = -amount;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

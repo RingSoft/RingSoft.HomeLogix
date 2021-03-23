@@ -70,7 +70,8 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BudgetItems.Include(i => i.TransferToBankAccount)
-                .Where(w => w.BankAccountId == bankAccountId);
+                .Where(w => w.BankAccountId == bankAccountId
+                || w.TransferToBankAccountId == bankAccountId);
         }
 
         public BudgetItem GetBudgetItem(int budgetItemId)

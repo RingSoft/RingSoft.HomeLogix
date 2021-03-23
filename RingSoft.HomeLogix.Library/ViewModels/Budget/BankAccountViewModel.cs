@@ -740,7 +740,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var budgetItem in budgetItems)
             {
                 registerItems.AddRange(
-                    BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem, generateToDate.Value));
+                    BudgetItemProcessor.GenerateBankAccountRegisterItems(Id, budgetItem, generateToDate.Value));
             }
 
             RegisterGridManager.AddGeneratedRegisterItems(registerItems.OrderBy(o => o.ItemDate));
