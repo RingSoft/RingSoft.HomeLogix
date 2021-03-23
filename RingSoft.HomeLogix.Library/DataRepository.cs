@@ -25,6 +25,8 @@ namespace RingSoft.HomeLogix.Library
 
         bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
             BankAccount dbEscrowBankAccount);
+
+        IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId);
     }
 
     public class DataRepository : IDataRepository
@@ -145,6 +147,12 @@ namespace RingSoft.HomeLogix.Library
 
             var budgetItem = context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             return context.DbContext.DeleteEntity(context.BudgetItems, budgetItem, "Deleting Budget Item");
+        }
+
+        public IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
         }
     }
 }

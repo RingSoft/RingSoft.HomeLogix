@@ -182,5 +182,10 @@ namespace RingSoft.HomeLogix.Tests
 
             return true;
         }
+
+        public IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

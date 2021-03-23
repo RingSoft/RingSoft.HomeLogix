@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -69,7 +70,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void AddGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> registerItems)
         {
-            LoadGrid(registerItems);
+            Grid.SetBulkInsertMode();
+            foreach (var bankAccountRegisterItem in registerItems)
+            {
+                AddRowFromEntity(bankAccountRegisterItem);
+            }
+            var newList = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate).ToList();
+            SetupForNewRecord();
+            foreach (var registerGridRow in newList)
+            {
+                AddRow(registerGridRow);
+            }
+            Grid.SetBulkInsertMode(false);
         }
     }
 }

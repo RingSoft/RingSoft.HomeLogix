@@ -743,7 +743,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(Id, budgetItem, generateToDate.Value));
             }
 
-            RegisterGridManager.AddGeneratedRegisterItems(registerItems.OrderBy(o => o.ItemDate));
+            RegisterGridManager.AddGeneratedRegisterItems(registerItems);
         }
 
         protected override BankAccount GetEntityData()

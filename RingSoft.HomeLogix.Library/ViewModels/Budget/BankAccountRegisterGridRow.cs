@@ -110,6 +110,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
+            RegisterId = entity.RegisterId;
             ItemDate = entity.ItemDate;
             TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
             ProjectedAmount = entity.ProjectedAmount;

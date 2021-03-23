@@ -209,5 +209,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             return result;
         }
+
+        public static List<BankAccountRegisterItem> GenerateEscrowRegisterItems(BankAccount bankAccount,
+            DateTime generateToDate)
+        {
+            var result = new List<BankAccountRegisterItem>();
+
+            return result;
+        }
     }
 }
