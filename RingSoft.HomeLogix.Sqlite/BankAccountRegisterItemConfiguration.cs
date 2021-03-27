@@ -17,7 +17,7 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.ItemType).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.ProjectedAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.RegisterId).HasColumnType(SqliteConstants.StringColumnType);
-            builder.Property(p => p.TransferToBankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.TransferRegisterId).HasColumnType(SqliteConstants.StringColumnType);
 
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.RegisterItems)
@@ -27,11 +27,6 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.HasOne(p => p.BudgetItem)
                 .WithMany(p => p.RegisterItems)
                 .HasForeignKey(p => p.BudgetItemId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(p => p.TransferToBankAccount)
-                .WithMany(p => p.BankAccountTransferFromRegisterItems)
-                .HasForeignKey(p => p.TransferToBankAccountId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

@@ -7,7 +7,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
     {
         BudgetItem = 0,
         Miscellaneous = 1,
-        TansferToBankAccount = 2,
+        TransferToBankAccount = 2,
         MonthlyEscrow = 3
     }
 
@@ -33,10 +33,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual BudgetItem BudgetItem { get; set; }
 
-        public int? TransferToBankAccountId { get; set; }
-
-        public virtual BankAccount TransferToBankAccount { get; set; }
-
         [MaxLength(50)]
         public string Description { get; set; }
 
@@ -44,5 +40,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public decimal ProjectedAmount { get; set; }
 
         public decimal? ActualAmount { get; set; }
+
+        public string TransferRegisterId { get; set; }
     }
 }

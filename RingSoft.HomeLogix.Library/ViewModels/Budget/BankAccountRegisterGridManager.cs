@@ -58,7 +58,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return new BankAccountRegisterGridBudgetItemRow(this);
                 case BankAccountRegisterItemTypes.Miscellaneous:
                     break;
-                case BankAccountRegisterItemTypes.TansferToBankAccount:
+                case BankAccountRegisterItemTypes.TransferToBankAccount:
                     break;
                 case BankAccountRegisterItemTypes.MonthlyEscrow:
                     break;

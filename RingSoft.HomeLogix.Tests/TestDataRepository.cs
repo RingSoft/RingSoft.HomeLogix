@@ -185,7 +185,7 @@ namespace RingSoft.HomeLogix.Tests
 
         public IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId)
         {
-            throw new System.NotImplementedException();
+            return BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
         }
     }
 }

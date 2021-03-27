@@ -737,6 +737,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return;
 
             var registerItems = new List<BankAccountRegisterItem>();
+            registerItems.AddRange(
+                BudgetItemProcessor.GenerateEscrowRegisterItems(GetEntityData(), generateToDate.Value));
+
             foreach (var budgetItem in budgetItems)
             {
                 registerItems.AddRange(

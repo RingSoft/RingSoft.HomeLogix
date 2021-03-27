@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using RingSoft.App.Library;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -146,76 +147,185 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return monthlyAmount;
         }
 
-        public static List<BankAccountRegisterItem> GenerateBankAccountRegisterItems(int bankAccountId,
+        public static IEnumerable<BankAccountRegisterItem> GenerateBankAccountRegisterItems(int bankAccountId,
             BudgetItem budgetItem, DateTime generateToDate)
         {
             var result = new List<BankAccountRegisterItem>();
+            if (budgetItem.StartingDate == null) 
+                return result;
 
-            if (budgetItem.StartingDate != null)
+            var amount = budgetItem.Amount;
+            switch (budgetItem.Type)
             {
-                var amount = budgetItem.Amount;
-                switch (budgetItem.Type)
-                {
-                    case BudgetItemTypes.Income:
-                        break;
-                    case BudgetItemTypes.Expense:
+                case BudgetItemTypes.Income:
+                    break;
+                case BudgetItemTypes.Expense:
+                    amount = -amount;
+                    break;
+                case BudgetItemTypes.Transfer:
+                    if (budgetItem.BankAccountId == bankAccountId)
                         amount = -amount;
-                        break;
-                    case BudgetItemTypes.Transfer:
-                        if (budgetItem.BankAccountId == bankAccountId)
-                            amount = -amount;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
-                while (budgetItem.StartingDate < generateToDate)
+            while (budgetItem.StartingDate < generateToDate)
+            {
+                if (budgetItem.EndingDate != null && budgetItem.EndingDate < budgetItem.StartingDate)
+                    break;
+
+                var registerItem = new BankAccountRegisterItem
                 {
-                    var registerItem = new BankAccountRegisterItem
+                    RegisterId = Guid.NewGuid().ToString(),
+                    BankAccountId = budgetItem.BankAccountId,
+                    ItemType = BankAccountRegisterItemTypes.BudgetItem,
+                    ItemDate = budgetItem.StartingDate.Value,
+                    BudgetItemId = budgetItem.Id,
+                    Description = budgetItem.Description,
+                    ProjectedAmount = amount
+                };
+
+                result.Add(registerItem);
+
+                if (budgetItem.Type == BudgetItemTypes.Transfer && budgetItem.TransferToBankAccountId != null)
+                {
+                    var transferToRegisterId = Guid.NewGuid().ToString();
+                    var transferFromRegisterId = registerItem.RegisterId;
+
+                    registerItem.TransferRegisterId = transferToRegisterId;
+
+                    registerItem = new BankAccountRegisterItem
                     {
-                        RegisterId = Guid.NewGuid().ToString(),
-                        BankAccountId = budgetItem.BankAccountId,
+                        RegisterId = transferToRegisterId,
+                        BankAccountId = budgetItem.TransferToBankAccountId.Value,
                         ItemType = BankAccountRegisterItemTypes.BudgetItem,
                         ItemDate = budgetItem.StartingDate.Value,
                         BudgetItemId = budgetItem.Id,
-                        BudgetItem = budgetItem,
-                        TransferToBankAccountId = budgetItem.TransferToBankAccountId,
                         Description = budgetItem.Description,
-                        ProjectedAmount = amount
+                        ProjectedAmount = -amount,
+                        TransferRegisterId = transferFromRegisterId
                     };
-
-                    switch (budgetItem.RecurringType)
-                    {
-                        case BudgetItemRecurringTypes.Days:
-                            budgetItem.StartingDate = budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod);
-                            break;
-                        case BudgetItemRecurringTypes.Weeks:
-                            budgetItem.StartingDate =
-                                budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod * 7);
-                            break;
-                        case BudgetItemRecurringTypes.Months:
-                            budgetItem.StartingDate =
-                                budgetItem.StartingDate.Value.AddMonths(budgetItem.RecurringPeriod);
-                            break;
-                        case BudgetItemRecurringTypes.Years:
-                            budgetItem.StartingDate =
-                                budgetItem.StartingDate.Value.AddYears(budgetItem.RecurringPeriod);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
                     result.Add(registerItem);
                 }
+
+                AdvanceBudgetItemStartingDate(budgetItem);
             }
             return result;
         }
 
-        public static List<BankAccountRegisterItem> GenerateEscrowRegisterItems(BankAccount bankAccount,
+        private static void AdvanceBudgetItemStartingDate(BudgetItem budgetItem)
+        {
+            if (budgetItem.StartingDate == null)
+                return;
+
+            budgetItem.StartingDate = budgetItem.RecurringType switch
+            {
+                BudgetItemRecurringTypes.Days => budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod),
+                BudgetItemRecurringTypes.Weeks => budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod * 7),
+                BudgetItemRecurringTypes.Months => budgetItem.StartingDate.Value.AddMonths(budgetItem.RecurringPeriod),
+                BudgetItemRecurringTypes.Years => budgetItem.StartingDate.Value.AddYears(budgetItem.RecurringPeriod),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        }
+
+        public static IEnumerable<BankAccountRegisterItem> GenerateEscrowRegisterItems(BankAccount bankAccount,
             DateTime generateToDate)
         {
             var result = new List<BankAccountRegisterItem>();
+            var escrowItems = AppGlobals.DataRepository.GetEscrowBudgetItems(bankAccount.Id).ToList();
+            if (!escrowItems.Any())
+                return result;
+
+            var escrowDayOfMonth = bankAccount.EscrowDayOfMonth ?? 1;
+            var lastDayOfFeb = false;
+            if (bankAccount.LastGenerationDate.Month == 2 && escrowDayOfMonth > 28)
+            {
+                lastDayOfFeb = true;
+                escrowDayOfMonth = DateTime.DaysInMonth(bankAccount.LastGenerationDate.Year,
+                    bankAccount.LastGenerationDate.Month);
+            }
+
+            var startDate = new DateTime(bankAccount.LastGenerationDate.Year, bankAccount.LastGenerationDate.Month,
+                escrowDayOfMonth);
+
+            while (startDate < generateToDate)
+            {
+                decimal escrowToBankAmount = 0;
+                decimal escrowFromBankAmount = 0;
+                foreach (var escrowItem in escrowItems)
+                {
+                    if (escrowItem.EndingDate != null && escrowItem.EndingDate.Value > startDate ||
+                        escrowItem.EndingDate == null)
+                    {
+                        escrowToBankAmount += escrowItem.MonthlyAmount;
+                        escrowItem.EscrowBalance += escrowItem.MonthlyAmount;//This is only temporary
+                        
+                        if (escrowItem.StartingDate != null)
+                        {
+                            if (escrowItem.StartingDate.Value.AddMonths(1) < startDate
+                                && escrowItem.EscrowBalance != null)
+                            {
+                                escrowFromBankAmount += escrowItem.EscrowBalance.Value;
+                                escrowItem.EscrowBalance = 0;
+                                AdvanceBudgetItemStartingDate(escrowItem);
+                            }
+                        }
+                    }
+                }
+
+                AddEscrowRegisterItems(bankAccount, startDate, escrowToBankAmount, "Monthly Escrow", result);
+
+                if (escrowFromBankAmount > 0)
+                {
+                    AddEscrowRegisterItems(bankAccount, startDate, -escrowFromBankAmount, "Transfer From Escrow",
+                        result);
+                }
+                startDate = startDate.AddMonths(1);
+                if (lastDayOfFeb)
+                {
+                    if (bankAccount.EscrowDayOfMonth != null)
+                        startDate = new DateTime(startDate.Year, 3, bankAccount.EscrowDayOfMonth.Value);
+                    lastDayOfFeb = false;
+                }
+            }
 
             return result;
+        }
+
+        private static void AddEscrowRegisterItems(BankAccount bankAccount, DateTime date, decimal escrowAmount,
+            string registerItemDescription, List<BankAccountRegisterItem> registerItems)
+        {
+            var registerItem = new BankAccountRegisterItem
+            {
+                RegisterId = Guid.NewGuid().ToString(),
+                BankAccountId = bankAccount.Id,
+                ItemType = BankAccountRegisterItemTypes.MonthlyEscrow,
+                ItemDate = date,
+                Description = registerItemDescription,
+                ProjectedAmount = -escrowAmount
+            };
+            registerItems.Add(registerItem);
+
+            if (bankAccount.EscrowToBankAccountId == null) 
+                return;
+
+            var escrowToBankRegisterId = Guid.NewGuid().ToString();
+            var escrowFromBankRegisterId = registerItem.RegisterId;
+
+            registerItem.TransferRegisterId = escrowToBankRegisterId;
+
+            registerItem = new BankAccountRegisterItem
+            {
+                RegisterId = escrowToBankRegisterId,
+                BankAccountId = bankAccount.EscrowToBankAccountId.Value,
+                ItemType = BankAccountRegisterItemTypes.MonthlyEscrow,
+                ItemDate = date,
+                Description = registerItemDescription,
+                ProjectedAmount = escrowAmount,
+                TransferRegisterId = escrowFromBankRegisterId
+            };
+            registerItems.Add(registerItem);
         }
     }
 }
