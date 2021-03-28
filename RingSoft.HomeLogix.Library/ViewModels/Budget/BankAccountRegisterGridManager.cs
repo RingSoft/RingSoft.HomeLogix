@@ -61,7 +61,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterItemTypes.TransferToBankAccount:
                     break;
                 case BankAccountRegisterItemTypes.MonthlyEscrow:
-                    break;
+                    return new BankAccountRegisterGridEscrowRow(this);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
