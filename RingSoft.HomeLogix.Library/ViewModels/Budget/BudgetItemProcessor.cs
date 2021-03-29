@@ -256,18 +256,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         escrowItem.EndingDate == null)
                     {
                         escrowToBankAmount += escrowItem.MonthlyAmount;
-                        escrowItem.EscrowBalance += escrowItem.MonthlyAmount;//This is only temporary
-                        
+                        var incrementEscrow = true;
                         if (escrowItem.StartingDate != null)
                         {
-                            if (escrowItem.StartingDate.Value.AddMonths(1) < startDate
+                            if (escrowItem.StartingDate.Value < startDate.AddMonths(1)
                                 && escrowItem.EscrowBalance != null)
                             {
                                 escrowFromBankAmount += escrowItem.EscrowBalance.Value;
                                 escrowItem.EscrowBalance = 0;
                                 AdvanceBudgetItemStartingDate(escrowItem);
+                                incrementEscrow = false;
                             }
                         }
+                        if (incrementEscrow)
+                            escrowItem.EscrowBalance += escrowItem.MonthlyAmount;//This is only temporary
                     }
                 }
 
