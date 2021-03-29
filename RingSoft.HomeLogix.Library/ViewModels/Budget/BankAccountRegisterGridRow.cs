@@ -113,7 +113,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RegisterId = entity.RegisterId;
             ItemDate = entity.ItemDate;
             TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
-            ProjectedAmount = entity.ProjectedAmount;
+            ProjectedAmount = Math.Abs(entity.ProjectedAmount);
             ActualAmount = entity.ActualAmount;
         }
     }

@@ -13,6 +13,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
         }
 
+        public override void LoadFromEntity(BankAccountRegisterItem entity)
+        {
+            EscrowDescription = entity.Description;
+            base.LoadFromEntity(entity);
+        }
+
         public override bool ValidateRow()
         {
             throw new System.NotImplementedException();

@@ -27,6 +27,8 @@ namespace RingSoft.HomeLogix.Library
             BankAccount dbEscrowBankAccount);
 
         IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId);
+
+        //bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem>)
     }
 
     public class DataRepository : IDataRepository
