@@ -572,7 +572,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             switch (BudgetItemType)
             {
                 case BudgetItemTypes.Income:
-                    EscrowVisible = false;
+                    DoEscrow = false;
                     break;
                 case BudgetItemTypes.Expense:
                     switch (RecurringType)

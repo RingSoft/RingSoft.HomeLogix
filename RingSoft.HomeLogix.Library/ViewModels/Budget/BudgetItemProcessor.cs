@@ -160,11 +160,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BudgetItemTypes.Income:
                     break;
                 case BudgetItemTypes.Expense:
-                    amount = -amount;
-                    break;
                 case BudgetItemTypes.Transfer:
-                    if (budgetItem.BankAccountId == bankAccountId)
-                        amount = -amount;
+                    amount = -amount;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

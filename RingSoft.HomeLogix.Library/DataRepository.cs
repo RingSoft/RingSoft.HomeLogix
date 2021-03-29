@@ -16,7 +16,7 @@ namespace RingSoft.HomeLogix.Library
 
         bool DeleteBankAccount(int bankAccountId);
 
-        IEnumerable<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId);
+        List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId);
 
         BudgetItem GetBudgetItem(int budgetItemId);
 
@@ -68,12 +68,12 @@ namespace RingSoft.HomeLogix.Library
             return context.DbContext.DeleteEntity(context.BankAccounts, bankAccount, "Deleting Bank Account");
         }
 
-        public IEnumerable<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
+        public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BudgetItems.Include(i => i.TransferToBankAccount)
                 .Where(w => w.BankAccountId == bankAccountId
-                || w.TransferToBankAccountId == bankAccountId);
+                || w.TransferToBankAccountId == bankAccountId).ToList();
         }
 
         public BudgetItem GetBudgetItem(int budgetItemId)
