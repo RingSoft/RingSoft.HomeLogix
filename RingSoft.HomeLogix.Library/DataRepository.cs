@@ -28,7 +28,9 @@ namespace RingSoft.HomeLogix.Library
 
         IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId);
 
-        //bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem>)
+        bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            IEnumerable<BudgetItem> budgetItems,
+            List<BankAccountRegisterItem> registerItemsToDelete = null);
     }
 
     public class DataRepository : IDataRepository
@@ -155,6 +157,17 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
+        }
+
+        public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems, IEnumerable<BudgetItem> budgetItems,
+            List<BankAccountRegisterItem> registerItemsToDelete = null)
+        {
+            var context = AppGlobals.GetNewDbContext();
+
+            if (registerItemsToDelete != null && registerItemsToDelete.Any())
+                context.DbContext.RemoveRange(registerItemsToDelete);
+
+            return context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
         }
     }
 }

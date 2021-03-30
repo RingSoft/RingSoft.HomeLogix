@@ -746,7 +746,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(Id, budgetItem, generateToDate.Value));
             }
 
-            //Save budget and register here.
+            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, budgetItems))
+                return;
 
             foreach (var registerItem in registerItems)
             {
