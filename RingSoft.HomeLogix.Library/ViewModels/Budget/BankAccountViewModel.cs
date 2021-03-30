@@ -692,10 +692,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
-            //NewProjectedEndingBalance = 0;
+            RegisterGridManager.CalculateProjectedBalanceData();
             ProjectedEndingBalanceDifference = NewProjectedEndingBalance - CurrentProjectedEndingBalance;
-            //ProjectedLowestBalanceDate = null;
-            //ProjectedLowestBalanceAmount = 0;
             
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
             CurrentMonthDifference = CurrentMonthDeposits - CurrentMonthWithdrawals;
@@ -710,8 +708,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
             EscrowBalance = bankAccount.EscrowBalance;
-
-            //RegisterGridManager.Refresh
             CalculateTotals();
         }
 

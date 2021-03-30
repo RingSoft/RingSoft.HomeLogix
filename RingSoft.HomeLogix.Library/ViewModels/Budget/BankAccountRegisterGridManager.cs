@@ -84,5 +84,41 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             Grid.SetBulkInsertMode(false);
         }
+
+        public void CalculateProjectedBalanceData()
+        {
+            var newBalance = BankAccountViewModel.CurrentBalance - BankAccountViewModel.EscrowBalance.GetValueOrDefault(0);
+            var lowestBalance = newBalance;
+            var lowestBalanceDate = DateTime.Today;
+
+            var rows = Rows.OfType<BankAccountRegisterGridRow>();
+            foreach (var bankAccountRegisterGridRow in rows)
+            {
+                switch (bankAccountRegisterGridRow.TransactionType)
+                {
+                    case TransactionTypes.Deposit:
+                        newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                        break;
+                    case TransactionTypes.Withdrawal:
+                        newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                bankAccountRegisterGridRow.Balance = newBalance;
+                if (newBalance < lowestBalance)
+                {
+                    lowestBalance = newBalance;
+                    lowestBalanceDate = bankAccountRegisterGridRow.ItemDate;
+                }
+            }
+
+            BankAccountViewModel.NewProjectedEndingBalance = newBalance;
+            BankAccountViewModel.ProjectedLowestBalanceAmount = lowestBalance;
+            BankAccountViewModel.ProjectedLowestBalanceDate = lowestBalanceDate;
+            
+            Grid.RefreshDataSource();
+        }
     }
 }

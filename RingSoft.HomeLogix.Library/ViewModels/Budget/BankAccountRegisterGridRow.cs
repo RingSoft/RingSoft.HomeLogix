@@ -26,7 +26,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool Completed { get; private set; }
 
-        public decimal Balance { get; private set; }
+        public decimal Balance { get; set; }
 
         public decimal? ActualAmount { get; private set; }
 
