@@ -52,7 +52,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override DbMaintenanceDataEntryGridRow<BankAccountRegisterItem> ConstructNewRowFromEntity(BankAccountRegisterItem entity)
         {
-            switch (entity.ItemType)
+            var itemType = (BankAccountRegisterItemTypes) entity.ItemType;
+            switch (itemType)
             {
                 case BankAccountRegisterItemTypes.BudgetItem:
                     return new BankAccountRegisterGridBudgetItemRow(this);

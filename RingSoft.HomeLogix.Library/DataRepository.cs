@@ -167,6 +167,18 @@ namespace RingSoft.HomeLogix.Library
             if (registerItemsToDelete != null && registerItemsToDelete.Any())
                 context.DbContext.RemoveRange(registerItemsToDelete);
 
+            foreach (var budgetItem in budgetItems)
+            {
+                if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem,
+                    $"Saving Budget Item '{budgetItem.Description}'"))
+                    return false;
+            }
+
+            foreach (var bankAccountRegisterItem in newBankRegisterItems)
+            {
+                context.BankAccountRegisterItems.Add(bankAccountRegisterItem);
+            }
+
             return context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
         }
     }

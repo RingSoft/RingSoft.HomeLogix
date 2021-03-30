@@ -24,7 +24,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BankAccount BankAccount { get; set; }
 
         [Required]
-        public BankAccountRegisterItemTypes ItemType { get; set; }
+        public int ItemType { get; set; }
 
         [Required]
         public DateTime ItemDate { get; set; }

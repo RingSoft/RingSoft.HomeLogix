@@ -675,7 +675,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (LastGenerationDate == DateTime.MinValue)
                 LastGenerationDate = null;
 
-            RegisterGridManager.LoadGrid(entity.RegisterItems);
+            RegisterGridManager.LoadGrid(entity.RegisterItems.OrderBy(o => o.ItemDate));
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
             _loading = false;

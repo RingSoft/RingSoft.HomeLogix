@@ -176,7 +176,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     RegisterId = Guid.NewGuid().ToString(),
                     BankAccountId = budgetItem.BankAccountId,
-                    ItemType = BankAccountRegisterItemTypes.BudgetItem,
+                    ItemType = (int)BankAccountRegisterItemTypes.BudgetItem,
                     ItemDate = budgetItem.StartingDate.Value,
                     BudgetItemId = budgetItem.Id,
                     Description = budgetItem.Description,
@@ -196,7 +196,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         RegisterId = transferToRegisterId,
                         BankAccountId = budgetItem.TransferToBankAccountId.Value,
-                        ItemType = BankAccountRegisterItemTypes.BudgetItem,
+                        ItemType = (int)BankAccountRegisterItemTypes.BudgetItem,
                         ItemDate = budgetItem.StartingDate.Value,
                         BudgetItemId = budgetItem.Id,
                         Description = budgetItem.Description,
@@ -299,7 +299,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 RegisterId = Guid.NewGuid().ToString(),
                 BankAccountId = bankAccount.Id,
-                ItemType = BankAccountRegisterItemTypes.MonthlyEscrow,
+                ItemType = (int)BankAccountRegisterItemTypes.MonthlyEscrow,
                 ItemDate = date,
                 Description = registerItemDescription,
                 ProjectedAmount = -escrowAmount
@@ -318,7 +318,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 RegisterId = escrowToBankRegisterId,
                 BankAccountId = bankAccount.EscrowToBankAccountId.Value,
-                ItemType = BankAccountRegisterItemTypes.MonthlyEscrow,
+                ItemType = (int)BankAccountRegisterItemTypes.MonthlyEscrow,
                 ItemDate = date,
                 Description = registerItemDescription,
                 ProjectedAmount = escrowAmount,
