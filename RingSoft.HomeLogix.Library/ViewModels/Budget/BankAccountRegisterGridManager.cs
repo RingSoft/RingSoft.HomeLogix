@@ -38,6 +38,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public const int ActualAmountColumnId = 7;
         public const int DifferenceColumnId = 8;
 
+        public const int NegativeDisplayId = 101;
+
         public BankAccountViewModel BankAccountViewModel { get; }
 
         public BankAccountRegisterGridManager(BankAccountViewModel viewModel) : base(viewModel)

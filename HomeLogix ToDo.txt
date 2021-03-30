@@ -1,1 +1,2 @@
 Calculate Bank Projected Balance Totals in database after generating.
+Bank Account change EscrowTo Bank Account.

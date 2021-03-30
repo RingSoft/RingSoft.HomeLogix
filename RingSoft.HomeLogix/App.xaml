@@ -4,7 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
              xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
-             xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library">
+             xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
+             xmlns:local="clr-namespace:RingSoft.HomeLogix">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -13,6 +14,12 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <local:ValueToForegroundColorConverter x:Key="ValueToForeground" />
+
+            <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:ReadOnlyBox}}" x:Key="{x:Type dec:DecimalReadOnlyBox}">
+                <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}}"/>
+            </Style>
 
             <LinearGradientBrush x:Key="WindowBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
                 <GradientStop Color="DeepSkyBlue" Offset="0"/>

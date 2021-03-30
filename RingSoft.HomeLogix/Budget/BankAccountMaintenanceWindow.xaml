@@ -96,6 +96,9 @@
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DifferenceColumnId}" Header="Difference" DesignText="$1,234.56" Alignment="Right" Width="70"/>
 
                             </deg:DataEntryGrid.Columns>
+                            <deg:DataEntryGrid.DisplayStyles>
+                                <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:BankAccountRegisterGridManager.NegativeDisplayId}" ForegroundBrush="Red"/>
+                            </deg:DataEntryGrid.DisplayStyles>
                         </deg:DataEntryGrid>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5">
@@ -243,7 +246,7 @@
                 <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
 
                 <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}"/>
-
+                
                 <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
 
                 <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100"/>
