@@ -142,7 +142,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (monthlyAmount.Equals(0))
                 monthlyAmount = dailyAmount * 30;
 
-            budgetItem.MonthlyAmount = budgetItem.DoEscrow ? monthlyAmount : Math.Round(monthlyAmount, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
+            budgetItem.MonthlyAmount = monthlyAmount.RoundCurrency();
 
             return monthlyAmount;
         }
@@ -174,7 +174,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 var registerItem = new BankAccountRegisterItem
                 {
-                    RegisterId = Guid.NewGuid().ToString(),
                     BankAccountId = budgetItem.BankAccountId,
                     ItemType = (int)BankAccountRegisterItemTypes.BudgetItem,
                     ItemDate = budgetItem.StartingDate.Value,
@@ -187,21 +186,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 if (budgetItem.Type == BudgetItemTypes.Transfer && budgetItem.TransferToBankAccountId != null)
                 {
+                    registerItem.RegisterGuid = Guid.NewGuid().ToString();
                     var transferToRegisterId = Guid.NewGuid().ToString();
-                    var transferFromRegisterId = registerItem.RegisterId;
+                    var transferFromRegisterId = registerItem.RegisterGuid;
 
-                    registerItem.TransferRegisterId = transferToRegisterId;
+                    registerItem.TransferRegisterGuid = transferToRegisterId;
 
                     registerItem = new BankAccountRegisterItem
                     {
-                        RegisterId = transferToRegisterId,
+                        RegisterGuid = transferToRegisterId,
                         BankAccountId = budgetItem.TransferToBankAccountId.Value,
                         ItemType = (int)BankAccountRegisterItemTypes.BudgetItem,
                         ItemDate = budgetItem.StartingDate.Value,
                         BudgetItemId = budgetItem.Id,
                         Description = budgetItem.Description,
                         ProjectedAmount = -amount,
-                        TransferRegisterId = transferFromRegisterId
+                        TransferRegisterGuid = transferFromRegisterId
                     };
                     result.Add(registerItem);
                 }
@@ -297,7 +297,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             var registerItem = new BankAccountRegisterItem
             {
-                RegisterId = Guid.NewGuid().ToString(),
+                RegisterGuid = Guid.NewGuid().ToString(),
                 BankAccountId = bankAccount.Id,
                 ItemType = (int)BankAccountRegisterItemTypes.MonthlyEscrow,
                 ItemDate = date,
@@ -310,19 +310,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return;
 
             var escrowToBankRegisterId = Guid.NewGuid().ToString();
-            var escrowFromBankRegisterId = registerItem.RegisterId;
+            var escrowFromBankRegisterId = registerItem.RegisterGuid;
 
-            registerItem.TransferRegisterId = escrowToBankRegisterId;
+            registerItem.TransferRegisterGuid = escrowToBankRegisterId;
 
             registerItem = new BankAccountRegisterItem
             {
-                RegisterId = escrowToBankRegisterId,
+                RegisterGuid = escrowToBankRegisterId,
                 BankAccountId = bankAccount.EscrowToBankAccountId.Value,
                 ItemType = (int)BankAccountRegisterItemTypes.MonthlyEscrow,
                 ItemDate = date,
                 Description = registerItemDescription,
                 ProjectedAmount = escrowAmount,
-                TransferRegisterId = escrowFromBankRegisterId
+                TransferRegisterGuid = escrowFromBankRegisterId
             };
             registerItems.Add(registerItem);
         }

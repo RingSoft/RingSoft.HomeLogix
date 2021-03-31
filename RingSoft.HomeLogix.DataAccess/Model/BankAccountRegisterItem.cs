@@ -15,8 +15,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
     {
         [Required]
         [Key]
+        public int Id { get; set; }
+
         [MaxLength(50)]
-        public string RegisterId { get; set; }
+        public string RegisterGuid { get; set; }
 
         [Required]
         public int BankAccountId { get; set; }
@@ -41,6 +43,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public decimal? ActualAmount { get; set; }
 
-        public string TransferRegisterId { get; set; }
+        public string TransferRegisterGuid { get; set; }
     }
 }

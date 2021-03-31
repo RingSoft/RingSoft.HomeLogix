@@ -13,11 +13,12 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
+            builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.ItemDate).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.ItemType).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.ProjectedAmount).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.RegisterId).HasColumnType(SqliteConstants.StringColumnType);
-            builder.Property(p => p.TransferRegisterId).HasColumnType(SqliteConstants.StringColumnType);
+            builder.Property(p => p.RegisterGuid).HasColumnType(SqliteConstants.StringColumnType);
+            builder.Property(p => p.TransferRegisterGuid).HasColumnType(SqliteConstants.StringColumnType);
 
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.RegisterItems)

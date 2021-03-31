@@ -30,7 +30,8 @@ namespace RingSoft.HomeLogix.Library
 
         bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
             IEnumerable<BudgetItem> budgetItems,
-            List<BankAccountRegisterItem> registerItemsToDelete = null);
+            List<BankAccountRegisterItem> registerItemsToDelete = null,
+            BankAccount bankAccount = null);
     }
 
     public class DataRepository : IDataRepository
@@ -75,9 +76,8 @@ namespace RingSoft.HomeLogix.Library
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BudgetItems.Include(i => i.TransferToBankAccount)
-                .Where(w => w.BankAccountId == bankAccountId
-                || w.TransferToBankAccountId == bankAccountId).ToList();
+            return context.BudgetItems.Where(w => w.BankAccountId == bankAccountId
+                                                  || w.TransferToBankAccountId == bankAccountId).ToList();
         }
 
         public BudgetItem GetBudgetItem(int budgetItemId)
@@ -159,13 +159,20 @@ namespace RingSoft.HomeLogix.Library
             return context.BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
         }
 
-        public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems, IEnumerable<BudgetItem> budgetItems,
-            List<BankAccountRegisterItem> registerItemsToDelete = null)
+        public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            IEnumerable<BudgetItem> budgetItems,
+            List<BankAccountRegisterItem> registerItemsToDelete = null,
+            BankAccount bankAccount = null)
         {
             var context = AppGlobals.GetNewDbContext();
 
             if (registerItemsToDelete != null && registerItemsToDelete.Any())
                 context.DbContext.RemoveRange(registerItemsToDelete);
+
+            if (bankAccount != null)
+                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, bankAccount,
+                    $"Saving Bank Account '{bankAccount.Description}'"))
+                    return false;
 
             foreach (var budgetItem in budgetItems)
             {

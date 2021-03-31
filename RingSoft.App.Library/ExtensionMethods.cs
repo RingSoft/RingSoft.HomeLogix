@@ -1,4 +1,7 @@
-﻿namespace RingSoft.App.Library
+﻿using System;
+using System.Globalization;
+
+namespace RingSoft.App.Library
 {
     public static class ExtensionMethods
     {
@@ -22,6 +25,11 @@
                 }
             }
             return result;
+        }
+
+        public static decimal RoundCurrency(this decimal value)
+        {
+            return Math.Round(value, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
         }
     }
 }

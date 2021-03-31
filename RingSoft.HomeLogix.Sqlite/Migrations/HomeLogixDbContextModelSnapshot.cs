@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
@@ -94,9 +93,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", b =>
                 {
-                    b.Property<string>("RegisterId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("ActualAmount")
                         .HasColumnType("numeric");
@@ -114,16 +113,20 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<DateTime>("ItemDate")
                         .HasColumnType("datetime");
 
-                    b.Property<BankAccountRegisterItemTypes>("ItemType")
+                    b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("ProjectedAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("TransferRegisterId")
+                    b.Property<string>("RegisterGuid")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.HasKey("RegisterId");
+                    b.Property<string>("TransferRegisterGuid")
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BankAccountId");
 

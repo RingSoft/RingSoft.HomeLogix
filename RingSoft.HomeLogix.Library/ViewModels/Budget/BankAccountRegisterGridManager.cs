@@ -78,7 +78,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 AddRowFromEntity(bankAccountRegisterItem);
             }
-            var newList = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate).ToList();
+            var newList = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate)
+                .ThenByDescending(t => t.ProjectedAmount).ToList();
             SetupForNewRecord();
             foreach (var registerGridRow in newList)
             {
@@ -119,8 +120,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BankAccountViewModel.NewProjectedEndingBalance = newBalance;
             BankAccountViewModel.ProjectedLowestBalanceAmount = lowestBalance;
             BankAccountViewModel.ProjectedLowestBalanceDate = lowestBalanceDate;
-            
-            Grid.RefreshDataSource();
+
+            Grid?.RefreshDataSource();
         }
     }
 }

@@ -14,7 +14,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public BankAccountRegisterGridManager BankAccountRegisterGridManager { get; }
 
-        public string RegisterId { get; private set; }
+        public int RegisterId { get; set; }
+
+        public string RegisterGuid { get; private set; }
 
         public DateTime ItemDate { get; private set; }
 
@@ -110,7 +112,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
-            RegisterId = entity.RegisterId;
+            RegisterId = entity.Id;
+            RegisterGuid = entity.RegisterGuid;
             ItemDate = entity.ItemDate;
             TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
             ProjectedAmount = Math.Abs(entity.ProjectedAmount);

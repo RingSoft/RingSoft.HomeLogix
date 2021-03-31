@@ -188,8 +188,9 @@ namespace RingSoft.HomeLogix.Tests
             return BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
         }
 
-        public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems, IEnumerable<BudgetItem> budgetItems, 
-            List<BankAccountRegisterItem> registerItemsToDelete = null)
+        public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            IEnumerable<BudgetItem> budgetItems,
+            List<BankAccountRegisterItem> registerItemsToDelete = null, BankAccount bankAccount = null)
         {
             throw new System.NotImplementedException();
         }

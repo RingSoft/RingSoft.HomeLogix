@@ -675,7 +675,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (LastGenerationDate == DateTime.MinValue)
                 LastGenerationDate = null;
 
-            RegisterGridManager.LoadGrid(entity.RegisterItems.OrderBy(o => o.ItemDate));
+            RegisterGridManager.LoadGrid(entity.RegisterItems.OrderBy(o => o.ItemDate)
+                .ThenByDescending(t => t.ProjectedAmount));
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
             _loading = false;
@@ -734,6 +735,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var registerItems = new List<BankAccountRegisterItem>();
             registerItems.AddRange(
+                // ReSharper disable once PossibleInvalidOperationException
                 BudgetItemProcessor.GenerateEscrowRegisterItems(GetEntityData(), generateToDate.Value));
 
             foreach (var budgetItem in budgetItems)
@@ -742,7 +744,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(Id, budgetItem, generateToDate.Value));
             }
 
-            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, budgetItems))
+            LastGenerationDate = generateToDate;
+            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, budgetItems,
+                null, GetEntityData()))
                 return;
 
             foreach (var registerItem in registerItems)
@@ -751,6 +755,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             RegisterGridManager.AddGeneratedRegisterItems(registerItems.Where(w => w.BankAccountId == Id));
+            CalculateTotals();
         }
 
         protected override BankAccount GetEntityData()

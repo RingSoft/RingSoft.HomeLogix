@@ -4,14 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
     [DbContext(typeof(HomeLogixDbContext))]
-    [Migration("20210120181658_AddedPreviousValueStats")]
-    partial class AddedPreviousValueStats
+    [Migration("20210331161410_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +53,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("EscrowToBankAccountId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("LastGenerationDate")
+                        .HasColumnType("datetime");
+
                     b.Property<decimal>("MonthlyBudgetDeposits")
                         .HasColumnType("numeric");
 
@@ -93,9 +95,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", b =>
                 {
-                    b.Property<string>("RegisterId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("ActualAmount")
                         .HasColumnType("numeric");
@@ -113,22 +115,24 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<DateTime>("ItemDate")
                         .HasColumnType("datetime");
 
-                    b.Property<BankAccountRegisterItemTypes>("ItemType")
+                    b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
                     b.Property<decimal>("ProjectedAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("TransferToBankAccountId")
-                        .HasColumnType("integer");
+                    b.Property<string>("RegisterGuid")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
 
-                    b.HasKey("RegisterId");
+                    b.Property<string>("TransferRegisterGuid")
+                        .HasColumnType("nvarchar");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("BankAccountId");
 
                     b.HasIndex("BudgetItemId");
-
-                    b.HasIndex("TransferToBankAccountId");
 
                     b.ToTable("BankAccountRegisterItems");
                 });
@@ -165,14 +169,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<decimal?>("EscrowBalance")
                         .HasColumnType("numeric");
 
-                    b.Property<DateTime?>("LastCompletedDate")
-                        .HasColumnType("datetime");
-
                     b.Property<decimal>("MonthlyAmount")
                         .HasColumnType("numeric");
-
-                    b.Property<DateTime>("NextTransactionDate")
-                        .HasColumnType("datetime");
 
                     b.Property<string>("Notes")
                         .HasColumnType("text(1073741823)");
@@ -189,7 +187,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("RecurringType")
                         .HasColumnType("smallint");
 
-                    b.Property<DateTime>("StartingDate")
+                    b.Property<DateTime?>("StartingDate")
                         .HasColumnType("datetime");
 
                     b.Property<int?>("TransferToBankAccountId")
@@ -241,16 +239,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasForeignKey("BudgetItemId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankAccount", "TransferToBankAccount")
-                        .WithMany("BankAccountTransferFromRegisterItems")
-                        .HasForeignKey("TransferToBankAccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.Navigation("BankAccount");
 
                     b.Navigation("BudgetItem");
-
-                    b.Navigation("TransferToBankAccount");
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", b =>
@@ -273,8 +264,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccount", b =>
                 {
-                    b.Navigation("BankAccountTransferFromRegisterItems");
-
                     b.Navigation("BudgetItems");
 
                     b.Navigation("BudgetTransferFromItems");

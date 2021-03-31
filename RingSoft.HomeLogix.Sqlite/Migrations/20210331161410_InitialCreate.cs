@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
-    public partial class InitCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,10 +23,15 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     MonthlyBudgetWithdrawals = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentMonthDeposits = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentMonthWithdrawals = table.Column<decimal>(type: "numeric", nullable: false),
+                    PreviousMonthDeposits = table.Column<decimal>(type: "numeric", nullable: false),
+                    PreviousMonthWithdrawals = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentYearDeposits = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentYearWithdrawals = table.Column<decimal>(type: "numeric", nullable: false),
+                    PreviousYearDeposits = table.Column<decimal>(type: "numeric", nullable: false),
+                    PreviousYearWithdrawals = table.Column<decimal>(type: "numeric", nullable: false),
                     EscrowToBankAccountId = table.Column<int>(type: "integer", nullable: true),
                     EscrowDayOfMonth = table.Column<int>(type: "integer", nullable: true),
+                    LastGenerationDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Notes = table.Column<string>(type: "text(1073741823)", nullable: true)
                 },
                 constraints: table =>
@@ -63,15 +68,15 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     RecurringPeriod = table.Column<int>(type: "integer", nullable: false),
                     RecurringType = table.Column<int>(type: "smallint", nullable: false),
-                    StartingDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    StartingDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     EndingDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     DoEscrow = table.Column<bool>(type: "bit", nullable: false),
                     TransferToBankAccountId = table.Column<int>(type: "integer", nullable: true),
-                    LastCompletedDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    NextTransactionDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     MonthlyAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentMonthAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    PreviousMonthAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     CurrentYearAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    PreviousYearAmount = table.Column<decimal>(type: "numeric", nullable: false),
                     EscrowBalance = table.Column<decimal>(type: "numeric", nullable: true),
                     Notes = table.Column<string>(type: "text(1073741823)", nullable: true)
                 },
@@ -96,28 +101,24 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 name: "BankAccountRegisterItems",
                 columns: table => new
                 {
-                    RegisterId = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RegisterGuid = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     BankAccountId = table.Column<int>(type: "integer", nullable: false),
-                    ItemType = table.Column<long>(type: "integer", nullable: false),
+                    ItemType = table.Column<int>(type: "integer", nullable: false),
                     ItemDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     BudgetItemId = table.Column<int>(type: "integer", nullable: true),
-                    TransferToBankAccountId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
                     ProjectedAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    ActualAmount = table.Column<decimal>(type: "numeric", nullable: true)
+                    ActualAmount = table.Column<decimal>(type: "numeric", nullable: true),
+                    TransferRegisterGuid = table.Column<string>(type: "nvarchar", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccountRegisterItems", x => x.RegisterId);
+                    table.PrimaryKey("PK_BankAccountRegisterItems", x => x.Id);
                     table.ForeignKey(
                         name: "FK_BankAccountRegisterItems_BankAccounts_BankAccountId",
                         column: x => x.BankAccountId,
-                        principalTable: "BankAccounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BankAccountRegisterItems_BankAccounts_TransferToBankAccountId",
-                        column: x => x.TransferToBankAccountId,
                         principalTable: "BankAccounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -138,11 +139,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 name: "IX_BankAccountRegisterItems_BudgetItemId",
                 table: "BankAccountRegisterItems",
                 column: "BudgetItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BankAccountRegisterItems_TransferToBankAccountId",
-                table: "BankAccountRegisterItems",
-                column: "TransferToBankAccountId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BankAccounts_EscrowToBankAccountId",
