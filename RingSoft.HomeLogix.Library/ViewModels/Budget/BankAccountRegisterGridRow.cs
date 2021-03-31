@@ -76,7 +76,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Balance:
                     return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, Balance);
                 case BankAccountRegisterGridColumns.ActualAmount:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, ActualAmount);
+                    return new ActualAmountCellProps(this, columnId, _decimalValueSetup, ActualAmount);
                 case BankAccountRegisterGridColumns.Difference:
                     return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup,
                         ProjectedAmount - ActualAmount);

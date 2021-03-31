@@ -1,8 +1,9 @@
 ﻿using RingSoft.App.Controls;
-using RingSoft.HomeLogix.Library;
-using System.Windows;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.Budget;
+using RingSoft.HomeLogix.Library;
+using System.Windows;
 
 namespace RingSoft.HomeLogix
 {
@@ -19,6 +20,8 @@ namespace RingSoft.HomeLogix
             AppGlobals.AppSplashProgress += AppGlobals_AppSplashProgress;
 
             AppGlobals.Initialize();
+
+            WPFControlsGlobals.DataEntryGridHostFactory = new HomeLogixGridEditHostFactory();
 
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
 
