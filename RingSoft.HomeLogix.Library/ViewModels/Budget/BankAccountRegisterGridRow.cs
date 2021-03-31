@@ -93,8 +93,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 case BankAccountRegisterGridColumns.ItemType:
                 case BankAccountRegisterGridColumns.TransactionType:
-                    return new DataEntryGridControlCellStyle {State = DataEntryGridCellStates.ReadOnly};
                 case BankAccountRegisterGridColumns.Date:
+                    return new DataEntryGridControlCellStyle {State = DataEntryGridCellStates.ReadOnly};
                 case BankAccountRegisterGridColumns.Description:
                 case BankAccountRegisterGridColumns.Amount:
                 case BankAccountRegisterGridColumns.ActualAmount:
