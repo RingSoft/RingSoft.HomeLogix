@@ -100,8 +100,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.ActualAmount:
                     break;
                 case BankAccountRegisterGridColumns.Balance:
+                    var style = new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
+                    if (Balance < 0)
+                        style.DisplayStyleId = BankAccountRegisterGridManager.NegativeDisplayId;
+                    return style;
                 case BankAccountRegisterGridColumns.Difference:
-                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
+                    style = new DataEntryGridCellStyle { State = DataEntryGridCellStates.Disabled };
+                    //if ( < 0)
+                    //    style.DisplayStyleId = BankAccountRegisterGridManager.NegativeDisplayId;
+                    return style;
                 case BankAccountRegisterGridColumns.Completed:
                     return new DataEntryGridControlCellStyle();
                 default:
