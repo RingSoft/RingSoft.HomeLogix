@@ -51,8 +51,6 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Label Content="Bank Account ID"/>
@@ -63,16 +61,13 @@
 
                 <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Current Projected Ending Balance"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Bank Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" TextAlignment="Left"/>
-                <Label Grid.Row="1" Grid.Column="2" Content="Bank Balance"/>
+                <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
 
-                <dec:DecimalEditControl Grid.Row="1" Grid.Column="3" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
+                <Label Grid.Row="1" Grid.Column="2" Content="Escrow Balance"/>
 
-                <Label Grid.Row="1" Grid.Column="4" Content="Escrow Balance"/>
-
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="5" Value="{Binding Path= EscrowBalance}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path= EscrowBalance}"/>
 
             </Grid>
 
@@ -247,13 +242,17 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Content="New Projected Ending Balance"/>
+                <Label Grid.Row="0" Grid.Column="0" Content="Current Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding NewProjectedEndingBalance}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" TextAlignment="Left"/>
 
-                <Label Grid.Row="0" Grid.Column="2" Content="Projected Ending Balance Difference"/>
+                <Label Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding Path=ProjectedEndingBalanceDifference}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}"/>
+
+                <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}"/>
                 
                 <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
 
