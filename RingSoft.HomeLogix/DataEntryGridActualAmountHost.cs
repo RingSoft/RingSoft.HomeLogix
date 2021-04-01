@@ -1,6 +1,8 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using Accessibility;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
+using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix
@@ -38,6 +40,16 @@ namespace RingSoft.HomeLogix
             control.Value = ActualAmountCellProps.Value;
 
             control.CalculatorValueChanged += (_, _) => OnUpdateSource(GetCellValue());
+            control.ShowDetailsWindow += (_, _) =>
+            {
+                var win = new BankAccountRegisterActualAmountDetailsWindow(ActualAmountCellProps);
+                win.ShowDialog();
+
+                OnUpdateSource(ActualAmountCellProps);
+
+                control.Value = ActualAmountCellProps.Value;
+                control.TextBox.SelectAll();
+            };
 
             base.OnControlLoaded(control, cellProps, cellStyle);
         }

@@ -6,6 +6,7 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
         Title="Add Household" SizeToContent="Width" Height="300">
     <Window.DataContext>
         <vm:AddEditHouseholdViewModel x:Name="ViewModel"/>

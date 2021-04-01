@@ -117,6 +117,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return base.GetCellStyle(columnId);
         }
 
+        public override void SetCellValue(DataEntryGridEditingCellProps value)
+        {
+            var column = (BankAccountRegisterGridColumns) value.ColumnId;
+            switch (column)
+            {
+                case BankAccountRegisterGridColumns.ItemType:
+                    break;
+                case BankAccountRegisterGridColumns.Date:
+                    break;
+                case BankAccountRegisterGridColumns.Description:
+                    break;
+                case BankAccountRegisterGridColumns.TransactionType:
+                    break;
+                case BankAccountRegisterGridColumns.Amount:
+                    break;
+                case BankAccountRegisterGridColumns.Completed:
+                    break;
+                case BankAccountRegisterGridColumns.Balance:
+                    break;
+                case BankAccountRegisterGridColumns.ActualAmount:
+                    var actualAmountCellProps = (ActualAmountCellProps) value;
+                    if (actualAmountCellProps.Value != null) 
+                        ActualAmount = actualAmountCellProps.Value.Value;
+
+                    break;
+                case BankAccountRegisterGridColumns.Difference:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            base.SetCellValue(value);
+        }
+
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
             RegisterId = entity.Id;

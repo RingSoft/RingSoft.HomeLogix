@@ -1,0 +1,87 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.Budget.BankAccountRegisterActualAmountDetailsWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+                xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+                mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="Budget Item Amount Details" Height="350" Width="500">
+    <Window.Resources>
+        <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="FormatType" Value="Currency"/>
+            <Setter Property="DesignText" Value="$123,456,789.00"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+    </Window.Resources>
+    <Window.DataContext>
+        <vm:BankAccountRegisterActualAmountViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid ColumnSpan="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Date"/>
+
+            <dec:DateReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding Path=Date}" DesignText="01/01/1980" Width="100"/>
+
+            <Label Grid.Row="0" Grid.Column="2" Content="Budget Item"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="3" Text="{Binding Description}" DesignText="A Very Large Budget Item" Width="250"/>
+
+        </Grid>
+        <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Left" Content="Details"/>
+
+        <deg:DataEntryGrid x:Name="Grid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Manager="{Binding GridManager}">
+            <deg:DataEntryGrid.Columns>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.DateColumnId}" Header="Date" DesignText="01/01/1980" Width="100"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.StoreColumnId}" Header="Store" DesignText="Smith's Home Furnishings" Width="200"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.AmountColumnId}" Header="Amount" DesignText="$123,456,789.00" Width="130" Alignment="Right"/>
+
+            </deg:DataEntryGrid.Columns>
+        </deg:DataEntryGrid>
+
+        <Label Grid.Row="3" Grid.Column="0" Content="Projected Amount"/>
+
+        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" Value="{Binding ProjectedAmount}"/>
+
+        <Label Grid.Row="3" Grid.Column="2" Content="Actual Amount"/>
+
+        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" Value="{Binding TotalActualAmount}"/>
+
+        <Label Grid.Row="4" Grid.Column="0" Content="Difference"/>
+
+        <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference}"/>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0"/>
+            <Button x:Name="CancelButton" Content="_Cancel" Width="50"/>
+        </StackPanel>
+    </Grid>
+</dec:BaseWindow>
