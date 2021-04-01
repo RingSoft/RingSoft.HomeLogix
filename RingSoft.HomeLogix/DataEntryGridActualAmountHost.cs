@@ -43,6 +43,7 @@ namespace RingSoft.HomeLogix
             control.ShowDetailsWindow += (_, _) =>
             {
                 var win = new BankAccountRegisterActualAmountDetailsWindow(ActualAmountCellProps);
+                
                 win.ShowDialog();
 
                 OnUpdateSource(ActualAmountCellProps);
