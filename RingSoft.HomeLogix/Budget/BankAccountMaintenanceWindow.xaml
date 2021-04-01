@@ -244,7 +244,7 @@
 
                 <Label Grid.Row="0" Grid.Column="0" Content="Current Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" TextAlignment="Left"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}"/>
 
                 <Label Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance"/>
 

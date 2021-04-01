@@ -744,9 +744,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(Id, budgetItem, generateToDate.Value));
             }
 
-            LastGenerationDate = generateToDate;
+            var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
+            LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
             if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, budgetItems,
-                null, GetEntityData()))
+                null, bankAccount))
                 return;
 
             foreach (var registerItem in registerItems)

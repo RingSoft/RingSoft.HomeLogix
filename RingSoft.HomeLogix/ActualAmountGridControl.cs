@@ -1,4 +1,5 @@
-﻿using System.Media;
+﻿using System;
+using System.Media;
 using RingSoft.DataEntryControls.WPF;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,6 +7,11 @@ using System.Windows.Input;
 
 namespace RingSoft.HomeLogix
 {
+    public enum ActualAmountMode
+    {
+        Value = 0,
+        Details = 1
+    }
     /// <summary>
     /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
     ///
@@ -41,6 +47,23 @@ namespace RingSoft.HomeLogix
     {
         public Button DetailsButton { get; private set; }
 
+        private ActualAmountMode _amountMode;
+
+        public ActualAmountMode AmountMode
+        {
+            get => _amountMode;
+            set
+            {
+                if (_amountMode == value)
+                    return;
+
+                _amountMode = value;
+                SetAmountMode();
+            }
+        }
+
+        public event EventHandler ShowDetailsWindow;
+
         static ActualAmountGridControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ActualAmountGridControl), new FrameworkPropertyMetadata(typeof(ActualAmountGridControl)));
@@ -49,42 +72,82 @@ namespace RingSoft.HomeLogix
         public override void OnApplyTemplate()
         {
             DetailsButton = GetTemplateChild(nameof(DetailsButton)) as Button;
-            
+
+            if (DetailsButton != null) 
+                DetailsButton.Click += (_, _) => OnDetailsButtonClick();
+
             base.OnApplyTemplate();
 
-            TextBox.IsReadOnly = true;
-            TextBox.IsReadOnlyCaretVisible = true;
-            DropDownButton.IsEnabled = false;
+            SetAmountMode();
+        }
+
+        private void SetAmountMode()
+        {
+            switch (AmountMode)
+            {
+                case ActualAmountMode.Value:
+                    TextBox.IsReadOnly = false;
+                    TextBox.IsReadOnlyCaretVisible = true;
+                    DropDownButton.IsEnabled = true;
+                    break;
+                case ActualAmountMode.Details:
+                    TextBox.IsReadOnly = true;
+                    TextBox.IsReadOnlyCaretVisible = true;
+                    DropDownButton.IsEnabled = false;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         protected override bool ProcessKeyChar(char keyChar)
         {
-            switch (keyChar)
+            switch (AmountMode)
             {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '-':
-                case '.':
-                    SystemSounds.Exclamation.Play();
-                    MessageBox.Show("This contains multiple values.  Would you like to edit?", "Multiple Details",
-                        MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    return false;
+                case ActualAmountMode.Value:
                     break;
+                case ActualAmountMode.Details:
+                    switch (keyChar)
+                    {
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                        case '-':
+                        case '.':
+                            SystemSounds.Exclamation.Play();
+                            if (MessageBox.Show("This contains multiple values.  Would you like to edit?", "Multiple Details",
+                                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) 
+                                OnDetailsButtonClick();
+                            return false;
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
             return base.ProcessKeyChar(keyChar);
         }
 
         protected override bool ProcessKey(Key key)
         {
+            if (key == Key.F5)
+            {
+                OnDetailsButtonClick();
+                return false;
+            }
+
             return base.ProcessKey(key);
+        }
+
+        private void OnDetailsButtonClick()
+        {
+            ShowDetailsWindow?.Invoke(this, EventArgs.Empty);
         }
     }
 }
