@@ -1,6 +1,8 @@
-﻿using RingSoft.DataEntryControls.WPF;
+﻿using System.Media;
+using RingSoft.DataEntryControls.WPF;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace RingSoft.HomeLogix
 {
@@ -49,6 +51,40 @@ namespace RingSoft.HomeLogix
             DetailsButton = GetTemplateChild(nameof(DetailsButton)) as Button;
             
             base.OnApplyTemplate();
+
+            TextBox.IsReadOnly = true;
+            TextBox.IsReadOnlyCaretVisible = true;
+            DropDownButton.IsEnabled = false;
+        }
+
+        protected override bool ProcessKeyChar(char keyChar)
+        {
+            switch (keyChar)
+            {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case '-':
+                case '.':
+                    SystemSounds.Exclamation.Play();
+                    MessageBox.Show("This contains multiple values.  Would you like to edit?", "Multiple Details",
+                        MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    return false;
+                    break;
+            }
+            return base.ProcessKeyChar(keyChar);
+        }
+
+        protected override bool ProcessKey(Key key)
+        {
+            return base.ProcessKey(key);
         }
     }
 }
