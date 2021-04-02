@@ -22,6 +22,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void EnableRegisterGrid(bool value);
 
         DateTime? GetGenerateToDate(DateTime nextGenerateToDate);
+
+        void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps);
     }
 
     public class NewRegisterItem

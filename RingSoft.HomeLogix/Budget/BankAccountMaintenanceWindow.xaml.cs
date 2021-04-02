@@ -1,6 +1,7 @@
 ﻿using System;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
+using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
@@ -52,6 +53,14 @@ namespace RingSoft.HomeLogix.Budget
                 return generateToWindow.GenerateToDate;
 
             return null;
+        }
+
+        public void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps)
+        {
+            var win = new BankAccountRegisterActualAmountDetailsWindow(actualAmountCellProps);
+            win.ShowInTaskbar = false;
+            win.Owner = this;
+            win.ShowDialog();
         }
     }
 }
