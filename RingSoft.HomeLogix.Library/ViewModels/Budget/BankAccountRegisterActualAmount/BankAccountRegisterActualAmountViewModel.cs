@@ -125,7 +125,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Description = actualAmountCellProps.RegisterGridRow.Description;
             ProjectedAmount = actualAmountCellProps.RegisterGridRow.ProjectedAmount;
 
-            //LoadGrid
+            GridManager.LoadGrid(actualAmountCellProps.RegisterGridRow.ActualAmountDetails);
 
             CalculateTotals();
         }
@@ -138,6 +138,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
+            GridManager.SaveData();
+            ActualAmountCellProps.Value = TotalActualAmount;
             View.OnOkButtonCloseWindow();
         }
 

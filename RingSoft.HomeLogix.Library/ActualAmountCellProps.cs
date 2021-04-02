@@ -12,7 +12,8 @@ namespace RingSoft.HomeLogix.Library
 
         public BankAccountRegisterGridRow RegisterGridRow { get; }
 
-        public ActualAmountCellProps(BankAccountRegisterGridRow row, int columnId, DecimalEditControlSetup setup, decimal? value) : base(row, columnId, setup, value)
+        public ActualAmountCellProps(BankAccountRegisterGridRow row, int columnId, 
+            DecimalEditControlSetup setup, decimal? value) : base(row, columnId, setup, value)
         {
             RegisterGridRow = row;
         }

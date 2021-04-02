@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
@@ -32,6 +33,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public decimal? ActualAmount { get; private set; }
 
+        public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
+
         private DecimalEditControlSetup _decimalValueSetup;
         private DateEditControlSetup _dateEditControlSetup;
 
@@ -54,6 +57,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 AllowNullValue = false,
                 DateFormatType = DateFormatTypes.DateOnly,
             };
+
+            ActualAmountDetails = new List<BankAccountRegisterItemAmountDetail>();
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)

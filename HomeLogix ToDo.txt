@@ -1,8 +1,18 @@
+========================================
+Before Personal Data Usage:
+
 Budget
 -----------
 Validate Transfer To not empty.
+
+========================================
+Before Release
 
 Bank Account Maintenance
 ----------------------------
 Calculate Bank Projected Balance Totals in database after generating.
 Bank Account change EscrowTo Bank Account.
+
+AmountDetails
+----------------------------
+Validate Grid.

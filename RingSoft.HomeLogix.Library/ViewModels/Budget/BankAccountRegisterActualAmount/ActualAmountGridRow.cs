@@ -3,6 +3,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 // ReSharper disable once CheckNamespace
@@ -91,6 +92,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
             base.SetCellValue(value);
+        }
+
+        public void LoadFromEntity(BankAccountRegisterItemAmountDetail amountDetail)
+        {
+            Date = amountDetail.Date;
+            Store = new AutoFillValue(AppGlobals.LookupContext.Stores.GetPrimaryKeyValueFromEntity(amountDetail.Store),
+                amountDetail.Store.Name);
+            Amount = amountDetail.Amount;
+        }
+
+        public bool ValidateRow()
+        {
+            return true;
+        }
+
+        public void SaveToEntity(BankAccountRegisterItemAmountDetail entity, int rowIndex)
+        {
+            entity.RegisterId = Manager.ViewModel.ActualAmountCellProps.RegisterGridRow.RegisterId;
+            entity.DetailId = rowIndex;
+            entity.Date = Date;
+            entity.Store = AppGlobals.LookupContext.Stores.GetEntityFromPrimaryKeyValue(Store.PrimaryKeyValue);
+            entity.Store.Name = Store.Text;
+            entity.StoreId = entity.Store.Id;
+            entity.Amount = Amount;
         }
     }
 }
