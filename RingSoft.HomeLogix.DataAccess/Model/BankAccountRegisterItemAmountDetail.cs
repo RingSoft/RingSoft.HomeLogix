@@ -6,13 +6,11 @@ namespace RingSoft.HomeLogix.DataAccess.Model
     public class BankAccountRegisterItemAmountDetail
     {
         [Required]
-        [Key]
         public int RegisterId { get; set; }
 
         public virtual BankAccountRegisterItem RegisterItem { get; set; }
 
         [Required]
-        [Key]
         public int DetailId { get; set; }
 
         [Required]

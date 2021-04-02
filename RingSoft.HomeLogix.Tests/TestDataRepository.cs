@@ -194,5 +194,20 @@ namespace RingSoft.HomeLogix.Tests
         {
             throw new System.NotImplementedException();
         }
+
+        public Store GetStore(int storeId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool SaveStore(Store store)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool DeleteStore(int storeId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -167,7 +167,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            while (budgetItem.StartingDate < generateToDate)
+            while (budgetItem.StartingDate <= generateToDate)
             {
                 if (budgetItem.EndingDate != null && budgetItem.EndingDate < budgetItem.StartingDate)
                     break;
@@ -187,6 +187,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (budgetItem.Type == BudgetItemTypes.Transfer && budgetItem.TransferToBankAccountId != null)
                 {
                     registerItem.RegisterGuid = Guid.NewGuid().ToString();
+                    registerItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
                     var transferToRegisterId = Guid.NewGuid().ToString();
                     var transferFromRegisterId = registerItem.RegisterGuid;
 
@@ -196,7 +197,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         RegisterGuid = transferToRegisterId,
                         BankAccountId = budgetItem.TransferToBankAccountId.Value,
-                        ItemType = (int)BankAccountRegisterItemTypes.BudgetItem,
+                        ItemType = (int)BankAccountRegisterItemTypes.TransferToBankAccount,
                         ItemDate = budgetItem.StartingDate.Value,
                         BudgetItemId = budgetItem.Id,
                         Description = budgetItem.Description,

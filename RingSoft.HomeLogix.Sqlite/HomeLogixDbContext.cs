@@ -60,6 +60,11 @@ namespace RingSoft.HomeLogix.Sqlite
             modelBuilder.ApplyConfiguration(new BankAccountRegisterItemConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountRegisterItemAmountConfiguration());
 
+            modelBuilder.Entity<Store>().Property(p => p.Id)
+                .HasColumnType(SqliteConstants.IntegerColumnType);
+            modelBuilder.Entity<Store>().Property(p => p.Name)
+                .HasColumnType(SqliteConstants.StringColumnType);
+
             base.OnModelCreating(modelBuilder);
         }
     }

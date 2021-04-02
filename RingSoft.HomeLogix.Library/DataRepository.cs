@@ -32,6 +32,12 @@ namespace RingSoft.HomeLogix.Library
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null);
+
+        Store GetStore(int storeId);
+
+        bool SaveStore(Store store);
+
+        bool DeleteStore(int storeId);
     }
 
     public class DataRepository : IDataRepository
@@ -70,7 +76,8 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             var bankAccount = context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
-            return context.DbContext.DeleteEntity(context.BankAccounts, bankAccount, "Deleting Bank Account");
+            return bankAccount != null && context.DbContext.DeleteEntity(context.BankAccounts, bankAccount,
+                $"Deleting Bank Account '{bankAccount.Description}'");
         }
 
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
@@ -150,7 +157,7 @@ namespace RingSoft.HomeLogix.Library
             }
 
             var budgetItem = context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
-            return context.DbContext.DeleteEntity(context.BudgetItems, budgetItem, "Deleting Budget Item");
+            return budgetItem != null && context.DbContext.DeleteEntity(context.BudgetItems, budgetItem, $"Deleting Budget Item '{budgetItem.Description}'");
         }
 
         public IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId)
@@ -187,6 +194,25 @@ namespace RingSoft.HomeLogix.Library
             }
 
             return context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
+        }
+
+        public Store GetStore(int storeId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.Stores.FirstOrDefault(f => f.Id == storeId);
+        }
+
+        public bool SaveStore(Store store)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.DbContext.SaveEntity(context.Stores, store, $"Saving Store '{store.Name}'");
+        }
+
+        public bool DeleteStore(int storeId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var store = context.Stores.FirstOrDefault(f => f.Id == storeId);
+            return store != null && context.DbContext.DeleteEntity(context.Stores, store, $"Deleting Store '{store.Name}'");
         }
     }
 }
