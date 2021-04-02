@@ -8,7 +8,7 @@
                 xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
                 mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item Amount Details" Height="350" Width="500">
+        Title="Budget Item Actual Amount Details" Height="350" Width="500">
     <Window.Resources>
         <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
             <Setter Property="Width" Value="100"/>

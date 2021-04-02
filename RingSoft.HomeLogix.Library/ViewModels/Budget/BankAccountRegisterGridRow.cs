@@ -33,6 +33,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public decimal? ActualAmount { get; private set; }
 
+        public decimal Difference => ProjectedAmount - ActualAmount.GetValueOrDefault(0);
+
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
         private DecimalEditControlSetup _decimalValueSetup;
@@ -83,8 +85,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.ActualAmount:
                     return new ActualAmountCellProps(this, columnId, _decimalValueSetup, ActualAmount);
                 case BankAccountRegisterGridColumns.Difference:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup,
-                        ProjectedAmount - ActualAmount);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, Difference);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -111,8 +112,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return style;
                 case BankAccountRegisterGridColumns.Difference:
                     style = new DataEntryGridCellStyle { State = DataEntryGridCellStates.Disabled };
-                    //if ( < 0)
-                    //    style.DisplayStyleId = BankAccountRegisterGridManager.NegativeDisplayId;
+                    if (Difference < 0)
+                        style.DisplayStyleId = BankAccountRegisterGridManager.NegativeDisplayId;
                     return style;
                 case BankAccountRegisterGridColumns.Completed:
                     return new DataEntryGridControlCellStyle();
@@ -138,6 +139,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Amount:
                     break;
                 case BankAccountRegisterGridColumns.Completed:
+                    if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
+                    {
+                        Completed = checkBoxCellProps.Value;
+                        if (Completed)
+                            ActualAmount = ProjectedAmount;
+                    }
                     break;
                 case BankAccountRegisterGridColumns.Balance:
                     break;

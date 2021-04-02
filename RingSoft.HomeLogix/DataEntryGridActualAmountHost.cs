@@ -1,4 +1,5 @@
-﻿using Accessibility;
+﻿using System.Linq;
+using Accessibility;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
@@ -39,6 +40,8 @@ namespace RingSoft.HomeLogix
             control.Setup = ActualAmountCellProps.NumericEditSetup;
             control.Value = ActualAmountCellProps.Value;
 
+            SetAmountMode();
+
             control.CalculatorValueChanged += (_, _) => OnUpdateSource(GetCellValue());
             control.ShowDetailsWindow += (_, _) =>
             {
@@ -47,11 +50,20 @@ namespace RingSoft.HomeLogix
 
                 OnUpdateSource(ActualAmountCellProps);
 
+                SetAmountMode();
                 control.Value = ActualAmountCellProps.Value;
                 control.TextBox.SelectAll();
             };
 
             base.OnControlLoaded(control, cellProps, cellStyle);
+        }
+
+        private void SetAmountMode()
+        {
+            if (ActualAmountCellProps.RegisterGridRow.ActualAmountDetails.Any())
+                Control.AmountMode = ActualAmountMode.Details;
+            else
+                Control.AmountMode = ActualAmountMode.Value;
         }
     }
 }
