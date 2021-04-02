@@ -81,7 +81,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     break;
                 case ActualAmountGridColumns.Amount:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
+                    {
                         Amount = decimalCellProps.Value.GetValueOrDefault(0);
+                        Manager.ViewModel.CalculateTotals();
+                    }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

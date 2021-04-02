@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -26,6 +27,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override DataEntryGridRow GetNewRow()
         {
             return new ActualAmountGridRow(this);
+        }
+
+        public decimal GetTotalAmount()
+        {
+            var result = (decimal) 0;
+            var rows = Rows.OfType<ActualAmountGridRow>();
+            foreach (var actualAmountGridRow in rows)
+            {
+                result += actualAmountGridRow.Amount;
+            }
+
+            return result;
         }
     }
 }

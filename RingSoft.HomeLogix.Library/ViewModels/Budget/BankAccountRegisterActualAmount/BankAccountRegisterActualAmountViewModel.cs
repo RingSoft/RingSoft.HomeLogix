@@ -124,6 +124,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Date = actualAmountCellProps.RegisterGridRow.ItemDate;
             Description = actualAmountCellProps.RegisterGridRow.Description;
             ProjectedAmount = actualAmountCellProps.RegisterGridRow.ProjectedAmount;
+
+            //LoadGrid
+
+            CalculateTotals();
+        }
+
+        public void CalculateTotals()
+        {
+            TotalActualAmount = GridManager.GetTotalAmount();
+            Difference = ProjectedAmount - TotalActualAmount;
         }
 
         private void OnOkButton()
