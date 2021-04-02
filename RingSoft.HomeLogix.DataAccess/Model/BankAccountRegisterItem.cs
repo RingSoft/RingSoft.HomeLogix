@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace RingSoft.HomeLogix.DataAccess.Model
 {
@@ -44,5 +46,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public decimal? ActualAmount { get; set; }
 
         public string TransferRegisterGuid { get; set; }
+
+        public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
+
+        public BankAccountRegisterItem()
+        {
+            AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
+        }
     }
 }
