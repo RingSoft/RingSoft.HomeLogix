@@ -33,7 +33,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public decimal? ActualAmount { get; private set; }
 
-        public decimal Difference => ProjectedAmount - ActualAmount.GetValueOrDefault(0);
+        public decimal? Difference => ProjectedAmount - ActualAmount;
 
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
@@ -149,7 +149,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Balance:
                     break;
                 case BankAccountRegisterGridColumns.ActualAmount:
-                    var actualAmountCellProps = (ActualAmountCellProps) value;
+                    var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
                     if (actualAmountCellProps.Value != null) 
                         ActualAmount = actualAmountCellProps.Value.Value;
 
