@@ -12,7 +12,7 @@ namespace RingSoft.HomeLogix.Library
 
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
-        bool SaveBankAccount(BankAccount bankAccount);
+        bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails);
 
         bool DeleteBankAccount(int bankAccountId);
 
@@ -55,21 +55,35 @@ namespace RingSoft.HomeLogix.Library
 
             if (getRelatedEntities)
             {
-                return context.BankAccounts.Include(i => i.RegisterItems)
-                    .ThenInclude(ti => ti.BudgetItem)
+                var result = context.BankAccounts.Include(i => i.RegisterItems)
+                    .ThenInclude(ti => ti.AmountDetails)
+                    .ThenInclude(ti => ti.Source)
+                    .FirstOrDefault(f => f.Id == bankAccountId);
+                
+                result.ThenInclude(ti => ti.BudgetItem)
                     .ThenInclude(ti => ti.TransferToBankAccount)
                     .Include(i => i.EscrowToBankAccount)
-                    .FirstOrDefault(f => f.Id == bankAccountId);
+                    
             }
 
             return context.BankAccounts.Include(i => i.EscrowToBankAccount)
                 .FirstOrDefault(f => f.Id == bankAccountId);
         }
 
-        public bool SaveBankAccount(BankAccount bankAccount)
+        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.DbContext.SaveEntity(context.BankAccounts, bankAccount, "Saving Bank Account");
+            if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, bankAccount, "Saving Bank Account"))
+                return false;
+
+            foreach (var registerItem in bankAccount.RegisterItems)
+            {
+                context.BankAccountRegisterItemAmountDetails.RemoveRange(
+                    context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id));
+            }
+            context.BankAccountRegisterItemAmountDetails.AddRange(amountDetails);
+
+            return context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}'");
         }
 
         public bool DeleteBankAccount(int bankAccountId)

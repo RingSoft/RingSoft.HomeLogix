@@ -985,7 +985,7 @@ namespace RingSoft.HomeLogix.Tests
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Expense To Sally's Checking Budget Item");
 
-            expectedEscrowValue = doEscrow ? 400 : 0;
+            expectedEscrowValue = doEscrow ? 450 : 0;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(SallyGameFeeBudgetItemId);
             Assert.AreEqual(expectedEscrowValue, budgetItem.EscrowBalance);
 

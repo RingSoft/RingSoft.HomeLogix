@@ -134,6 +134,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             TotalActualAmount = GridManager.GetTotalAmount();
             Difference = ProjectedAmount - TotalActualAmount;
+            switch (ActualAmountCellProps.RegisterGridRow.TransactionType)
+            {
+                case TransactionTypes.Deposit:
+                    Difference = -Difference;
+                    break;
+                case TransactionTypes.Withdrawal:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void OnOkButton()

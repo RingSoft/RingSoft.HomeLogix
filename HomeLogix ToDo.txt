@@ -8,10 +8,27 @@ Validate Transfer To not empty.
 ========================================
 Before Release
 
+Budget
+-----------
+Remove Previous Month/Year Controls
+
 Bank Account Maintenance
 ----------------------------
 Calculate Bank Projected Balance Totals in database after generating.
-Bank Account change EscrowTo Bank Account.
+
+Change Escrow To Bank Account.
+
+On Save with completed rows.  Verify with user.  Warn of transferring to history.
+
+Register Grid needs to be in read-only mode when launched from budget item.  Notify user.
+
+Remove Previous Month/Year Controls
+
+Set Register Grid Cell Styles:
+	Budget
+	Transfer
+	Escrow
+	Misc
 
 AmountDetails
 ----------------------------

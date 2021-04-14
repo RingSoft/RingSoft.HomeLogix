@@ -21,7 +21,7 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.HasOne(p => p.RegisterItem)
                 .WithMany(p => p.AmountDetails)
                 .HasForeignKey(p => p.RegisterId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.Source)
                 .WithMany(p => p.AmountDetails)

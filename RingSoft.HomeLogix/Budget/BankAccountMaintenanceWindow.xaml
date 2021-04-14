@@ -12,7 +12,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="BankAccountMaintenanceWindow" Width="1000" Height="600">
+        Title="BankAccountMaintenanceWindow" Width="1200" Height="800">
     <Window.DataContext>
         <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
     </Window.DataContext>
@@ -92,13 +92,13 @@
 
                                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.TransactionTypeColumnId}" ContentTemplate="{StaticResource BankRegisterTransactionType}" Header="Transaction&#10;Type" DesignerSelectedId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" Width="100"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.AmountColumnId}" Header="Amount" DesignText="$123,456.78" Alignment="Right" Width="80"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.AmountColumnId}" Header="Amount" DesignText="$123,456.78" Alignment="Right" Width="120"/>
 
                                 <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.CompletedColumnId}" Header="Completed" Width="75"/>
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.BalanceColumnId}" Header="Balance" DesignText="$123,456.78" Alignment="Right" Width="80"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ActualAmountColumnId}" Header="Actual&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="100"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ActualAmountColumnId}" Header="Actual&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="150"/>
 
                                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DifferenceColumnId}" Header="Difference" DesignText="$1,234.56" Alignment="Right" Width="70"/>
 

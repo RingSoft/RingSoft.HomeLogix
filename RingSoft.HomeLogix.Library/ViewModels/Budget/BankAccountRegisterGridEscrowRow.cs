@@ -19,14 +19,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.LoadFromEntity(entity);
         }
 
-        public override bool ValidateRow()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override void SaveToEntity(BankAccountRegisterItem entity, int rowIndex)
         {
-            throw new System.NotImplementedException();
+            entity.Description = EscrowDescription;
+            base.SaveToEntity(entity, rowIndex);
         }
     }
 }

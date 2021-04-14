@@ -1,17 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RingSoft.DbLookup;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-    public class BankAccountRegisterGridTransferRow : BankAccountRegisterGridRow
+    public class BankAccountRegisterGridTransferRow : BankAccountRegisterGridBudgetItemRow
     {
         public override BankAccountRegisterItemTypes LineType => BankAccountRegisterItemTypes.TransferToBankAccount;
 
         public string TransferDescription { get; private set; }
 
-        public override string Description => TransferDescription;
+        public string TransferRegisterGuid { get; private set; }
+
+        public override string Description
+        {
+            get
+            {
+                if (BudgetItemValue.IsValid())
+                    return BudgetItemValue.Text;
+
+                return TransferDescription;
+            }
+        }
 
         public BankAccountRegisterGridTransferRow(BankAccountRegisterGridManager manager) : base(manager)
         {
@@ -20,18 +29,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
             TransferDescription = entity.Description;
-
+            TransferRegisterGuid = entity.TransferRegisterGuid;
             base.LoadFromEntity(entity);
-        }
-
-        public override bool ValidateRow()
-        {
-            throw new NotImplementedException();
         }
 
         public override void SaveToEntity(BankAccountRegisterItem entity, int rowIndex)
         {
-            throw new NotImplementedException();
+            entity.TransferRegisterGuid = TransferRegisterGuid;
+            entity.Description = TransferDescription;
+            base.SaveToEntity(entity, rowIndex);
         }
     }
 }

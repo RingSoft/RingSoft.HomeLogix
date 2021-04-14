@@ -33,7 +33,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public decimal? ActualAmount { get; private set; }
 
-        public decimal? Difference => ProjectedAmount - ActualAmount;
+        public decimal? Difference
+        {
+            get
+            {
+                switch (TransactionType)
+                {
+                    case TransactionTypes.Deposit:
+                        return ActualAmount - ProjectedAmount;
+                    case TransactionTypes.Withdrawal:
+                        return ProjectedAmount - ActualAmount;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
 
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
@@ -170,6 +184,50 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
             ProjectedAmount = Math.Abs(entity.ProjectedAmount);
             ActualAmount = entity.ActualAmount;
+        }
+
+        public override bool ValidateRow()
+        {
+            return true;
+        }
+
+        public override void SaveToEntity(BankAccountRegisterItem entity, int rowIndex)
+        {
+            entity.Id = RegisterId;
+            entity.BankAccountId = BankAccountRegisterGridManager.BankAccountViewModel.Id;
+            entity.RegisterGuid = RegisterGuid;
+            entity.ItemType = (int)LineType;
+            entity.ItemDate = ItemDate;
+            entity.ActualAmount = ActualAmount;
+            switch (TransactionType)
+            {
+                case TransactionTypes.Deposit:
+                    entity.ProjectedAmount = ProjectedAmount;
+                    break;
+                case TransactionTypes.Withdrawal:
+                    entity.ProjectedAmount = -ProjectedAmount;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (ActualAmount != null)
+            {
+                var detailId = 1;
+                foreach (var actualAmountDetail in ActualAmountDetails)
+                {
+                    BankAccountRegisterGridManager.BankAccountViewModel.RegisterDetails.Add(
+                        new BankAccountRegisterItemAmountDetail
+                    {
+                        RegisterId = RegisterId,
+                        DetailId = detailId,
+                        Date = actualAmountDetail.Date,
+                        SourceId = actualAmountDetail.SourceId,
+                        Amount = actualAmountDetail.Amount
+                    });
+                    detailId++;
+                }
+            }
         }
     }
 }

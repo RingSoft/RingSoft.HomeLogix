@@ -544,6 +544,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public RelayCommand BudgetItemsAddModifyCommand { get; }
 
+        public List<BankAccountRegisterItemAmountDetail> RegisterDetails { get; } =
+            new List<BankAccountRegisterItemAmountDetail>();
+
         private bool _loading;
 
         public BankAccountViewModel()
@@ -808,8 +811,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BankAccount entity)
         {
-            //var registerItems = RegisterGridManager.GetEntityList();
-            return AppGlobals.DataRepository.SaveBankAccount(entity);
+            RegisterDetails.Clear();
+
+            var registerItems = RegisterGridManager.GetEntityList();
+            entity.RegisterItems = registerItems;
+            return AppGlobals.DataRepository.SaveBankAccount(entity, RegisterDetails);
         }
 
         protected override bool DeleteEntity()

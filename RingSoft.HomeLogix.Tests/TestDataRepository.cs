@@ -2,6 +2,7 @@
 using RingSoft.HomeLogix.Library;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace RingSoft.HomeLogix.Tests
 {
@@ -62,7 +63,7 @@ namespace RingSoft.HomeLogix.Tests
             return null;
         }
 
-        public bool SaveBankAccount(BankAccount bankAccount)
+        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails)
         {
             if (bankAccount.Id == 0)
                 bankAccount.Id = BankAccounts.Count + 1;
@@ -141,25 +142,26 @@ namespace RingSoft.HomeLogix.Tests
             if (existingBudgetItem != null) 
                 BudgetItems.Remove(existingBudgetItem);
 
+            var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
             BudgetItems.Add(budgetItem);
 
             if (budgetItem.BankAccount != null)
-                SaveBankAccount(budgetItem.BankAccount);
+                SaveBankAccount(budgetItem.BankAccount, amountDetails);
 
             if (budgetItem.TransferToBankAccount != null)
-                SaveBankAccount(budgetItem.TransferToBankAccount);
+                SaveBankAccount(budgetItem.TransferToBankAccount, amountDetails);
 
             if (dbBankAccount != null)
-                SaveBankAccount(dbBankAccount);
+                SaveBankAccount(dbBankAccount, amountDetails);
 
             if (dbTransferToBankAccount != null)
-                SaveBankAccount(dbTransferToBankAccount);
+                SaveBankAccount(dbTransferToBankAccount, amountDetails);
 
             if (escrowBankAccount != null)
-                SaveBankAccount(escrowBankAccount);
+                SaveBankAccount(escrowBankAccount, amountDetails);
 
             if (dbEscrowBankAccount != null)
-                SaveBankAccount(dbEscrowBankAccount);
+                SaveBankAccount(dbEscrowBankAccount, amountDetails);
 
             return true;
         }
@@ -167,14 +169,15 @@ namespace RingSoft.HomeLogix.Tests
         public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount,
             BankAccount dbTransferToBankAccount, BankAccount dbEscrowBankAccount)
         {
+            var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
             if (dbBankAccount != null)
-                SaveBankAccount(dbBankAccount);
+                SaveBankAccount(dbBankAccount, amountDetails);
 
             if (dbTransferToBankAccount != null)
-                SaveBankAccount(dbTransferToBankAccount);
+                SaveBankAccount(dbTransferToBankAccount, amountDetails);
 
             if (dbEscrowBankAccount != null)
-                SaveBankAccount(dbEscrowBankAccount);
+                SaveBankAccount(dbEscrowBankAccount, amountDetails);
 
             var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             if (budgetItem != null)
