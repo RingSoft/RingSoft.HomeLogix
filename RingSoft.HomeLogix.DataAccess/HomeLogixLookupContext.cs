@@ -16,11 +16,11 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<BankAccount> BankAccounts { get; set; }
         public TableDefinition<BankAccountRegisterItem> BankAccountRegisterItems { get; set; }
         public TableDefinition<BankAccountRegisterItemAmountDetail> BankAccountRegisterItemAmountDetails { get; set; }
-        public TableDefinition<Store> Stores { get; set; }
+        public TableDefinition<BudgetItemSource> BudgetItemSources { get; set; }
 
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
-        public LookupDefinition<StoreLookup, Store> StoresLookup { get; set; }
+        public LookupDefinition<StoreLookup, BudgetItemSource> BudgetItemSourceLookup { get; set; }
         //----------------------------------------------------------------------
 
         public override DbDataProcessor DataProcessor => SqliteDataProcessor;
@@ -67,10 +67,10 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.CurrentBalance, 30);
             BankAccounts.HasLookupDefinition(BankAccountsLookup);
 
-            StoresLookup = new LookupDefinition<StoreLookup, Store>(Stores);
-            StoresLookup.AddVisibleColumnDefinition(p => p.StoreName, "Store Name", 
+            BudgetItemSourceLookup = new LookupDefinition<StoreLookup, BudgetItemSource>(BudgetItemSources);
+            BudgetItemSourceLookup.AddVisibleColumnDefinition(p => p.StoreName, "Source Name", 
                 p => p.Name, 70);
-            Stores.HasLookupDefinition(StoresLookup);
+            BudgetItemSources.HasLookupDefinition(BudgetItemSourceLookup);
         }
 
         protected override void SetupModel()

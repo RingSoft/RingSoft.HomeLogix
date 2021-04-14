@@ -1,10 +1,10 @@
-﻿using System;
-using RingSoft.DataEntryControls.Engine;
+﻿using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
+using System;
+using RingSoft.DbLookup.QueryBuilder;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -15,12 +15,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public DateTime Date { get; private set; } = DateTime.Today;
 
-        public AutoFillValue Store { get; private set; }
+        public AutoFillValue Source { get; private set; }
 
         public decimal Amount { get; private set; }
 
+        public bool IsIncome { get; private set; }
+
         private DateEditControlSetup _dateSetup;
-        private AutoFillSetup _storeAutoFillSetup;
+        private AutoFillSetup _sourceAutoFillSetup;
         private DecimalEditControlSetup _amountSetup;
 
         public ActualAmountGridRow(BankAccountRegisterActualAmountGridManager manager) : base(manager)
@@ -28,7 +30,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Manager = manager;
             _dateSetup = new DateEditControlSetup {DateFormatType = DateFormatTypes.DateOnly};
 
-            _storeAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.StoresLookup);
+            switch (Manager.ViewModel.ActualAmountCellProps.RegisterGridRow.TransactionType)
+            {
+                case TransactionTypes.Deposit:
+                    IsIncome = true;
+                    break;
+                case TransactionTypes.Withdrawal:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            var lookupDefinition = AppGlobals.LookupContext.BudgetItemSourceLookup.Clone();
+            lookupDefinition.FilterDefinition.AddFixedFilter(p => p.IsIncome, Conditions.Equals, IsIncome);
+            _sourceAutoFillSetup = new AutoFillSetup(lookupDefinition);
 
             _amountSetup = new DecimalEditControlSetup
             {
@@ -45,8 +59,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 case ActualAmountGridColumns.Date:
                     return new DataEntryGridDateCellProps(this, columnId, _dateSetup, Date);
-                case ActualAmountGridColumns.Store:
-                    return new DataEntryGridAutoFillCellProps(this, columnId, _storeAutoFillSetup, Store);
+                case ActualAmountGridColumns.Source:
+                    return new DataEntryGridAutoFillCellProps(this, columnId, _sourceAutoFillSetup, Source);
                 case ActualAmountGridColumns.Amount:
                     return new DataEntryGridDecimalCellProps(this, columnId, _amountSetup, Amount);
                 default:
@@ -63,20 +77,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     if (value is DataEntryGridDateCellProps dateCellProps)
                         Date = dateCellProps.Value.GetValueOrDefault(DateTime.Today);
                     break;
-                case ActualAmountGridColumns.Store:
+                case ActualAmountGridColumns.Source:
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
                         if (!autoFillCellProps.AutoFillValue.IsValid())
                         {
-                            var store = new Store {Name = autoFillCellProps.AutoFillValue.Text};
-                            if (AppGlobals.DataRepository.SaveStore(store))
+                            var source = new BudgetItemSource
                             {
-                                Store = new AutoFillValue(
-                                    AppGlobals.LookupContext.Stores.GetPrimaryKeyValueFromEntity(store), store.Name);
+                                Name = autoFillCellProps.AutoFillValue.Text,
+                                IsIncome = IsIncome
+                            };
+                            if (AppGlobals.DataRepository.SaveBudgetItemSource(source))
+                            {
+                                Source = new AutoFillValue(
+                                    AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(source), source.Name);
                             }
                         }
                         else 
-                            Store = autoFillCellProps.AutoFillValue;
+                            Source = autoFillCellProps.AutoFillValue;
                     }
 
                     break;
@@ -97,8 +115,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public void LoadFromEntity(BankAccountRegisterItemAmountDetail amountDetail)
         {
             Date = amountDetail.Date;
-            Store = new AutoFillValue(AppGlobals.LookupContext.Stores.GetPrimaryKeyValueFromEntity(amountDetail.Store),
-                amountDetail.Store.Name);
+            Source = new AutoFillValue(AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(amountDetail.Source),
+                amountDetail.Source.Name);
             Amount = amountDetail.Amount;
         }
 
@@ -112,9 +130,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.RegisterId = Manager.ViewModel.ActualAmountCellProps.RegisterGridRow.RegisterId;
             entity.DetailId = rowIndex;
             entity.Date = Date;
-            entity.Store = AppGlobals.LookupContext.Stores.GetEntityFromPrimaryKeyValue(Store.PrimaryKeyValue);
-            entity.Store.Name = Store.Text;
-            entity.StoreId = entity.Store.Id;
+            entity.Source = AppGlobals.LookupContext.BudgetItemSources.GetEntityFromPrimaryKeyValue(Source.PrimaryKeyValue);
+            entity.Source.Name = Source.Text;
+            entity.SourceId = entity.Source.Id;
             entity.Amount = Amount;
         }
     }

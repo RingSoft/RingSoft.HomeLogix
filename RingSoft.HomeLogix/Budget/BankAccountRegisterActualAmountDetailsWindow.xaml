@@ -60,7 +60,7 @@
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.DateColumnId}" Header="Date" DesignText="01/01/1980" Width="100"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.StoreColumnId}" Header="Store" DesignText="Smith's Home Furnishings" Width="200"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.SourceColumnId}" Header="Source" DesignText="Smith's Home Furnishings" Width="200"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.AmountColumnId}" Header="Amount" DesignText="$123,456,789.00" Width="130" Alignment="Right"/>
 

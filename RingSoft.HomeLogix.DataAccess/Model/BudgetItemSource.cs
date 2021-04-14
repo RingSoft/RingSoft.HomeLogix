@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.HomeLogix.DataAccess.Model
 {
-    public class Store
+    public class BudgetItemSource
     {
         [Required]
         [Key]
@@ -14,9 +14,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [MaxLength(50)]
         public string Name { get; set; }
 
+        [Required]
+        public bool IsIncome { get; set; }
+
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
-        public Store()
+        public BudgetItemSource()
         {
             AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
         }

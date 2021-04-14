@@ -33,11 +33,11 @@ namespace RingSoft.HomeLogix.Library
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null);
 
-        Store GetStore(int storeId);
+        BudgetItemSource GetBudgetItemSource(int storeId);
 
-        bool SaveStore(Store store);
+        bool SaveBudgetItemSource(BudgetItemSource store);
 
-        bool DeleteStore(int storeId);
+        bool DeleteBudgetItemSource(int storeId);
     }
 
     public class DataRepository : IDataRepository
@@ -196,23 +196,23 @@ namespace RingSoft.HomeLogix.Library
             return context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
         }
 
-        public Store GetStore(int storeId)
+        public BudgetItemSource GetBudgetItemSource(int sourceId)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.Stores.FirstOrDefault(f => f.Id == storeId);
+            return context.BudgetItemSources.FirstOrDefault(f => f.Id == sourceId);
         }
 
-        public bool SaveStore(Store store)
+        public bool SaveBudgetItemSource(BudgetItemSource source)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.DbContext.SaveEntity(context.Stores, store, $"Saving Store '{store.Name}'");
+            return context.DbContext.SaveEntity(context.BudgetItemSources, source, $"Saving Source '{source.Name}'");
         }
 
-        public bool DeleteStore(int storeId)
+        public bool DeleteBudgetItemSource(int sourceId)
         {
             var context = AppGlobals.GetNewDbContext();
-            var store = context.Stores.FirstOrDefault(f => f.Id == storeId);
-            return store != null && context.DbContext.DeleteEntity(context.Stores, store, $"Deleting Store '{store.Name}'");
+            var store = context.BudgetItemSources.FirstOrDefault(f => f.Id == sourceId);
+            return store != null && context.DbContext.DeleteEntity(context.BudgetItemSources, store, $"Deleting Source '{store.Name}'");
         }
     }
 }

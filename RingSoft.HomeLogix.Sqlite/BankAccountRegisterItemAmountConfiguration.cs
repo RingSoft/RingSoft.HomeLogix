@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.Date).HasColumnType(SqliteConstants.DateColumnType);
             builder.Property(p => p.DetailId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.RegisterId).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.StoreId).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.SourceId).HasColumnType(SqliteConstants.IntegerColumnType);
 
             builder.HasKey(p => new {p.RegisterId, p.DetailId});
 
@@ -23,9 +23,9 @@ namespace RingSoft.HomeLogix.Sqlite
                 .HasForeignKey(p => p.RegisterId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(p => p.Store)
+            builder.HasOne(p => p.Source)
                 .WithMany(p => p.AmountDetails)
-                .HasForeignKey(p => p.StoreId)
+                .HasForeignKey(p => p.SourceId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }

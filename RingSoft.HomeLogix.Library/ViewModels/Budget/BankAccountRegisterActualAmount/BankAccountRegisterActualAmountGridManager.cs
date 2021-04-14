@@ -11,14 +11,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     public enum ActualAmountGridColumns
     {
         Date = BankAccountRegisterActualAmountGridManager.DateColumnId,
-        Store = BankAccountRegisterActualAmountGridManager.StoreColumnId,
+        Source = BankAccountRegisterActualAmountGridManager.SourceColumnId,
         Amount = BankAccountRegisterActualAmountGridManager.AmountColumnId
     }
 
     public class BankAccountRegisterActualAmountGridManager : DataEntryGridManager
     {
         public const int DateColumnId = 1;
-        public const int StoreColumnId = 2;
+        public const int SourceColumnId = 2;
         public const int AmountColumnId = 3;
 
         public BankAccountRegisterActualAmountViewModel ViewModel { get; }

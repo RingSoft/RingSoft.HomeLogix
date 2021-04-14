@@ -195,17 +195,17 @@ namespace RingSoft.HomeLogix.Tests
             throw new System.NotImplementedException();
         }
 
-        public Store GetStore(int storeId)
+        public BudgetItemSource GetBudgetItemSource(int sourceId)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool SaveStore(Store store)
+        public bool SaveBudgetItemSource(BudgetItemSource source)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool DeleteStore(int storeId)
+        public bool DeleteBudgetItemSource(int sourceId)
         {
             throw new System.NotImplementedException();
         }
