@@ -55,15 +55,14 @@ namespace RingSoft.HomeLogix.Library
 
             if (getRelatedEntities)
             {
-                var result = context.BankAccounts.Include(i => i.RegisterItems)
+                return context.BankAccounts.Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.AmountDetails)
                     .ThenInclude(ti => ti.Source)
+                    .Include(i => i.RegisterItems)
+                    .ThenInclude(ti => ti.BudgetItem)
+                       .ThenInclude(ti => ti.TransferToBankAccount)
+                       .Include(i => i.EscrowToBankAccount)
                     .FirstOrDefault(f => f.Id == bankAccountId);
-                
-                result.ThenInclude(ti => ti.BudgetItem)
-                    .ThenInclude(ti => ti.TransferToBankAccount)
-                    .Include(i => i.EscrowToBankAccount)
-                    
             }
 
             return context.BankAccounts.Include(i => i.EscrowToBankAccount)

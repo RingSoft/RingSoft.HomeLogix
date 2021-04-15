@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
@@ -184,6 +185,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
             ProjectedAmount = Math.Abs(entity.ProjectedAmount);
             ActualAmount = entity.ActualAmount;
+            ActualAmountDetails = entity.AmountDetails.ToList();
         }
 
         public override bool ValidateRow()
