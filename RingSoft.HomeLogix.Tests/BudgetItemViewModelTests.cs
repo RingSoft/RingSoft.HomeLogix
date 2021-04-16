@@ -823,7 +823,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Amount = 500;
             budgetItemViewModel.RecurringPeriod = 6;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = bankAccount.LastGenerationDate.AddMonths(5).AddDays(1);
+            budgetItemViewModel.StartingDate = bankAccount.LastGenerationDate.AddMonths(4).AddDays(1);
             budgetItemViewModel.DoEscrow = doEscrow;
 
             decimal expectedEscrowValue = doEscrow ? (decimal)83.33 : 0;
@@ -985,7 +985,7 @@ namespace RingSoft.HomeLogix.Tests
             Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
                 "Saving Expense To Sally's Checking Budget Item");
 
-            expectedEscrowValue = doEscrow ? 450 : 0;
+            expectedEscrowValue = doEscrow ? 400 : 0;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(SallyGameFeeBudgetItemId);
             Assert.AreEqual(expectedEscrowValue, budgetItem.EscrowBalance);
 

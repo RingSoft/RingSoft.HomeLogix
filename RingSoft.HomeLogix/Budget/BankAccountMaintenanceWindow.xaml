@@ -51,6 +51,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Label Content="Bank Account ID"/>
@@ -60,6 +62,10 @@
                 <Label Grid.Row="0" Grid.Column="2" Content="Bank Account Name"/>
 
                 <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
+
+                <Label Grid.Row="0" Grid.Column="4" Content="Last Register Generate To Date"/>
+
+                <dec:DateReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding LastGenerationDate}" DesignText="01/01/1980" Width="80"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Bank Balance"/>
 

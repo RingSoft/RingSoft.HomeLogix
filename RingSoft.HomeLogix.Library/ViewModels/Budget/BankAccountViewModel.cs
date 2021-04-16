@@ -530,6 +530,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     _lastGenerationDate = value;
                 }
+                OnPropertyChanged(nameof(LastGenerationDate), false);
             }
         }
 

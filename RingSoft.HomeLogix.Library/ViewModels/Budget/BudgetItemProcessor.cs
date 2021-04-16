@@ -80,7 +80,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var monthsToGo =
                     RingSoftAppGlobals.CalculateMonthsInTimeSpan((DateTime)startDate, (DateTime)currentDate);
 
-                var monthsAccrued = months - Math.Floor(monthsToGo);
+                var monthsAccrued = months - Math.Ceiling(monthsToGo);  //Must be ceiling or else escrow item generation will generate an extra escrow.
                 budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal)monthsAccrued,
                     CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
 
@@ -235,17 +235,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (!escrowItems.Any())
                 return result;
 
+            var lastGenerationDate = bankAccount.LastGenerationDate;
             var escrowDayOfMonth = bankAccount.EscrowDayOfMonth ?? 1;
             var lastDayOfFeb = false;
-            if (bankAccount.LastGenerationDate.Month == 2 && escrowDayOfMonth > 28)
+            if (lastGenerationDate.Month == 2 && escrowDayOfMonth > 28)
             {
                 lastDayOfFeb = true;
-                escrowDayOfMonth = DateTime.DaysInMonth(bankAccount.LastGenerationDate.Year,
-                    bankAccount.LastGenerationDate.Month);
+                escrowDayOfMonth = DateTime.DaysInMonth(lastGenerationDate.Year, lastGenerationDate.Month);
             }
 
-            var startDate = new DateTime(bankAccount.LastGenerationDate.Year, bankAccount.LastGenerationDate.Month,
-                escrowDayOfMonth);
+            var startDate = new DateTime(lastGenerationDate.Year, lastGenerationDate.Month, escrowDayOfMonth);
 
             while (startDate < generateToDate)
             {
