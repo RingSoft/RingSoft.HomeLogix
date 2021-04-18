@@ -40,38 +40,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(0)]
         public decimal MonthlyBudgetWithdrawals { get; set; }
 
-        [Required]
-        [DefaultValue(0)]
-        public decimal CurrentMonthDeposits { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal CurrentMonthWithdrawals { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal PreviousMonthDeposits { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal PreviousMonthWithdrawals { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal CurrentYearDeposits { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal CurrentYearWithdrawals { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal PreviousYearDeposits { get; set; }
-
-        [Required]
-        [DefaultValue(0)]
-        public decimal PreviousYearWithdrawals { get; set; }
-
         public int? EscrowToBankAccountId { get; set; }
 
         public virtual BankAccount EscrowToBankAccount { get; set; }
@@ -80,7 +48,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         public DateTime LastGenerationDate { get; set; }
-        
+
         public string Notes { get; set; }
 
         public virtual ICollection<BudgetItem> BudgetItems { get; set; }

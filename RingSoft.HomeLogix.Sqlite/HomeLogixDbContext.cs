@@ -26,6 +26,7 @@ namespace RingSoft.HomeLogix.Sqlite
         public virtual DbSet<BankAccountRegisterItem> BankAccountRegisterItems { get; set; }
         public virtual DbSet<BankAccountRegisterItemAmountDetail> BankAccountRegisterItemAmountDetails { get; set; }
         public virtual DbSet<BudgetItemSource> BudgetItemSources { get; set; }
+        public virtual DbSet<BankAccountRegisterItemEscrow> BankAccountRegisterItemEscrows { get; set; }
         //-----------------------------------------------------------------------
 
         private static HomeLogixLookupContext _lookupContext;
@@ -59,6 +60,7 @@ namespace RingSoft.HomeLogix.Sqlite
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountRegisterItemConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountRegisterItemAmountConfiguration());
+            modelBuilder.ApplyConfiguration(new BankAccountRegisterItemEscrowConfiguration());
 
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Id)
                 .HasColumnType(SqliteConstants.IntegerColumnType);

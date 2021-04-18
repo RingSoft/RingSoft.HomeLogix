@@ -10,10 +10,6 @@ namespace RingSoft.HomeLogix.Sqlite
         public void Configure(EntityTypeBuilder<BankAccount> builder)
         {
             builder.Property(p => p.CurrentBalance).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.CurrentMonthDeposits).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.CurrentMonthWithdrawals).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.CurrentYearDeposits).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.CurrentYearWithdrawals).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
             builder.Property(p => p.EscrowBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.EscrowDayOfMonth).HasColumnType(SqliteConstants.IntegerColumnType);
@@ -23,10 +19,6 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.MonthlyBudgetDeposits).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.MonthlyBudgetWithdrawals).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Notes).HasColumnType(SqliteConstants.MemoColumnType);
-            builder.Property(p => p.PreviousMonthDeposits).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.PreviousMonthWithdrawals).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.PreviousYearDeposits).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.PreviousYearWithdrawals).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedEndingBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceDate).HasColumnType(SqliteConstants.DateColumnType);

@@ -334,51 +334,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _previousMonthAmount;
+        private DateTime _currentMonthEnding;
 
-        public decimal PreviousMonthAmount
+        public DateTime CurrentMonthEnding
         {
-            get => _previousMonthAmount;
+            get => _currentMonthEnding;
             set
             {
-                if (_previousMonthAmount == value)
+                if (_currentMonthEnding == value)
                     return;
 
-                _previousMonthAmount = value;
+                _currentMonthEnding = value;
                 OnPropertyChanged();
             }
         }
 
-
-        private decimal _currentYearAmount;
-
-        public decimal CurrentYearAmount
-        {
-            get => _currentYearAmount;
-            set
-            {
-                if (_currentYearAmount == value)
-                    return;
-
-                _currentYearAmount = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private decimal _previousYearAmount;
-
-        public decimal PreviousYearAmount
-        {
-            get => _previousYearAmount;
-            set
-            {
-                if (_previousYearAmount == value)
-                    return;
-
-                _previousYearAmount = value;
-                OnPropertyChanged();
-            }
-        }
 
         private decimal _currentMonthPercent;
 
@@ -557,6 +527,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DbTransferToBankId = 0;
             DateControlsEnabled = BudgetItemTypeEnabled = true;
 
+            CurrentMonthEnding = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
+                DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+
             _loading = false;
 
             SetViewMode();
@@ -695,9 +668,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DoEscrow = entity.DoEscrow;
             MonthlyAmount = entity.MonthlyAmount;
             CurrentMonthAmount = entity.CurrentMonthAmount;
-            PreviousMonthAmount = entity.PreviousMonthAmount;
-            CurrentYearAmount = entity.CurrentYearAmount;
-            PreviousYearAmount = entity.PreviousYearAmount;
+            CurrentMonthEnding = entity.CurrentMonthEnding;
             EscrowBalance = entity.EscrowBalance;
             Notes = entity.Notes;
 
@@ -964,9 +935,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 EscrowBalance = EscrowBalance,
                 MonthlyAmount = MonthlyAmount,
                 CurrentMonthAmount = CurrentMonthAmount,
-                PreviousMonthAmount = PreviousMonthAmount,
-                CurrentYearAmount = CurrentYearAmount,
-                PreviousYearAmount = PreviousYearAmount,
+                CurrentMonthEnding = CurrentMonthEnding,
                 Notes = Notes
             };
             return budgetItem;

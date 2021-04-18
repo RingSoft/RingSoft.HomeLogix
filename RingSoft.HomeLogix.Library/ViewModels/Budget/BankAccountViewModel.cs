@@ -225,187 +225,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _currentMonthDeposits;
-
-        public decimal CurrentMonthDeposits
-        {
-            get => _currentMonthDeposits;
-            set
-            {
-                if (_currentMonthDeposits == value)
-                    return;
-
-                _currentMonthDeposits = value;
-                OnPropertyChanged(nameof(CurrentMonthDeposits), false);
-            }
-        }
-
-        private decimal _currentMonthWithdrawals;
-
-        public decimal CurrentMonthWithdrawals
-        {
-            get => _currentMonthWithdrawals;
-            set
-            {
-                if (_currentMonthWithdrawals == value)
-                    return;
-
-                _currentMonthWithdrawals = value;
-                OnPropertyChanged(nameof(CurrentMonthWithdrawals), false);
-            }
-        }
-
-        private decimal _currentMonthDifference;
-
-        public decimal CurrentMonthDifference
-        {
-            get => _currentMonthDifference;
-            set
-            {
-                if (_currentMonthDifference == value)
-                    return;
-                
-                _currentMonthDifference = value;
-                OnPropertyChanged(nameof(CurrentMonthDifference), false);
-            }
-        }
-
-        private decimal _previousMonthDeposits;
-
-        public decimal PreviousMonthDeposits
-        {
-            get => _previousMonthDeposits;
-            set
-            {
-                if (_previousMonthDeposits == value)
-                    return;
-
-                _previousMonthDeposits = value;
-                OnPropertyChanged(nameof(PreviousMonthDeposits), false);
-            }
-        }
-
-        private decimal _previousMonthWithdrawals;
-
-        public decimal PreviousMonthWithdrawals
-        {
-            get => _previousMonthWithdrawals;
-            set
-            {
-                if (_previousMonthWithdrawals == value)
-                    return;
-
-                _previousMonthWithdrawals = value;
-                OnPropertyChanged(nameof(PreviousMonthWithdrawals), false);
-            }
-        }
-
-        private decimal _previousMonthDifference;
-
-        public decimal PreviousMonthDifference
-        {
-            get => _previousMonthDifference;
-            set
-            {
-                if (_previousMonthDifference == value)
-                    return;
-
-                _previousMonthDifference = value;
-                OnPropertyChanged(nameof(PreviousMonthDifference), false);
-            }
-        }
-
-        private decimal _currentYearDeposits;
-
-        public decimal CurrentYearDeposits
-        {
-            get => _currentYearDeposits;
-            set
-            {
-                if (_currentYearDeposits == value)
-                    return;
-
-                _currentYearDeposits = value;
-                OnPropertyChanged(nameof(CurrentYearDeposits), false);
-            }
-        }
-
-        private decimal _currentYearWithdrawals;
-
-        public decimal CurrentYearWithdrawals
-        {
-            get => _currentYearWithdrawals;
-            set
-            {
-                if (_currentYearWithdrawals == value)
-                    return;
-
-                _currentYearWithdrawals = value;
-                OnPropertyChanged(nameof(CurrentYearWithdrawals), false);
-            }
-        }
-
-        private decimal _currentYearDifference;
-
-        public decimal CurrentYearDifference
-        {
-            get => _currentYearDifference;
-            set
-            {
-                if (_currentYearDifference == value)
-                    return;
-
-                _currentYearDifference = value;
-                OnPropertyChanged(nameof(CurrentYearDifference), false);
-            }
-        }
-
-        private decimal _previousYearDeposits;
-
-        public decimal PreviousYearDeposits
-        {
-            get => _previousYearDeposits;
-            set
-            {
-                if (_previousYearDeposits == value)
-                    return;
-
-                _previousYearDeposits = value;
-                OnPropertyChanged(nameof(PreviousYearDeposits), false);
-            }
-        }
-
-
-        private decimal _previousYearWithdrawals;   
-
-        public decimal PreviousYearWithdrawals
-        {
-            get => _previousYearWithdrawals;
-            set
-            {
-                if (_previousYearWithdrawals == value)
-                    return;
-
-                _previousYearWithdrawals = value;
-                OnPropertyChanged(nameof(PreviousYearWithdrawals), false);
-            }
-        }
-
-        private decimal _previousYearDifference;
-
-        public decimal PreviousYearDifference
-        {
-            get => _previousYearDifference;
-            set
-            {
-                if (_previousYearDifference == value)
-                    return;
-
-                _previousYearDifference = value;
-                OnPropertyChanged(nameof(PreviousYearDifference), false);
-            }
-        }
-
         private AutoFillSetup _escrowBankAccountAutoFillSetup;
 
         public AutoFillSetup EscrowBankAccountAutoFillSetup
@@ -608,16 +427,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetWithdrawals = 0;
             MonthlyBudgetDifference = 0;
             
-            CurrentMonthDeposits = 0;
-            CurrentMonthWithdrawals = 0;
-            CurrentMonthDifference = 0;
-            PreviousMonthDeposits = 0;
-            PreviousMonthWithdrawals = 0;
-            PreviousMonthDifference = 0;
-            CurrentYearDeposits = 0;
-            CurrentYearWithdrawals = 0;
-            CurrentYearDifference = 0;
-
             EscrowBankAccountAutoFillValue = null;
             EscrowDayOfMonth = 1;
             Notes = string.Empty;
@@ -658,13 +467,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowBalance = entity.EscrowBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
-
-            CurrentMonthDeposits = entity.CurrentMonthDeposits;
-            CurrentMonthWithdrawals = entity.CurrentMonthWithdrawals;
-            PreviousMonthDeposits = entity.PreviousMonthDeposits;
-            PreviousMonthWithdrawals = entity.PreviousMonthWithdrawals;
-            CurrentYearDeposits = entity.CurrentYearDeposits;
-            CurrentYearWithdrawals = entity.CurrentYearWithdrawals;
             
             EscrowBankAccountAutoFillValue = null;
             if (entity.EscrowToBankAccount != null)
@@ -703,9 +505,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ProjectedEndingBalanceDifference = NewProjectedEndingBalance - CurrentProjectedEndingBalance;
             
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
-            CurrentMonthDifference = CurrentMonthDeposits - CurrentMonthWithdrawals;
-            PreviousMonthDifference = PreviousMonthDeposits - PreviousMonthWithdrawals;
-            CurrentYearDifference = CurrentYearDeposits - CurrentYearWithdrawals;
         }
 
         public void RefreshBudgetTotals()
@@ -779,12 +578,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ProjectedLowestBalanceAmount = ProjectedLowestBalanceAmount,
                 MonthlyBudgetDeposits = MonthlyBudgetDeposits,
                 MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals,
-                CurrentMonthDeposits = CurrentMonthDeposits,
-                CurrentMonthWithdrawals = CurrentMonthWithdrawals,
-                PreviousMonthDeposits = PreviousMonthDeposits,
-                PreviousMonthWithdrawals = PreviousMonthWithdrawals,
-                CurrentYearDeposits = CurrentYearDeposits,
-                CurrentYearWithdrawals = CurrentYearWithdrawals,
                 EscrowDayOfMonth = EscrowDayOfMonth,
                 Notes = Notes,
                 LastGenerationDate = (DateTime)LastGenerationDate

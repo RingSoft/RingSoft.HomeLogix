@@ -71,23 +71,21 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public decimal CurrentMonthAmount { get; set; }
 
         [Required]
-        public decimal PreviousMonthAmount { get; set; }
-
-        [Required]
-        public decimal CurrentYearAmount { get; set; }
-
-        [Required]
-        public decimal PreviousYearAmount { get; set; }
+        public DateTime CurrentMonthEnding { get; set; }
 
         public decimal? EscrowBalance { get; set; }
 
         public string Notes { get; set; }
 
+
         public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
+
+        public virtual ICollection<BankAccountRegisterItemEscrow> RegisterEscrows { get; set; }
 
         public BudgetItem()
         {
             RegisterItems = new HashSet<BankAccountRegisterItem>();
+            RegisterEscrows = new HashSet<BankAccountRegisterItemEscrow>();
         }
 
         public override string ToString()

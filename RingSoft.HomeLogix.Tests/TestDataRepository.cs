@@ -2,7 +2,6 @@
 using RingSoft.HomeLogix.Library;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace RingSoft.HomeLogix.Tests
 {
@@ -39,14 +38,6 @@ namespace RingSoft.HomeLogix.Tests
                     ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount,
                     MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits,
                     MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals,
-                    CurrentMonthDeposits = bankAccount.CurrentMonthDeposits,
-                    CurrentMonthWithdrawals = bankAccount.CurrentMonthWithdrawals,
-                    PreviousMonthDeposits = bankAccount.PreviousMonthDeposits,
-                    PreviousMonthWithdrawals = bankAccount.PreviousMonthWithdrawals,
-                    CurrentYearDeposits = bankAccount.CurrentYearDeposits,
-                    CurrentYearWithdrawals = bankAccount.CurrentYearWithdrawals,
-                    PreviousYearDeposits = bankAccount.PreviousYearDeposits,
-                    PreviousYearWithdrawals = bankAccount.PreviousYearWithdrawals,
                     EscrowToBankAccountId = bankAccount.EscrowToBankAccountId,
                     EscrowToBankAccount = null,
                     EscrowDayOfMonth = bankAccount.EscrowDayOfMonth,
@@ -114,9 +105,7 @@ namespace RingSoft.HomeLogix.Tests
                     TransferToBankAccount = null,
                     MonthlyAmount = budgetItem.MonthlyAmount,
                     CurrentMonthAmount = budgetItem.CurrentMonthAmount,
-                    PreviousMonthAmount = budgetItem.PreviousMonthAmount,
-                    CurrentYearAmount = budgetItem.CurrentYearAmount,
-                    PreviousYearAmount = budgetItem.PreviousYearAmount,
+                    CurrentMonthEnding = budgetItem.CurrentMonthEnding,
                     EscrowBalance = budgetItem.EscrowBalance,
                     Notes = budgetItem.Notes,
                 };

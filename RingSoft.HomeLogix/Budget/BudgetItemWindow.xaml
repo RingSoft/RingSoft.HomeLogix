@@ -151,37 +151,26 @@
                 <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" FormatType="Currency"
                                         Value="{Binding CurrentMonthAmount}" />
 
-                <Label Grid.Row="1" Grid.Column="2" Content="Year To Date Amount" />
+                <Label Grid.Row="1" Grid.Column="2" Content="Current Month Ending" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" FormatType="Currency"
-                                        Value="{Binding CurrentYearAmount}" />
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="3" 
+                                        Value="{Binding CurrentMonthEnding}" />
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Previous Month Amount"
-                />
+                <Label Grid.Row="2" Grid.Column="0" Content="Monthly Amount Percent"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Currency"
-                                        Value="{Binding PreviousMonthAmount}" />
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" FormatType="Percent" Value="{Binding CurrentMonthPercent}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
 
-                <Label Grid.Row="2" Grid.Column="2" Content="Previous Year Amount" />
+                <Label Grid.Row="2" Grid.Column="2" Content="Month To Date Percent"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" FormatType="Currency"
-                                        Value="{Binding PreviousYearAmount}" />
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" FormatType="Percent" Value="{Binding MonthToDatePercent}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
 
-                <Label Grid.Row="3" Grid.Column="0" Content="Monthly Amount Percent"/>
+                <Label Grid.Row="3" Grid.Column="0" Content="Monthly Percent Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" FormatType="Percent" Value="{Binding CurrentMonthPercent}" DesignText="99.99%" Width="50" TextAlignment="Left"/>
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
 
-                <Label Grid.Row="3" Grid.Column="2" Content="Month To Date Percent"/>
+                <Label Grid.Row="3" Grid.Column="2" Content="Monthly Amount Remaining"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" FormatType="Percent" Value="{Binding MonthToDatePercent}" DesignText="99.99%" Width="50" TextAlignment="Left"/>
-
-                <Label Grid.Row="4" Grid.Column="0" Content="Monthly Percent Difference"/>
-
-                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="50" TextAlignment="Left"/>
-
-                <Label Grid.Row="4" Grid.Column="2" Content="Monthly Amount Remaining"/>
-
-                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="3" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
 
             </Grid>
         </Grid>
