@@ -80,7 +80,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var monthsToGo =
                     RingSoftAppGlobals.CalculateMonthsInTimeSpan((DateTime)startDate, (DateTime)currentDate);
 
-                var monthsAccrued = months - Math.Ceiling(monthsToGo);  //Must be ceiling or else escrow item generation will generate an extra escrow.
+                var monthsAccrued = months - Math.Floor(monthsToGo);  //Must be floor or else escrow from bank item generation will not full escrow balance.
                 budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal)monthsAccrued,
                     CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
 
@@ -250,12 +250,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 decimal escrowToBankAmount = 0;
                 decimal escrowFromBankAmount = 0;
+                var escrowToItems = new List<BankAccountRegisterItemEscrow>();
+                var escrowFromItems = new List<BankAccountRegisterItemEscrow>();
                 foreach (var escrowItem in escrowItems)
                 {
                     if (escrowItem.EndingDate != null && escrowItem.EndingDate.Value > startDate ||
                         escrowItem.EndingDate == null)
                     {
                         escrowToBankAmount += escrowItem.MonthlyAmount;
+                        escrowToItems.Add(new BankAccountRegisterItemEscrow
+                        {
+                            BudgetItemId = escrowItem.Id,
+                            Amount = escrowItem.MonthlyAmount
+                        });
                         var incrementEscrow = true;
                         if (escrowItem.StartingDate != null)
                         {

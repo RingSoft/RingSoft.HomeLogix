@@ -13,6 +13,7 @@ namespace RingSoft.HomeLogix.Sqlite
     {
         public void Configure(EntityTypeBuilder<BankAccountRegisterItemEscrow> builder)
         {
+            builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.RegisterId).HasColumnType(SqliteConstants.IntegerColumnType);
 
