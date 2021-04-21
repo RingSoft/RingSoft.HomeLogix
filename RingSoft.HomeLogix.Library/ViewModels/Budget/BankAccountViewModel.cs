@@ -538,10 +538,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (budgetItems == null)
                 return;
 
+            var escrowOutput = BudgetItemProcessor.GenerateEscrowRegisterItems(GetEntityData(), generateToDate.Value);
+
             var registerItems = new List<BankAccountRegisterItem>();
             registerItems.AddRange(
                 // ReSharper disable once PossibleInvalidOperationException
-                BudgetItemProcessor.GenerateEscrowRegisterItems(GetEntityData(), generateToDate.Value));
+                escrowOutput.RegisterItems);
 
             foreach (var budgetItem in budgetItems)
             {
@@ -551,8 +553,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
-            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, budgetItems,
-                null, bankAccount))
+            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, escrowOutput.RegisterItemEscrows,
+                budgetItems, null, bankAccount))
                 return;
 
             foreach (var registerItem in registerItems)

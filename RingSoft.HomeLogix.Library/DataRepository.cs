@@ -29,6 +29,7 @@ namespace RingSoft.HomeLogix.Library
         IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId);
 
         bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            List<BankAccountRegisterItemEscrow> newRegisterEscrowItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null);
@@ -180,6 +181,7 @@ namespace RingSoft.HomeLogix.Library
         }
 
         public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            List<BankAccountRegisterItemEscrow> newRegisterEscrowItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null)
@@ -206,7 +208,22 @@ namespace RingSoft.HomeLogix.Library
                 context.BankAccountRegisterItems.Add(bankAccountRegisterItem);
             }
 
-            return context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
+            var result = context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
+            if (!result)
+                return false;
+
+            if (newRegisterEscrowItems.Any())
+            {
+                foreach (var registerEscrowItem in newRegisterEscrowItems)
+                {
+                    registerEscrowItem.RegisterId = registerEscrowItem.RegisterItem.Id;
+                    registerEscrowItem.RegisterItem = null;
+                }
+                context.BankAccountRegisterItemEscrows.AddRange(newRegisterEscrowItems);
+                result = context.DbContext.SaveEfChanges("Saving generated Bank Account Register Item Escrows.");
+            }
+
+            return result;
         }
 
         public BudgetItemSource GetBudgetItemSource(int sourceId)

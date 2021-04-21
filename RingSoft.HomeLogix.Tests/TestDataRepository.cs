@@ -181,6 +181,7 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            List<BankAccountRegisterItemEscrow> newRegisterEscrowItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null, BankAccount bankAccount = null)
         {

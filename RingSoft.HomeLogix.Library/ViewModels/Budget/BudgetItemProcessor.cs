@@ -7,6 +7,13 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public class BankAccountRegisterEscrowGenerateOutput
+    {
+        public List<BankAccountRegisterItem> RegisterItems { get; set; }
+
+        public List<BankAccountRegisterItemEscrow> RegisterItemEscrows { get; set; }
+    }
+
     public class BudgetItemProcessorData
     {
         public BudgetItem BudgetItem { get; set; }
@@ -80,7 +87,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var monthsToGo =
                     RingSoftAppGlobals.CalculateMonthsInTimeSpan((DateTime)startDate, (DateTime)currentDate);
 
-                var monthsAccrued = months - Math.Floor(monthsToGo);  //Must be floor or else escrow from bank item generation will not full escrow balance.
+                var monthsAccrued = months - Math.Ceiling(monthsToGo);  //Must be ceiling or else escrow item generation will generate an extra escrow.
                 budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal)monthsAccrued,
                     CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
 
@@ -227,10 +234,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             };
         }
 
-        public static IEnumerable<BankAccountRegisterItem> GenerateEscrowRegisterItems(BankAccount bankAccount,
+        public static BankAccountRegisterEscrowGenerateOutput GenerateEscrowRegisterItems(BankAccount bankAccount,
             DateTime generateToDate)
         {
-            var result = new List<BankAccountRegisterItem>();
+            var result = new BankAccountRegisterEscrowGenerateOutput
+            {
+                RegisterItems = new List<BankAccountRegisterItem>(),
+                RegisterItemEscrows = new List<BankAccountRegisterItemEscrow>()
+            };
+
             var escrowItems = AppGlobals.DataRepository.GetEscrowBudgetItems(bankAccount.Id).ToList();
             if (!escrowItems.Any())
                 return result;
@@ -269,7 +281,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             if (escrowItem.StartingDate.Value < startDate.AddMonths(1)
                                 && escrowItem.EscrowBalance != null)
                             {
-                                escrowFromBankAmount += escrowItem.EscrowBalance.Value;
+                                escrowFromBankAmount += escrowItem.EscrowBalance.Value + escrowItem.MonthlyAmount;
+                                escrowFromItems.Add(new BankAccountRegisterItemEscrow
+                                {
+                                    BudgetItemId = escrowItem.Id,
+                                    Amount = escrowItem.EscrowBalance.Value + escrowItem.MonthlyAmount
+                                });
                                 escrowItem.EscrowBalance = 0;
                                 AdvanceBudgetItemStartingDate(escrowItem);
                                 incrementEscrow = false;
@@ -280,12 +297,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
-                AddEscrowRegisterItems(bankAccount, startDate, escrowToBankAmount, "Monthly Escrow", result);
+                AddEscrowRegisterItems(bankAccount, startDate, escrowToBankAmount, "Monthly Escrow", result,
+                    escrowToItems);
 
                 if (escrowFromBankAmount > 0)
                 {
                     AddEscrowRegisterItems(bankAccount, startDate, -escrowFromBankAmount, "Transfer From Escrow",
-                        result);
+                        result, escrowFromItems);
                 }
                 startDate = startDate.AddMonths(1);
                 if (lastDayOfFeb)
@@ -300,7 +318,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         private static void AddEscrowRegisterItems(BankAccount bankAccount, DateTime date, decimal escrowAmount,
-            string registerItemDescription, List<BankAccountRegisterItem> registerItems)
+            string registerItemDescription, BankAccountRegisterEscrowGenerateOutput output,
+            List<BankAccountRegisterItemEscrow> registerItemEscrows)
         {
             var registerItem = new BankAccountRegisterItem
             {
@@ -311,7 +330,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Description = registerItemDescription,
                 ProjectedAmount = -escrowAmount
             };
-            registerItems.Add(registerItem);
+            AddEscrowsToRegisterItem(output, registerItemEscrows, registerItem);
 
             if (bankAccount.EscrowToBankAccountId == null) 
                 return;
@@ -331,7 +350,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ProjectedAmount = escrowAmount,
                 TransferRegisterGuid = escrowFromBankRegisterId
             };
-            registerItems.Add(registerItem);
+            AddEscrowsToRegisterItem(output, registerItemEscrows, registerItem);
+        }
+
+        private static void AddEscrowsToRegisterItem(BankAccountRegisterEscrowGenerateOutput output, List<BankAccountRegisterItemEscrow> registerItemEscrows,
+            BankAccountRegisterItem registerItem)
+        {
+            output.RegisterItems.Add(registerItem);
+            foreach (var bankAccountRegisterItemEscrow in registerItemEscrows)
+            {
+                output.RegisterItemEscrows.Add(new BankAccountRegisterItemEscrow
+                {
+                    BudgetItemId = bankAccountRegisterItemEscrow.BudgetItemId,
+                    RegisterItem = registerItem,
+                    Amount = bankAccountRegisterItemEscrow.Amount
+                });
+            }
         }
     }
 }
