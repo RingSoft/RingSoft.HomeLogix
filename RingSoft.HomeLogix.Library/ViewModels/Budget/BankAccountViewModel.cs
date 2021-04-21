@@ -496,7 +496,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     RsMessageBoxIcons.Exclamation);
         }
 
-        private void CalculateTotals()
+        public void CalculateTotals()
         {
             if (_loading)
                 return;

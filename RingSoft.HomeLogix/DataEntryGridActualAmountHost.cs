@@ -45,7 +45,7 @@ namespace RingSoft.HomeLogix
             control.CalculatorValueChanged += (_, _) => OnUpdateSource(GetCellValue());
             control.ShowDetailsWindow += (_, _) =>
             {
-                ActualAmountCellProps.RegisterGridRow.BankAccountRegisterGridManager.BankAccountViewModel
+                ActualAmountCellProps.RegisterGridRow.Manager.ViewModel
                     .BankAccountView.ShowActualAmountDetailsWindow(ActualAmountCellProps);
 
                 OnUpdateSource(ActualAmountCellProps);

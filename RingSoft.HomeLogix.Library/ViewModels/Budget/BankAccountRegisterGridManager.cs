@@ -40,11 +40,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public const int NegativeDisplayId = 101;
 
-        public BankAccountViewModel BankAccountViewModel { get; }
+        public new BankAccountViewModel ViewModel { get; }
 
         public BankAccountRegisterGridManager(BankAccountViewModel viewModel) : base(viewModel)
         {
-            BankAccountViewModel = viewModel;
+            ViewModel = viewModel;
         }
 
         protected override DataEntryGridRow GetNewRow()
@@ -90,26 +90,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void CalculateProjectedBalanceData()
         {
-            var newBalance = BankAccountViewModel.CurrentBalance - BankAccountViewModel.EscrowBalance.GetValueOrDefault(0);
+            var newBalance = ViewModel.CurrentBalance - ViewModel.EscrowBalance.GetValueOrDefault(0);
             var lowestBalance = newBalance;
             var lowestBalanceDate = DateTime.Today;
 
             var rows = Rows.OfType<BankAccountRegisterGridRow>();
             foreach (var bankAccountRegisterGridRow in rows)
             {
-                switch (bankAccountRegisterGridRow.TransactionType)
+                if (bankAccountRegisterGridRow.Completed)
                 {
-                    case TransactionTypes.Deposit:
-                        newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                        break;
-                    case TransactionTypes.Withdrawal:
-                        newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    bankAccountRegisterGridRow.Balance = null;
+                }
+                else
+                {
+                    switch (bankAccountRegisterGridRow.TransactionType)
+                    {
+                        case TransactionTypes.Deposit:
+                            newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                            break;
+                        case TransactionTypes.Withdrawal:
+                            newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    bankAccountRegisterGridRow.Balance = newBalance;
                 }
 
-                bankAccountRegisterGridRow.Balance = newBalance;
                 if (newBalance < lowestBalance)
                 {
                     lowestBalance = newBalance;
@@ -117,11 +125,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
-            BankAccountViewModel.NewProjectedEndingBalance = newBalance;
-            BankAccountViewModel.ProjectedLowestBalanceAmount = lowestBalance;
-            BankAccountViewModel.ProjectedLowestBalanceDate = lowestBalanceDate;
+            ViewModel.NewProjectedEndingBalance = newBalance;
+            ViewModel.ProjectedLowestBalanceAmount = lowestBalance;
+            ViewModel.ProjectedLowestBalanceDate = lowestBalanceDate;
 
-            Grid?.RefreshDataSource();
+            foreach (var row in Rows)
+            {
+                Grid?.UpdateRow(row);
+            }
         }
     }
 }

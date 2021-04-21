@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         public abstract BankAccountRegisterItemTypes LineType { get; }
 
-        public BankAccountRegisterGridManager BankAccountRegisterGridManager { get; }
+        public new BankAccountRegisterGridManager Manager { get; }
 
         public int RegisterId { get; set; }
 
@@ -30,7 +30,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool Completed { get; private set; }
 
-        public decimal Balance { get; set; }
+        public decimal? Balance { get; set; }
 
         public decimal? ActualAmount { get; private set; }
 
@@ -57,7 +57,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected BankAccountRegisterGridRow(BankAccountRegisterGridManager manager) : base(manager)
         {
-            BankAccountRegisterGridManager = manager;
+            Manager = manager;
             _decimalValueSetup = new DecimalEditControlSetup
             {
                 AllowNullValue = false,
@@ -152,13 +152,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.TransactionType:
                     break;
                 case BankAccountRegisterGridColumns.Amount:
+                    if (value is DataEntryGridDecimalCellProps decimalCellProps)
+                    {
+                        ProjectedAmount = decimalCellProps.Value.GetValueOrDefault(0);
+                        Manager.ViewModel.CalculateTotals();
+                    }
                     break;
                 case BankAccountRegisterGridColumns.Completed:
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
                         Completed = checkBoxCellProps.Value;
-                        if (Completed)
+                        if (Completed && ActualAmount == null)
                             ActualAmount = ProjectedAmount;
+                        Manager.ViewModel.CalculateTotals();
                     }
                     break;
                 case BankAccountRegisterGridColumns.Balance:
@@ -196,7 +202,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public override void SaveToEntity(BankAccountRegisterItem entity, int rowIndex)
         {
             entity.Id = RegisterId;
-            entity.BankAccountId = BankAccountRegisterGridManager.BankAccountViewModel.Id;
+            entity.BankAccountId = Manager.ViewModel.Id;
             entity.RegisterGuid = RegisterGuid;
             entity.ItemType = (int)LineType;
             entity.ItemDate = ItemDate;
@@ -218,7 +224,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var detailId = 1;
                 foreach (var actualAmountDetail in ActualAmountDetails)
                 {
-                    BankAccountRegisterGridManager.BankAccountViewModel.RegisterDetails.Add(
+                    Manager.ViewModel.RegisterDetails.Add(
                         new BankAccountRegisterItemAmountDetail
                     {
                         RegisterId = RegisterId,
