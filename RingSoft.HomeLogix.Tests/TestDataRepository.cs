@@ -1,7 +1,9 @@
-﻿using RingSoft.HomeLogix.DataAccess.Model;
+﻿using System;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 using System.Collections.Generic;
 using System.Linq;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Tests
 {
@@ -54,7 +56,8 @@ namespace RingSoft.HomeLogix.Tests
             return null;
         }
 
-        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails)
+        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
+            CompletedRegisterData clearedRegisterData = null)
         {
             if (bankAccount.Id == 0)
                 bankAccount.Id = BankAccounts.Count + 1;
@@ -201,6 +204,16 @@ namespace RingSoft.HomeLogix.Tests
         public bool DeleteBudgetItemSource(int sourceId)
         {
             throw new System.NotImplementedException();
+        }
+
+        public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public BankAccountPeriodHistory GetBankPeriodHistory(int bankAccountId, PeriodHistoryTypes type, DateTime periodEndDate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

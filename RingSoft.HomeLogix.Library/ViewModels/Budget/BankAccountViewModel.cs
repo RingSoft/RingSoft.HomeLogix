@@ -26,8 +26,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps);
     }
 
-    public class NewRegisterItem
+    public class CompletedRegisterData
     {
+        public List<BudgetItem> BudgetItems { get; set; } = new List<BudgetItem>();
+
+        public List<BankAccountRegisterItem> CompletedRegisterItems { get; set; } = new List<BankAccountRegisterItem>();
+
+        public List<History> NewHistoryRecords { get; set; } = new List<History>();
+
+        public List<SourceHistory> NewSourceHistoryRecords { get; set; } = new List<SourceHistory>();
+
+        public List<BudgetPeriodHistory> BudgetPeriodHistoryRecords { get; set; } = new List<BudgetPeriodHistory>();
+
+        public List<BankAccountPeriodHistory> BankAccountPeriodHistoryRecords { get; set; } =
+            new List<BankAccountPeriodHistory>();
     }
 
     public class BankAccountViewModel : AppDbMaintenanceViewModel<BankAccount>
@@ -609,9 +621,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             RegisterDetails.Clear();
 
-            var registerItems = RegisterGridManager.GetEntityList();
-            entity.RegisterItems = registerItems;
-            return AppGlobals.DataRepository.SaveBankAccount(entity, RegisterDetails);
+            entity.RegisterItems = RegisterGridManager.GetEntityList();
+
+            var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(w => w.Completed).ToList();
+
+            var completedRegisterData = new CompletedRegisterData();
+            if (!ProcessCompletedRows(completedRegisterData, completedRows))
+                return false;
+
+            if (AppGlobals.DataRepository.SaveBankAccount(entity, RegisterDetails, completedRegisterData))
+            {
+                foreach (var completedRow in completedRows)
+                {
+                    RegisterGridManager.RemoveRow(completedRow);
+                }
+                CalculateTotals();
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
+        {
+            foreach (var completedRow in completedRows)
+            {
+                var registerItem = new BankAccountRegisterItem();
+                completedRow.SaveToEntity(registerItem, 0);
+
+                if (registerItem.BudgetItemId != null)
+                {
+                    var budgetItem = AppGlobals.DataRepository.GetBudgetItem(registerItem.BudgetItemId.Value);
+                }
+            }
+            return true;
         }
 
         protected override bool DeleteEntity()

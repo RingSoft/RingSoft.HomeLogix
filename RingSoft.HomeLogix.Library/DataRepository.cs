@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System.Linq;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -12,7 +14,8 @@ namespace RingSoft.HomeLogix.Library
 
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
-        bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails);
+        bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
+            CompletedRegisterData clearedRegisterData = null);
 
         bool DeleteBankAccount(int bankAccountId);
 
@@ -39,6 +42,11 @@ namespace RingSoft.HomeLogix.Library
         bool SaveBudgetItemSource(BudgetItemSource store);
 
         bool DeleteBudgetItemSource(int storeId);
+
+        BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate);
+
+        BankAccountPeriodHistory GetBankPeriodHistory(int bankAccountId, PeriodHistoryTypes type,
+            DateTime periodEndDate);
     }
 
     public class DataRepository : IDataRepository
@@ -70,7 +78,8 @@ namespace RingSoft.HomeLogix.Library
                 .FirstOrDefault(f => f.Id == bankAccountId);
         }
 
-        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails)
+        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
+            CompletedRegisterData clearedRegisterData)
         {
             var context = AppGlobals.GetNewDbContext();
             if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, bankAccount, "Saving Bank Account"))
@@ -241,8 +250,19 @@ namespace RingSoft.HomeLogix.Library
         public bool DeleteBudgetItemSource(int sourceId)
         {
             var context = AppGlobals.GetNewDbContext();
-            var store = context.BudgetItemSources.FirstOrDefault(f => f.Id == sourceId);
-            return store != null && context.DbContext.DeleteEntity(context.BudgetItemSources, store, $"Deleting Source '{store.Name}'");
+            var source = context.BudgetItemSources.FirstOrDefault(f => f.Id == sourceId);
+            return source != null && context.DbContext.DeleteEntity(context.BudgetItemSources, source, $"Deleting Source '{source.Name}'");
+        }
+
+        public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BudgetPeriodHistory.
+        }
+
+        public BankAccountPeriodHistory GetBankPeriodHistory(int bankAccountId, PeriodHistoryTypes type, DateTime periodEndDate)
+        {
+            throw new NotImplementedException();
         }
     }
 }

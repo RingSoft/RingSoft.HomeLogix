@@ -19,9 +19,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
+        public virtual ICollection<SourceHistory> History { get; set; }
+
         public BudgetItemSource()
         {
             AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
+            History = new HashSet<SourceHistory>();
         }
     }
 }

@@ -88,6 +88,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Grid.SetBulkInsertMode(false);
         }
 
+        public new List<BankAccountRegisterItem> GetEntityList()
+        {
+            var result = new List<BankAccountRegisterItem>();
+            var rows = Rows.OfType<BankAccountRegisterGridRow>().Where(w => w.Completed == false);
+            var rowIndex = 1;
+            foreach (var registerGridRow in rows)
+            {
+                var registerItem = new BankAccountRegisterItem();
+                registerGridRow.SaveToEntity(registerItem, rowIndex);
+                result.Add(registerItem);
+                rowIndex++;
+            }
+
+            return result;
+        }
+
         public void CalculateProjectedBalanceData()
         {
             var newBalance = ViewModel.CurrentBalance - ViewModel.EscrowBalance.GetValueOrDefault(0);
