@@ -47,6 +47,8 @@ namespace RingSoft.HomeLogix.Library
 
         BankAccountPeriodHistory GetBankPeriodHistory(int bankAccountId, PeriodHistoryTypes type,
             DateTime periodEndDate);
+
+        BankAccountRegisterItem GetTransferRegisterItem(string transferGuid);
     }
 
     public class DataRepository : IDataRepository
@@ -266,6 +268,12 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             return context.BankAccountPeriodHistory.FirstOrDefault(f =>
                 f.BankAccountId == bankAccountId && f.PeriodType == (byte)type && f.PeriodEndingDate == periodEndDate);
+        }
+
+        public BankAccountRegisterItem GetTransferRegisterItem(string transferGuid)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BankAccountRegisterItems.FirstOrDefault(f => f.RegisterGuid == transferGuid);
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-    public class BankAccountRegisterGridEscrowRow : BankAccountRegisterGridRow
+    public class BankAccountRegisterGridEscrowRow : BankAccountRegisterGridTransferRow
     {
         public override BankAccountRegisterItemTypes LineType => BankAccountRegisterItemTypes.MonthlyEscrow;
         public override string Description => EscrowDescription;

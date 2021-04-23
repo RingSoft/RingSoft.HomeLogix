@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using RingSoft.App.Library;
+﻿using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -14,6 +9,11 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -631,11 +631,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (AppGlobals.DataRepository.SaveBankAccount(entity, RegisterDetails, completedRegisterData))
             {
-                foreach (var completedRow in completedRows)
+                if (completedRows.Any())
                 {
-                    RegisterGridManager.RemoveRow(completedRow);
+                    RegisterGridManager.Grid?.TakeCellSnapshot(true, true);
+                    foreach (var completedRow in completedRows)
+                    {
+                        RegisterGridManager.RemoveRow(completedRow);
+                    }
+
+                    CalculateTotals();
+                    RegisterGridManager.Grid?.RestoreCellSnapshot(true, true);
                 }
-                CalculateTotals();
+
                 return true;
             }
 
@@ -650,12 +657,231 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var registerItem = new BankAccountRegisterItem();
                 completedRow.SaveToEntity(registerItem, 0, amountDetails);
 
-                if (registerItem.BudgetItemId != null)
+                var monthEndDate = new DateTime(registerItem.ItemDate.Year, registerItem.ItemDate.Month,
+                    DateTime.DaysInMonth(registerItem.ItemDate.Year, registerItem.ItemDate.Month));
+                var yearEndDate = new DateTime(registerItem.ItemDate.Year, 12, 31);
+
+                ProcessCompletedBankMonth(completedRegisterData, monthEndDate, completedRow);
+
+                ProcessCompletedBankYear(completedRegisterData, yearEndDate, completedRow);
+
+                int? transferToBankAccountId = null;
+                var processBudgetRow = true;
+                var addToHistory = true;
+                switch (completedRow.LineType)
                 {
-                    var budgetItem = AppGlobals.DataRepository.GetBudgetItem(registerItem.BudgetItemId.Value);
+                    case BankAccountRegisterItemTypes.BudgetItem:
+                        break;
+                    case BankAccountRegisterItemTypes.Miscellaneous:
+                        break;
+                    case BankAccountRegisterItemTypes.TransferToBankAccount:
+                    case BankAccountRegisterItemTypes.MonthlyEscrow:
+                        if (completedRow is BankAccountRegisterGridTransferRow transferRow)
+                        {
+                            var transferRegisterItem =
+                                AppGlobals.DataRepository.GetTransferRegisterItem(transferRow.TransferRegisterGuid);
+
+                            if (transferRegisterItem == null)
+                            {
+                                processBudgetRow = false;
+                                addToHistory = false;
+                            }
+                            else
+                            {
+                                if (completedRow.TransactionType == TransactionTypes.Deposit)
+                                    transferToBankAccountId = registerItem.BankAccountId;
+                                else
+                                    transferToBankAccountId = transferRegisterItem.BankAccountId;
+                            }
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                if (processBudgetRow)
+                {
+                    ProcessCompletedBudget(completedRegisterData, registerItem, monthEndDate, completedRow,
+                        yearEndDate);
+                }
+                completedRegisterData.CompletedRegisterItems.Add(registerItem);
+
+                if (addToHistory)
+                {
+                    AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails);
                 }
             }
             return true;
+        }
+
+        private static void ProcessCompletedBudget(CompletedRegisterData completedRegisterData,
+            BankAccountRegisterItem registerItem, DateTime monthEndDate, BankAccountRegisterGridRow completedRow,
+            DateTime yearEndDate)
+        {
+            if (registerItem.BudgetItemId != null)
+            {
+                var budgetItem =
+                    completedRegisterData.BudgetItems.FirstOrDefault(f => f.Id == registerItem.BudgetItemId);
+
+                if (budgetItem == null)
+                {
+                    budgetItem = AppGlobals.DataRepository.GetBudgetItem(registerItem.BudgetItemId.Value);
+                    completedRegisterData.BudgetItems.Add(budgetItem);
+                }
+
+                ProcessCompletedBudgetMonth(completedRegisterData, budgetItem, monthEndDate, completedRow);
+
+                ProcessCompletedBudgetYear(completedRegisterData, budgetItem, yearEndDate, completedRow);
+            }
+        }
+
+        private static void ProcessCompletedBudgetMonth(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
+            DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
+        {
+            if (budgetItem.CurrentMonthEnding < monthEndDate)
+                budgetItem.CurrentMonthEnding = monthEndDate;
+
+            budgetItem.CurrentMonthAmount += completedRow.ActualAmount.GetValueOrDefault(0);
+
+            var budgetMonthHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
+                f.BudgetItemId == budgetItem.Id &&
+                f.PeriodType == (byte) PeriodHistoryTypes.Monthly && f.PeriodEndingDate == monthEndDate);
+
+            if (budgetMonthHistory == null)
+            {
+                budgetMonthHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(budgetItem.Id,
+                    PeriodHistoryTypes.Monthly, monthEndDate) ?? new BudgetPeriodHistory
+                {
+                    BudgetItemId = budgetItem.Id,
+                    PeriodType = (byte) PeriodHistoryTypes.Monthly,
+                    PeriodEndingDate = monthEndDate
+                };
+
+                completedRegisterData.BudgetPeriodHistoryRecords.Add(budgetMonthHistory);
+            }
+
+            budgetMonthHistory.ProjectedAmount += completedRow.ProjectedAmount;
+            budgetMonthHistory.ActualAmount += completedRow.ActualAmount.GetValueOrDefault(0);
+        }
+
+        private static void ProcessCompletedBudgetYear(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
+            DateTime yearEndDate, BankAccountRegisterGridRow completedRow)
+        {
+            var budgetYearHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
+                f.BudgetItemId == budgetItem.Id &&
+                f.PeriodType == (byte)PeriodHistoryTypes.Yearly && f.PeriodEndingDate == yearEndDate);
+
+            if (budgetYearHistory == null)
+            {
+                budgetYearHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(budgetItem.Id,
+                    PeriodHistoryTypes.Yearly, yearEndDate) ?? new BudgetPeriodHistory
+                {
+                    BudgetItemId = budgetItem.Id,
+                    PeriodType = (byte)PeriodHistoryTypes.Yearly,
+                    PeriodEndingDate = yearEndDate
+                };
+
+                completedRegisterData.BudgetPeriodHistoryRecords.Add(budgetYearHistory);
+            }
+
+            budgetYearHistory.ProjectedAmount += completedRow.ProjectedAmount;
+            budgetYearHistory.ActualAmount += completedRow.ActualAmount.GetValueOrDefault(0);
+        }
+
+        private void ProcessCompletedBankMonth(CompletedRegisterData completedRegisterData,
+            DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
+        {
+            var bankMonthHistory = completedRegisterData.BankAccountPeriodHistoryRecords.FirstOrDefault(f =>
+                f.BankAccountId == Id && f.PeriodType == (byte) PeriodHistoryTypes.Monthly &&
+                f.PeriodEndingDate == monthEndDate);
+
+            if (bankMonthHistory == null)
+            {
+                bankMonthHistory = AppGlobals.DataRepository.GetBankPeriodHistory(Id,
+                    PeriodHistoryTypes.Monthly, monthEndDate) ?? new BankAccountPeriodHistory
+                    {
+                        BankAccountId = Id,
+                        PeriodType = (byte)PeriodHistoryTypes.Monthly,
+                        PeriodEndingDate = monthEndDate
+                    };
+
+                completedRegisterData.BankAccountPeriodHistoryRecords.Add(bankMonthHistory);
+            }
+
+            switch (completedRow.TransactionType)
+            {
+                case TransactionTypes.Deposit:
+                    bankMonthHistory.TotalDeposits += completedRow.ActualAmount.GetValueOrDefault(0);
+                    break;
+                case TransactionTypes.Withdrawal:
+                    bankMonthHistory.TotalWithdrawals += completedRow.ActualAmount.GetValueOrDefault(0);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void ProcessCompletedBankYear(CompletedRegisterData completedRegisterData,
+            DateTime yearEndDate, BankAccountRegisterGridRow completedRow)
+        {
+            var bankYearHistory = completedRegisterData.BankAccountPeriodHistoryRecords.FirstOrDefault(f =>
+                f.BankAccountId == Id && f.PeriodType == (byte)PeriodHistoryTypes.Yearly &&
+                f.PeriodEndingDate == yearEndDate);
+
+            if (bankYearHistory == null)
+            {
+                bankYearHistory = AppGlobals.DataRepository.GetBankPeriodHistory(Id,
+                    PeriodHistoryTypes.Yearly, yearEndDate) ?? new BankAccountPeriodHistory
+                {
+                    BankAccountId = Id,
+                    PeriodType = (byte)PeriodHistoryTypes.Yearly,
+                    PeriodEndingDate = yearEndDate
+                };
+
+                completedRegisterData.BankAccountPeriodHistoryRecords.Add(bankYearHistory);
+            }
+
+            switch (completedRow.TransactionType)
+            {
+                case TransactionTypes.Deposit:
+                    bankYearHistory.TotalDeposits += completedRow.ActualAmount.GetValueOrDefault(0);
+                    break;
+                case TransactionTypes.Withdrawal:
+                    bankYearHistory.TotalWithdrawals += completedRow.ActualAmount.GetValueOrDefault(0);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void AddCompletedToHistory(CompletedRegisterData completedRegisterData, BankAccountRegisterItem registerItem,
+            int? transferToBankAccountId, BankAccountRegisterGridRow completedRow, List<BankAccountRegisterItemAmountDetail> amountDetails)
+        {
+            var historyItem = new History
+            {
+                BankAccountId = Id,
+                Date = registerItem.ItemDate,
+                ItemType = registerItem.ItemType,
+                BudgetItemId = registerItem.BudgetItemId,
+                TransferToBankAccountId = transferToBankAccountId,
+                Description = registerItem.Description,
+                ProjectedAmount = completedRow.ProjectedAmount,
+                ActualAmount = completedRow.ActualAmount.GetValueOrDefault(0)
+            };
+            completedRegisterData.NewHistoryRecords.Add(historyItem);
+            var detailId = 1;
+            foreach (var amountDetail in amountDetails)
+            {
+                completedRegisterData.NewSourceHistoryRecords.Add(new SourceHistory
+                {
+                    HistoryItem = historyItem,
+                    DetailId = detailId,
+                    SourceId = amountDetail.SourceId,
+                    Date = amountDetail.Date,
+                    Amount = amountDetail.Amount
+                });
+                detailId++;
+            }
         }
 
         protected override bool DeleteEntity()

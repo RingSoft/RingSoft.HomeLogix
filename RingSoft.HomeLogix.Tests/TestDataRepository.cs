@@ -215,5 +215,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             throw new NotImplementedException();
         }
+
+        public BankAccountRegisterItem GetTransferRegisterItem(string transferGuid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
