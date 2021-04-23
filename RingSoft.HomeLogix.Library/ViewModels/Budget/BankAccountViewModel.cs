@@ -646,8 +646,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             foreach (var completedRow in completedRows)
             {
+                var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
                 var registerItem = new BankAccountRegisterItem();
-                completedRow.SaveToEntity(registerItem, 0);
+                completedRow.SaveToEntity(registerItem, 0, amountDetails);
 
                 if (registerItem.BudgetItemId != null)
                 {

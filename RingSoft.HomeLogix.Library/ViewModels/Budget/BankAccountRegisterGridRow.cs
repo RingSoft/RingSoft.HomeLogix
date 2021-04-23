@@ -218,21 +218,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
 
+        public void SaveToEntity(BankAccountRegisterItem entity, int rowIndex,
+            List<BankAccountRegisterItemAmountDetail> actualDetails)
+        {
+            SaveToEntity(entity, rowIndex);
             if (ActualAmount != null)
             {
                 var detailId = 1;
                 foreach (var actualAmountDetail in ActualAmountDetails)
                 {
-                    Manager.ViewModel.RegisterDetails.Add(
+                    actualDetails.Add(
                         new BankAccountRegisterItemAmountDetail
-                    {
-                        RegisterId = RegisterId,
-                        DetailId = detailId,
-                        Date = actualAmountDetail.Date,
-                        SourceId = actualAmountDetail.SourceId,
-                        Amount = actualAmountDetail.Amount
-                    });
+                        {
+                            RegisterId = RegisterId,
+                            DetailId = detailId,
+                            Date = actualAmountDetail.Date,
+                            SourceId = actualAmountDetail.SourceId,
+                            Amount = actualAmountDetail.Amount
+                        });
                     detailId++;
                 }
             }

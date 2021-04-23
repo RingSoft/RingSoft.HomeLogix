@@ -96,7 +96,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var registerGridRow in rows)
             {
                 var registerItem = new BankAccountRegisterItem();
-                registerGridRow.SaveToEntity(registerItem, rowIndex);
+                registerGridRow.SaveToEntity(registerItem, rowIndex, ViewModel.RegisterDetails);
                 result.Add(registerItem);
                 rowIndex++;
             }

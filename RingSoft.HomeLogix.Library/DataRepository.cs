@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.Library
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
         bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
-            CompletedRegisterData clearedRegisterData = null);
+            CompletedRegisterData completedRegisterData = null);
 
         bool DeleteBankAccount(int bankAccountId);
 
@@ -79,7 +79,7 @@ namespace RingSoft.HomeLogix.Library
         }
 
         public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
-            CompletedRegisterData clearedRegisterData)
+            CompletedRegisterData completedRegisterData)
         {
             var context = AppGlobals.GetNewDbContext();
             if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, bankAccount, "Saving Bank Account"))
@@ -257,12 +257,15 @@ namespace RingSoft.HomeLogix.Library
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BudgetPeriodHistory.
+            return context.BudgetPeriodHistory.FirstOrDefault(f =>
+                f.BudgetItemId == budgetId && f.PeriodType == (byte) type && f.PeriodEndingDate == periodEndDate);
         }
 
         public BankAccountPeriodHistory GetBankPeriodHistory(int bankAccountId, PeriodHistoryTypes type, DateTime periodEndDate)
         {
-            throw new NotImplementedException();
+            var context = AppGlobals.GetNewDbContext();
+            return context.BankAccountPeriodHistory.FirstOrDefault(f =>
+                f.BankAccountId == bankAccountId && f.PeriodType == (byte)type && f.PeriodEndingDate == periodEndDate);
         }
     }
 }
