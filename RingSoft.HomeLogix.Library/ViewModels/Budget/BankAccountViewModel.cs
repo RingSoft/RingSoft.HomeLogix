@@ -695,17 +695,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             }
                         }
 
-                        if (completedRow.LineType == BankAccountRegisterItemTypes.MonthlyEscrow)
+                        if (processBudgetRow && completedRow.LineType == BankAccountRegisterItemTypes.MonthlyEscrow &&
+                            completedRow is BankAccountRegisterGridEscrowRow escrowRow)
                         {
-                            switch (completedRow.TransactionType)
-                            {
-                                case TransactionTypes.Deposit:
-                                    break;
-                                case TransactionTypes.Withdrawal:
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
-                            }
+                            ProcessRegisterItemEscrowRow(completedRegisterData, registerItem, escrowRow);
                         }
                         break;
                     default:
@@ -723,8 +716,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails);
                 }
+
+                RegisterDetails.AddRange(amountDetails);
             }
             return true;
+        }
+
+        private static void ProcessRegisterItemEscrowRow(CompletedRegisterData completedRegisterData,
+            BankAccountRegisterItem registerItem, BankAccountRegisterGridEscrowRow escrowRow)
+        {
+            var escrowBudgetItems = AppGlobals.DataRepository.GetEscrowsOfRegisterItem(registerItem.Id);
+            foreach (var escrowBudgetItem in escrowBudgetItems)
+            {
+                var budgetItem =
+                    completedRegisterData.BudgetItems.FirstOrDefault(f =>
+                        f.Id == escrowBudgetItem.BudgetItemId);
+                if (budgetItem == null)
+                {
+                    budgetItem = escrowBudgetItem.BudgetItem;
+                    completedRegisterData.BudgetItems.Add(budgetItem);
+                }
+
+                if (escrowRow.IsEscrowFrom)
+                {
+                    budgetItem.EscrowBalance -= escrowBudgetItem.Amount;
+                }
+                else
+                {
+                    budgetItem.EscrowBalance += escrowBudgetItem.Amount;
+                }
+            }
         }
 
         private static void ProcessCompletedBudget(CompletedRegisterData completedRegisterData,

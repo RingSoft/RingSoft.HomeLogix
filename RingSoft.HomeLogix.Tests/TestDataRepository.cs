@@ -220,5 +220,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<BankAccountRegisterItemEscrow> GetEscrowsOfRegisterItem(int bankRegisterId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
