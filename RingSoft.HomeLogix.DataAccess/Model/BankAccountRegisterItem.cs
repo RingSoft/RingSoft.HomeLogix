@@ -47,6 +47,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string TransferRegisterGuid { get; set; }
 
+        [Required]
+        public bool IsEscrowFrom { get; set; }
+
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
         public virtual ICollection<BankAccountRegisterItemEscrow> Escrows { get; set; }

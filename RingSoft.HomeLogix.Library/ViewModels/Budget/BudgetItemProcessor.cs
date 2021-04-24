@@ -348,7 +348,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ItemDate = date,
                 Description = registerItemDescription,
                 ProjectedAmount = escrowAmount,
-                TransferRegisterGuid = escrowFromBankRegisterId
+                TransferRegisterGuid = escrowFromBankRegisterId,
+                IsEscrowFrom = true
             };
             AddEscrowsToRegisterItem(output, registerItemEscrows, registerItem);
         }

@@ -694,6 +694,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                     transferToBankAccountId = transferRegisterItem.BankAccountId;
                             }
                         }
+
+                        if (completedRow.LineType == BankAccountRegisterItemTypes.MonthlyEscrow)
+                        {
+                            switch (completedRow.TransactionType)
+                            {
+                                case TransactionTypes.Deposit:
+                                    break;
+                                case TransactionTypes.Withdrawal:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
+                        }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
