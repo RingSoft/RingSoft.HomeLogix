@@ -298,12 +298,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
 
                 AddEscrowRegisterItems(bankAccount, startDate, escrowToBankAmount, "Monthly Escrow", result,
-                    escrowToItems);
+                    escrowToItems, false);
 
                 if (escrowFromBankAmount > 0)
                 {
                     AddEscrowRegisterItems(bankAccount, startDate, -escrowFromBankAmount, "Transfer From Escrow",
-                        result, escrowFromItems);
+                        result, escrowFromItems, true);
                 }
                 startDate = startDate.AddMonths(1);
                 if (lastDayOfFeb)
@@ -319,7 +319,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private static void AddEscrowRegisterItems(BankAccount bankAccount, DateTime date, decimal escrowAmount,
             string registerItemDescription, BankAccountRegisterEscrowGenerateOutput output,
-            List<BankAccountRegisterItemEscrow> registerItemEscrows)
+            List<BankAccountRegisterItemEscrow> registerItemEscrows, bool isEscrowFrom)
         {
             var registerItem = new BankAccountRegisterItem
             {
@@ -328,7 +328,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ItemType = (int)BankAccountRegisterItemTypes.MonthlyEscrow,
                 ItemDate = date,
                 Description = registerItemDescription,
-                ProjectedAmount = -escrowAmount
+                ProjectedAmount = -escrowAmount,IsEscrowFrom = isEscrowFrom
             };
             AddEscrowsToRegisterItem(output, registerItemEscrows, registerItem);
 
@@ -349,7 +349,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Description = registerItemDescription,
                 ProjectedAmount = escrowAmount,
                 TransferRegisterGuid = escrowFromBankRegisterId,
-                IsEscrowFrom = true
+                IsEscrowFrom = isEscrowFrom
             };
             AddEscrowsToRegisterItem(output, registerItemEscrows, registerItem);
         }

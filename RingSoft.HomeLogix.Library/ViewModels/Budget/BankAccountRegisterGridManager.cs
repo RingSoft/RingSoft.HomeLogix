@@ -119,18 +119,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
-                    switch (bankAccountRegisterGridRow.TransactionType)
+                    if (!bankAccountRegisterGridRow.AffectsEscrow)
                     {
-                        case TransactionTypes.Deposit:
-                            newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                            break;
-                        case TransactionTypes.Withdrawal:
-                            newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                        switch (bankAccountRegisterGridRow.TransactionType)
+                        {
+                            case TransactionTypes.Deposit:
+                                newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                                break;
+                            case TransactionTypes.Withdrawal:
+                                newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }
-
                     bankAccountRegisterGridRow.Balance = newBalance;
                 }
 

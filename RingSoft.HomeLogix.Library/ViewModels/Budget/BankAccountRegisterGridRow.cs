@@ -52,6 +52,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
+        public virtual bool AffectsEscrow => false;
+
         private DecimalEditControlSetup _decimalValueSetup;
         private DateEditControlSetup _dateEditControlSetup;
 
