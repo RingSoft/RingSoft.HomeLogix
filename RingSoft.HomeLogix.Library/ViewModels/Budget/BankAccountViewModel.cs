@@ -717,7 +717,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails);
                 }
 
-                RegisterDetails.AddRange(amountDetails);
+                //RegisterDetails.AddRange(amountDetails);
             }
             return true;
         }
