@@ -30,6 +30,8 @@ Set Register Grid Cell Styles:
 	Escrow
 	Misc
 
+Actual Amount cells configure decimalSetup to allow nulls.
+
 AmountDetails
 ----------------------------
 Validate Grid.

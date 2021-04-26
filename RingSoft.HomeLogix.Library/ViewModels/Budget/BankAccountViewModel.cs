@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -633,14 +634,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 if (completedRows.Any())
                 {
-                    RegisterGridManager.Grid?.TakeCellSnapshot(true, true);
+                    var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
+                    BankAccountRegisterGridRow currentRow = null;
+                    if (currentRowIndex >= 0)
+                    {
+                        currentRow = (BankAccountRegisterGridRow) RegisterGridManager.Rows[currentRowIndex];
+                        while (currentRow.Completed && currentRowIndex > 0)
+                        {
+                            currentRowIndex--;
+                            currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
+                        }
+                    }
                     foreach (var completedRow in completedRows)
                     {
                         RegisterGridManager.RemoveRow(completedRow);
                     }
 
                     CalculateTotals();
-                    RegisterGridManager.Grid?.RestoreCellSnapshot(true, true);
+                    if (RegisterGridManager.Rows.Any())
+                    {
+                        var newRowIndex = RegisterGridManager.Rows.IndexOf(currentRow);
+                        if (newRowIndex < 0)
+                            newRowIndex = 0;
+                        RegisterGridManager.Grid.GotoCell(
+                            RegisterGridManager.Rows[newRowIndex],
+                            RegisterGridManager.Grid.CurrentColumnId);
+                    }
                 }
 
                 return true;

@@ -62,7 +62,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Manager = manager;
             _decimalValueSetup = new DecimalEditControlSetup
             {
-                AllowNullValue = false,
+                AllowNullValue = true,
                 DataEntryMode = DataEntryModes.FormatOnEntry,
                 MaximumValue = null,
                 MinimumValue = 0,
