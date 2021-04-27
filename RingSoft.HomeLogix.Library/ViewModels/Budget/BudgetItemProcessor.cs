@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Org.BouncyCastle.Math.EC;
 using RingSoft.App.Library;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -59,6 +60,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var budgetItem = processorData.BudgetItem;
 
             var monthlyAmount = CalculateBudgetItemMonthlyAmount(budgetItem);
+
+            switch (processorData.BudgetItem.RecurringType)
+            {
+                case BudgetItemRecurringTypes.Days:
+                case BudgetItemRecurringTypes.Weeks:
+                    if (processorData.BudgetItem.LastCompletedDate != null)
+                    {
+                        var currentDays = DateTime.DaysInMonth(
+                            processorData.BudgetItem.LastCompletedDate.Value.Year,
+                            processorData.BudgetItem.LastCompletedDate.Value.Month);
+
+                        var currentMonthPercent =
+                            (decimal) processorData.BudgetItem.LastCompletedDate.Value.Day / currentDays;
+
+                        processorData.CurrentMonthPercent = Math.Round(currentMonthPercent, 4);
+                        processorData.MonthToDatePercent =
+                            Math.Round(
+                                processorData.BudgetItem.CurrentMonthAmount / processorData.BudgetItem.MonthlyAmount,
+                                4);
+
+                        processorData.MonthlyPercentDifference =
+                            processorData.CurrentMonthPercent - processorData.MonthToDatePercent;
+                    }
+                    break;
+                case BudgetItemRecurringTypes.Months:
+                case BudgetItemRecurringTypes.Years:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            processorData.MonthlyAmountRemaining = processorData.BudgetItem.MonthlyAmount -
+                                                   processorData.BudgetItem.CurrentMonthAmount;
+
             if (processorData.BudgetItem.DoEscrow && budgetItem.StartingDate != null)
             {
                 int months;

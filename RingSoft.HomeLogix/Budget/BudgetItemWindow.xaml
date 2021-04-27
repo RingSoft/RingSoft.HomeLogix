@@ -111,10 +111,6 @@
                             <dec:DecimalReadOnlyBox x:Name="EscrowBox" FormatType="Currency" Value="{Binding Path=EscrowBalance}" Visibility="Collapsed"/>
 
                         </StackPanel>
-                        
-                        <Label Grid.Row="4" Grid.Column="0" x:Name="LastCompletedDateLabel" Content="Last Completed Date"/>
-
-                        <dec:DateReadOnlyBox Grid.Row="4" Grid.Column="1" x:Name="LastCompletedDateControl" Value="{Binding Path=LastCompletedDate}"/>
 
                     </Grid>
                 </TabItem>
@@ -191,7 +187,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Label Grid.Row="0" Grid.Column="0" Content="Monthly Amount" />
 
                 <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" FormatType="Currency"
@@ -203,31 +199,35 @@
                                         Value="{Binding YearlyAmount}" />
 
                 <Label Grid.Row="1" Grid.Column="0" x:Name="MonthToDateAmountLabel" Content="Month To Date Amount"
-                       />
+                />
 
                 <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" x:Name="MonthToDateAmountControl" FormatType="Currency"
                                         Value="{Binding CurrentMonthAmount}" />
 
-                <Label Grid.Row="1" Grid.Column="2" x:Name="CurrentMonthLabel" Content="Current Month Ending" />
+                <Label Grid.Row="1" Grid.Column="2" x:Name="MonthlyAmountRemainingLabel" Content="Monthly Amount Remaining"/>
 
-                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="3" x:Name="CurrentMonthControl"
-                                        Value="{Binding CurrentMonthEnding}" />
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" x:Name="MonthlyAmountRemainingControl" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
 
-                <Label Grid.Row="2" Grid.Column="0" x:Name="MonthlyAmountPercentLabel" Content="Monthly Amount Percent"/>
+                <Label Grid.Row="2" Grid.Column="0" x:Name="LastCompletedDateLabel" Content="Last Completed Date"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" x:Name="MonthlyAmountPercentControl" FormatType="Percent" Value="{Binding CurrentMonthPercent}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
+                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" x:Name="LastCompletedDateControl" Value="{Binding Path=LastCompletedDate}"/>
 
-                <Label Grid.Row="2" Grid.Column="2" x:Name="MonthToDatePercentLabel" Content="Month To Date Percent"/>
+                <Label Grid.Row="2" Grid.Column="2" x:Name="CurrentMonthLabel" Content="Current Month Ending" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" x:Name="MonthToDatePercentControl" FormatType="Percent" Value="{Binding MonthToDatePercent}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
+                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" x:Name="CurrentMonthControl"
+                                     Value="{Binding CurrentMonthEnding}" />
 
-                <Label Grid.Row="3" Grid.Column="0" x:Name="MonthlyPercentDifferenceLabel" Content="Monthly Percent Difference"/>
+                <Label Grid.Row="3" Grid.Column="0" x:Name="MonthlyAmountPercentLabel" Content="Monthly Amount Percent"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="MonthlyPercentDifferenceControl" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" x:Name="MonthlyAmountPercentControl" FormatType="Percent" Value="{Binding CurrentMonthPercent}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
 
-                <Label Grid.Row="3" Grid.Column="2" x:Name="MonthlyAmountRemainingLabel" Content="Monthly Amount Remaining"/>
+                <Label Grid.Row="3" Grid.Column="2" x:Name="MonthToDatePercentLabel" Content="Month To Date Percent"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" x:Name="MonthlyAmountRemainingControl" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" x:Name="MonthToDatePercentControl" FormatType="Percent" Value="{Binding MonthToDatePercent}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
+
+                <Label Grid.Row="4" Grid.Column="0" x:Name="MonthlyPercentDifferenceLabel" Content="Monthly Percent Difference"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" x:Name="MonthlyPercentDifferenceControl" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
 
             </Grid>
         </Grid>

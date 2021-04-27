@@ -27,8 +27,6 @@ namespace RingSoft.HomeLogix.Budget
 
             _monthlyStatsControls.Add(LastCompletedDateLabel);
             _monthlyStatsControls.Add(LastCompletedDateControl);
-            _monthlyStatsControls.Add(MonthToDateAmountLabel);
-            _monthlyStatsControls.Add(MonthToDateAmountControl);
             _monthlyStatsControls.Add(CurrentMonthLabel);
             _monthlyStatsControls.Add(CurrentMonthControl);
             _monthlyStatsControls.Add(MonthlyAmountPercentLabel);
@@ -37,8 +35,6 @@ namespace RingSoft.HomeLogix.Budget
             _monthlyStatsControls.Add(MonthToDatePercentControl);
             _monthlyStatsControls.Add(MonthlyPercentDifferenceLabel);
             _monthlyStatsControls.Add(MonthlyPercentDifferenceControl);
-            _monthlyStatsControls.Add(MonthlyAmountRemainingLabel);
-            _monthlyStatsControls.Add(MonthlyAmountRemainingControl);
         }
 
         protected override void OnLoaded()
@@ -65,6 +61,11 @@ namespace RingSoft.HomeLogix.Budget
             {
                 control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             }
+
+            MonthToDateAmountLabel.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
+            MonthToDateAmountControl.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
+            MonthlyAmountRemainingLabel.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
+            MonthlyAmountRemainingControl.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public override void ResetViewForNewRecord()
