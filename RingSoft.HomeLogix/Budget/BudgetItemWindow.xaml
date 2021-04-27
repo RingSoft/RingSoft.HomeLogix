@@ -7,9 +7,10 @@
         xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+        xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item" Height="400" SizeToContent="Width">
+        Title="Budget Item" Height="500" SizeToContent="Width">
     <Window.Resources>
         <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
             <Setter Property="DesignText" Value="$123,456,789.00"/>
@@ -111,6 +112,57 @@
                         </StackPanel>
 
                     </Grid>
+                </TabItem>
+                <TabItem Header="Monthly Totals">
+                    <DockPanel>
+                        <lc:LookupControl LookupDefinition="{Binding MonthlyLookupDefinition}" Command="{Binding MonthlyLookupCommand}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Month Ending" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Projected Amount" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Actual Amount" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Difference" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Yearly Totals">
+                    <DockPanel>
+                        <lc:LookupControl LookupDefinition="{Binding YearlyLookupDefinition}" Command="{Binding YearlyLookupCommand}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Year Ending" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Projected Amount" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Actual Amount" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Difference" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="History" Height="16" VerticalAlignment="Bottom">
+                    <DockPanel>
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected Amount" DesignText="$12,3456.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$12,3456.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$12,3456.00" Width="120" TextAlignment="Right"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
                 </TabItem>
                 <dec:DataEntryMemoTabItem Header="Notes">
 

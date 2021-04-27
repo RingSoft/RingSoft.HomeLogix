@@ -98,7 +98,7 @@ namespace RingSoft.HomeLogix.DataAccess
             var formula = $"{table}.{projectedField} - {table}.{actualField}";
 
             HistoryLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference",
-                formula, 15);
+                formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency);
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 

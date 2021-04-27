@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {

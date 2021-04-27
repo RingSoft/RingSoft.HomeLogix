@@ -183,9 +183,9 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="300"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected&#10;Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual&#10;Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 

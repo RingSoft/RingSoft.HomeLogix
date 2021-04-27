@@ -6,6 +6,8 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
     {
         public string BankAccount { get; set; }
 
+        public int Year { get; set; }
+
         public DateTime PeriodEndingDate { get; set; }
 
         public decimal TotalDeposits { get; set; }

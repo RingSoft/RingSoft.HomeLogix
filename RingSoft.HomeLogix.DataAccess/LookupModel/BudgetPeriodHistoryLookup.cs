@@ -1,10 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RingSoft.HomeLogix.DataAccess.LookupModel
 {
-    class BudgetPeriodHistoryLookup
+    public class BudgetPeriodHistoryLookup
     {
+        public string BudgetItem { get; set; }
+
+        public DateTime PeriodEndingDate { get; set; }
+
+        public decimal ProjectedAmount { get; set; }
+
+        public decimal ActualAmount { get; set; }
+
+        public decimal Difference { get; set; }
     }
 }
