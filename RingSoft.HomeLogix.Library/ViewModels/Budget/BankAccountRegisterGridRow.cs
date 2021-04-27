@@ -208,6 +208,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.RegisterGuid = RegisterGuid;
             entity.ItemType = (int)LineType;
             entity.ItemDate = ItemDate;
+            entity.Description = Description;
             entity.ActualAmount = ActualAmount;
             switch (TransactionType)
             {

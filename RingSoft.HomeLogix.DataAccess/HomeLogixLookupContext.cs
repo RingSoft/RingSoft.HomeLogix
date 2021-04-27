@@ -4,6 +4,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -80,9 +81,25 @@ namespace RingSoft.HomeLogix.DataAccess
 
             HistoryLookup = new LookupDefinition<HistoryLookup, History>(History);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Date, "Date",
-                p => p.Date, 20);
+                p => p.Date, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
                 p => p.Description, 40);
+            HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Projected\r\nAmount",
+                p => p.ProjectedAmount, 15);
+            HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
+                p => p.ActualAmount, 15);
+
+            var table = DataProcessor.SqlGenerator.FormatSqlObject(History.TableName);
+            var projectedField = DataProcessor.SqlGenerator.FormatSqlObject(History
+                .GetFieldDefinition(p => p.ProjectedAmount).FieldName);
+            var actualField = DataProcessor.SqlGenerator.FormatSqlObject(History
+                .GetFieldDefinition(p => p.ActualAmount).FieldName);
+
+            var formula = $"{table}.{projectedField} - {table}.{actualField}";
+
+            HistoryLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference",
+                formula, 15);
+            HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void SetupModel()

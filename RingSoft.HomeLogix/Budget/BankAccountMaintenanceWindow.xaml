@@ -174,7 +174,25 @@
 
                     </Grid>
                 </TabItem>
-                
+                <TabItem Header="History" Height="16" VerticalAlignment="Bottom">
+                    <DockPanel>
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="300"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected&#10;Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual&#10;Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
+                </TabItem>
                 <TabItem Header="Budget">
                     <DockPanel>
                         <Button Content="_Add/Modify" Command="{Binding BudgetItemsAddModifyCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>

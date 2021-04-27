@@ -426,6 +426,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private LookupDefinition<HistoryLookup, History> _historyLookupDefinition;
+
+        public LookupDefinition<HistoryLookup, History> HistoryLookupDefinition
+        {
+            get => _historyLookupDefinition;
+            set
+            {
+                if (_historyLookupDefinition == value)
+                    return;
+
+                _historyLookupDefinition = value;
+                OnPropertyChanged(nameof(HistoryLookupDefinition), false);
+            }
+        }
+
+        private LookupCommand _historyLookupCommand;
+
+        public LookupCommand HistoryLookupCommand
+        {
+            get => _historyLookupCommand;
+            set
+            {
+                if (_historyLookupCommand == value)
+                    return;
+
+                _historyLookupCommand = value;
+                OnPropertyChanged(nameof(HistoryLookupCommand), false);
+            }
+        }
+
 
         #endregion
 
@@ -499,6 +529,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
             YearlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
+            HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
 
             BudgetItemsLookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
             BudgetItemsLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
@@ -535,6 +566,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
             YearlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Clear);
 
             _loading = false;
@@ -561,6 +593,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Conditions.Equals, Id);
 
             YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+            HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
+
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             BudgetItemsLookupDefinition.FilterDefinition.ClearFixedFilters();
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
