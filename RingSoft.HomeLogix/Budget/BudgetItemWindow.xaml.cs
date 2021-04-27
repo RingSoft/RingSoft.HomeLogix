@@ -1,7 +1,10 @@
-﻿using RingSoft.App.Controls;
+﻿using System;
+using System.Collections.Generic;
+using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.HomeLogix.Library;
 
@@ -16,9 +19,26 @@ namespace RingSoft.HomeLogix.Budget
         public override string ItemText => "Budget Item";
         public override DbMaintenanceViewModelBase ViewModel => BudgetItemViewModel;
 
+        private List<Control> _monthlyStatsControls = new List<Control>();
+
         public BudgetItemWindow()
         {
             InitializeComponent();
+
+            _monthlyStatsControls.Add(LastCompletedDateLabel);
+            _monthlyStatsControls.Add(LastCompletedDateControl);
+            _monthlyStatsControls.Add(MonthToDateAmountLabel);
+            _monthlyStatsControls.Add(MonthToDateAmountControl);
+            _monthlyStatsControls.Add(CurrentMonthLabel);
+            _monthlyStatsControls.Add(CurrentMonthControl);
+            _monthlyStatsControls.Add(MonthlyAmountPercentLabel);
+            _monthlyStatsControls.Add(MonthlyAmountPercentControl);
+            _monthlyStatsControls.Add(MonthToDatePercentLabel);
+            _monthlyStatsControls.Add(MonthToDatePercentControl);
+            _monthlyStatsControls.Add(MonthlyPercentDifferenceLabel);
+            _monthlyStatsControls.Add(MonthlyPercentDifferenceControl);
+            _monthlyStatsControls.Add(MonthlyAmountRemainingLabel);
+            _monthlyStatsControls.Add(MonthlyAmountRemainingControl);
         }
 
         protected override void OnLoaded()
@@ -37,6 +57,14 @@ namespace RingSoft.HomeLogix.Budget
 
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public void ShowMonthlyStatsControls(bool show = true)
+        {
+            foreach (var control in _monthlyStatsControls)
+            {
+                control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         public override void ResetViewForNewRecord()

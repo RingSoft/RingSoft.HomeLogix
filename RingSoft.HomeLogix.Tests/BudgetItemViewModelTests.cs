@@ -15,6 +15,11 @@ namespace RingSoft.HomeLogix.Tests
             
         }
 
+        public void ShowMonthlyStatsControls(bool show = true)
+        {
+            
+        }
+
         public TestBudgetItemView(string ownerName) : base(ownerName)
         {
         }

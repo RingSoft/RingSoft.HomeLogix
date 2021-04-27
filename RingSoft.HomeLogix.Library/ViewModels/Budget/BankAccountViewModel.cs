@@ -931,9 +931,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
         {
             if (budgetItem.CurrentMonthEnding < monthEndDate)
+            {
                 budgetItem.CurrentMonthEnding = monthEndDate;
+                budgetItem.CurrentMonthAmount = 0;
+            }
 
-            budgetItem.CurrentMonthAmount += completedRow.ActualAmount.GetValueOrDefault(0);
+            if (completedRow.ItemDate.Month >= budgetItem.CurrentMonthEnding.Month)
+                budgetItem.CurrentMonthAmount += completedRow.ActualAmount.GetValueOrDefault(0);
+
+            if (budgetItem.LastCompletedDate == null ||
+                completedRow.ItemDate > budgetItem.LastCompletedDate.GetValueOrDefault(DateTime.Today))
+            {
+                budgetItem.LastCompletedDate = completedRow.ItemDate;
+            }
 
             var budgetMonthHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
                 f.BudgetItemId == budgetItem.Id &&

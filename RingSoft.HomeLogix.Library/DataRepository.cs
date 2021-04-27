@@ -94,6 +94,7 @@ namespace RingSoft.HomeLogix.Library
             foreach (var budgetItem in completedRegisterData.BudgetItems)
             {
                 budgetItem.BankAccount = null;
+                budgetItem.TransferToBankAccount = null;
                 if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem,
                     $"Saving Budget Item '{budgetItem.Description}'"))
                     return false;

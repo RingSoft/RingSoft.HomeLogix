@@ -73,6 +73,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public DateTime CurrentMonthEnding { get; set; }
 
+        public DateTime? LastCompletedDate { get; set; }
+
         public decimal? EscrowBalance { get; set; }
 
         public string Notes { get; set; }

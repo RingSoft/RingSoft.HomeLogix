@@ -18,6 +18,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     public interface IBudgetItemView : IDbMaintenanceView
     {
         void SetViewType();
+
+        void ShowMonthlyStatsControls(bool show = true);
     }
 
     public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
@@ -519,6 +521,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private DateTime? _lastCompletedDate;
+
+        public DateTime? LastCompletedDate
+        {
+            get => _lastCompletedDate;
+            set
+            {
+                if (_lastCompletedDate == value)
+                    return;
+
+                _lastCompletedDate = value;
+                OnPropertyChanged(nameof(LastCompletedDate), false);
+            }
+        }
+
+
         #endregion
 
         public int DbBankAccountId { get; private set; }
@@ -649,6 +667,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CurrentMonthEnding = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
                 DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
 
+            LastCompletedDate = null;
+
             MonthlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
             YearlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
@@ -709,6 +729,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             _view.SetViewType();
+
+            switch (RecurringType)
+            {
+                case BudgetItemRecurringTypes.Days:
+                case BudgetItemRecurringTypes.Weeks:
+                    _view.ShowMonthlyStatsControls();
+                    break;
+                case BudgetItemRecurringTypes.Months:
+                case BudgetItemRecurringTypes.Years:
+                    _view.ShowMonthlyStatsControls(false);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             var budgetItemData = new BudgetItemProcessorData
             {
@@ -815,6 +849,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CurrentMonthEnding = entity.CurrentMonthEnding;
             EscrowBalance = entity.EscrowBalance;
             Notes = entity.Notes;
+            LastCompletedDate = entity.LastCompletedDate;
 
             if (entity.TransferToBankAccount != null)
             {
@@ -1080,7 +1115,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 MonthlyAmount = MonthlyAmount,
                 CurrentMonthAmount = CurrentMonthAmount,
                 CurrentMonthEnding = CurrentMonthEnding,
-                Notes = Notes
+                Notes = Notes,
+                LastCompletedDate = LastCompletedDate
             };
             return budgetItem;
         }
