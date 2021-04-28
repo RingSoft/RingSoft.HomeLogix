@@ -708,6 +708,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             else
                             {
                                 EscrowVisible = false;
+                                DoEscrow = false;
                             }
                             break;
                         case BudgetItemRecurringTypes.Years:
@@ -744,9 +745,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
+            RecalculateBudgetItem(GetBudgetItem(), calculateEscrowBalance);
+        }
+
+        public void RecalculateBudgetItem()
+        {
+            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
+            EscrowBalance = budgetItem.EscrowBalance;
+            CurrentMonthAmount = budgetItem.CurrentMonthAmount;
+            LastCompletedDate = budgetItem.LastCompletedDate;
+            CurrentMonthEnding = budgetItem.CurrentMonthEnding;
+
+            RecalculateBudgetItem(budgetItem, false);
+        }
+
+        private void RecalculateBudgetItem(BudgetItem budgetItem, bool calculateEscrowBalance)
+        {
             var budgetItemData = new BudgetItemProcessorData
             {
-                BudgetItem = GetBudgetItem()
+                BudgetItem = budgetItem
             };
 
             if (EscrowVisible && BankAutoFillValue?.PrimaryKeyValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
@@ -1119,6 +1136,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastCompletedDate = LastCompletedDate
             };
             return budgetItem;
+        }
+
+        protected override bool ValidateEntity(BudgetItem entity)
+        {
+            foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
+            {
+                if (bankAccountViewModel.IsBudgetItemDirty(Id))
+                {
+                    var message =
+                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to the Register.  Do you wish to continue?";
+
+                    if (!View.ShowYesNoMessage(message, "Budget Item Being Modified"))
+                        return false;
+                }
+            }
+            return base.ValidateEntity(entity);
         }
 
         protected override bool SaveEntity(BudgetItem entity)

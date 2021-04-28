@@ -801,6 +801,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
+                foreach (var budgetItemViewModel in ViewModelInput.BudgetItemViewModels)
+                {
+                    budgetItemViewModel.RecalculateBudgetItem();
+                }
                 return true;
             }
 
@@ -1102,6 +1106,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnWindowClosing(e);
             if (!e.Cancel)
                 ViewModelInput.BankAccountViewModels.Remove(this);
+        }
+
+        public bool IsBudgetItemDirty(int budgetItemId)
+        {
+            var budgetRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridBudgetItemRow>();
+            if (budgetRows.Any(a => a.BudgetItemId == budgetItemId && a.Completed))
+                return true;
+
+            
+        }
+
+        public void RefreshAfterBudgetItemSave(BudgetItem budgetItem)
+        {
+
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
