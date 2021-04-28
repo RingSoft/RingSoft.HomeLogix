@@ -14,6 +14,7 @@ namespace RingSoft.HomeLogix.Budget
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Bank Account";
         public override DbMaintenanceViewModelBase ViewModel => BankAccountViewModel;
+        public object OwnerWindow => this;
 
         public BankAccountMaintenanceWindow()
         {

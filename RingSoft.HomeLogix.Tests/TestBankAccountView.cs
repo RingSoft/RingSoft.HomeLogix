@@ -21,6 +21,9 @@ namespace RingSoft.HomeLogix.Tests
             
         }
 
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
+        public object OwnerWindow { get; }
+
         public TestBankAccountView(string ownerName) : base(ownerName)
         {
         }

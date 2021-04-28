@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+    xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
     xmlns:local="clr-namespace:RingSoft.HomeLogix">
 
     <ResourceDictionary.MergedDictionaries>
@@ -38,4 +39,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type local:RegisterGridBudgetItemAutoFillControl}" BasedOn="{StaticResource {x:Type lc:AutoFillControl}}"/>
+
 </ResourceDictionary>

@@ -23,7 +23,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             switch (column)
             {
                 case BankAccountRegisterGridColumns.Description:
-                    return new DataEntryGridTextCellProps(this, columnId, Description);
+                    return new BudgetItemCellProps(this, columnId, Description);
             }
 
             return base.GetCellProps(columnId);

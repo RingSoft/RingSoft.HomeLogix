@@ -24,6 +24,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         DateTime? GetGenerateToDate(DateTime nextGenerateToDate);
 
         void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps);
+
+        object OwnerWindow { get; }
     }
 
     public class CompletedRegisterData
