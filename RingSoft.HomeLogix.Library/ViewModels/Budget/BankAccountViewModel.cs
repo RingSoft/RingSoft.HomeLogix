@@ -471,10 +471,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool _loading;
 
-        private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>
-            _periodHistoryLookupDefinition =
-                new LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>(AppGlobals.LookupContext
-                    .BankAccountPeriodHistory);
+        private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
         public BankAccountViewModel()
         {
@@ -485,23 +482,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemsAddModifyCommand = new RelayCommand(OnAddModifyBudgetItems);
 
             LastGenerationDate = null;
-
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalDeposits, p => p.TotalDeposits);
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalWithdrawals, p => p.TotalWithdrawals);
-
-            var table = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext
-                .BankAccountPeriodHistory.TableName);
-            var depositField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
-                .LookupContext.BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits).FieldName);
-            var withdrawalsField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
-                .LookupContext.BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalWithdrawals).FieldName);
-
-            var formula = $"{table}.{depositField} - {table}.{withdrawalsField}";
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
-                .HasDecimalFieldType(DecimalFieldTypes.Currency);
-
-            _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
         }
 
         protected override void Initialize()
@@ -525,6 +505,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EscrowBankAccountAutoFillSetup =
                 new AutoFillSetup(
                     AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
+
+            _periodHistoryLookupDefinition =
+                new LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>(AppGlobals.LookupContext
+                    .BankAccountPeriodHistory);
+
+            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
+            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalDeposits, p => p.TotalDeposits);
+            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalWithdrawals, p => p.TotalWithdrawals);
+
+            var table = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext
+                .BankAccountPeriodHistory.TableName);
+            var depositField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
+                .LookupContext.BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits).FieldName);
+            var withdrawalsField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
+                .LookupContext.BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalWithdrawals).FieldName);
+
+            var formula = $"{table}.{depositField} - {table}.{withdrawalsField}";
+            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             MonthlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
             YearlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
@@ -1108,16 +1109,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ViewModelInput.BankAccountViewModels.Remove(this);
         }
 
-        public bool IsBudgetItemDirty(int budgetItemId)
+        public bool IsBudgetItemDirty(int budgetItemId, DateTime? startDate)
         {
-            var budgetRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridBudgetItemRow>();
-            if (budgetRows.Any(a => a.BudgetItemId == budgetItemId && a.Completed))
+            var budgetRows = RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridBudgetItemRow>().Where(
+                    w => w.BudgetItemId == budgetItemId
+                         && w.ItemDate >= startDate).ToList();
+
+            if (budgetRows.Any(a => a.Completed || a.HasChildren()))
                 return true;
 
-            
+            return false;
         }
 
-        public void RefreshAfterBudgetItemSave(BudgetItem budgetItem)
+        public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
+            IEnumerable<BankAccountRegisterItem> registerItems, DateTime? startDate)
         {
 
         }

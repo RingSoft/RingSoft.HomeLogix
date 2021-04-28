@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Media;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.WPF;
 using System.Windows;
@@ -213,8 +214,11 @@ namespace RingSoft.App.Controls
             Close();
         }
 
-        public MessageButtons ShowYesNoCancelMessage(string text, string caption)
+        public MessageButtons ShowYesNoCancelMessage(string text, string caption, bool playSound = false)
         {
+            if (playSound)
+                SystemSounds.Exclamation.Play();
+
             var result = MessageBox.Show(text, caption, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
             switch (result)
             {
@@ -228,8 +232,11 @@ namespace RingSoft.App.Controls
             return MessageButtons.Cancel;
         }
 
-        public bool ShowYesNoMessage(string text, string caption)
+        public bool ShowYesNoMessage(string text, string caption, bool playSound = false)
         {
+            if (playSound)
+                SystemSounds.Exclamation.Play();
+
             if (MessageBox.Show(text, caption, MessageBoxButton.YesNo, MessageBoxImage.Question) ==
                 MessageBoxResult.Yes)
                 return true;

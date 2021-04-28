@@ -41,13 +41,13 @@ namespace RingSoft.HomeLogix.Tests
             
         }
 
-        public MessageButtons ShowYesNoCancelMessage(string text, string caption)
+        public MessageButtons ShowYesNoCancelMessage(string text, string caption, bool playSound = false)
         {
             Debug.WriteLine($"{_ownerName} Show YesNoCancel Message:  {text}");
             return MessageButtons.Yes;
         }
 
-        public bool ShowYesNoMessage(string text, string caption)
+        public bool ShowYesNoMessage(string text, string caption, bool playSound = false)
         {
             Debug.WriteLine($"{_ownerName} ShowYesNoMessage: {text}");
             return true;

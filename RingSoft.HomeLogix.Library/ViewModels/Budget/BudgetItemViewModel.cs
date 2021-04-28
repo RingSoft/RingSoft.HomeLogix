@@ -1142,12 +1142,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
             {
-                if (bankAccountViewModel.IsBudgetItemDirty(Id))
+                if (bankAccountViewModel.IsBudgetItemDirty(Id, StartingDate))
                 {
                     var message =
-                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to the Register.  Do you wish to continue?";
+                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this item in the Register.  Do you wish to continue?";
 
-                    if (!View.ShowYesNoMessage(message, "Budget Item Being Modified"))
+                    if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
                         return false;
                 }
             }
