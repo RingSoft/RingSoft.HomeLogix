@@ -1,6 +1,7 @@
 ﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 
@@ -42,13 +43,21 @@ namespace RingSoft.HomeLogix
             Control.ShowBudgetWindow += (sender, args) =>
             {
                 var viewModelInput = _cellProps.Row.Manager.ViewModel.ViewModelInput;
-                viewModelInput.FromRegisterGrid = true;
 
-                viewModelInput.LockBankAccountPrimaryKeyValue =
-                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(new BankAccount
-                        {Id = _cellProps.Row.Manager.ViewModel.Id});
+                viewModelInput.SelectBudgetPrimaryKeyValue = _cellProps.Row.BudgetItemValue.PrimaryKeyValue;
 
-                AppGlobals.LookupContext.BudgetItemsLookup.ShowAddOnTheFlyWindow(_cellProps.Text,
+                var budgetItem =
+                    AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(viewModelInput
+                        .SelectBudgetPrimaryKeyValue);
+                budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItem.Id);
+                
+                viewModelInput.LockBudgetBankAccountId = budgetItem.BankAccountId;
+
+                var lookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
+                lookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
+                    budgetItem.BankAccountId);
+
+                lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,
                     _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput);
             };
         }

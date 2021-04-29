@@ -13,6 +13,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public bool FromRegisterGrid { get; set; }
 
-        public PrimaryKeyValue LockBankAccountPrimaryKeyValue { get; set; }
+        public int LockBudgetBankAccountId { get; set; }
+
+        public PrimaryKeyValue SelectBudgetPrimaryKeyValue { get; set; }
     }
 }

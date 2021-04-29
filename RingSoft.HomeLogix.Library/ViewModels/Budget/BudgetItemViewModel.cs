@@ -553,6 +553,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public ViewModelInput ViewModelInput { get; set; }
 
+        public int LockBankId { get; private set; }
 
         private IBudgetItemView _view;
         private bool _loading;
@@ -561,7 +562,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private BankAccount _escrowToBankAccount;
         private BankAccount _dbEscrowToBankAccount;
         private bool _dbDoEscrow;
-        private PrimaryKeyValue _lockBankPrimaryKeyValue;
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
@@ -607,19 +607,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             ViewModelInput.BudgetItemViewModels.Add(this);
 
-            if (ViewModelInput.LockBankAccountPrimaryKeyValue != null)
+            if (ViewModelInput.LockBudgetBankAccountId > 0)
             {
-                _lockBankPrimaryKeyValue = ViewModelInput.LockBankAccountPrimaryKeyValue;
-                ViewModelInput.LockBankAccountPrimaryKeyValue = null;
-
-                if (LookupAddViewArgs != null && LookupAddViewArgs.LookupData.LookupDefinition is
-                    LookupDefinition<BudgetItemLookup, BudgetItem> budgetItemLookupDefinition)
-                {
-                    var bankAccount =
-                        AppGlobals.LookupContext.BankAccounts.GetEntityFromPrimaryKeyValue(_lockBankPrimaryKeyValue);
-                    budgetItemLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId,
-                        Conditions.Equals, bankAccount.Id);
-                }
+                LockBankId = ViewModelInput.LockBudgetBankAccountId;
+                ViewModelInput.LockBudgetBankAccountId = 0;
             }
 
             BudgetItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();

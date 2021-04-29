@@ -47,7 +47,12 @@ namespace RingSoft.HomeLogix
         {
             base.OnApplyTemplate();
 
-            TextBox.PreviewTextInput += (sender, args) => ShowLookupWindow();
+            TextBox.PreviewTextInput += (sender, args) =>
+            {
+                args.Handled = true;
+                ShowLookupWindow();
+            };
+
             TextBox.PreviewKeyDown += (sender, args) =>
             {
                 if (args.Key == Key.F5)
