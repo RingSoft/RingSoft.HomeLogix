@@ -43,16 +43,11 @@ namespace RingSoft.HomeLogix
             Control.ShowBudgetWindow += (sender, args) =>
             {
                 var viewModelInput = _cellProps.Row.Manager.ViewModel.ViewModelInput;
-
-                viewModelInput.SelectBudgetPrimaryKeyValue = _cellProps.Row.BudgetItemValue.PrimaryKeyValue;
+                viewModelInput.FromRegisterGrid = true;
 
                 var budgetItem =
-                    AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(viewModelInput
-                        .SelectBudgetPrimaryKeyValue);
-                budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItem.Id);
+                    AppGlobals.DataRepository.GetBudgetItem(_cellProps.Row.BudgetItemId);
                 
-                viewModelInput.LockBudgetBankAccountId = budgetItem.BankAccountId;
-
                 var lookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
                 lookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                     budgetItem.BankAccountId);

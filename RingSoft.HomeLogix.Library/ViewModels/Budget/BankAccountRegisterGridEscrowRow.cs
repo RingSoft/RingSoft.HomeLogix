@@ -33,6 +33,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
         }
 
+        public override DataEntryGridCellStyle GetCellStyle(int columnId)
+        {
+            var column = (BankAccountRegisterGridColumns) columnId;
+            switch (column)
+            {
+                case BankAccountRegisterGridColumns.Completed:
+                case BankAccountRegisterGridColumns.ItemType:
+                case BankAccountRegisterGridColumns.TransactionType:
+                    break;
+                default:
+                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
+            }
+            return base.GetCellStyle(columnId);
+        }
+
         public override void SetCellValue(DataEntryGridEditingCellProps value)
         {
             var column = (BankAccountRegisterGridColumns) value.ColumnId;
@@ -108,6 +123,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                         throw new ArgumentOutOfRangeException();
                                 }
                             }
+
+                            ActualAmount = null;
                         }
                     }
                     break;

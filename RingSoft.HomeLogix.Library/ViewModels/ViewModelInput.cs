@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
-using RingSoft.HomeLogix.Library.ViewModels.Budget;
+﻿using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using System.Collections.Generic;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -12,9 +10,5 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public List<BankAccountViewModel> BankAccountViewModels { get; } = new List<BankAccountViewModel>();
 
         public bool FromRegisterGrid { get; set; }
-
-        public int LockBudgetBankAccountId { get; set; }
-
-        public PrimaryKeyValue SelectBudgetPrimaryKeyValue { get; set; }
     }
 }

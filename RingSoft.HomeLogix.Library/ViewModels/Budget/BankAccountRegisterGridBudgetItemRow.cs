@@ -9,7 +9,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public override BankAccountRegisterItemTypes LineType => BankAccountRegisterItemTypes.BudgetItem;
         public override string Description => BudgetItemValue?.Text;
 
-        public int? BudgetItemId { get; private set; }
+        public int BudgetItemId { get; private set; }
         public AutoFillValue BudgetItemValue { get; private set; }
 
         public BankAccountRegisterGridBudgetItemRow(BankAccountRegisterGridManager manager) : base(manager)
@@ -31,7 +31,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
-            BudgetItemId = entity.BudgetItemId;
+            BudgetItemId = entity.BudgetItemId.GetValueOrDefault(0);
             if (entity.BudgetItem != null)
                 BudgetItemValue =
                     new AutoFillValue(AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),

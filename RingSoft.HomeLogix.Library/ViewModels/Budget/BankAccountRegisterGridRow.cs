@@ -32,7 +32,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public decimal? Balance { get; set; }
 
-        public decimal? ActualAmount { get; private set; }
+        public decimal? ActualAmount { get; protected set; }
 
         public decimal? Difference
         {
@@ -116,8 +116,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 case BankAccountRegisterGridColumns.ItemType:
                 case BankAccountRegisterGridColumns.TransactionType:
+                    return new DataEntryGridControlCellStyle {State = DataEntryGridCellStates.Disabled};
                 case BankAccountRegisterGridColumns.Date:
-                    return new DataEntryGridControlCellStyle {State = DataEntryGridCellStates.ReadOnly};
+                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
                 case BankAccountRegisterGridColumns.Description:
                 case BankAccountRegisterGridColumns.Amount:
                 case BankAccountRegisterGridColumns.ActualAmount:
@@ -173,9 +174,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     break;
                 case BankAccountRegisterGridColumns.ActualAmount:
                     var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
-                    if (actualAmountCellProps.Value != null) 
-                        ActualAmount = actualAmountCellProps.Value.Value;
-
+                    ActualAmount = actualAmountCellProps.Value;
                     break;
                 case BankAccountRegisterGridColumns.Difference:
                     break;

@@ -1118,7 +1118,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     w => w.BudgetItemId == budgetItemId
                          && w.ItemDate >= startDate).ToList();
 
-            if (budgetRows.Any(a => a.Completed || a.HasChildren()))
+            if (budgetRows.Any(a => a.Completed || a.ActualAmountDetails.Any()))
                 return true;
 
             return false;

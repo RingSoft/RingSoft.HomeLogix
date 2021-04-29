@@ -1,4 +1,6 @@
-﻿using RingSoft.DbLookup;
+﻿using System;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -24,6 +26,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public BankAccountRegisterGridTransferRow(BankAccountRegisterGridManager manager) : base(manager)
         {
+        }
+
+        public override DataEntryGridCellStyle GetCellStyle(int columnId)
+        {
+            var column = (BankAccountRegisterGridColumns) columnId;
+            switch (column)
+            {
+                case BankAccountRegisterGridColumns.Amount:
+                case BankAccountRegisterGridColumns.ActualAmount:
+                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
+            }
+            return base.GetCellStyle(columnId);
+        }
+
+        public override void SetCellValue(DataEntryGridEditingCellProps value)
+        {
+            var column = (BankAccountRegisterGridColumns) value.ColumnId;
+            switch (column)
+            {
+                case BankAccountRegisterGridColumns.Completed:
+                    if (value is DataEntryGridCheckBoxCellProps {Value: false})
+                        ActualAmount = null;
+                    break;
+            }
+            base.SetCellValue(value);
         }
 
         public override void LoadFromEntity(BankAccountRegisterItem entity)

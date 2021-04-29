@@ -7,6 +7,7 @@ using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using RingSoft.DbLookup.Lookup;
@@ -553,7 +554,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public ViewModelInput ViewModelInput { get; set; }
 
-        public int LockBankId { get; private set; }
+        public bool FromRegisterGrid { get; private set; }
 
         private IBudgetItemView _view;
         private bool _loading;
@@ -562,6 +563,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private BankAccount _escrowToBankAccount;
         private BankAccount _dbEscrowToBankAccount;
         private bool _dbDoEscrow;
+        private DateTime _dbStartDate;
+        private decimal _dbAmount;
+        private List<BankAccountRegisterItem> _newBankAccountRegisterItems;
+        private List<BankAccountRegisterItem> _bankAccountRegisterItemsToDelete;
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
@@ -600,18 +605,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (LookupAddViewArgs != null && LookupAddViewArgs.InputParameter is ViewModelInput viewModelInput)
             {
                 ViewModelInput = viewModelInput;
+                FromRegisterGrid = viewModelInput.FromRegisterGrid;
+                viewModelInput.FromRegisterGrid = false;
             }
             else
             {
                 ViewModelInput = new ViewModelInput();
             }
             ViewModelInput.BudgetItemViewModels.Add(this);
-
-            if (ViewModelInput.LockBudgetBankAccountId > 0)
-            {
-                LockBankId = ViewModelInput.LockBudgetBankAccountId;
-                ViewModelInput.LockBudgetBankAccountId = 0;
-            }
 
             BudgetItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             BudgetItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
@@ -662,11 +663,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Amount = 0;
             RecurringPeriod = 1;
             RecurringType = BudgetItemRecurringTypes.Months;
-            StartingDate = DateTime.Today;
+            StartingDate = _dbStartDate = DateTime.Today;
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
             _dbEscrowBalance = null;
             _escrowToBankAccount = null;
+            _dbAmount = 0;
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
@@ -758,13 +760,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void RecalculateBudgetItem()
         {
+            var existingDirtyFlag = RecordDirty;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
             EscrowBalance = budgetItem.EscrowBalance;
             CurrentMonthAmount = budgetItem.CurrentMonthAmount;
             LastCompletedDate = budgetItem.LastCompletedDate;
             CurrentMonthEnding = budgetItem.CurrentMonthEnding;
+            StartingDate = budgetItem.StartingDate;
+            if (StartingDate != null)
+                _dbStartDate = StartingDate.Value;
 
             RecalculateBudgetItem(budgetItem, false);
+            RecordDirty = existingDirtyFlag;
         }
 
         private void RecalculateBudgetItem(BudgetItem budgetItem, bool calculateEscrowBalance)
@@ -814,6 +821,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
 
+            Amount = _dbAmount = budgetItem.Amount;
             _dbMonthlyAmount = budgetItem.MonthlyAmount;
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
@@ -823,6 +831,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
             StartingDate = budgetItem.StartingDate;
+            if (StartingDate != null)
+                _dbStartDate = StartingDate.Value;
 
             if (StartingDate == null)
             {
@@ -864,7 +874,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
                     entity.BankAccount.Description);
 
-            Amount = entity.Amount;
             RecurringPeriod = entity.RecurringPeriod;
             RecurringType = entity.RecurringType;
             EndingDate = entity.EndingDate;
@@ -1102,6 +1111,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             var budgetItem = GetBudgetItem();
+            if (Id != 0 && (_dbStartDate != StartingDate || Amount != _dbAmount))
+            {
+                _newBankAccountRegisterItems =
+                    BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
+                        budgetItem.StartingDate.Value).ToList();
+
+                var existingBankAccount = AppGlobals.DataRepository.GetBankAccount(newBankAccountId);
+                _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
+                    .Where(w => w.BudgetItemId == Id && StartingDate != null && w.ItemDate >= StartingDate.Value)
+                    .ToList();
+            }
+
             if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
             {
                 DbBankAccount = null;
@@ -1153,7 +1174,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (bankAccountViewModel.IsBudgetItemDirty(Id, StartingDate))
                 {
                     var message =
-                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this item in the Register.  Do you wish to continue?";
+                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this budget item in the Register.  Do you wish to continue?";
 
                     if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
                         return false;

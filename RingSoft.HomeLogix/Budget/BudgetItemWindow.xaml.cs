@@ -42,6 +42,9 @@ namespace RingSoft.HomeLogix.Budget
             RegisterFormKeyControl(DescriptionControl);
 
             base.OnLoaded();
+
+            if (BudgetItemViewModel.FromRegisterGrid)
+                TopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
         }
 
         public void SetViewType()
