@@ -1125,8 +1125,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
-            IEnumerable<BankAccountRegisterItem> registerItems, DateTime? startDate)
+            List<BankAccountRegisterItem> registerItems, DateTime? startDate)
         {
+            RefreshBudgetTotals();
+            RegisterGridManager.RefreshAfterBudgetItemSave(budgetItem, registerItems, startDate);
 
         }
 

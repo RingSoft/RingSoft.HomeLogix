@@ -5,6 +5,7 @@ using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -22,7 +23,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public DateTime ItemDate { get; private set; }
 
-        public abstract string Description { get; }
+        public int BudgetItemId { get; private set; }
+        
+        public AutoFillValue BudgetItemValue { get; private set; }
+
+        public virtual string Description => BudgetItemValue?.Text;
 
         public TransactionTypes TransactionType { get; private set; }
 
@@ -189,6 +194,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RegisterId = entity.Id;
             RegisterGuid = entity.RegisterGuid;
             ItemDate = entity.ItemDate;
+
+            BudgetItemId = entity.BudgetItemId.GetValueOrDefault(0);
+            if (entity.BudgetItem != null)
+                BudgetItemValue =
+                    new AutoFillValue(AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),
+                        entity.BudgetItem.Description);
+
             TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
             ProjectedAmount = Math.Abs(entity.ProjectedAmount);
             ActualAmount = entity.ActualAmount;
@@ -206,6 +218,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.BankAccountId = Manager.ViewModel.Id;
             entity.RegisterGuid = RegisterGuid;
             entity.ItemType = (int)LineType;
+            entity.BudgetItemId = BudgetItemId;
             entity.ItemDate = ItemDate;
             entity.Description = Description;
             entity.ActualAmount = ActualAmount;

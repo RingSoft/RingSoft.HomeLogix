@@ -1111,23 +1111,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             var budgetItem = GetBudgetItem();
+            budgetItem.BankAccountId = newBankAccountId;
             if (Id != 0 && (_dbStartDate != StartingDate || Amount != _dbAmount))
             {
                 _newBankAccountRegisterItems =
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
-                        budgetItem.StartingDate.Value).ToList();
+                        newBankAccount.LastGenerationDate).ToList();
 
                 var existingBankAccount = AppGlobals.DataRepository.GetBankAccount(newBankAccountId);
                 _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
                     .Where(w => w.BudgetItemId == Id && StartingDate != null && w.ItemDate >= StartingDate.Value)
                     .ToList();
+
+                foreach (var registerItem in _bankAccountRegisterItemsToDelete)
+                {
+                    registerItem.BankAccount = null;
+                    registerItem.BudgetItem = null;
+                }
             }
 
             if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
             {
                 DbBankAccount = null;
             }
-            budgetItem.BankAccountId = newBankAccountId;
             budgetItem.BankAccount = newBankAccount;
 
             if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
@@ -1186,10 +1192,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override bool SaveEntity(BudgetItem entity)
         {
             var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount,
-                _escrowToBankAccount, _dbEscrowToBankAccount);
+                _escrowToBankAccount, _dbEscrowToBankAccount, 
+                _newBankAccountRegisterItems, _bankAccountRegisterItemsToDelete);
 
             if (result)
             {
+                foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
+                {
+                    bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems, StartingDate);
+                }
+
                 DbBankAccount = DbTransferToBankAccount = _escrowToBankAccount = _dbEscrowToBankAccount = null;
                 if (entity.BankAccountId != DbBankAccountId && LookupAddViewArgs != null)
                     PopulatePrimaryKeyControls(entity,

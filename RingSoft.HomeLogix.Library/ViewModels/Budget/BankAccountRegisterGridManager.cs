@@ -152,5 +152,44 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Grid?.UpdateRow(row);
             }
         }
+
+        public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
+            List<BankAccountRegisterItem> registerItems, DateTime? startDate)
+        {
+            if (!registerItems.Any())
+                return;
+
+            var gridRows = Rows.OfType<BankAccountRegisterGridRow>();
+            var rowsToDelete = gridRows.Where(w => 
+                w.BudgetItemId == budgetItem.Id && w.ItemDate >= startDate).ToList();
+
+            var currentRowIndex = Grid.CurrentRowIndex;
+            var currentColumnId = Grid.CurrentColumnId;
+            foreach (var gridRow in rowsToDelete)
+            {
+                RemoveRow(gridRow);
+            }
+
+            LoadGrid(registerItems);
+
+            gridRows = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate)
+                .ThenBy(t => t.TransactionType)
+                .ThenBy(t => t.ProjectedAmount).ToList();
+
+            SetupForNewRecord();
+
+            foreach (var registerGridRow in gridRows)
+            {
+                AddRow(registerGridRow);
+            }
+
+            if (Rows.Any())
+            {
+                if (currentRowIndex > Rows.Count - 1)
+                    currentRowIndex = Rows.Count - 1;
+
+                Grid.GotoCell(Rows[currentRowIndex], currentColumnId);
+            }
+        }
     }
 }

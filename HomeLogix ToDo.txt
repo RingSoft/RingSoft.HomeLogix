@@ -30,7 +30,7 @@ Set Register Grid Cell Styles:
 	Escrow
 	Misc
 
-Actual Amount cells configure decimalSetup to allow nulls.
+After changing Register grid rows.  Update Transfers and escrows.
 
 AmountDetails
 ----------------------------

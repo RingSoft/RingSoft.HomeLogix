@@ -5,7 +5,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-    public class BankAccountRegisterGridTransferRow : BankAccountRegisterGridBudgetItemRow
+    public class BankAccountRegisterGridTransferRow : BankAccountRegisterGridRow
     {
         public override BankAccountRegisterItemTypes LineType => BankAccountRegisterItemTypes.TransferToBankAccount;
 

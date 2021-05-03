@@ -25,7 +25,9 @@ namespace RingSoft.HomeLogix.Library
         BudgetItem GetBudgetItem(int budgetItemId);
 
         bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
-            BankAccount escrowBankAccount, BankAccount dbEscrowBankAccount);
+            BankAccount escrowBankAccount, BankAccount dbEscrowBankAccount,
+            IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            List<BankAccountRegisterItem> registerItemsToDelete);
 
         bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
             BankAccount dbEscrowBankAccount);
@@ -192,8 +194,9 @@ namespace RingSoft.HomeLogix.Library
         }
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
-            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount, 
-            BankAccount dbEscrowBankAccount)
+            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount,
+            BankAccount dbEscrowBankAccount, IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            List<BankAccountRegisterItem> registerItemsToDelete)
         {
             var context = AppGlobals.GetNewDbContext();
             if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem, "Saving Budget Item"))
@@ -224,6 +227,10 @@ namespace RingSoft.HomeLogix.Library
                     "Database Saving Escrow Bank Account"))
                     return false;
             }
+
+            context.BankAccountRegisterItems.AddRange(newBankRegisterItems);
+
+            context.BankAccountRegisterItems.RemoveRange(registerItemsToDelete);
 
             return context.DbContext.SaveEfChanges("Saving Budget Item");
         }
