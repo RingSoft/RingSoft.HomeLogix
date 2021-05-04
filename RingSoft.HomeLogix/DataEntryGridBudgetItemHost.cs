@@ -52,8 +52,13 @@ namespace RingSoft.HomeLogix
                 lookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                     budgetItem.BankAccountId);
 
+                var currentRowIndex = Grid.CurrentRowIndex;
                 lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,
                     _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput);
+                
+                if (currentRowIndex > Grid.Manager.Rows.Count - 1)
+                    currentRowIndex = Grid.Manager.Rows.Count - 1;
+                Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
             };
         }
     }

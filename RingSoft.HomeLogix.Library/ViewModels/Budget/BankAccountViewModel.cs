@@ -1129,7 +1129,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             RefreshBudgetTotals();
             RegisterGridManager.RefreshAfterBudgetItemSave(budgetItem, registerItems, startDate);
-
+            CalculateTotals();
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
