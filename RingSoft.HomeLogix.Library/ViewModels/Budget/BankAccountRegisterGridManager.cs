@@ -160,8 +160,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return;
 
             var gridRows = Rows.OfType<BankAccountRegisterGridRow>();
-            var rowsToDelete = gridRows.Where(w => 
-                w.BudgetItemId == budgetItem.Id && w.ItemDate >= startDate).ToList();
+            var rowsToProcess = gridRows.Where(w => 
+                w.BudgetItemId == budgetItem.Id).ToList();
+
+            var rowsToDelete = rowsToProcess;
+            if (startDate != null)
+            {
+                rowsToDelete = rowsToDelete.Where(w => w.ItemDate >= startDate.Value).ToList();
+                rowsToProcess = rowsToProcess.Where(w => w.ItemDate < startDate.Value).ToList();
+            }
 
             foreach (var gridRow in rowsToDelete)
             {
@@ -172,6 +179,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var bankAccountRegisterItem in registerItems)
             {
                 AddRowFromEntity(bankAccountRegisterItem);
+            }
+
+            foreach (var gridRow in rowsToProcess)
+            {
+                
             }
             Grid?.SetBulkInsertMode(false);
 

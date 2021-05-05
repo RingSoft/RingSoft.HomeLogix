@@ -1111,12 +1111,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ViewModelInput.BankAccountViewModels.Remove(this);
         }
 
-        public bool IsBudgetItemDirty(int budgetItemId, DateTime? startDate)
+        public bool IsBudgetItemDirty(int budgetItemId)
         {
             var budgetRows = RegisterGridManager.Rows
                 .OfType<BankAccountRegisterGridBudgetItemRow>().Where(
-                    w => w.BudgetItemId == budgetItemId
-                         && w.ItemDate >= startDate).ToList();
+                    w => w.BudgetItemId == budgetItemId).ToList();
 
             if (budgetRows.Any(a => a.Completed || a.ActualAmountDetails.Any()))
                 return true;
@@ -1125,11 +1124,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
-            List<BankAccountRegisterItem> registerItems, DateTime? startDate)
+            List<BankAccountRegisterItem> newRegisterItems, DateTime? startDate)
         {
+            ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
+            RegisterGridManager.RefreshAfterBudgetItemSave(budgetItem, newRegisterItems, startDate);
             RefreshBudgetTotals();
-            RegisterGridManager.RefreshAfterBudgetItemSave(budgetItem, registerItems, startDate);
-            CalculateTotals();
+            ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
