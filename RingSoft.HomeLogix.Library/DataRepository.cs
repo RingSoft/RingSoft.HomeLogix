@@ -26,7 +26,7 @@ namespace RingSoft.HomeLogix.Library
 
         bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
             BankAccount escrowBankAccount, BankAccount dbEscrowBankAccount,
-            IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete);
 
         bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
@@ -71,7 +71,8 @@ namespace RingSoft.HomeLogix.Library
 
             if (getRelatedEntities)
             {
-                return context.BankAccounts.Include(i => i.RegisterItems)
+                return context.BankAccounts.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
+                        .ThenByDescending(t => t.ProjectedAmount))
                     .ThenInclude(ti => ti.AmountDetails)
                     .ThenInclude(ti => ti.Source)
                     .Include(i => i.RegisterItems)
@@ -195,7 +196,7 @@ namespace RingSoft.HomeLogix.Library
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
             BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount,
-            BankAccount dbEscrowBankAccount, IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            BankAccount dbEscrowBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
             var context = AppGlobals.GetNewDbContext();
@@ -228,11 +229,32 @@ namespace RingSoft.HomeLogix.Library
                     return false;
             }
 
-            context.BankAccountRegisterItems.AddRange(newBankRegisterItems);
+            var addAfterSave = true;
+            if (budgetItem.Id != 0)
+            {
+                addAfterSave = false;
+                if (newBankRegisterItems != null)
+                    context.BankAccountRegisterItems.AddRange(newBankRegisterItems);
 
-            context.BankAccountRegisterItems.RemoveRange(registerItemsToDelete);
+                if (registerItemsToDelete != null)
+                    context.BankAccountRegisterItems.RemoveRange(registerItemsToDelete);
+            }
 
-            return context.DbContext.SaveEfChanges("Saving Budget Item");
+            var result = context.DbContext.SaveEfChanges("Saving Budget Item");
+            if (!result)
+                return false;
+
+            if (addAfterSave && newBankRegisterItems != null)
+            {
+                foreach (var bankRegisterItem in newBankRegisterItems)
+                {
+                    bankRegisterItem.BudgetItemId = budgetItem.Id;
+                }
+                context.BankAccountRegisterItems.AddRange(newBankRegisterItems);
+                return context.DbContext.SaveEfChanges("Saving Budget Item");
+            }
+
+            return true;
         }
 
         public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,

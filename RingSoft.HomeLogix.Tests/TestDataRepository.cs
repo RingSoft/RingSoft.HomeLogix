@@ -123,7 +123,7 @@ namespace RingSoft.HomeLogix.Tests
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
             BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount,
-            BankAccount dbEscrowBankAccount, IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
+            BankAccount dbEscrowBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
             if (budgetItem.Id == 0)

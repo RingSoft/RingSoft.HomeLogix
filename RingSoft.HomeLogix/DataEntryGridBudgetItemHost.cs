@@ -1,9 +1,11 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix
 {
@@ -58,6 +60,14 @@ namespace RingSoft.HomeLogix
                 
                 if (currentRowIndex > Grid.Manager.Rows.Count - 1)
                     currentRowIndex = Grid.Manager.Rows.Count - 1;
+
+                var registerRow = Grid.Manager.Rows.OfType<BankAccountRegisterGridRow>()
+                    .FirstOrDefault(f => f.RegisterId == _cellProps.Row.RegisterId);
+
+                if (registerRow != null)
+                    currentRowIndex = Grid.Manager.Rows.IndexOf(registerRow);
+
+                Grid.DataEntryGridCancelEdit();
                 Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
             };
         }

@@ -638,8 +638,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (LastGenerationDate == DateTime.MinValue)
                 LastGenerationDate = null;
 
-            RegisterGridManager.LoadGrid(entity.RegisterItems.OrderBy(o => o.ItemDate)
-                .ThenByDescending(t => t.ProjectedAmount));
+            RegisterGridManager.LoadGrid(entity.RegisterItems);
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
             _loading = false;
@@ -1111,23 +1110,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ViewModelInput.BankAccountViewModels.Remove(this);
         }
 
-        public bool IsBudgetItemDirty(int budgetItemId)
+        public bool IsBeingReconciled(int budgetItemId)
         {
-            var budgetRows = RegisterGridManager.Rows
-                .OfType<BankAccountRegisterGridBudgetItemRow>().Where(
-                    w => w.BudgetItemId == budgetItemId).ToList();
-
-            if (budgetRows.Any(a => a.Completed || a.ActualAmountDetails.Any()))
+            if (RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridRow>().Any(a => a.Completed
+                || a.ActualAmountDetails.Any() && a.BudgetItemId == budgetItemId))
                 return true;
 
             return false;
+        }
+
+        public bool IsBudgetItemInRegisterGrid(int budgetItemId)
+        {
+            return RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
+                .Any(a => a.BudgetItemId == budgetItemId
+                && a.LineType != BankAccountRegisterItemTypes.Miscellaneous);
         }
 
         public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
             List<BankAccountRegisterItem> newRegisterItems, DateTime? startDate)
         {
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
-            RegisterGridManager.RefreshAfterBudgetItemSave(budgetItem, newRegisterItems, startDate);
+            var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
+            RegisterGridManager.LoadGrid(bankAccount.RegisterItems);
             RefreshBudgetTotals();
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
         }

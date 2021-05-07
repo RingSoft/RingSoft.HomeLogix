@@ -142,6 +142,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _amount = value;
 
                 SetViewMode(true);
+                _registerAffected = true;
                 OnPropertyChanged();
             }
         }
@@ -158,6 +159,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _recurringPeriod = value;
                 SetViewMode();
+                _registerAffected = true;
                 OnPropertyChanged();
             }
         }
@@ -190,6 +192,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _recurringTypeComboBoxItem = value;
                 SetViewMode();
+                _registerAffected = true;
                 OnPropertyChanged();
             }
         }
@@ -260,6 +263,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _doEscrow = value;
                 SetViewMode(true);
+                _registerAffected = true;
                 OnPropertyChanged();
             }
         }
@@ -564,7 +568,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private BankAccount _dbEscrowToBankAccount;
         private bool _dbDoEscrow;
         private DateTime _dbStartDate;
-        private decimal _dbAmount;
+        private bool _registerAffected;
         private List<BankAccountRegisterItem> _newBankAccountRegisterItems;
         private List<BankAccountRegisterItem> _bankAccountRegisterItemsToDelete;
 
@@ -668,7 +672,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _dbMonthlyAmount = MonthlyAmount = 0;
             _dbEscrowBalance = null;
             _escrowToBankAccount = null;
-            _dbAmount = 0;
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
@@ -676,6 +679,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             CurrentMonthEnding = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
                 DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+            CurrentMonthAmount = 0;
+            CurrentMonthPercent = 0;
 
             LastCompletedDate = null;
 
@@ -686,6 +691,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = false;
 
             SetViewMode();
+            _registerAffected = false;
         }
 
         private void SetViewMode(bool fromSetEscrow = false, bool calculateEscrowBalance = true)
@@ -821,7 +827,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
 
-            Amount = _dbAmount = budgetItem.Amount;
+            Amount = budgetItem.Amount;
             _dbMonthlyAmount = budgetItem.MonthlyAmount;
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
@@ -861,6 +867,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
             _loading = false;
+            _registerAffected = false;
             return budgetItem;
         }
 
@@ -894,6 +901,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _loading = false;
             SetViewMode(true, false);
+            _registerAffected = false;
 
             if (ReadOnlyMode)
             {
@@ -1114,31 +1122,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             budgetItem.BankAccountId = newBankAccountId;
             if (RecordDirty)
             {
-                var existingBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId);
-                if (StartingDate == _dbStartDate && existingBankAccount.RegisterItems.Any())
+                if (DbBankAccountId == 0)
                 {
-                    budgetItem.StartingDate = existingBankAccount.RegisterItems.OrderBy(o => o.ItemDate)
-                        .FirstOrDefault(f => f.BudgetItemId == Id).ItemDate;
-
-                    _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                        .Where(w => w.BudgetItemId == Id).ToList();
+                    _bankAccountRegisterItemsToDelete = new List<BankAccountRegisterItem>();
                 }
                 else
                 {
-                    _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                        .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
+                    var existingBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId);
+                    if (existingBankAccount.RegisterItems == null)
+                    {
+                        _bankAccountRegisterItemsToDelete = new List<BankAccountRegisterItem>();
+                    }
+                    else
+                    {
+                        if (DbBankAccountId == newBankAccountId)
+                            _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
+                                .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
+                        else
+                            _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
+                                .Where(w => w.BudgetItemId == Id).ToList();
+                    }
+                    foreach (var registerItem in _bankAccountRegisterItemsToDelete)
+                    {
+                        registerItem.BankAccount = null;
+                        registerItem.BudgetItem = null;
+                    }
                 }
+
                 _newBankAccountRegisterItems =
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
                         newBankAccount.LastGenerationDate).ToList();
-
-                budgetItem.StartingDate = StartingDate;
-
-                foreach (var registerItem in _bankAccountRegisterItemsToDelete)
-                {
-                    registerItem.BankAccount = null;
-                    registerItem.BudgetItem = null;
-                }
             }
 
             if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
@@ -1186,10 +1199,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool ValidateEntity(BudgetItem entity)
         {
+            var noRegisterMessageShown = false;
+            var reconciledMessageShown = false;
             foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
             {
-                if (bankAccountViewModel.IsBudgetItemDirty(Id))
+                if (!noRegisterMessageShown && bankAccountViewModel.IsBudgetItemInRegisterGrid(Id))
                 {
+                    if (_newBankAccountRegisterItems != null && !_newBankAccountRegisterItems.Any() &&
+                        entity.StartingDate == _dbStartDate && _registerAffected)
+                    {
+                        noRegisterMessageShown = true;
+                        var message =
+                            $"No register items will be updated for this Budget Item.  You must set the Starting Date to be earlier than {entity.StartingDate} in order to update the Bank Register Grid.  Do you wish to continue?";
+
+                        if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
+                            return false;
+                    }
+                }
+                if (!reconciledMessageShown && bankAccountViewModel.IsBeingReconciled(Id))
+                {
+                    reconciledMessageShown = true;
                     var message =
                         "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this budget item in the Register.  Do you wish to continue?";
 
@@ -1210,15 +1239,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
                 {
-                    var startDate = StartingDate;
-                    if (StartingDate == _dbStartDate)
-                    {
-                        startDate = null;
-                    }
-                    bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems, startDate);
+                    bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems, StartingDate);
                 }
 
                 DbBankAccount = DbTransferToBankAccount = _escrowToBankAccount = _dbEscrowToBankAccount = null;
+                _newBankAccountRegisterItems = null;
+                _bankAccountRegisterItemsToDelete = null;
+
                 if (entity.BankAccountId != DbBankAccountId && LookupAddViewArgs != null)
                     PopulatePrimaryKeyControls(entity,
                         AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity));

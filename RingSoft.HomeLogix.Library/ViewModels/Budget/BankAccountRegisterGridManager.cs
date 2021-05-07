@@ -152,51 +152,5 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Grid?.UpdateRow(row);
             }
         }
-
-        public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
-            List<BankAccountRegisterItem> registerItems, DateTime? startDate)
-        {
-            if (!registerItems.Any())
-                return;
-
-            var gridRows = Rows.OfType<BankAccountRegisterGridRow>();
-            var rowsToProcess = gridRows.Where(w => 
-                w.BudgetItemId == budgetItem.Id).ToList();
-
-            var rowsToDelete = rowsToProcess;
-            if (startDate != null)
-            {
-                rowsToDelete = rowsToDelete.Where(w => w.ItemDate >= startDate.Value).ToList();
-                rowsToProcess = rowsToProcess.Where(w => w.ItemDate < startDate.Value).ToList();
-            }
-
-            foreach (var gridRow in rowsToDelete)
-            {
-                RemoveRow(gridRow);
-            }
-
-            Grid?.SetBulkInsertMode();
-            foreach (var bankAccountRegisterItem in registerItems)
-            {
-                AddRowFromEntity(bankAccountRegisterItem);
-            }
-
-            foreach (var gridRow in rowsToProcess)
-            {
-                
-            }
-            Grid?.SetBulkInsertMode(false);
-
-            gridRows = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate)
-                .ThenBy(t => t.TransactionType)
-                .ThenBy(t => t.ProjectedAmount).ToList();
-
-            SetupForNewRecord();
-
-            foreach (var registerGridRow in gridRows)
-            {
-                AddRow(registerGridRow);
-            }
-        }
     }
 }
