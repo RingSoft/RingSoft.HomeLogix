@@ -1300,7 +1300,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var result = AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount, _dbEscrowToBankAccount);
 
             if (result)
+            {
+                foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
+                {
+                    bankAccountViewModel.DeleteBudgetItem(Id);
+                }
                 DbBankAccount = DbTransferToBankAccount = _dbEscrowToBankAccount = null;
+            }
 
             return result;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
@@ -151,6 +152,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 Grid?.UpdateRow(row);
             }
+        }
+
+        protected override void OnRowsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    ViewModel.CalculateTotals();
+                    break;
+            }
+            base.OnRowsChanged(e);
         }
     }
 }

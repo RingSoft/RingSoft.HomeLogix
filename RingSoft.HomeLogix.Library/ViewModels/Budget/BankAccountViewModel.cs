@@ -1137,6 +1137,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
         }
 
+        public void DeleteBudgetItem(int budgetItemId)
+        {
+            var budgetRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
+                .Where(w => w.BudgetItemId == budgetItemId).ToList();
+
+            foreach (var budgetRow in budgetRows)
+            {
+                RegisterGridManager.RemoveRow(budgetRow);
+            }
+        }
+
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
         {
             if (raiseDirtyFlag)
