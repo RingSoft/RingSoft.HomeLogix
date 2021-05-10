@@ -912,7 +912,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BankAccountRegisterItem registerItem, DateTime monthEndDate, BankAccountRegisterGridRow completedRow,
             DateTime yearEndDate)
         {
-            if (registerItem.BudgetItemId != null)
+            if (registerItem.BudgetItemId != null && registerItem.BudgetItemId != 0)
             {
                 var budgetItem =
                     completedRegisterData.BudgetItems.FirstOrDefault(f => f.Id == registerItem.BudgetItemId);
@@ -1110,7 +1110,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             if (RegisterGridManager.Rows
                 .OfType<BankAccountRegisterGridRow>().Any(a => a.Completed
-                || a.ActualAmountDetails.Any() && a.BudgetItemId == budgetItemId))
+                || a.ActualAmount != null && a.BudgetItemId == budgetItemId))
                 return true;
 
             return false;

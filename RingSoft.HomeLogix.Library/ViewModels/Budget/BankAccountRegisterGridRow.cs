@@ -23,7 +23,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public DateTime ItemDate { get; private set; }
 
-        public int BudgetItemId { get; private set; }
+        public int? BudgetItemId { get; private set; }
         
         public AutoFillValue BudgetItemValue { get; private set; }
 
@@ -164,7 +164,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         ProjectedAmount = decimalCellProps.Value.GetValueOrDefault(0);
                         Manager.ViewModel.CalculateTotals();
-                        SaveToDb();
+                        SaveToDbOnTheFly();
                     }
                     break;
                 case BankAccountRegisterGridColumns.Completed:
@@ -174,8 +174,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         if (Completed && ActualAmount == null)
                         {
                             ActualAmount = ProjectedAmount;
-                            SaveToDb();
                         }
+                        SaveToDbOnTheFly();
 
                         Manager.ViewModel.CalculateTotals();
                     }
@@ -185,7 +185,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.ActualAmount:
                     var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
                     ActualAmount = actualAmountCellProps.Value;
-                    SaveToDb();
+                    SaveToDbOnTheFly();
                     break;
                 case BankAccountRegisterGridColumns.Difference:
                     break;
@@ -193,15 +193,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            var recordDirty = Manager.ViewModel.RecordDirty;
-            if (column == BankAccountRegisterGridColumns.Completed)
-                recordDirty = true;
-
             base.SetCellValue(value);
-            Manager.ViewModel.RecordDirty = recordDirty;
         }
 
-        private void SaveToDb()
+        protected void SaveToDbOnTheFly()
         {
             var registerItem = new BankAccountRegisterItem();
             SaveToEntity(registerItem, 0);
@@ -214,7 +209,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RegisterGuid = entity.RegisterGuid;
             ItemDate = entity.ItemDate;
 
-            BudgetItemId = entity.BudgetItemId.GetValueOrDefault(0);
+            BudgetItemId = entity.BudgetItemId;  //Must default to null or completed Escrow rows won't save.
             if (entity.BudgetItem != null)
                 BudgetItemValue =
                     new AutoFillValue(AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),

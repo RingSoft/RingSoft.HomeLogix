@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbMaintenance;
@@ -33,6 +34,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return new ActualAmountGridRow(this);
         }
 
+        protected override void OnRowsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+                ViewModel.CalculateTotals();
+
+            base.OnRowsChanged(e);
+        }
 
         public decimal GetTotalAmount()
         {

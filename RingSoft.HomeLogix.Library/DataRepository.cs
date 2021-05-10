@@ -80,6 +80,8 @@ namespace RingSoft.HomeLogix.Library
                 return context.BankAccounts.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
                         .ThenByDescending(t => t.ProjectedAmount))
                     .Include(i => i.RegisterItems)
+                    .ThenInclude(ti => ti.AmountDetails)
+                    .Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.BudgetItem)
                        .ThenInclude(ti => ti.TransferToBankAccount)
                        .Include(i => i.EscrowToBankAccount)
