@@ -70,11 +70,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Grid?.UpdateRow(newRow);
         }
 
-        public void SaveData()
+        public List<BankAccountRegisterItemAmountDetail> SaveData()
         {
             if (Grid == null)
-                return;
+                return null;
 
+            var result = new List<BankAccountRegisterItemAmountDetail>();
             ViewModel.ActualAmountCellProps.RegisterGridRow.ActualAmountDetails.Clear();
             Grid.CommitCellEdit();
             var rowIndex = 0;
@@ -87,9 +88,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     var amountDetail = new BankAccountRegisterItemAmountDetail();
                     actualAmountGridRow.SaveToEntity(amountDetail, rowIndex);
                     ViewModel.ActualAmountCellProps.RegisterGridRow.ActualAmountDetails.Add(amountDetail);
+                    result.Add(amountDetail);
                     rowIndex++;
                 }
             }
+
+            return result;
         }
     }
 }

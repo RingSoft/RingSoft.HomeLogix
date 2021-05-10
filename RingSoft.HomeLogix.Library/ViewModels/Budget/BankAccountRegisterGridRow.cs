@@ -164,6 +164,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         ProjectedAmount = decimalCellProps.Value.GetValueOrDefault(0);
                         Manager.ViewModel.CalculateTotals();
+                        SaveToDb();
                     }
                     break;
                 case BankAccountRegisterGridColumns.Completed:
@@ -171,7 +172,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         Completed = checkBoxCellProps.Value;
                         if (Completed && ActualAmount == null)
+                        {
                             ActualAmount = ProjectedAmount;
+                            SaveToDb();
+                        }
+
                         Manager.ViewModel.CalculateTotals();
                     }
                     break;
@@ -180,13 +185,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.ActualAmount:
                     var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
                     ActualAmount = actualAmountCellProps.Value;
+                    SaveToDb();
                     break;
                 case BankAccountRegisterGridColumns.Difference:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            var recordDirty = Manager.ViewModel.RecordDirty;
+            if (column == BankAccountRegisterGridColumns.Completed)
+                recordDirty = true;
+
             base.SetCellValue(value);
+            Manager.ViewModel.RecordDirty = recordDirty;
+        }
+
+        private void SaveToDb()
+        {
+            var registerItem = new BankAccountRegisterItem();
+            SaveToEntity(registerItem, 0);
+            AppGlobals.DataRepository.SaveRegisterItem(registerItem);
         }
 
         public override void LoadFromEntity(BankAccountRegisterItem entity)

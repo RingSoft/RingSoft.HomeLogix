@@ -15,10 +15,16 @@ namespace RingSoft.HomeLogix.Library
 
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
-        bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
-            CompletedRegisterData completedRegisterData = null);
+        IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId);
+
+        bool SaveBankAccount(BankAccount bankAccount, CompletedRegisterData completedRegisterData = null);
 
         bool DeleteBankAccount(int bankAccountId);
+
+        bool SaveRegisterItem(BankAccountRegisterItem registerItem);
+
+        bool SaveRegisterItem(BankAccountRegisterItem registerItem,
+            List<BankAccountRegisterItemAmountDetail> amountDetails);
 
         List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId);
 
@@ -73,8 +79,6 @@ namespace RingSoft.HomeLogix.Library
             {
                 return context.BankAccounts.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
                         .ThenByDescending(t => t.ProjectedAmount))
-                    .ThenInclude(ti => ti.AmountDetails)
-                    .ThenInclude(ti => ti.Source)
                     .Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.BudgetItem)
                        .ThenInclude(ti => ti.TransferToBankAccount)
@@ -86,7 +90,16 @@ namespace RingSoft.HomeLogix.Library
                 .FirstOrDefault(f => f.Id == bankAccountId);
         }
 
-        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
+        public IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BankAccountRegisterItems.Include(i => i.AmountDetails)
+                .ThenInclude(ti => ti.Source)
+                .FirstOrDefault(f => f.Id == registerId)
+                ?.AmountDetails;
+        }
+
+        public bool SaveBankAccount(BankAccount bankAccount,
             CompletedRegisterData completedRegisterData)
         {
             var context = AppGlobals.GetNewDbContext();
@@ -147,13 +160,6 @@ namespace RingSoft.HomeLogix.Library
 
             context.BankAccountRegisterItems.RemoveRange(completedRegisterData.CompletedRegisterItems);
 
-            foreach (var registerItem in bankAccount.RegisterItems)
-            {
-                context.BankAccountRegisterItemAmountDetails.RemoveRange(
-                    context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id));
-            }
-            context.BankAccountRegisterItemAmountDetails.AddRange(amountDetails);
-
             context.History.AddRange(completedRegisterData.NewHistoryRecords);
 
             if (!context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}'"))
@@ -176,6 +182,29 @@ namespace RingSoft.HomeLogix.Library
             var bankAccount = context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
             return bankAccount != null && context.DbContext.DeleteEntity(context.BankAccounts, bankAccount,
                 $"Deleting Bank Account '{bankAccount.Description}'");
+        }
+
+        public bool SaveRegisterItem(BankAccountRegisterItem registerItem)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.DbContext.SaveEntity(context.BankAccountRegisterItems, registerItem,
+                $"Saving Bank Account Register Item '{registerItem.Description}.'");
+        }
+
+        public bool SaveRegisterItem(BankAccountRegisterItem registerItem, List<BankAccountRegisterItemAmountDetail> amountDetails)
+        {
+            var context = AppGlobals.GetNewDbContext();
+
+            if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
+                $"Saving Bank Account Register Item'{registerItem.Description}'"))
+                return false;
+
+            context.BankAccountRegisterItemAmountDetails.RemoveRange(
+                context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id));
+
+           context.BankAccountRegisterItemAmountDetails.AddRange(amountDetails);
+
+            return context.DbContext.SaveEfChanges($"Saving Bank Account Register Item '{registerItem.Description}.'");
         }
 
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)

@@ -56,7 +56,12 @@ namespace RingSoft.HomeLogix.Tests
             return null;
         }
 
-        public bool SaveBankAccount(BankAccount bankAccount, List<BankAccountRegisterItemAmountDetail> amountDetails,
+        public IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SaveBankAccount(BankAccount bankAccount,
             CompletedRegisterData clearedRegisterData = null)
         {
             if (bankAccount.Id == 0)
@@ -78,6 +83,16 @@ namespace RingSoft.HomeLogix.Tests
                 BankAccounts.Remove(bankAccount);
 
             return true;
+        }
+
+        public bool SaveRegisterItem(BankAccountRegisterItem registerItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SaveRegisterItem(BankAccountRegisterItem registerItem, List<BankAccountRegisterItemAmountDetail> amountDetails)
+        {
+            throw new NotImplementedException();
         }
 
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
@@ -139,22 +154,22 @@ namespace RingSoft.HomeLogix.Tests
             BudgetItems.Add(budgetItem);
 
             if (budgetItem.BankAccount != null)
-                SaveBankAccount(budgetItem.BankAccount, amountDetails);
+                SaveBankAccount(budgetItem.BankAccount);
 
             if (budgetItem.TransferToBankAccount != null)
-                SaveBankAccount(budgetItem.TransferToBankAccount, amountDetails);
+                SaveBankAccount(budgetItem.TransferToBankAccount);
 
             if (dbBankAccount != null)
-                SaveBankAccount(dbBankAccount, amountDetails);
+                SaveBankAccount(dbBankAccount);
 
             if (dbTransferToBankAccount != null)
-                SaveBankAccount(dbTransferToBankAccount, amountDetails);
+                SaveBankAccount(dbTransferToBankAccount);
 
             if (escrowBankAccount != null)
-                SaveBankAccount(escrowBankAccount, amountDetails);
+                SaveBankAccount(escrowBankAccount);
 
             if (dbEscrowBankAccount != null)
-                SaveBankAccount(dbEscrowBankAccount, amountDetails);
+                SaveBankAccount(dbEscrowBankAccount);
 
             return true;
         }
@@ -164,13 +179,13 @@ namespace RingSoft.HomeLogix.Tests
         {
             var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
             if (dbBankAccount != null)
-                SaveBankAccount(dbBankAccount, amountDetails);
+                SaveBankAccount(dbBankAccount);
 
             if (dbTransferToBankAccount != null)
-                SaveBankAccount(dbTransferToBankAccount, amountDetails);
+                SaveBankAccount(dbTransferToBankAccount);
 
             if (dbEscrowBankAccount != null)
-                SaveBankAccount(dbEscrowBankAccount, amountDetails);
+                SaveBankAccount(dbEscrowBankAccount);
 
             var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             if (budgetItem != null)

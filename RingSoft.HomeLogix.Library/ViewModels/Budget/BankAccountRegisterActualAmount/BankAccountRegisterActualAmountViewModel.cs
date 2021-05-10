@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.DataAccess.Model;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -125,7 +126,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Description = actualAmountCellProps.RegisterGridRow.Description;
             ProjectedAmount = actualAmountCellProps.RegisterGridRow.ProjectedAmount;
 
-            GridManager.LoadGrid(actualAmountCellProps.RegisterGridRow.ActualAmountDetails);
+            GridManager.LoadGrid(
+                AppGlobals.DataRepository.GetBankAccountRegisterItemDetails(actualAmountCellProps.RegisterGridRow
+                    .RegisterId));
 
             CalculateTotals();
         }
@@ -148,9 +151,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
-            GridManager.SaveData();
+            var amountDetails = GridManager.SaveData();
             ActualAmountCellProps.Value = TotalActualAmount;
-            View.OnOkButtonCloseWindow();
+            var registerItem = new BankAccountRegisterItem();
+            ActualAmountCellProps.RegisterGridRow.SaveToEntity(registerItem, 0);
+            registerItem.ActualAmount = TotalActualAmount;
+
+            if (AppGlobals.DataRepository.SaveRegisterItem(registerItem, amountDetails))
+                View.OnOkButtonCloseWindow();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

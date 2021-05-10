@@ -761,17 +761,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BankAccount entity)
         {
-            RegisterDetails.Clear();
-
-            entity.RegisterItems = RegisterGridManager.GetEntityList();
-
             var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(w => w.Completed).ToList();
 
             var completedRegisterData = new CompletedRegisterData();
             if (!ProcessCompletedRows(completedRegisterData, completedRows))
                 return false;
 
-            if (AppGlobals.DataRepository.SaveBankAccount(entity, RegisterDetails, completedRegisterData))
+            if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {
                 if (completedRows.Any())
                 {

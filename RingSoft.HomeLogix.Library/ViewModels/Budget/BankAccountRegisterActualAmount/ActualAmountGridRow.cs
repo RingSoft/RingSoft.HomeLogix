@@ -130,9 +130,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.RegisterId = Manager.ViewModel.ActualAmountCellProps.RegisterGridRow.RegisterId;
             entity.DetailId = rowIndex;
             entity.Date = Date;
-            entity.Source = AppGlobals.LookupContext.BudgetItemSources.GetEntityFromPrimaryKeyValue(Source.PrimaryKeyValue);
-            entity.Source.Name = Source.Text;
-            entity.SourceId = entity.Source.Id;
+            var source = AppGlobals.LookupContext.BudgetItemSources.GetEntityFromPrimaryKeyValue(Source.PrimaryKeyValue);
+            entity.SourceId = source.Id;
             entity.Amount = Amount;
         }
     }
