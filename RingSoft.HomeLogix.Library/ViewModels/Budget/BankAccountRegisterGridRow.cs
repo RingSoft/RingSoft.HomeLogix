@@ -95,7 +95,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Date:
                     return new DataEntryGridDateCellProps(this, columnId, _dateEditControlSetup, ItemDate);
                 case BankAccountRegisterGridColumns.Description:
-                    return new DataEntryGridTextCellProps(this, columnId, Description);
+                    return new BudgetItemCellProps(this, columnId, Description);
                 case BankAccountRegisterGridColumns.TransactionType:
                     return new DataEntryGridCustomControlCellProps(this, columnId, (int) TransactionType);
                 case BankAccountRegisterGridColumns.Amount:

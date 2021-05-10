@@ -9,14 +9,9 @@ namespace RingSoft.HomeLogix.Library
 
         public override int EditingControlId => BudgetItemControlHostId;
 
-        public new BankAccountRegisterGridBudgetItemRow Row { get; private set; }
+        public new BankAccountRegisterGridRow Row { get; private set; }
 
-        public BudgetItemCellProps(BankAccountRegisterGridBudgetItemRow row, int columnId) : base(row, columnId)
-        {
-            Row = row;
-        }
-
-        public BudgetItemCellProps(BankAccountRegisterGridBudgetItemRow row, int columnId, string text) : base(row, columnId, text)
+        public BudgetItemCellProps(BankAccountRegisterGridRow row, int columnId, string text) : base(row, columnId, text)
         {
             Row = row;
         }
