@@ -4,6 +4,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DbLookup;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -77,7 +78,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        public BudgetItemTypes BudgetItemType
+        public BudgetItemTypes ItemType
         {
             get => (BudgetItemTypes)ItemTypeComboBoxItem.NumericValue;
             set => ItemTypeComboBoxItem = ItemTypeComboBoxControlSetup.GetItem((int)value);
@@ -188,6 +189,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private decimal? _escrowBalance;
+
+        public decimal? EscrowBalance
+        {
+            get => _escrowBalance;
+            set
+            {
+                if (_escrowBalance == value)
+                    return;
+
+                _escrowBalance = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _useEscrow;
+
+        public bool UseEscrow
+        {
+            get => _useEscrow;
+            set
+            {
+                if (_useEscrow == value)
+                    return;
+
+                _useEscrow = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
         public IBankAccountMiscView View { get; private set; }
 
         public RelayCommand OkButtonCommand { get; }
@@ -196,9 +229,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool BudgetItemVisible { get; private set; }
 
+        public bool EscrowVisible { get; private set; }
+
         public BankAccountMiscViewModel()
         {
             OkButtonCommand = new RelayCommand(OnOkButton);
+            ItemTypeEnabled = true;
         }
 
         public void OnViewLoaded(IBankAccountMiscView view)
@@ -209,11 +245,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             ItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             ItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
+            ItemType = BudgetItemTypes.Expense;
         }
 
         private void SetViewMode()
         {
-            switch (BudgetItemType)
+            EscrowVisible = false;
+
+            switch (ItemType)
             {
                 case BudgetItemTypes.Income:
                 case BudgetItemTypes.Expense:

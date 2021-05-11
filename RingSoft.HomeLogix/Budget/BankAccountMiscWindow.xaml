@@ -36,6 +36,21 @@
 
         <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" DesignText="01/01/1980" Width="100"/>
 
-        <Label></Label>
+        <Label Grid.Row="1" Grid.Column="0" Content="Description"/>
+
+        <dec:StringEditControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50" Width="200" DesignText="A Very Big Register Item" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Type"/>
+
+        <dec:TextComboBoxControl Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" IsEnabled="{Binding Path=ItemTypeEnabled}" Setup="{Binding Path=ItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=ItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="3" Grid.Column="0" Content="Amount"/>
+
+        <dec:DecimalEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+
+        <Label Grid.Row="4" Grid.Column="0" x:Name="BudgetItemLabel" Content="Budget Item"/>
+
+        <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Setup="{Binding Path=BudgetItemAutoFillSetup}" Value="{Binding Path=BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" DesignText="Large Budget Item Description"/>
+
     </Grid>
 </dec:BaseWindow>
