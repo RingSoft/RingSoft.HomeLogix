@@ -25,6 +25,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps);
 
+        bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem);
+
         object OwnerWindow { get; }
     }
 
@@ -673,7 +675,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void AddNewRegisterItem()
         {
-            //TODO
+            var registerItem = new BankAccountRegisterItem();
+            if (BankAccountView.ShowBankAccountMiscWindow(registerItem))
+                RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> {registerItem});
         }
 
         private void GenerateRegisterItemsFromBudget()

@@ -8,12 +8,15 @@
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Bank Account Register Item" Height="450" Width="800">
+        Title="Bank Account Register Item" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:BankAccountMiscViewModel x:Name="ViewModel"/>
     </Window.DataContext>
     <Grid Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -50,7 +53,23 @@
 
         <Label Grid.Row="4" Grid.Column="0" x:Name="BudgetItemLabel" Content="Budget Item"/>
 
-        <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Setup="{Binding Path=BudgetItemAutoFillSetup}" Value="{Binding Path=BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" DesignText="Large Budget Item Description"/>
+        <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" x:Name="BudgetItemControl" Setup="{Binding Path=BudgetItemAutoFillSetup}" Value="{Binding Path=BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="200" DesignText="Large Budget Item Description"/>
 
+        <Label Grid.Row="5" Grid.Column="0" x:Name="EscrowBalanceLabel" Content="Escrow Balance"/>
+
+        <dec:DecimalReadOnlyBox Grid.Row="5" Grid.Column="1" x:Name="EscrowBalanceControl" Value="{Binding Path=EscrowBalance}" FormatType="Currency" DesignText="$123,456,789.00" Width="100" TextAlignment="Left" HorizontalAlignment="Left"/>
+
+        <CheckBox Grid.Row="5" Grid.Column="2" Grid.ColumnSpan="2" x:Name="UseEscrowCheckBox" Content="Use Escrow" IsChecked="{Binding Path=UseEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
+        <Label Grid.Row="6" Grid.Column="0" x:Name="TransferToBankLabel" Content="Transfer To Bank Account"/>
+
+        <lc:AutoFillControl Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" x:Name="TransferToBankControl" Setup="{Binding Path=TransferToBankAccountAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="200" DesignText="Large Bank Account Description"/>
+
+        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
+
+            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0"/>
+            <Button x:Name="CancelButton" Content="_Cancel" Width="50"/>
+
+        </StackPanel>
     </Grid>
 </dec:BaseWindow>

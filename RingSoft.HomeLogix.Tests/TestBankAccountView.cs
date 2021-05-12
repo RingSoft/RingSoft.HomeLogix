@@ -1,4 +1,5 @@
 ﻿using System;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
@@ -19,6 +20,11 @@ namespace RingSoft.HomeLogix.Tests
         public void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps)
         {
             
+        }
+
+        public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem)
+        {
+            return true;
         }
 
         // ReSharper disable once UnassignedGetOnlyAutoProperty
