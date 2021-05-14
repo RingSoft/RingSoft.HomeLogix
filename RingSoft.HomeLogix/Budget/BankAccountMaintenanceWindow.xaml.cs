@@ -15,16 +15,6 @@ namespace RingSoft.HomeLogix.Budget
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Bank Account";
         public override DbMaintenanceViewModelBase ViewModel => BankAccountViewModel;
-        public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem)
-        {
-            var bankAccountMiscWindow = new BankAccountMiscWindow(registerItem);
-            bankAccountMiscWindow.Owner = this;
-            bankAccountMiscWindow.ShowInTaskbar = false;
-            if (bankAccountMiscWindow.ShowDialog().GetValueOrDefault(false))
-                return true;
-
-            return false;
-        }
 
         public object OwnerWindow => this;
 
@@ -74,6 +64,14 @@ namespace RingSoft.HomeLogix.Budget
             win.ShowInTaskbar = false;
             win.Owner = this;
             win.ShowDialog();
+        }
+
+        public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem)
+        {
+            var bankAccountMiscWindow = new BankAccountMiscWindow(registerItem);
+            bankAccountMiscWindow.Owner = this;
+            bankAccountMiscWindow.ShowInTaskbar = false;
+            return bankAccountMiscWindow.ShowDialog().GetValueOrDefault(false);
         }
     }
 }
