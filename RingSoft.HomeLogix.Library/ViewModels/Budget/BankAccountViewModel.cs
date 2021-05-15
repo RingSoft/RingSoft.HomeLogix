@@ -459,6 +459,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private bool _customButtonsEnabled;
 
         #endregion
 
@@ -573,6 +574,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Clear);
 
+            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = false;
+
             _loading = false;
         }
 
@@ -612,6 +615,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
+            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = true;
+
             return bankAccount;
         }
 
@@ -675,7 +680,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void AddNewRegisterItem()
         {
-            var registerItem = new BankAccountRegisterItem();
+            var registerItem = new BankAccountRegisterItem{BankAccountId = Id};
             if (BankAccountView.ShowBankAccountMiscWindow(registerItem))
                 RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> {registerItem});
         }

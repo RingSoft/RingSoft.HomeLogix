@@ -13,7 +13,7 @@ namespace RingSoft.HomeLogix.Budget
         {
             InitializeComponent();
 
-            ViewModel.OnViewLoaded(this);
+            ViewModel.OnViewLoaded(this, registerItem);
         }
 
         public void SetViewType()

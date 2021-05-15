@@ -1,10 +1,13 @@
 ﻿using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using RingSoft.DbLookup;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.HomeLogix.DataAccess.LookupModel;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -73,6 +76,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _itemTypeComboBoxItem = value;
+                if (!_loading)
+                {
+                    BudgetItemAutoFillValue = null;
+                }
+                SetBudgetAutoFillSetup();
                 SetViewMode();
                 OnPropertyChanged();
             }
@@ -155,6 +163,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _budgetItemAutoFillValue = value;
+                SetViewMode();
                 OnPropertyChanged();
             }
         }
@@ -231,33 +240,80 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool EscrowVisible { get; private set; }
 
+        private bool _loading = true;
+        private BankAccountRegisterItem _registerItem;
+
         public BankAccountMiscViewModel()
         {
             OkButtonCommand = new RelayCommand(OnOkButton);
             ItemTypeEnabled = true;
         }
 
-        public void OnViewLoaded(IBankAccountMiscView view)
+        public void OnViewLoaded(IBankAccountMiscView view, BankAccountRegisterItem registerItem)
         {
             View = view;
-            BudgetItemAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
-            TransferToBankAccountAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
+            TransferToBankAccountAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup.Clone());
 
             ItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             ItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
-            ItemType = BudgetItemTypes.Expense;
+            SetBudgetAutoFillSetup();
+
+            _registerItem = registerItem;
+            if (_registerItem.Id == 0)
+            {
+                ItemType = BudgetItemTypes.Expense;
+                Date = DateTime.Today;
+            }
+            else
+            {
+                RegisterId = _registerItem.Id;
+                Description = _registerItem.Description;
+                Date = _registerItem.ItemDate;
+                ItemType = (BudgetItemTypes)_registerItem.ItemType;
+            }
+
+            _loading = false;
+
+            SetViewMode();
+        }
+
+        private void SetBudgetAutoFillSetup()
+        {
+            var budgetItemLookup = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
+            budgetItemLookup.FilterDefinition.AddFixedFilter(f => f.Type, Conditions.Equals,
+                ItemType);
+
+            BudgetItemAutoFillSetup = new AutoFillSetup(budgetItemLookup);
         }
 
         private void SetViewMode()
         {
+            if (_loading)
+                return;
+
             EscrowVisible = false;
 
             switch (ItemType)
             {
                 case BudgetItemTypes.Income:
+                    BudgetItemVisible = true;
+                    TransferToVisible = false;
+                    break;
                 case BudgetItemTypes.Expense:
                     BudgetItemVisible = true;
                     TransferToVisible = false;
+                    if (BudgetItemAutoFillValue.IsValid())
+                    {
+                        var budgetItem =
+                            AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue
+                                .PrimaryKeyValue);
+                        budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItem.Id);
+                        EscrowVisible = budgetItem.DoEscrow;
+                        if (EscrowVisible)
+                        {
+                            EscrowBalance = budgetItem.EscrowBalance.GetValueOrDefault(0);
+                        }
+                    }
                     break;
                 case BudgetItemTypes.Transfer:
                     BudgetItemVisible = false;
