@@ -31,5 +31,10 @@ namespace RingSoft.HomeLogix.Budget
             DialogResult = true;
             Close();
         }
+
+        public void OnValidationFail(string message, string caption, ValidationFocusControls control)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

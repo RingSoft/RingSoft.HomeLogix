@@ -11,11 +11,19 @@ using RingSoft.HomeLogix.DataAccess.LookupModel;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public enum ValidationFocusControls
+    {
+        BudgetItem = 0,
+        TransferToBank = 1
+    }
+
     public interface IBankAccountMiscView
     {
         void SetViewType();
 
         void OnOkButtonCloseWindow();
+
+        void OnValidationFail(string message, string caption, ValidationFocusControls control);
     }
     public class BankAccountMiscViewModel : INotifyPropertyChanged
     {
@@ -269,7 +277,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 RegisterId = _registerItem.Id;
                 Description = _registerItem.Description;
                 Date = _registerItem.ItemDate;
-                ItemType = (BudgetItemTypes)_registerItem.ItemType;
+                //ItemType = (BudgetItemTypes)_registerItem.ItemType;
             }
 
             _loading = false;
@@ -328,8 +336,46 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
+            var registerItem = new BankAccountRegisterItem();
+            BankAccountRegisterItem transferToRegisterItem = null;
+            if (ItemType == BudgetItemTypes.Transfer)
+            {
+                if (!TransferToBankAccountAutoFillValue.IsValid())
+                {
+                    var message = "Transfer To Bank Account must be a valid Bank Account.";
+                    View.OnValidationFail(message, "Invalid Transfer To Bank Account",
+                        ValidationFocusControls.TransferToBank);
+                    return;
+                }
+                else if (AppGlobals.LookupContext.BankAccounts
+                             .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id ==
+                         _registerItem.BankAccountId)
+                {
+                    var message = "Transfer To Bank Account cannot be the same as the Bank Account.";
+                    View.OnValidationFail(message, "Invalid Transfer To Bank Account",
+                        ValidationFocusControls.TransferToBank);
+                    return;
+                }
 
+                registerItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
+                transferToRegisterItem = new BankAccountRegisterItem();
+            }
+            else
+            {
+                if (!BudgetItemAutoFillValue.IsValid())
+                {
+                    var message = "Budget Item must contain a valid value.";
+                    View.OnValidationFail(message, "Invalid Budget Item.",
+                        ValidationFocusControls.BudgetItem);
+                    return;
+                }
+
+                registerItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
+                registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
+                    .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+            }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

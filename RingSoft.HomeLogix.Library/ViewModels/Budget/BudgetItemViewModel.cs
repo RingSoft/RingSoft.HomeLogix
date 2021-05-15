@@ -918,6 +918,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BudgetItem GetEntityData()
         {
+            DbBankAccount = DbTransferToBankAccount = _escrowToBankAccount = _dbEscrowToBankAccount = null;
+            _newBankAccountRegisterItems = null;
+            _bankAccountRegisterItemsToDelete = null;
+
             var newBankAccountId = 0;
             if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
                 newBankAccountId = AppGlobals.LookupContext.BankAccounts
@@ -1119,6 +1123,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             var budgetItem = GetBudgetItem();
+            budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
+            budgetItem.TransferToBankAccount = newTransferToBankAccount;
             budgetItem.BankAccountId = newBankAccountId;
             if (RecordDirty)
             {
@@ -1135,12 +1141,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                     else
                     {
-                        if (DbBankAccountId == newBankAccountId)
-                            _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                                .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
-                        else
-                            _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                                .Where(w => w.BudgetItemId == Id).ToList();
+                        _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
+                            .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
+                    }
+
+                    if (DbTransferToBankId != null)
+                    {
+                        var existingDbTransferBankAccount =
+                            AppGlobals.DataRepository.GetBankAccount(DbTransferToBankId.Value);
+
+                        _bankAccountRegisterItemsToDelete.AddRange(existingDbTransferBankAccount.RegisterItems
+                            .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate));
                     }
                     foreach (var registerItem in _bankAccountRegisterItemsToDelete)
                     {
@@ -1149,9 +1160,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
-                _newBankAccountRegisterItems =
-                    BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
-                        newBankAccount.LastGenerationDate).ToList();
+                if (newBankAccount != null)
+                {
+                    _newBankAccountRegisterItems =
+                        BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
+                            newBankAccount.LastGenerationDate).ToList();
+                }
             }
 
             if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
@@ -1164,8 +1178,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 DbTransferToBankAccount = null;
             }
-            budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
-            budgetItem.TransferToBankAccount = newTransferToBankAccount;
 
             return budgetItem;
         }
@@ -1199,6 +1211,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool ValidateEntity(BudgetItem entity)
         {
+            if (BudgetItemType == BudgetItemTypes.Transfer)
+            {
+                if (!TransferToBankAccountAutoFillValue.IsValid())
+                {
+                    var message = "Transfer To Bank Account must be a valid Bank Account.";
+                    OnValidationFail(
+                        AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId),
+                        message,
+                        "Invalid Transfer To Bank Account");
+                    return false;
+                }
+                else if (AppGlobals.LookupContext.BankAccounts
+                    .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id == AppGlobals
+                    .LookupContext.BankAccounts.GetEntityFromPrimaryKeyValue(BankAutoFillValue.PrimaryKeyValue).Id)
+                {
+                    var message = "Transfer To Bank Account cannot be the same as the Bank Account.";
+                    OnValidationFail(
+                        AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId),
+                        message,
+                        "Invalid Transfer To Bank Account");
+                    return false;
+                }
+            }
+
             var noRegisterMessageShown = false;
             var reconciledMessageShown = false;
             foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
@@ -1241,10 +1277,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems, StartingDate);
                 }
-
-                DbBankAccount = DbTransferToBankAccount = _escrowToBankAccount = _dbEscrowToBankAccount = null;
-                _newBankAccountRegisterItems = null;
-                _bankAccountRegisterItemsToDelete = null;
 
                 if (entity.BankAccountId != DbBankAccountId && LookupAddViewArgs != null)
                     PopulatePrimaryKeyControls(entity,
@@ -1309,11 +1341,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return result;
-        }
-
-        public override bool ValidateEntityProperty(FieldDefinition fieldDefinition, string valueToValidate)
-        {
-            return base.ValidateEntityProperty(fieldDefinition, valueToValidate);
         }
 
         public override void OnWindowClosing(CancelEventArgs e)
