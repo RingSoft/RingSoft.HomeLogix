@@ -60,6 +60,9 @@ namespace RingSoft.HomeLogix.Library
         BankAccountRegisterItem GetTransferRegisterItem(string transferGuid);
 
         IEnumerable<BankAccountRegisterItemEscrow> GetEscrowsOfRegisterItem(int bankRegisterId);
+
+        bool SaveNewRegisterItem(BankAccountRegisterItem registerItem,
+            BankAccountRegisterItem transferRegisterItem = null);
     }
 
     public class DataRepository : IDataRepository
@@ -411,6 +414,23 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             return context.BankAccountRegisterItemEscrows.Include(i => i.BudgetItem)
                 .Where(w => w.RegisterId == bankRegisterId);
+        }
+
+        public bool SaveNewRegisterItem(BankAccountRegisterItem registerItem, BankAccountRegisterItem transferRegisterItem = null)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
+                $"Saving {registerItem.Description}"))
+                return false;
+
+            if (transferRegisterItem != null)
+            {
+                if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, transferRegisterItem,
+                    $"Saving {transferRegisterItem.Description}"))
+                    return false;
+            }
+
+            return context.DbContext.SaveEfChanges($"Saving {registerItem.Description}");
         }
     }
 }

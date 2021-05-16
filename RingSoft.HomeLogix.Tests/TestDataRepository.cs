@@ -241,5 +241,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             throw new NotImplementedException();
         }
+
+        public bool SaveNewRegisterItem(BankAccountRegisterItem registerItem, BankAccountRegisterItem transferRegisterItem = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

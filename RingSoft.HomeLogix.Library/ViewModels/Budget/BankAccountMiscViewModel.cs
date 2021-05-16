@@ -3,6 +3,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using RingSoft.DbLookup.Lookup;
@@ -264,7 +265,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             ItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             ItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
-            SetBudgetAutoFillSetup();
 
             _registerItem = registerItem;
             if (_registerItem.Id == 0)
@@ -277,9 +277,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 RegisterId = _registerItem.Id;
                 Description = _registerItem.Description;
                 Date = _registerItem.ItemDate;
-                //ItemType = (BudgetItemTypes)_registerItem.ItemType;
+                ItemType = (BudgetItemTypes)_registerItem.ItemType;
             }
-
+            SetBudgetAutoFillSetup();
             _loading = false;
 
             SetViewMode();
@@ -336,7 +336,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
-            var registerItem = new BankAccountRegisterItem();
             BankAccountRegisterItem transferToRegisterItem = null;
             if (ItemType == BudgetItemTypes.Transfer)
             {
@@ -347,7 +346,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ValidationFocusControls.TransferToBank);
                     return;
                 }
-                else if (AppGlobals.LookupContext.BankAccounts
+                if (AppGlobals.LookupContext.BankAccounts
                              .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id ==
                          _registerItem.BankAccountId)
                 {
@@ -357,8 +356,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
                 }
 
-                registerItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
+                _registerItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
+                _registerItem.RegisterGuid = Guid.NewGuid().ToString();
+                _registerItem.TransferRegisterGuid = Guid.NewGuid().ToString();
+
                 transferToRegisterItem = new BankAccountRegisterItem();
+                transferToRegisterItem.ProjectedAmount = Amount;
+                transferToRegisterItem.RegisterGuid = _registerItem.TransferRegisterGuid;
+                transferToRegisterItem.TransferRegisterGuid = _registerItem.RegisterGuid;
             }
             else
             {
@@ -370,10 +375,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
                 }
 
-                registerItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
-                registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
+                _registerItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
+                _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
                     .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
             }
+
+            _registerItem.ItemDate = Date;
+            _registerItem.Description = Description;
+            
+            switch (ItemType)
+            {
+                case BudgetItemTypes.Income:
+                    _registerItem.ProjectedAmount = Amount;
+                    break;
+                case BudgetItemTypes.Expense:
+                    _registerItem.ProjectedAmount = -Amount;
+                    _registerItem.ApplyEscrow = UseEscrow;
+                    break;
+                case BudgetItemTypes.Transfer:
+                    _registerItem.ProjectedAmount = -Amount;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (AppGlobals.DataRepository.SaveNewRegisterItem(_registerItem, transferToRegisterItem))
+                View.OnOkButtonCloseWindow();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

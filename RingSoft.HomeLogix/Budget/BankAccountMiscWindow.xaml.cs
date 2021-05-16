@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
@@ -34,7 +35,19 @@ namespace RingSoft.HomeLogix.Budget
 
         public void OnValidationFail(string message, string caption, ValidationFocusControls control)
         {
-            throw new System.NotImplementedException();
+            switch (control)
+            {
+                case ValidationFocusControls.BudgetItem:
+                    BudgetItemControl.Focus();
+                    break;
+                case ValidationFocusControls.TransferToBank:
+                    TransferToBankControl.Focus();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(control), control, null);
+            }
+
+            MessageBox.Show(this, message, caption, MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
     }
 }

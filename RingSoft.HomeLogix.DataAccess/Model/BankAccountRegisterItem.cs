@@ -50,6 +50,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public bool IsEscrowFrom { get; set; }
 
+        [Required]
+        public bool ApplyEscrow { get; set; }
+
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
         public virtual ICollection<BankAccountRegisterItemEscrow> Escrows { get; set; }
