@@ -251,6 +251,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool _loading = true;
         private BankAccountRegisterItem _registerItem;
+        private BankAccountRegisterItem _transferToRegisterItem;
+
         private ViewModelInput _viewModelInput;
 
         public BankAccountMiscViewModel()
@@ -298,6 +300,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         EscrowBalance = budgetItem.EscrowBalance;
                         UseEscrow = _registerItem.ApplyEscrow;
+                    }
+                }
+                else
+                {
+                    ItemType = BudgetItemTypes.Transfer;
+                    if (_registerItem.ProjectedAmount < 0)
+                    {
+                        _transferToRegisterItem =
+                            AppGlobals.DataRepository.GetTransferRegisterItem(_registerItem.TransferRegisterGuid);
+                        var transferToBankAccount =
+                            AppGlobals.DataRepository.GetBankAccount(_transferToRegisterItem.BankAccountId, false);
+                        TransferToBankAccountAutoFillValue = new AutoFillValue(
+                            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(transferToBankAccount),
+                            transferToBankAccount.Description);
+                    }
+                    else
+                    {
+                        var transferToBankAccount =
+                            AppGlobals.DataRepository.GetBankAccount(_registerItem.BankAccountId, false);
+                        TransferToBankAccountAutoFillValue = new AutoFillValue(
+                            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(transferToBankAccount),
+                            transferToBankAccount.Description);
+
+                        _transferToRegisterItem = _registerItem;
+                        _registerItem =
+                            AppGlobals.DataRepository.GetTransferRegisterItem(_transferToRegisterItem.TransferRegisterGuid);
                     }
                 }
 
@@ -361,7 +389,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
-            BankAccountRegisterItem transferToRegisterItem = null;
             if (ItemType == BudgetItemTypes.Transfer)
             {
                 if (!TransferToBankAccountAutoFillValue.IsValid())
@@ -381,21 +408,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ValidationFocusControls.TransferToBank);
                     return;
                 }
-
-                _registerItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
                 _registerItem.RegisterGuid = Guid.NewGuid().ToString();
                 _registerItem.TransferRegisterGuid = Guid.NewGuid().ToString();
 
-                transferToRegisterItem = new BankAccountRegisterItem
-                {
-                    BankAccountId = transferToBankAccount.Id,
-                    ProjectedAmount = Amount,
-                    RegisterGuid = _registerItem.TransferRegisterGuid,
-                    TransferRegisterGuid = _registerItem.RegisterGuid,
-                    ItemDate = Date,
-                    Description = Description,
-                    ItemType = (int)BankAccountRegisterItemTypes.TransferToBankAccount
-                };
+                _transferToRegisterItem ??= new BankAccountRegisterItem();
+
+                _transferToRegisterItem.BankAccountId = transferToBankAccount.Id;
+                _transferToRegisterItem.ProjectedAmount = Amount;
+                _transferToRegisterItem.RegisterGuid = _registerItem.TransferRegisterGuid;
+                _transferToRegisterItem.TransferRegisterGuid = _registerItem.RegisterGuid;
+                _transferToRegisterItem.ItemDate = Date;
+                _transferToRegisterItem.Description = Description;
+                _transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
             }
             else
             {
@@ -406,12 +430,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ValidationFocusControls.BudgetItem);
                     return;
                 }
-
-                _registerItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
                 _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
                     .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
             }
 
+            _registerItem.ItemType = (int)BankAccountRegisterItemTypes.Miscellaneous;
             _registerItem.ItemDate = Date;
             _registerItem.Description = Description;
             
@@ -431,7 +454,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (AppGlobals.DataRepository.SaveNewRegisterItem(_registerItem, transferToRegisterItem))
+            if (AppGlobals.DataRepository.SaveNewRegisterItem(_registerItem, _transferToRegisterItem))
                 View.OnOkButtonCloseWindow();
         }
 

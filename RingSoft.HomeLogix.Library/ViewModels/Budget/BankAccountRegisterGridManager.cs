@@ -43,6 +43,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public new BankAccountViewModel ViewModel { get; }
 
+        private bool _noRemoveRowFromDb;
+
         public BankAccountRegisterGridManager(BankAccountViewModel viewModel) : base(viewModel)
         {
             ViewModel = viewModel;
@@ -154,21 +156,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public void InternalRemoveRow(DataEntryGridRow row)
+        {
+            _noRemoveRowFromDb = true;
+            RemoveRow(row);
+            _noRemoveRowFromDb = false;
+        }
+
         protected override void OnRowsChanged(NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    var rowsToDelete = e.OldItems.OfType<BankAccountRegisterGridRow>();
-                    var registersToDelete = new List<BankAccountRegisterItem>();
-                    foreach (var registerGridRow in rowsToDelete)
+                    if (!_noRemoveRowFromDb)
                     {
-                        var registerToDelete = new BankAccountRegisterItem();
-                        registerGridRow.SaveToEntity(registerToDelete, 0);
-                        registersToDelete.Add(registerToDelete);
+                        var rowsToDelete = e.OldItems.OfType<BankAccountRegisterGridRow>();
+                        var registersToDelete = new List<BankAccountRegisterItem>();
+                        foreach (var registerGridRow in rowsToDelete)
+                        {
+                            var registerToDelete = new BankAccountRegisterItem();
+                            registerGridRow.SaveToEntity(registerToDelete, 0);
+                            registersToDelete.Add(registerToDelete);
+                        }
+
+                        AppGlobals.DataRepository.DeleteRegisterItems(registersToDelete);
                     }
-                    if (AppGlobals.DataRepository.DeleteRegisterItems(registersToDelete))
-                        ViewModel.CalculateTotals();
+                    ViewModel.CalculateTotals();
                     break;
             }
             base.OnRowsChanged(e);

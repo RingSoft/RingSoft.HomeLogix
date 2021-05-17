@@ -1,10 +1,6 @@
 ========================================
 Before Personal Data Usage:
 
-Budget
------------
-Validate Transfer To not empty.
-
 ========================================
 Before Release
 
@@ -31,6 +27,8 @@ Set Register Grid Cell Styles:
 	Misc
 
 After changing Register grid rows.  Update Transfers and escrows.
+
+Misc Register grid rows.  On complete use escrow.  Transfer from Escrow.
 
 AmountDetails
 ----------------------------

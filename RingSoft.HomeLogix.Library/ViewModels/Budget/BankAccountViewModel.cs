@@ -796,7 +796,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                     foreach (var completedRow in completedRows)
                     {
-                        RegisterGridManager.RemoveRow(completedRow);
+                        RegisterGridManager.InternalRemoveRow(completedRow);
                     }
 
                     CalculateTotals();
@@ -1152,7 +1152,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var budgetRow in budgetRows)
             {
-                RegisterGridManager.RemoveRow(budgetRow);
+                RegisterGridManager.InternalRemoveRow(budgetRow);
             }
         }
 

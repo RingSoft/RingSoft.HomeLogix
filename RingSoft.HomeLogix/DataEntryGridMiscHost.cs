@@ -47,15 +47,26 @@ namespace RingSoft.HomeLogix
 
                 var registerItem = new BankAccountRegisterItem();
                 _cellProps.Row.SaveToEntity(registerItem, 0);
+                var registerBankAccountId = registerItem.BankAccountId;
                 if (_cellProps.Row.Manager.ViewModel.BankAccountView.ShowBankAccountMiscWindow(registerItem,
                     _cellProps.Row.Manager.ViewModel.ViewModelInput))
                 {
-                    _cellProps.Row.LoadFromEntity(registerItem);
-                    Grid.UpdateRow(_cellProps.Row);
-                    Grid.GotoCell(_cellProps.Row, _cellProps.ColumnId);
+                    if (registerItem.BankAccountId == registerBankAccountId)
+                    {
+                        _cellProps.Row.LoadFromEntity(registerItem);
+                        Grid.UpdateRow(_cellProps.Row);
+                        Grid.GotoCell(_cellProps.Row, _cellProps.ColumnId);
+                    }
+                    else
+                    {
+                        var rowIndex = Grid.Manager.Rows.IndexOf(Row);
+                        _cellProps.Row.Manager.InternalRemoveRow(Row);
+                        if (rowIndex < Grid.Manager.Rows.Count)
+                            Grid.GotoCell(Grid.Manager.Rows[rowIndex], _cellProps.ColumnId);
+                    }
+                    _cellProps.Row.Manager.ViewModel.CalculateTotals();
                 }
             };
-
         }
     }
 }
