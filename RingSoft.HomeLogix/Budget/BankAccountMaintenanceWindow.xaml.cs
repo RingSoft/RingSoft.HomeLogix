@@ -3,6 +3,7 @@ using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
+using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
@@ -66,9 +67,9 @@ namespace RingSoft.HomeLogix.Budget
             win.ShowDialog();
         }
 
-        public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem)
+        public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
-            var bankAccountMiscWindow = new BankAccountMiscWindow(registerItem);
+            var bankAccountMiscWindow = new BankAccountMiscWindow(registerItem, viewModelInput);
             bankAccountMiscWindow.Owner = this;
             bankAccountMiscWindow.ShowInTaskbar = false;
             return bankAccountMiscWindow.ShowDialog().GetValueOrDefault(false);

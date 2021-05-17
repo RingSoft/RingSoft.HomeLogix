@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
@@ -10,11 +11,11 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMiscWindow : IBankAccountMiscView
     {
-        public BankAccountMiscWindow(BankAccountRegisterItem registerItem)
+        public BankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
             InitializeComponent();
 
-            ViewModel.OnViewLoaded(this, registerItem);
+            ViewModel.OnViewLoaded(this, registerItem, viewModelInput);
         }
 
         public void SetViewType()

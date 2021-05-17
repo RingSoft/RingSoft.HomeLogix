@@ -571,6 +571,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _registerAffected;
         private List<BankAccountRegisterItem> _newBankAccountRegisterItems;
         private List<BankAccountRegisterItem> _bankAccountRegisterItemsToDelete;
+        private BudgetItemTypes? _lockBudgetItemType;
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
@@ -617,6 +618,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ViewModelInput = new ViewModelInput();
             }
             ViewModelInput.BudgetItemViewModels.Add(this);
+            _lockBudgetItemType = ViewModelInput.LockBudgetItemType;
+            ViewModelInput.LockBudgetItemType = null;
 
             BudgetItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             BudgetItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
@@ -643,7 +646,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = true;
 
             Id = 0;
-            BudgetItemType = BudgetItemTypes.Expense;
+
+            if (_lockBudgetItemType == null)
+            {
+                BudgetItemTypeEnabled = true;
+                BudgetItemType = BudgetItemTypes.Expense;
+            }
+            else
+            {
+                BudgetItemTypeEnabled = false;
+                BudgetItemType = _lockBudgetItemType.Value;
+            }
 
             BankAutoFillValue = null;
             if (LookupAddViewArgs != null && LookupAddViewArgs.ParentWindowPrimaryKeyValue != null)
@@ -675,7 +688,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
-            DateControlsEnabled = BudgetItemTypeEnabled = true;
+            DateControlsEnabled = true;
 
             CurrentMonthEnding = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
                 DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));

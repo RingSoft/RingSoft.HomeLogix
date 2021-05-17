@@ -47,7 +47,8 @@ namespace RingSoft.HomeLogix
 
                 var registerItem = new BankAccountRegisterItem();
                 _cellProps.Row.SaveToEntity(registerItem, 0);
-                if (_cellProps.Row.Manager.ViewModel.BankAccountView.ShowBankAccountMiscWindow(registerItem))
+                if (_cellProps.Row.Manager.ViewModel.BankAccountView.ShowBankAccountMiscWindow(registerItem,
+                    _cellProps.Row.Manager.ViewModel.ViewModelInput))
                 {
                     _cellProps.Row.LoadFromEntity(registerItem);
                     Grid.UpdateRow(_cellProps.Row);

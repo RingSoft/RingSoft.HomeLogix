@@ -25,7 +25,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         void ShowActualAmountDetailsWindow(ActualAmountCellProps actualAmountCellProps);
 
-        bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem);
+        bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput);
 
         object OwnerWindow { get; }
     }
@@ -615,7 +615,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
-            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = true;
+            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = !ReadOnlyMode;
 
             return bankAccount;
         }
@@ -681,8 +681,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void AddNewRegisterItem()
         {
             var registerItem = new BankAccountRegisterItem{BankAccountId = Id};
-            if (BankAccountView.ShowBankAccountMiscWindow(registerItem))
+            if (BankAccountView.ShowBankAccountMiscWindow(registerItem, ViewModelInput))
+            {
                 RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> {registerItem});
+                CalculateTotals();
+            }
         }
 
         private void GenerateRegisterItemsFromBudget()
