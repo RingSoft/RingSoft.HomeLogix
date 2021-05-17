@@ -15,6 +15,9 @@ namespace RingSoft.HomeLogix
             if (editingControlHostId == BudgetItemCellProps.BudgetItemControlHostId)
                 return new DataEntryGridBudgetItemHost(grid);
 
+            if (editingControlHostId == MiscCellProps.MiscControlHostId)
+                return new DataEntryGridMiscHost(grid);
+
             return base.GetControlHost(grid, editingControlHostId);
         }
     }

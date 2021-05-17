@@ -159,7 +159,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Remove:
-                    ViewModel.CalculateTotals();
+                    var rowsToDelete = e.OldItems.OfType<BankAccountRegisterGridRow>();
+                    var registersToDelete = new List<BankAccountRegisterItem>();
+                    foreach (var registerGridRow in rowsToDelete)
+                    {
+                        var registerToDelete = new BankAccountRegisterItem();
+                        registerGridRow.SaveToEntity(registerToDelete, 0);
+                        registersToDelete.Add(registerToDelete);
+                    }
+                    if (AppGlobals.DataRepository.DeleteRegisterItems(registersToDelete))
+                        ViewModel.CalculateTotals();
                     break;
             }
             base.OnRowsChanged(e);

@@ -26,6 +26,8 @@ namespace RingSoft.HomeLogix.Library
         bool SaveRegisterItem(BankAccountRegisterItem registerItem,
             List<BankAccountRegisterItemAmountDetail> amountDetails);
 
+        bool DeleteRegisterItems(List<BankAccountRegisterItem> registerItems);
+
         List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId);
 
         BudgetItem GetBudgetItem(int budgetItemId);
@@ -210,6 +212,14 @@ namespace RingSoft.HomeLogix.Library
            context.BankAccountRegisterItemAmountDetails.AddRange(amountDetails);
 
             return context.DbContext.SaveEfChanges($"Saving Bank Account Register Item '{registerItem.Description}.'");
+        }
+
+        public bool DeleteRegisterItems(List<BankAccountRegisterItem> registerItems)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            context.BankAccountRegisterItems.RemoveRange(registerItems);
+
+            return context.DbContext.SaveEfChanges("Deleting Register Items");
         }
 
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)

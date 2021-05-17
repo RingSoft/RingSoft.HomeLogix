@@ -95,6 +95,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public bool DeleteRegisterItems(List<BankAccountRegisterItem> registerItems)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
         {
             throw new System.NotImplementedException();

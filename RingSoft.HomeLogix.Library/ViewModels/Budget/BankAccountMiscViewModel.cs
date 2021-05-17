@@ -277,7 +277,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 RegisterId = _registerItem.Id;
                 Description = _registerItem.Description;
                 Date = _registerItem.ItemDate;
-                ItemType = (BudgetItemTypes)_registerItem.ItemType;
+                Amount = Math.Abs(_registerItem.ProjectedAmount);
+                if (_registerItem.TransferRegisterGuid.IsNullOrEmpty())
+                {
+                    if (_registerItem.ProjectedAmount < 0)
+                        ItemType = BudgetItemTypes.Expense;
+                    else
+                        ItemType = BudgetItemTypes.Income;
+
+                    var budgetItem =
+                        AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId.GetValueOrDefault(0));
+                    BudgetItemAutoFillValue =
+                        new AutoFillValue(
+                            AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
+                            budgetItem.Description);
+                    if (ItemType == BudgetItemTypes.Expense)
+                    {
+                        EscrowBalance = budgetItem.EscrowBalance;
+                        UseEscrow = _registerItem.ApplyEscrow;
+                    }
+                }
+
+                ItemTypeEnabled = false;
             }
             SetBudgetAutoFillSetup();
             _loading = false;
