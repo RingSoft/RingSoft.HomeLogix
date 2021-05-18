@@ -3,19 +3,50 @@
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                   xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                   xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Main;assembly=RingSoft.HomeLogix.Library"
                   xmlns:local="clr-namespace:RingSoft.HomeLogix"
                   mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+                  Style="{StaticResource BaseWindowStyle}"
+                  Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <vm:MainViewModel x:Name="ViewModel"/>
     </Window.DataContext>
-    <StackPanel Orientation="Horizontal">
-        <Button Command="{Binding ChangeHouseholdCommand}" Content="_Change Household" Height="20" Width="100"/>
-        <Button Command="{Binding ManageBudgetCommand}" Content="_Manage Budget" Height="20" Width="100"/>
-        <Button Command="{Binding ManageBankAccountsCommand}" Content="Manage _Bank Accounts" Height="20"/>
-        <Button x:Name="TestButton" Content="_Test" Height="20"/>
-        <local:ActualAmountGridControl FormatType="Currency" Width="150"/>
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+            <ac:DbMaintenanceButton ImageSource="{StaticResource LeftImage}" Command="{Binding PreviousMonthCommand}"/>
+
+            <TextBlock Text="{Binding CurrentMonthEndingText}" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+
+            <ac:DbMaintenanceButton ImageSource="{StaticResource RightImage}" Command="{Binding NextMonthCommand}"/>
+
+        </StackPanel>
+
+        <lc:LookupControl Grid.Row="1" x:Name="BudgetLookupControl" LookupDefinition="{Binding BudgetLookupDefinition}" Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Center" Width="600">
+
+            <lc:LookupControl.LookupColumns>
+
+                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBudgetLookup}}" Header="Budget Item" DesignText="A Very Large Budget Item" Width="200"/>
+
+                <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type vm:MainBudgetLookup}}" Header="Monthly Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120"/>
+
+            </lc:LookupControl.LookupColumns>
+        </lc:LookupControl>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button Command="{Binding ChangeHouseholdCommand}" Content="_Change Household" Height="20" Width="100"/>
+            <Button Command="{Binding ManageBudgetCommand}" Content="_Manage Budget" Height="20" Width="100"/>
+            <Button Command="{Binding ManageBankAccountsCommand}" Content="Manage _Bank Accounts" Height="20"/>
+            <Button x:Name="TestButton" Content="_Test" Height="20"/>
+            <local:ActualAmountGridControl FormatType="Currency" Width="150"/>
+        </StackPanel>
+    </Grid>
 </ac:AppMainWindow>

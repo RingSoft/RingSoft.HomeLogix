@@ -12,6 +12,11 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library
 {
+    public interface IMainViewModel
+    {
+        void RefreshView();
+    }
+
     public class AppProgressArgs
     {
         public string ProgressText { get; }
@@ -42,6 +47,8 @@ namespace RingSoft.HomeLogix.Library
         public static Household LoggedInHousehold { get; set; }
 
         public static bool UnitTesting { get; set; }
+
+        public static IMainViewModel MainViewModel { get; set; }
 
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
