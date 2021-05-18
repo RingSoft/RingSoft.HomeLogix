@@ -153,13 +153,15 @@
                         <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
                             <lc:LookupControl.LookupColumns>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="100"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected Amount" DesignText="$12,3456.00" Width="120" TextAlignment="Right"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="180"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$12,3456.00" Width="120" TextAlignment="Right"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected&#10;Amount" DesignText="$12,3456.00" Width="90" TextAlignment="Right"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$12,3456.00" Width="120" TextAlignment="Right"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual&#10;Amount" DesignText="$12,3456.00" Width="90" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$12,3456.00" Width="90" TextAlignment="Right"/>
 
                             </lc:LookupControl.LookupColumns>
                         </lc:LookupControl>
