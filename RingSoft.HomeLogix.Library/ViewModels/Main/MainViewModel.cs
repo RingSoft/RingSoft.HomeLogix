@@ -2,7 +2,11 @@
 using RingSoft.DataEntryControls.Engine;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
@@ -84,6 +88,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand ManageBudgetCommand { get; }
         public RelayCommand ManageBankAccountsCommand { get; }
 
+        private LookupFormulaColumnDefinition _monthToDateColumnDefinition;
+
         public MainViewModel()
         {
             CurrentMonthEnding = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
@@ -104,15 +110,43 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (AppGlobals.LoggedInHousehold == null)
                 View.ChangeHousehold();
 
+            BudgetLookupDefinition = CreateBudgetLookupDefinition();
+            RefreshView();
+        }
+
+        private LookupDefinition<MainBudgetLookup, BudgetItem> CreateBudgetLookupDefinition()
+        {
             var budgetLookupDefinition =
                 new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
 
             budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, p => p.Description);
             budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
 
-            BudgetLookupDefinition = budgetLookupDefinition;
+            var formulaSql = GetBudgetMonthToDateFormulaSql();
 
-            RefreshView();
+            _monthToDateColumnDefinition =
+                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthToDateAmount, formulaSql);
+            _monthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            return budgetLookupDefinition;
+        }
+
+        private string GetBudgetMonthToDateFormulaSql()
+        {
+            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+            var query = new SelectQuery(AppGlobals.LookupContext.BudgetPeriodHistory.TableName);
+            var table = AppGlobals.LookupContext.BudgetPeriodHistory;
+            query.AddSelectFormulaColumn("ActualAmount",
+                $"SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ActualAmount).FieldName)})");
+            query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodType).FieldName, Conditions.Equals,
+                (int) PeriodHistoryTypes.Monthly);
+            query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,
+                CurrentMonthEnding, DbDateTypes.DateOnly);
+
+            var formulaSql = sqlGenerator.GenerateSelectStatement(query);
+            formulaSql +=
+                $"\r\nAND {sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = {sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+            return formulaSql;
         }
 
         private void ChangeHousehold()
@@ -140,12 +174,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void GotoPreviousMonth()
         {
-            CurrentMonthEnding = CurrentMonthEnding.AddMonths(-1);
+            SetCurrentMonthEnding(CurrentMonthEnding.AddMonths(-1));
         }
 
         private void GotoNextMonth()
         {
-            CurrentMonthEnding = CurrentMonthEnding.AddMonths(1);
+            SetCurrentMonthEnding(CurrentMonthEnding.AddMonths(1));
+        }
+
+        private void SetCurrentMonthEnding(DateTime value)
+        {
+            CurrentMonthEnding = new DateTime(value.Year, value.Month, DateTime.DaysInMonth(value.Year, value.Month));
+            _monthToDateColumnDefinition.UpdateFormula(GetBudgetMonthToDateFormulaSql());
+            RefreshView();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

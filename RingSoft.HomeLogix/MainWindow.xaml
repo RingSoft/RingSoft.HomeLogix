@@ -38,6 +38,8 @@
 
                 <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type vm:MainBudgetLookup}}" Header="Monthly Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120"/>
 
+                <lc:LookupColumn PropertyName="{lc:NameOf MonthToDateAmount, Type={x:Type vm:MainBudgetLookup}}" Header="Month To Date" TextAlignment="Right" DesignText="$123,456.78" Width="120"/>
+
             </lc:LookupControl.LookupColumns>
         </lc:LookupControl>
 
