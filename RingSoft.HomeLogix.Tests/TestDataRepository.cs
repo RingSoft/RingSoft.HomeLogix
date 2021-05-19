@@ -251,5 +251,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             throw new NotImplementedException();
         }
+
+        public BudgetPeriodHistory GetMaxMonthBudgetPeriodHistory()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

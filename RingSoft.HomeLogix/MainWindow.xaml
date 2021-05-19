@@ -9,6 +9,7 @@
                   xmlns:local="clr-namespace:RingSoft.HomeLogix"
                   mc:Ignorable="d"
                   Style="{StaticResource BaseWindowStyle}"
+                  CloseOnEscape="False"
                   Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
         <vm:MainViewModel x:Name="ViewModel"/>

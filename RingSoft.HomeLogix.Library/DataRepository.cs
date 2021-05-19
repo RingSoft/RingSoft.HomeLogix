@@ -65,6 +65,8 @@ namespace RingSoft.HomeLogix.Library
 
         bool SaveNewRegisterItem(BankAccountRegisterItem registerItem,
             BankAccountRegisterItem transferRegisterItem = null);
+
+        BudgetPeriodHistory GetMaxMonthBudgetPeriodHistory();
     }
 
     public class DataRepository : IDataRepository
@@ -441,6 +443,13 @@ namespace RingSoft.HomeLogix.Library
             }
 
             return context.DbContext.SaveEfChanges($"Saving {registerItem.Description}");
+        }
+
+        public BudgetPeriodHistory GetMaxMonthBudgetPeriodHistory()
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BudgetPeriodHistory.OrderByDescending(o => o.PeriodEndingDate)
+                .FirstOrDefault(f => f.PeriodType == (int) PeriodHistoryTypes.Monthly);
         }
     }
 }

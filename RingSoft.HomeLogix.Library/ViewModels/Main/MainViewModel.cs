@@ -107,11 +107,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             View = view;
             AppGlobals.MainViewModel = this;
 
+            var loadVm = true;
             if (AppGlobals.LoggedInHousehold == null)
-                View.ChangeHousehold();
+                loadVm = View.ChangeHousehold();
 
-            BudgetLookupDefinition = CreateBudgetLookupDefinition();
-            RefreshView();
+            if (loadVm)
+            {
+                BudgetLookupDefinition = CreateBudgetLookupDefinition();
+                var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
+                if (currentBudgetMonth == null)
+                {
+                    RefreshView();
+                }
+                else
+                {
+                    SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate);
+                }
+            }
         }
 
         private LookupDefinition<MainBudgetLookup, BudgetItem> CreateBudgetLookupDefinition()
@@ -137,7 +149,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var query = new SelectQuery(AppGlobals.LookupContext.BudgetPeriodHistory.TableName);
             var table = AppGlobals.LookupContext.BudgetPeriodHistory;
             query.AddSelectFormulaColumn("ActualAmount",
-                $"SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ActualAmount).FieldName)})");
+                $"{sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ActualAmount).FieldName)}");
             query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodType).FieldName, Conditions.Equals,
                 (int) PeriodHistoryTypes.Monthly);
             query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,
