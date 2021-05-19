@@ -15,6 +15,8 @@ namespace RingSoft.HomeLogix.Library
 
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
+        IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId);
+
         IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId);
 
         bool SaveBankAccount(BankAccount bankAccount, CompletedRegisterData completedRegisterData = null);
@@ -99,6 +101,12 @@ namespace RingSoft.HomeLogix.Library
 
             return context.BankAccounts.Include(i => i.EscrowToBankAccount)
                 .FirstOrDefault(f => f.Id == bankAccountId);
+        }
+
+        public IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BankAccountRegisterItems.Where(w => w.BankAccountId == bankAccountId);
         }
 
         public IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId)

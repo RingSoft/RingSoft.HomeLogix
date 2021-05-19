@@ -56,6 +56,11 @@ namespace RingSoft.HomeLogix.Tests
             return null;
         }
 
+        public IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId)
+        {
+            return new List<BankAccountRegisterItem>();
+        }
+
         public IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId)
         {
             throw new NotImplementedException();

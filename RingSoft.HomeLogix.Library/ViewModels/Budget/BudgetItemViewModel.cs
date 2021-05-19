@@ -779,18 +779,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void RecalculateBudgetItem()
         {
-            var existingDirtyFlag = RecordDirty;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
-            EscrowBalance = budgetItem.EscrowBalance;
-            CurrentMonthAmount = budgetItem.CurrentMonthAmount;
-            LastCompletedDate = budgetItem.LastCompletedDate;
-            CurrentMonthEnding = budgetItem.CurrentMonthEnding;
-            StartingDate = budgetItem.StartingDate;
-            if (StartingDate != null)
-                _dbStartDate = StartingDate.Value;
 
-            RecalculateBudgetItem(budgetItem, false);
-            RecordDirty = existingDirtyFlag;
+            if (budgetItem != null)
+            {
+                var existingDirtyFlag = RecordDirty;
+
+                EscrowBalance = budgetItem.EscrowBalance;
+                CurrentMonthAmount = budgetItem.CurrentMonthAmount;
+                LastCompletedDate = budgetItem.LastCompletedDate;
+                CurrentMonthEnding = budgetItem.CurrentMonthEnding;
+                StartingDate = budgetItem.StartingDate;
+                if (StartingDate != null)
+                    _dbStartDate = StartingDate.Value;
+
+                RecalculateBudgetItem(budgetItem, false);
+                RecordDirty = existingDirtyFlag;
+            }
         }
 
         private void RecalculateBudgetItem(BudgetItem budgetItem, bool calculateEscrowBalance)
@@ -1175,9 +1180,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 if (newBankAccount != null)
                 {
-                    _newBankAccountRegisterItems =
-                        BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
-                            newBankAccount.LastGenerationDate).ToList();
+                    var existingRegisterItems =
+                        AppGlobals.DataRepository.GetRegisterItemsForBankAccount(newBankAccount.Id);
+
+                    if (existingRegisterItems.Any())
+                    {
+                        _newBankAccountRegisterItems =
+                            BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
+                                newBankAccount.LastGenerationDate).ToList();
+
+                        if (_newBankAccountRegisterItems.Any())
+                        {
+                            StartingDate = budgetItem.StartingDate;
+                        }
+                    }
                 }
             }
 
@@ -1185,6 +1201,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 DbBankAccount = null;
             }
+            newBankAccount.RegisterItems = null;
             budgetItem.BankAccount = newBankAccount;
 
             if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
