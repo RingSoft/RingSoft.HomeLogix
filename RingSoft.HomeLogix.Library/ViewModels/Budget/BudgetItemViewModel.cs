@@ -1294,6 +1294,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (entity.BankAccountId != DbBankAccountId && LookupAddViewArgs != null)
                     PopulatePrimaryKeyControls(entity,
                         AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity));
+
+                AppGlobals.MainViewModel.RefreshView();
             }
 
             return result;

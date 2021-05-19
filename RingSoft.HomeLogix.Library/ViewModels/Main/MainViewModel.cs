@@ -79,6 +79,185 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
+        private decimal _totalBudgetMonthlyIncome;
+
+        public decimal TotalBudgetMonthlyIncome
+        {
+            get => _totalBudgetMonthlyIncome;
+            set
+            {
+                if (_totalBudgetMonthlyIncome == value)
+                    return;
+
+                _totalBudgetMonthlyIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalBudgetMonthlyExpenses;
+
+        public decimal TotalBudgetMonthlyExpenses
+        {
+            get => _totalBudgetMonthlyExpenses;
+            set
+            {
+                if (_totalBudgetMonthlyExpenses == value)
+                    return;
+
+                _totalBudgetMonthlyExpenses = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalBudgetMonthlyNetIncome;
+
+        public decimal TotalBudgetMonthlyNetIncome
+        {
+            get => _totalBudgetMonthlyNetIncome;
+            set
+            {
+                if (_totalBudgetMonthlyNetIncome == value)
+                    return;
+
+                _totalBudgetMonthlyNetIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalActualMonthlyIncome;
+
+        public decimal TotalActualMonthlyIncome
+        {
+            get => _totalActualMonthlyIncome;
+            set
+            {
+                if (_totalActualMonthlyIncome == value)
+                    return;
+
+                _totalActualMonthlyIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalActualMonthlyExpenses;
+
+        public decimal TotalActualMonthlyExpenses
+        {
+            get => _totalActualMonthlyExpenses;
+            set
+            {
+                if (_totalActualMonthlyExpenses == value)
+                    return;
+
+                _totalActualMonthlyExpenses = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalActualMonthlyNetIncome;
+
+        public decimal TotalActualMonthlyNetIncome
+        {
+            get => _totalActualMonthlyNetIncome;
+            set
+            {
+                if (_totalActualMonthlyNetIncome == value)
+                    return;
+
+                _totalActualMonthlyNetIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalMonthlyIncomeDifference;
+
+        public decimal TotalMonthlyIncomeDifference
+        {
+            get => _totalMonthlyIncomeDifference;
+            set
+            {
+                if (_totalMonthlyIncomeDifference == value)
+                    return;
+
+                _totalMonthlyIncomeDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalMonthlyExpensesDifference;
+
+        public decimal TotalMonthlyExpensesDifference
+        {
+            get => _totalMonthlyExpensesDifference;
+            set
+            {
+                if (_totalMonthlyExpensesDifference == value)
+                    return;
+
+                _totalMonthlyExpensesDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _totalMonthlyNetIncomeDifference;
+
+        public decimal TotalMonthlyNetIncomeDifference
+        {
+            get => _totalMonthlyNetIncomeDifference;
+            set
+            {
+                if (_totalMonthlyNetIncomeDifference == value)
+                    return;
+
+                _totalMonthlyNetIncomeDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _yearToDateIncome;
+
+        public decimal YearToDateIncome
+        {
+            get => _yearToDateIncome;
+            set
+            {
+                if (_yearToDateIncome == value)
+                    return;
+
+                _yearToDateIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _yearToDateExpenses;
+
+        public decimal YearToDateExpenses
+        {
+            get => _yearToDateExpenses;
+            set
+            {
+                if (_yearToDateExpenses == value)
+                    return;
+
+                _yearToDateExpenses = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _yearToDateNetIncome;
+
+        public decimal YearToDateNetIncome
+        {
+            get => _yearToDateNetIncome;
+            set
+            {
+                if (_yearToDateNetIncome == value)
+                    return;
+
+                _yearToDateNetIncome = value;
+                OnPropertyChanged();
+            }
+        }
 
         public IMainView View { get; private set; }
 
@@ -132,6 +311,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
 
             budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, p => p.Description);
+            budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
+
             budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
 
             var formulaSql = GetBudgetMonthToDateFormulaSql();
@@ -172,6 +353,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public void RefreshView()
         {
             BudgetLookupCommand = new LookupCommand(LookupCommands.Refresh);
+
+            var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(CurrentMonthEnding,
+                GetPeriodEndDate(CurrentMonthEnding.AddMonths(-1)), 
+                GetPeriodEndDate(CurrentMonthEnding.AddMonths(1)));
+
+            TotalBudgetMonthlyIncome = budgetTotals.TotalBudgetMonthlyIncome;
+            TotalBudgetMonthlyExpenses = budgetTotals.TotalBudgetMonthlyExpenses;
+            TotalBudgetMonthlyNetIncome = TotalBudgetMonthlyIncome - TotalBudgetMonthlyExpenses;
+
+            TotalActualMonthlyIncome = budgetTotals.TotalActualMonthlyIncome;
+            TotalActualMonthlyExpenses = budgetTotals.TotalActualMonthlyExpenses;
+            TotalActualMonthlyNetIncome = TotalActualMonthlyIncome - TotalActualMonthlyExpenses;
+
+            TotalMonthlyIncomeDifference = TotalActualMonthlyIncome - TotalBudgetMonthlyIncome;
+            TotalMonthlyExpensesDifference = TotalBudgetMonthlyExpenses - TotalActualMonthlyExpenses;
+            TotalMonthlyNetIncomeDifference = TotalActualMonthlyNetIncome - TotalBudgetMonthlyNetIncome;
+
+            YearToDateIncome = budgetTotals.YearToDateIncome;
+            YearToDateExpenses = budgetTotals.YearToDateExpenses;
+            YearToDateNetIncome = YearToDateIncome - YearToDateExpenses;
+
+            PreviousMonthCommand.IsEnabled = budgetTotals.PreviousMonthHasValues;
+            NextMonthCommand.IsEnabled = budgetTotals.NextMonthHasValues;
         }
 
         private void ManageBudget()
@@ -196,9 +400,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void SetCurrentMonthEnding(DateTime value)
         {
-            CurrentMonthEnding = new DateTime(value.Year, value.Month, DateTime.DaysInMonth(value.Year, value.Month));
+            CurrentMonthEnding = GetPeriodEndDate(value);
             _monthToDateColumnDefinition.UpdateFormula(GetBudgetMonthToDateFormulaSql());
             RefreshView();
+        }
+
+        private static DateTime GetPeriodEndDate(DateTime value)
+        {
+            return new DateTime(value.Year, value.Month, DateTime.DaysInMonth(value.Year, value.Month));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

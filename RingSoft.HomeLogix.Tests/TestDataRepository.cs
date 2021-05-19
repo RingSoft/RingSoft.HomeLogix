@@ -256,5 +256,11 @@ namespace RingSoft.HomeLogix.Tests
         {
             throw new NotImplementedException();
         }
+
+        public BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding,
+            DateTime nextMonthEnding)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

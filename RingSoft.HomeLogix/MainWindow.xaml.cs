@@ -16,12 +16,6 @@ namespace RingSoft.HomeLogix
 
             ContentRendered += (sender, args) => ViewModel.OnViewLoaded(this);
 
-            TestButton.Click += (sender, args) =>
-            {
-                var testWindow = new TestWindow { Owner = this };
-                testWindow.ShowDialog();
-            };
-
             PreviewKeyDown += MainWindow_PreviewKeyDown;
 
             Loaded += (sender, args) =>
@@ -37,12 +31,26 @@ namespace RingSoft.HomeLogix
                 switch (e.Key)
                 {
                     case Key.Left:
-                        ViewModel.PreviousMonthCommand.Execute(null);
-                        e.Handled = true;
+                        if (ViewModel.PreviousMonthCommand.IsEnabled)
+                        {
+                            ViewModel.PreviousMonthCommand.Execute(null);
+                            e.Handled = true;
+                        }
+                        else
+                        {
+                            System.Media.SystemSounds.Exclamation.Play();
+                        }
                         break;
                     case Key.Right:
-                        ViewModel.NextMonthCommand.Execute(null);
-                        e.Handled = true;
+                        if (ViewModel.NextMonthCommand.IsEnabled)
+                        {
+                            ViewModel.NextMonthCommand.Execute(null);
+                            e.Handled = true;
+                        }
+                        else
+                        {
+                            System.Media.SystemSounds.Exclamation.Play();
+                        }
                         break;
                 }
             }

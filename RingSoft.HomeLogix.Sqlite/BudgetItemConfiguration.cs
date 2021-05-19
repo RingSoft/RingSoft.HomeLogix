@@ -9,7 +9,8 @@ namespace RingSoft.HomeLogix.Sqlite
     {
         public void Configure(EntityTypeBuilder<BudgetItem> builder)
         {
-            builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType);
+            builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType)
+                .HasConversion<double>();
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.CurrentMonthAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.CurrentMonthEnding).HasColumnType(SqliteConstants.DateColumnType);
@@ -19,7 +20,8 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.EscrowBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.LastCompletedDate).HasColumnType(SqliteConstants.DateColumnType);
-            builder.Property(p => p.MonthlyAmount).HasColumnType(SqliteConstants.DecimalColumnType);
+            builder.Property(p => p.MonthlyAmount).HasColumnType(SqliteConstants.DecimalColumnType)
+                .HasConversion<double>();
             builder.Property(p => p.Notes).HasColumnType(SqliteConstants.MemoColumnType);
             builder.Property(p => p.RecurringPeriod).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.RecurringType).HasColumnType(SqliteConstants.ByteColumnType);

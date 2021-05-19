@@ -815,6 +815,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     budgetItemViewModel.RecalculateBudgetItem();
                 }
+                AppGlobals.MainViewModel.RefreshView();
                 return true;
             }
 

@@ -67,6 +67,8 @@ namespace RingSoft.HomeLogix.Library
             BankAccountRegisterItem transferRegisterItem = null);
 
         BudgetPeriodHistory GetMaxMonthBudgetPeriodHistory();
+
+        BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding, DateTime nextMonthEnding);
     }
 
     public class DataRepository : IDataRepository
@@ -450,6 +452,57 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             return context.BudgetPeriodHistory.OrderByDescending(o => o.PeriodEndingDate)
                 .FirstOrDefault(f => f.PeriodType == (int) PeriodHistoryTypes.Monthly);
+        }
+
+        public BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding,
+            DateTime nextMonthEnding)
+        {
+            var result = new BudgetTotals();
+            var context = AppGlobals.GetNewDbContext();
+
+            result.TotalBudgetMonthlyIncome =
+                context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Income).Sum(s => s.MonthlyAmount);
+
+            result.TotalBudgetMonthlyExpenses =
+                context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Expense && w.DoEscrow == false)
+                    .Sum(s => s.MonthlyAmount);
+
+            result.TotalActualMonthlyIncome = 
+                context.BudgetPeriodHistory
+                    .Include(i => i.BudgetItem)
+                    .Where(w => w.PeriodType == (int) PeriodHistoryTypes.Monthly &&
+                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Income)
+                    .Sum(s => s.ActualAmount);
+
+            result.TotalActualMonthlyExpenses =
+                context.BudgetPeriodHistory
+                    .Include(i => i.BudgetItem)
+                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
+                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                    .Sum(s => s.ActualAmount);
+
+            var yearEndDate = new DateTime(monthEndDate.Year, 12, 31);
+            result.YearToDateIncome =
+                context.BudgetPeriodHistory
+                    .Include(i => i.BudgetItem)
+                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Yearly &&
+                                w.PeriodEndingDate == yearEndDate && w.BudgetItem.Type == BudgetItemTypes.Income)
+                    .Sum(s => s.ActualAmount);
+
+            result.YearToDateExpenses =
+                context.BudgetPeriodHistory
+                    .Include(i => i.BudgetItem)
+                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Yearly &&
+                                w.PeriodEndingDate == yearEndDate && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                    .Sum(s => s.ActualAmount);
+
+            result.PreviousMonthHasValues = context.BudgetPeriodHistory.Any(a =>
+                a.PeriodType == (int) PeriodHistoryTypes.Monthly && a.PeriodEndingDate == previousMonthEnding);
+
+            result.NextMonthHasValues = context.BudgetPeriodHistory.Any(a =>
+                a.PeriodType == (int)PeriodHistoryTypes.Monthly && a.PeriodEndingDate == nextMonthEnding);
+
+            return result;
         }
     }
 }
