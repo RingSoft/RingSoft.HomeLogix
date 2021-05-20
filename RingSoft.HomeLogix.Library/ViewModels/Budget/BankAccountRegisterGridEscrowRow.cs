@@ -1,4 +1,5 @@
 ﻿using System;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -13,16 +14,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public string EscrowDescription { get; set; }
 
+        private bool _differentEscrowBank;
+
         public override bool AffectsEscrow
         {
             get
             {
-                if (IsEscrowFrom)
-                    return TransactionType == TransactionTypes.Withdrawal;
-
                 if (!Manager.ViewModel.EscrowBankAccountAutoFillValue.IsValid())
                 {
-                    return true;
+                    return !_differentEscrowBank;
                 }
 
                 return base.AffectsEscrow;
@@ -135,6 +135,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
             EscrowDescription = entity.Description;
+            _differentEscrowBank = !entity.TransferRegisterGuid.IsNullOrEmpty();
             IsEscrowFrom = entity.IsEscrowFrom;
             base.LoadFromEntity(entity);
         }
