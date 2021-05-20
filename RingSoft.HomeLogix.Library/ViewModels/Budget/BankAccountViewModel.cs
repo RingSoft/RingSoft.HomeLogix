@@ -840,7 +840,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 int? transferToBankAccountId = null;
                 var processBudgetRow = true;
-                var addToHistory = true;
+                //var addToHistory = true;
                 switch (completedRow.LineType)
                 {
                     case BankAccountRegisterItemTypes.BudgetItem:
@@ -857,7 +857,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             if (transferRegisterItem == null)
                             {
                                 processBudgetRow = false;
-                                addToHistory = false;
+                                //addToHistory = false;
                             }
                             else
                             {
@@ -885,7 +885,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 completedRegisterData.CompletedRegisterItems.Add(registerItem);
 
-                if (addToHistory)
+                //if (addToHistory)
                 {
                     AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails);
                 }
