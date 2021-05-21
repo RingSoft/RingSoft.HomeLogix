@@ -1,7 +1,6 @@
-﻿using System.Windows.Input;
-using RingSoft.App.Controls;
-using RingSoft.HomeLogix.Budget;
+﻿using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
+using System.Windows.Input;
 
 namespace RingSoft.HomeLogix
 {
@@ -22,6 +21,21 @@ namespace RingSoft.HomeLogix
             {
                 BudgetLookupControl.Focus();
             };
+
+            ChangeHouseholdButton.ToolTip.HeaderText = "Change Household (Alt + T)";
+            ChangeHouseholdButton.ToolTip.DescriptionText = "Login to a different household.";
+
+            ManageBudgetButton.ToolTip.HeaderText = "Manage Budget Items (Alt + M)";
+            ManageBudgetButton.ToolTip.DescriptionText = "Change budget item properties.";
+
+            ManageBankButton.ToolTip.HeaderText = "Manage Bank Accounts (Alt + B)";
+            ManageBankButton.ToolTip.DescriptionText = "Manage and reconcile bank accounts.";
+
+            PreviousMonthButton.ToolTip.HeaderText = "Goto Previous Month (Ctrl + <--)";
+            PreviousMonthButton.ToolTip.DescriptionText = "See budget totals for the previous month.";
+
+            NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
+            NextMonthButton.ToolTip.DescriptionText = "See budget totals for the ext month.";
         }
 
         private void MainWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

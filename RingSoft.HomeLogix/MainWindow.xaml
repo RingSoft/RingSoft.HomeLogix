@@ -13,140 +13,199 @@
                   CloseOnEscape="False"
                   Title="MainWindow" Height="450" Width="800">
     <Window.DataContext>
-        <vm:MainViewModel x:Name="ViewModel"/>
+        <vm:MainViewModel x:Name="ViewModel" />
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
-            <Setter Property="DesignText" Value="$123,456,789.00"/>
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="HorizontalAlignment" Value="Right"/>
-            <Setter Property="FormatType" Value="Currency"/>
+            <Setter Property="DesignText" Value="$123,456,789.00" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="FormatType" Value="Currency" />
         </Style>
+        <Style TargetType="ac:DbMaintenanceButton" BasedOn="{StaticResource {x:Type ac:DbMaintenanceButton}}">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ac:DbMaintenanceButton}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                <Image x:Name="Image" Height="64" Width="64"/>
+                                <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" RecognizesAccessKey="True"
+                                                  TextBlock.FontSize="12">
+                                    <ContentPresenter.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="5"/>
+                                        </Style>
+                                    </ContentPresenter.Resources>
+                                </ContentPresenter>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
 
+        </Style>
+        <BitmapImage x:Key="ChangeHouseholdImage" UriSource="/RingSoft.HomeLogix;component/Resources/change_household.png" />
+        <BitmapImage x:Key="ManageBankImage" UriSource="/RingSoft.HomeLogix;component/Resources/manage_bank.png" />
+        <BitmapImage x:Key="ManageBudgetImage" UriSource="/RingSoft.HomeLogix;component/Resources/manage_budget.png" />
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <StackPanel.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="AliceBlue" Offset="0.15"/>
+                    <GradientStop Color="SkyBlue" Offset="0.5"/>
+                    <GradientStop Color="AliceBlue" Offset="0.85"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <ac:DbMaintenanceButton x:Name="ChangeHouseholdButton" Content="_Change Household" ImageSource="{StaticResource ChangeHouseholdImage}"
+                                    Command="{Binding ChangeHouseholdCommand}"/>
 
-            <ac:DbMaintenanceButton ImageSource="{StaticResource LeftImage}" Command="{Binding PreviousMonthCommand}"/>
+            <ac:DbMaintenanceButton x:Name="ManageBudgetButton" Content="_Manage Budget Items" ImageSource="{StaticResource ManageBudgetImage}"
+                                    Command="{Binding ManageBudgetCommand}"/>
 
-            <TextBlock Text="{Binding CurrentMonthEndingText}" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
-
-            <ac:DbMaintenanceButton ImageSource="{StaticResource RightImage}" Command="{Binding NextMonthCommand}"/>
-
+            <ac:DbMaintenanceButton x:Name="ManageBankButton" Content="Manage _Bank Accounts" ImageSource="{StaticResource ManageBankImage}"
+                                    Command="{Binding ManageBankAccountsCommand}"/>
         </StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <lc:LookupControl Grid.Row="1" x:Name="BudgetLookupControl" LookupDefinition="{Binding BudgetLookupDefinition}" Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Center" Width="650">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 
-            <lc:LookupControl.LookupColumns>
+                <ac:DbMaintenanceButton x:Name="PreviousMonthButton" Style="{StaticResource BigButton}" ImageSource="{StaticResource LeftImage}"
+                                        Command="{Binding PreviousMonthCommand}" BorderThickness="0" />
 
-                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBudgetLookup}}" Header="Budget Item" DesignText="A Very Large Budget Item" Width="250"/>
+                <TextBlock Text="{Binding CurrentMonthEndingText}" Margin="5" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" FontWeight="Bold" />
 
-                <lc:LookupColumn PropertyName="{lc:NameOf ItemType, Type={x:Type vm:MainBudgetLookup}}" Header="Item Type" DesignText="Expense xxx" Width="90"/>
+                <ac:DbMaintenanceButton x:Name="NextMonthButton" Style="{StaticResource BigButton}" ImageSource="{StaticResource RightImage}" Command="{Binding NextMonthCommand}" BorderThickness="0" />
 
-                <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type vm:MainBudgetLookup}}" Header="Monthly Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120"/>
+            </StackPanel>
 
-                <lc:LookupColumn PropertyName="{lc:NameOf MonthToDateAmount, Type={x:Type vm:MainBudgetLookup}}" Header="Month To Date" TextAlignment="Right" DesignText="$123,456.78" Width="120"/>
+            <lc:LookupControl Grid.Row="1" x:Name="BudgetLookupControl"
+                              LookupDefinition="{Binding BudgetLookupDefinition}"
+                              Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Center" Width="650">
 
-            </lc:LookupControl.LookupColumns>
-        </lc:LookupControl>
+                <lc:LookupControl.LookupColumns>
 
-        <GroupBox Grid.Row="2" Header="Monthly Totals" HorizontalAlignment="Center">
+                    <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Budget Item" DesignText="A Very Large Budget Item" Width="250" />
 
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                    <lc:LookupColumn PropertyName="{lc:NameOf ItemType, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Item Type" DesignText="Expense xxx" Width="90" />
 
-                <Label Content="Budget Income"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Monthly Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding Path=TotalBudgetMonthlyIncome}"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf MonthToDateAmount, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Month To Date" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
-                <Label Grid.Row="0" Grid.Column="2" Content="Budget Expenses"/>
+                </lc:LookupControl.LookupColumns>
+            </lc:LookupControl>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding Path=TotalBudgetMonthlyExpenses}"/>
+            <GroupBox Grid.Row="2" Header="Monthly Totals" HorizontalAlignment="Center">
 
-                <Label Grid.Row="0" Grid.Column="4" Content="Budget Net Income"/>
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=TotalBudgetMonthlyNetIncome}"/>
+                    <Label Content="Budget Income" />
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Actual Income"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1"
+                                            Value="{Binding Path=TotalBudgetMonthlyIncome}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding Path=TotalActualMonthlyIncome}"/>
+                    <Label Grid.Row="0" Grid.Column="2" Content="Budget Expenses" />
 
-                <Label Grid.Row="1" Grid.Column="2" Content="Actual Expenses"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3"
+                                            Value="{Binding Path=TotalBudgetMonthlyExpenses}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=TotalActualMonthlyExpenses}"/>
+                    <Label Grid.Row="0" Grid.Column="4" Content="Budget Net Income" />
 
-                <Label Grid.Row="1" Grid.Column="4" Content="Actual Net Income"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5"
+                                            Value="{Binding Path=TotalBudgetMonthlyNetIncome}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="5" Value="{Binding Path=TotalActualMonthlyNetIncome}"/>
+                    <Label Grid.Row="1" Grid.Column="0" Content="Actual Income" />
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Income Difference"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1"
+                                            Value="{Binding Path=TotalActualMonthlyIncome}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Path=TotalMonthlyIncomeDifference}"/>
+                    <Label Grid.Row="1" Grid.Column="2" Content="Actual Expenses" />
 
-                <Label Grid.Row="2" Grid.Column="2" Content="Expenses Difference"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3"
+                                            Value="{Binding Path=TotalActualMonthlyExpenses}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding Path=TotalMonthlyExpensesDifference}"/>
+                    <Label Grid.Row="1" Grid.Column="4" Content="Actual Net Income" />
 
-                <Label Grid.Row="2" Grid.Column="4" Content="Net Income Difference"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="5"
+                                            Value="{Binding Path=TotalActualMonthlyNetIncome}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5" Value="{Binding Path=TotalMonthlyNetIncomeDifference}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Income Difference" />
 
-            </Grid>
-        </GroupBox>
+                    <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1"
+                                            Value="{Binding Path=TotalMonthlyIncomeDifference}" />
 
-        <GroupBox Grid.Row="3" Header="Yearly Totals" HorizontalAlignment="Center">
-            <Grid Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                    <Label Grid.Row="2" Grid.Column="2" Content="Expenses Difference" />
 
-                <Label Content="Actual Income"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3"
+                                            Value="{Binding Path=TotalMonthlyExpensesDifference}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding Path=YearToDateIncome}"/>
+                    <Label Grid.Row="2" Grid.Column="4" Content="Net Income Difference" />
 
-                <Label Grid.Row="0" Grid.Column="2" Content="Actual Expenses"/>
+                    <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5"
+                                            Value="{Binding Path=TotalMonthlyNetIncomeDifference}" />
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding Path=YearToDateExpenses}"/>
+                </Grid>
+            </GroupBox>
 
-                <Label Grid.Row="0" Grid.Column="4" Content="Actual Net Income"/>
+            <GroupBox Grid.Row="3" Header="Yearly Totals" HorizontalAlignment="Center">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=YearToDateNetIncome}"/>
+                    <Label Content="Actual Income" />
 
-            </Grid>
-        </GroupBox>
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding Path=YearToDateIncome}" />
 
-        <StackPanel Grid.Row="4" Orientation="Horizontal">
-            <Button Command="{Binding ChangeHouseholdCommand}" Content="_Change Household" Height="20" Width="100"/>
-            <Button Command="{Binding ManageBudgetCommand}" Content="_Manage Budget" Height="20" Width="100"/>
-            <Button Command="{Binding ManageBankAccountsCommand}" Content="Manage _Bank Accounts" Height="20"/>
-        </StackPanel>
-    </Grid>
+                    <Label Grid.Row="0" Grid.Column="2" Content="Actual Expenses" />
+
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding Path=YearToDateExpenses}" />
+
+                    <Label Grid.Row="0" Grid.Column="4" Content="Actual Net Income" />
+
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=YearToDateNetIncome}" />
+
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </DockPanel>
 </ac:AppMainWindow>

@@ -13,7 +13,10 @@
     <None Remove="Resources\bank.png" />
     <None Remove="Resources\bank_check.png" />
     <None Remove="Resources\card_visa.png" />
+    <None Remove="Resources\change_household.png" />
     <None Remove="Resources\gears.png" />
+    <None Remove="Resources\manage_bank.png" />
+    <None Remove="Resources\manage_budget.png" />
     <None Remove="Resources\stock_index_down.png" />
     <None Remove="Resources\stock_index_up.png" />
     <None Remove="Resources\transfer_left_right.png" />
@@ -40,7 +43,10 @@
     <Resource Include="Resources\bank.png" />
     <Resource Include="Resources\bank_check.png" />
     <Resource Include="Resources\card_visa.png" />
+    <Resource Include="Resources\change_household.png" />
     <Resource Include="Resources\gears.png" />
+    <Resource Include="Resources\manage_bank.png" />
+    <Resource Include="Resources\manage_budget.png" />
     <Resource Include="Resources\stock_index_down.png" />
     <Resource Include="Resources\stock_index_up.png" />
     <Resource Include="Resources\transfer_left_right.png" />
