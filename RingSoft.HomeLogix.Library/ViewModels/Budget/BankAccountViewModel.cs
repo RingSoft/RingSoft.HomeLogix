@@ -328,7 +328,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _budgetItemsDataSourceChanged = value;
                 OnPropertyChanged(nameof(BudgetItemsDataSourceChanged), false);
-                RefreshBudgetTotals();
             }
         }
 
@@ -657,25 +656,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     RsMessageBoxIcons.Exclamation);
         }
 
-        public void CalculateTotals()
+        public void CalculateTotals(bool calculateProjectedBalanceData = true)
         {
             if (_loading)
                 return;
 
-            RegisterGridManager.CalculateProjectedBalanceData();
+            if (calculateProjectedBalanceData)
+                RegisterGridManager.CalculateProjectedBalanceData();
+
             ProjectedEndingBalanceDifference = NewProjectedEndingBalance - CurrentProjectedEndingBalance;
             
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
         }
 
-        public void RefreshBudgetTotals()
+        private void RefreshBudgetTotals()
         {
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
 
             MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
             EscrowBalance = bankAccount.EscrowBalance;
-            CalculateTotals();
+
+            //NewProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
+            //ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount;
+            //ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate;
+
+            CalculateTotals(true);
         }
 
         private void AddNewRegisterItem()

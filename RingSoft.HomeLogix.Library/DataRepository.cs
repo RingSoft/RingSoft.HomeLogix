@@ -472,8 +472,7 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Income).Sum(s => s.MonthlyAmount);
 
             result.TotalBudgetMonthlyExpenses =
-                context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Expense && w.DoEscrow == false)
-                    .Sum(s => s.MonthlyAmount);
+                context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Expense).Sum(s => s.MonthlyAmount);
 
             result.TotalActualMonthlyIncome = 
                 context.BudgetPeriodHistory
