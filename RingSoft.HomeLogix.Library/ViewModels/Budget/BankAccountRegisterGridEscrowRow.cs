@@ -41,6 +41,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Completed:
                 case BankAccountRegisterGridColumns.ItemType:
                 case BankAccountRegisterGridColumns.TransactionType:
+                case BankAccountRegisterGridColumns.Balance:
                     break;
                 default:
                     return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};

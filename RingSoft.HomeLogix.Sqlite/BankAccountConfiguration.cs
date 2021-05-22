@@ -22,6 +22,7 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.ProjectedEndingBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceDate).HasColumnType(SqliteConstants.DateColumnType);
+            builder.Property(p => p.ShowInGraph).HasColumnType(SqliteConstants.BoolColumnType);
 
             builder.HasOne(p => p.EscrowToBankAccount)
                 .WithMany(p => p.EscrowFromBankAccounts)
