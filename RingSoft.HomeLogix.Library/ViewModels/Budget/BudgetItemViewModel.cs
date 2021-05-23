@@ -1301,7 +1301,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _escrowToBankAccount, _dbEscrowToBankAccount, 
                 _newBankAccountRegisterItems, _bankAccountRegisterItemsToDelete);
 
-            if (result)
+            if (result && RecalcRegister(entity.BankAccount))
             {
                 foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
                 {
@@ -1317,6 +1317,42 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return result;
+        }
+
+        private bool RecalcRegister(BankAccount bankAccount)
+        {
+            if (!_newBankAccountRegisterItems.Any() && !_bankAccountRegisterItemsToDelete.Any())
+                return true;
+
+            if (!RecalcBankAccountRegister(bankAccount))
+                return false;
+
+            if (!RecalcBankAccountRegister(DbBankAccount))
+                return false;
+
+            if (!RecalcBankAccountRegister(DbTransferToBankAccount))
+                return false;
+
+            if (!RecalcBankAccountRegister(_escrowToBankAccount))
+                return false;
+
+            return RecalcBankAccountRegister(_dbEscrowToBankAccount);
+        }
+
+        private bool RecalcBankAccountRegister(BankAccount bankAccount)
+        {
+            if (bankAccount == null)
+                return true;
+
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccount.Id, false);
+
+            var registerItems = AppGlobals.DataRepository.GetRegisterItemsForBankAccount(bankAccount.Id);
+
+            if (registerItems == null || !registerItems.Any())
+                return true;
+
+            var newBalance = bankAccount.CurrentBalance;
+            return true;
         }
 
         protected override bool DeleteEntity()

@@ -106,7 +106,9 @@ namespace RingSoft.HomeLogix.Library
         public IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BankAccountRegisterItems.Where(w => w.BankAccountId == bankAccountId);
+            return context.BankAccountRegisterItems.OrderBy(o => o.ItemDate)
+                .ThenByDescending(t => t.ProjectedAmount)
+                .Where(w => w.BankAccountId == bankAccountId);
         }
 
         public IEnumerable<BankAccountRegisterItemAmountDetail> GetBankAccountRegisterItemDetails(int registerId)

@@ -677,11 +677,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
             EscrowBalance = bankAccount.EscrowBalance;
 
-            //NewProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
-            //ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount;
-            //ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate;
+            NewProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
+            ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount;
+            ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate;
 
-            CalculateTotals(true);
+            CalculateTotals(false);
         }
 
         private void AddNewRegisterItem()
