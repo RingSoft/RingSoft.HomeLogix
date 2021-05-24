@@ -458,8 +458,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private bool _customButtonsEnabled;
-
         #endregion
 
         public ViewModelInput ViewModelInput { get; set; }
@@ -474,6 +472,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             new List<BankAccountRegisterItemAmountDetail>();
 
         private bool _loading;
+        private decimal _dbCurrentBalance;
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
@@ -549,7 +548,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             Id = 0;
             CurrentProjectedEndingBalance = 0;
-            CurrentBalance = 0;
+            _dbCurrentBalance = CurrentBalance = 0;
             NewProjectedEndingBalance = 0;
             ProjectedEndingBalanceDifference = 0;
             EscrowBalance = null;
@@ -616,6 +615,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = !ReadOnlyMode;
 
+            _dbCurrentBalance = bankAccount.CurrentBalance;
+
             return bankAccount;
         }
 
@@ -677,7 +678,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
             EscrowBalance = bankAccount.EscrowBalance;
 
-            NewProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
+            var newBalance = CurrentBalance - _dbCurrentBalance;
+            NewProjectedEndingBalance = bankAccount.ProjectedEndingBalance + newBalance;
+
             ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount;
             ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate;
 

@@ -1321,7 +1321,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool RecalcRegister(BankAccount bankAccount)
         {
-            if (!_newBankAccountRegisterItems.Any() && !_bankAccountRegisterItemsToDelete.Any())
+            if (_newBankAccountRegisterItems == null && _bankAccountRegisterItemsToDelete == null)
                 return true;
 
             if (!RecalcBankAccountRegister(bankAccount))
@@ -1346,12 +1346,41 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccount.Id, false);
 
-            var registerItems = AppGlobals.DataRepository.GetRegisterItemsForBankAccount(bankAccount.Id);
+            var registerItems = AppGlobals.DataRepository.GetRegisterItemsForBankAccount(bankAccount.Id).ToList();
 
-            if (registerItems == null || !registerItems.Any())
+            if (!registerItems.Any())
                 return true;
 
-            var newBalance = bankAccount.CurrentBalance;
+            var newBalance = bankAccount.CurrentBalance - bankAccount.EscrowBalance.GetValueOrDefault(0);
+            var lowestBalance = newBalance;
+            DateTime? lowestBalanceDate = null;
+
+            foreach (var registerItem in registerItems)
+            {
+                if (lowestBalanceDate == null)
+                    lowestBalanceDate = registerItem.ItemDate.AddDays(-1);
+
+                var affectsEscrow = false;
+                if (registerItem.ItemType == (int) BankAccountRegisterItemTypes.MonthlyEscrow)
+                    affectsEscrow = registerItem.TransferRegisterGuid.IsNullOrEmpty();
+
+                if (!affectsEscrow)
+                {
+                    newBalance += registerItem.ProjectedAmount;
+                }
+
+                if (newBalance < lowestBalance)
+                {
+                    lowestBalance = newBalance;
+                    lowestBalanceDate = registerItem.ItemDate;
+                }
+            }
+
+            bankAccount.ProjectedEndingBalance = newBalance;
+            bankAccount.ProjectedLowestBalanceAmount = lowestBalance;
+            bankAccount.ProjectedLowestBalanceDate = lowestBalanceDate;
+
+            return AppGlobals.DataRepository.SaveBankAccount(bankAccount);
             return true;
         }
 

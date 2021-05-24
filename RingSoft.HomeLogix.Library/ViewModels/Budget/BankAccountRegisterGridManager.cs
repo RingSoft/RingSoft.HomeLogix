@@ -111,11 +111,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             var newBalance = ViewModel.CurrentBalance - ViewModel.EscrowBalance.GetValueOrDefault(0);
             var lowestBalance = newBalance;
-            var lowestBalanceDate = DateTime.Today;
+            DateTime? lowestBalanceDate = null;
 
             var rows = Rows.OfType<BankAccountRegisterGridRow>();
             foreach (var bankAccountRegisterGridRow in rows)
             {
+                if (lowestBalanceDate == null)
+                    lowestBalanceDate = bankAccountRegisterGridRow.ItemDate.AddDays(-1);
+
                 if (bankAccountRegisterGridRow.Completed)
                 {
                     bankAccountRegisterGridRow.Balance = null;
