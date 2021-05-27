@@ -13,7 +13,8 @@ namespace RingSoft.App.Library
 
         public static double CalculateMonthsInTimeSpan(DateTime startDate, DateTime endDate)
         {
-            return startDate.Subtract(endDate).Days / (365.25 / 12);
+            var result = endDate.Subtract(startDate).Days / (365.25 / 12);
+            return result;
         }
     }
 }

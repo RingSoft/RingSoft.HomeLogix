@@ -114,19 +114,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 //var currentDate = budgetItem.LastCompletedDate;
                 //if (currentDate == null)
                 //{
-                var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId, false);
+                var bankAccount = AppGlobals.DataRepository.GetBankAccount(budgetItem.BankAccountId);
                 var currentDate = bankAccount.LastGenerationDate;
+                var firstRegister = bankAccount.RegisterItems.FirstOrDefault(f => f.BudgetItemId == budgetItem.Id);
+                if (firstRegister != null)
+                    currentDate = firstRegister.ItemDate;
+
                 //}
 
-                var monthsToGo =
-                    RingSoftAppGlobals.CalculateMonthsInTimeSpan((DateTime)startDate, (DateTime)currentDate);
+                var monthsToGo = RingSoftAppGlobals.CalculateMonthsInTimeSpan((DateTime)currentDate, (DateTime)startDate);
 
                 var monthsAccrued = months - Math.Ceiling(monthsToGo);  //Must be ceiling or else escrow item generation will generate an extra escrow.
+
+                //if (monthsAccrued == 0)
+                //    monthsAccrued = 1;
+
                 budgetItem.EscrowBalance = Math.Round(budgetItem.MonthlyAmount * (decimal)monthsAccrued,
                     CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
 
                 if (budgetItem.EscrowBalance > budgetItem.Amount)
-                    budgetItem.EscrowBalance = budgetItem.Amount;
+                    budgetItem.EscrowBalance = 0;
                 if (budgetItem.EscrowBalance < 0)
                     budgetItem.EscrowBalance = 0;
 

@@ -713,7 +713,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (budgetItems == null)
                 return;
 
-            var escrowOutput = BudgetItemProcessor.GenerateEscrowRegisterItems(GetEntityData(), generateToDate.Value);
+            var newBankAccount = GetEntityData();
+            var escrowOutput = BudgetItemProcessor.GenerateEscrowRegisterItems(newBankAccount, generateToDate.Value);
 
             var registerItems = new List<BankAccountRegisterItem>();
             registerItems.AddRange(

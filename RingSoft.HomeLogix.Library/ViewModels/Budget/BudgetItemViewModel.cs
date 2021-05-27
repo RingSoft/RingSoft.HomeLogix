@@ -1185,6 +1185,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     if (existingRegisterItems.Any())
                     {
+
                         _newBankAccountRegisterItems =
                             BudgetItemProcessor.GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem,
                                 newBankAccount.LastGenerationDate).ToList();
