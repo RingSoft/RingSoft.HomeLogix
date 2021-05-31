@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DbLookup.EfCore;
 
 namespace RingSoft.HomeLogix.MasterData
@@ -18,8 +20,18 @@ namespace RingSoft.HomeLogix.MasterData
         public virtual DbSet<Household> Households { get; set; }
 
         //--------------------------------------------------------------------
-
-        public static string ProgramDataFolder => $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix\\";
+        public static string ProgramDataFolder
+        {
+            get
+            {
+#if DEBUG
+                return RingSoftAppGlobals.AssemblyDirectory;
+#else
+                return
+                    $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}\\RingSoft\\HomeLogix\\";
+#endif
+            }
+        }
 
         public static string MasterFilePath => $"{ProgramDataFolder}{MasterFileName}";
 
