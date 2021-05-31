@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using RingSoft.App.Controls;
+﻿using RingSoft.App.Controls;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
+using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
-using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix.Budget
 {
@@ -49,11 +48,6 @@ namespace RingSoft.HomeLogix.Budget
 
         public void SetViewType()
         {
-            EscrowStackPanel.Visibility = BudgetItemViewModel.EscrowVisible ? Visibility.Visible : Visibility.Collapsed;
-
-            EscrowLabel.Visibility = EscrowBox.Visibility =
-                BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
-
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -64,11 +58,6 @@ namespace RingSoft.HomeLogix.Budget
             {
                 control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             }
-
-            MonthToDateAmountLabel.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
-            MonthToDateAmountControl.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
-            MonthlyAmountRemainingLabel.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
-            MonthlyAmountRemainingControl.Visibility = !BudgetItemViewModel.DoEscrow ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public override void ResetViewForNewRecord()

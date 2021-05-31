@@ -35,7 +35,6 @@ namespace RingSoft.HomeLogix.Library
         public const int BudgetItemLineTypeId = (int)BankAccountRegisterItemTypes.BudgetItem;
         public const int MiscellaneousLineTypeId = (int)BankAccountRegisterItemTypes.Miscellaneous;
         public const int TransferToBankAccountLineTypeId = (int)BankAccountRegisterItemTypes.TransferToBankAccount;
-        public const int MonthlyEscrowLineTypeId = (int)BankAccountRegisterItemTypes.MonthlyEscrow;
 
         public const int BankTransactionTypeDepositId = 0;
         public const int BankTransactionWithdrawalId = 1;

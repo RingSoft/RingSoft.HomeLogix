@@ -66,8 +66,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return new BankAccountRegisterGridMiscRow(this);
                 case BankAccountRegisterItemTypes.TransferToBankAccount:
                     return new BankAccountRegisterGridTransferRow(this);
-                case BankAccountRegisterItemTypes.MonthlyEscrow:
-                    return new BankAccountRegisterGridEscrowRow(this);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -109,7 +107,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void CalculateProjectedBalanceData()
         {
-            var newBalance = ViewModel.CurrentBalance - ViewModel.EscrowBalance.GetValueOrDefault(0);
+            var newBalance = ViewModel.CurrentBalance;
             var lowestBalance = newBalance;
             DateTime? lowestBalanceDate = null;
 
@@ -125,19 +123,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
-                    if (!bankAccountRegisterGridRow.AffectsEscrow)
+                    switch (bankAccountRegisterGridRow.TransactionType)
                     {
-                        switch (bankAccountRegisterGridRow.TransactionType)
-                        {
-                            case TransactionTypes.Deposit:
-                                newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                                break;
-                            case TransactionTypes.Withdrawal:
-                                newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        case TransactionTypes.Deposit:
+                            newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                            break;
+                        case TransactionTypes.Withdrawal:
+                            newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                     bankAccountRegisterGridRow.Balance = newBalance;
                 }

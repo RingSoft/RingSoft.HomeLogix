@@ -71,10 +71,6 @@
 
                 <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
 
-                <Label Grid.Row="1" Grid.Column="2" Content="Escrow Balance"/>
-
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path= EscrowBalance}"/>
-
             </Grid>
 
             <TabControl Grid.Row="1">
@@ -113,19 +109,6 @@
                                 <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:BankAccountRegisterGridManager.NegativeDisplayId}" ForegroundBrush="Red"/>
                             </deg:DataEntryGrid.DisplayStyles>
                         </deg:DataEntryGrid>
-
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,5">
-
-                            <Label Content="Escrow Bank Account"/>
-
-                            <lc:AutoFillControl Setup="{Binding EscrowBankAccountAutoFillSetup}" Value="{Binding Path=EscrowBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" DesignText="Jane's Savings Account" Width="225"/>
-
-                            <Label Content="Escrow Day of the Month"/>
-
-                            <dec:IntegerEditControl Value="{Binding Path=EscrowDayOfMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinimumValue="1" MaximumValue="30" DesignText="30" Width="25"/>
-
-                        </StackPanel>
-
 
                     </Grid>
 

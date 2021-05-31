@@ -147,8 +147,7 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
-            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount,
-            BankAccount dbEscrowBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
+            BankAccount dbTransferToBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
             if (budgetItem.Id == 0)
@@ -175,17 +174,11 @@ namespace RingSoft.HomeLogix.Tests
             if (dbTransferToBankAccount != null)
                 SaveBankAccount(dbTransferToBankAccount);
 
-            if (escrowBankAccount != null)
-                SaveBankAccount(escrowBankAccount);
-
-            if (dbEscrowBankAccount != null)
-                SaveBankAccount(dbEscrowBankAccount);
-
             return true;
         }
 
         public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount,
-            BankAccount dbTransferToBankAccount, BankAccount dbEscrowBankAccount)
+            BankAccount dbTransferToBankAccount)
         {
             var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
             if (dbBankAccount != null)
@@ -193,9 +186,6 @@ namespace RingSoft.HomeLogix.Tests
 
             if (dbTransferToBankAccount != null)
                 SaveBankAccount(dbTransferToBankAccount);
-
-            if (dbEscrowBankAccount != null)
-                SaveBankAccount(dbEscrowBankAccount);
 
             var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             if (budgetItem != null)
@@ -210,7 +200,6 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
-            List<BankAccountRegisterItemEscrow> newRegisterEscrowItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null, BankAccount bankAccount = null)
         {

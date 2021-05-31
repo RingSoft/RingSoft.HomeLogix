@@ -10,7 +10,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         BudgetItem = 0,
         Miscellaneous = 1,
         TransferToBankAccount = 2,
-        MonthlyEscrow = 3
     }
 
     public class BankAccountRegisterItem

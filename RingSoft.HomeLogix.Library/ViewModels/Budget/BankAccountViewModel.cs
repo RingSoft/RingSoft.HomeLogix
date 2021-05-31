@@ -117,22 +117,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal? _escrowBalance;
-
-        public decimal? EscrowBalance
-        {
-            get => _escrowBalance;
-            set
-            {
-                if (_escrowBalance == value)
-                    return;
-
-                _escrowBalance = value;
-                OnPropertyChanged(nameof(EscrowBalance), false);
-            }
-        }
-
-
         private decimal _newProjectedEndingBalance;
 
         public decimal NewProjectedEndingBalance
@@ -238,51 +222,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _monthlyBudgetDifference = value;
                 OnPropertyChanged(nameof(MonthlyBudgetDifference), false);
-            }
-        }
-
-        private AutoFillSetup _escrowBankAccountAutoFillSetup;
-
-        public AutoFillSetup EscrowBankAccountAutoFillSetup
-        {
-            get => _escrowBankAccountAutoFillSetup;
-            set
-            {
-                if (_escrowBankAccountAutoFillSetup == value)
-                    return;
-
-                _escrowBankAccountAutoFillSetup = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private AutoFillValue _escrowBankAccountAutoFillValue;
-
-        public AutoFillValue EscrowBankAccountAutoFillValue
-        {
-            get => _escrowBankAccountAutoFillValue;
-            set
-            {
-                if (_escrowBankAccountAutoFillValue == value)
-                    return;
-
-                _escrowBankAccountAutoFillValue = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int? _escrowDayOfMonth;
-
-        public int? EscrowDayOfMonth
-        {
-            get => _escrowDayOfMonth;
-            set
-            {
-                if (_escrowDayOfMonth == value)
-                    return;
-
-                _escrowDayOfMonth = value;
-                OnPropertyChanged();
             }
         }
 
@@ -505,10 +444,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             ViewModelInput.BankAccountViewModels.Add(this);
 
-            EscrowBankAccountAutoFillSetup =
-                new AutoFillSetup(
-                    AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId));
-
             _periodHistoryLookupDefinition =
                 new LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>(AppGlobals.LookupContext
                     .BankAccountPeriodHistory);
@@ -551,7 +486,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _dbCurrentBalance = CurrentBalance = 0;
             NewProjectedEndingBalance = 0;
             ProjectedEndingBalanceDifference = 0;
-            EscrowBalance = null;
             ProjectedLowestBalanceDate = null;
             ProjectedLowestBalanceAmount = 0;
             
@@ -559,8 +493,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetWithdrawals = 0;
             MonthlyBudgetDifference = 0;
             
-            EscrowBankAccountAutoFillValue = null;
-            EscrowDayOfMonth = 1;
             Notes = string.Empty;
             LastGenerationDate = null;
 
@@ -626,20 +558,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             CurrentProjectedEndingBalance = entity.ProjectedEndingBalance;
             CurrentBalance = entity.CurrentBalance;
-            EscrowBalance = entity.EscrowBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
             
-            EscrowBankAccountAutoFillValue = null;
-            if (entity.EscrowToBankAccount != null)
-            {
-                var escrowPrimaryKeyValue =
-                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.EscrowToBankAccount);
-                EscrowBankAccountAutoFillValue =
-                    new AutoFillValue(escrowPrimaryKeyValue, entity.EscrowToBankAccount.Description);
-            }
-            
-            EscrowDayOfMonth = entity.EscrowDayOfMonth;
             Notes = entity.Notes;
             LastGenerationDate = entity.LastGenerationDate;
             if (LastGenerationDate == DateTime.MinValue)
@@ -676,7 +597,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
-            EscrowBalance = bankAccount.EscrowBalance;
 
             var newBalance = CurrentBalance - _dbCurrentBalance;
             NewProjectedEndingBalance = bankAccount.ProjectedEndingBalance + newBalance;
@@ -714,12 +634,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return;
 
             var newBankAccount = GetEntityData();
-            var escrowOutput = BudgetItemProcessor.GenerateEscrowRegisterItems(newBankAccount, generateToDate.Value);
 
             var registerItems = new List<BankAccountRegisterItem>();
-            registerItems.AddRange(
-                // ReSharper disable once PossibleInvalidOperationException
-                escrowOutput.RegisterItems);
 
             foreach (var budgetItem in budgetItems)
             {
@@ -729,7 +645,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
-            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems, escrowOutput.RegisterItemEscrows,
+            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
                 budgetItems, null, bankAccount))
                 return;
 
@@ -751,34 +667,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Description = KeyAutoFillValue.Text,
                 ProjectedEndingBalance = NewProjectedEndingBalance,
                 CurrentBalance = CurrentBalance,
-                EscrowBalance = EscrowBalance,
                 ProjectedLowestBalanceDate = ProjectedLowestBalanceDate,
                 ProjectedLowestBalanceAmount = ProjectedLowestBalanceAmount,
                 MonthlyBudgetDeposits = MonthlyBudgetDeposits,
                 MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals,
-                EscrowDayOfMonth = EscrowDayOfMonth,
                 Notes = Notes,
                 LastGenerationDate = (DateTime)LastGenerationDate
             };
 
-            if (EscrowBankAccountAutoFillValue != null && EscrowBankAccountAutoFillValue.PrimaryKeyValue != null &&
-                EscrowBankAccountAutoFillValue.PrimaryKeyValue.IsValid)
-            {
-                bankAccount.EscrowToBankAccountId = AppGlobals.LookupContext.BankAccounts
-                    .GetEntityFromPrimaryKeyValue(EscrowBankAccountAutoFillValue.PrimaryKeyValue).Id;
-            }
-
-            
             return bankAccount;
-        }
-
-        protected override AutoFillValue GetAutoFillValueForNullableForeignKeyField(FieldDefinition fieldDefinition)
-        {
-            if (fieldDefinition ==
-                AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.EscrowToBankAccountId))
-                return EscrowBankAccountAutoFillValue;
-
-            return base.GetAutoFillValueForNullableForeignKeyField(fieldDefinition);
         }
 
         protected override bool SaveEntity(BankAccount entity)
@@ -859,7 +756,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     case BankAccountRegisterItemTypes.Miscellaneous:
                         break;
                     case BankAccountRegisterItemTypes.TransferToBankAccount:
-                    case BankAccountRegisterItemTypes.MonthlyEscrow:
                         if (completedRow is BankAccountRegisterGridTransferRow transferRow)
                         {
                             var transferRegisterItem =
@@ -877,12 +773,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 else
                                     transferToBankAccountId = transferRegisterItem.BankAccountId;
                             }
-                        }
-
-                        if (processBudgetRow && completedRow.LineType == BankAccountRegisterItemTypes.MonthlyEscrow &&
-                            completedRow is BankAccountRegisterGridEscrowRow escrowRow)
-                        {
-                            ProcessRegisterItemEscrowRow(completedRegisterData, registerItem, escrowRow);
                         }
                         break;
                     default:
@@ -904,32 +794,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 //RegisterDetails.AddRange(amountDetails);
             }
             return true;
-        }
-
-        private static void ProcessRegisterItemEscrowRow(CompletedRegisterData completedRegisterData,
-            BankAccountRegisterItem registerItem, BankAccountRegisterGridEscrowRow escrowRow)
-        {
-            var escrowBudgetItems = AppGlobals.DataRepository.GetEscrowsOfRegisterItem(registerItem.Id);
-            foreach (var escrowBudgetItem in escrowBudgetItems)
-            {
-                var budgetItem =
-                    completedRegisterData.BudgetItems.FirstOrDefault(f =>
-                        f.Id == escrowBudgetItem.BudgetItemId);
-                if (budgetItem == null)
-                {
-                    budgetItem = escrowBudgetItem.BudgetItem;
-                    completedRegisterData.BudgetItems.Add(budgetItem);
-                }
-
-                if (escrowRow.IsEscrowFrom)
-                {
-                    budgetItem.EscrowBalance -= escrowBudgetItem.Amount;
-                }
-                else
-                {
-                    budgetItem.EscrowBalance += escrowBudgetItem.Amount;
-                }
-            }
         }
 
         private static void ProcessCompletedBudget(CompletedRegisterData completedRegisterData,

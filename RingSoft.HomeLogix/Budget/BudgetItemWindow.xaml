@@ -102,16 +102,6 @@
 
                         </StackPanel>
 
-                        <StackPanel x:Name="EscrowStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
-
-                            <CheckBox Content="Escrow Monthly" IsChecked="{Binding Path=DoEscrow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
-
-                            <Label x:Name="EscrowLabel" Margin="20,0,0,0" Content="Escrow Account Balance" Visibility="Collapsed"/>
-
-                            <dec:DecimalReadOnlyBox x:Name="EscrowBox" FormatType="Currency" Value="{Binding Path=EscrowBalance}" Visibility="Collapsed"/>
-
-                        </StackPanel>
-
                     </Grid>
                 </TabItem>
                 <TabItem Header="Monthly Totals">

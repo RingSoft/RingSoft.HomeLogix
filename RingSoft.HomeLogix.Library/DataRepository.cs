@@ -35,17 +35,12 @@ namespace RingSoft.HomeLogix.Library
         BudgetItem GetBudgetItem(int budgetItemId);
 
         bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
-            BankAccount escrowBankAccount, BankAccount dbEscrowBankAccount,
             List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete);
 
-        bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
-            BankAccount dbEscrowBankAccount);
-
-        IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId);
+        bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount);
 
         bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
-            List<BankAccountRegisterItemEscrow> newRegisterEscrowItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null);
@@ -62,8 +57,6 @@ namespace RingSoft.HomeLogix.Library
             DateTime periodEndDate);
 
         BankAccountRegisterItem GetTransferRegisterItem(string transferGuid);
-
-        IEnumerable<BankAccountRegisterItemEscrow> GetEscrowsOfRegisterItem(int bankRegisterId);
 
         bool SaveNewRegisterItem(BankAccountRegisterItem registerItem,
             BankAccountRegisterItem transferRegisterItem = null);
@@ -95,12 +88,10 @@ namespace RingSoft.HomeLogix.Library
                     .Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.BudgetItem)
                        .ThenInclude(ti => ti.TransferToBankAccount)
-                       .Include(i => i.EscrowToBankAccount)
                     .FirstOrDefault(f => f.Id == bankAccountId);
             }
 
-            return context.BankAccounts.Include(i => i.EscrowToBankAccount)
-                .FirstOrDefault(f => f.Id == bankAccountId);
+            return context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
         }
 
         public IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId)
@@ -258,8 +249,7 @@ namespace RingSoft.HomeLogix.Library
         }
 
         public bool SaveBudgetItem(BudgetItem budgetItem, BankAccount dbBankAccount,
-            BankAccount dbTransferToBankAccount, BankAccount escrowBankAccount,
-            BankAccount dbEscrowBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
+            BankAccount dbTransferToBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
             var context = AppGlobals.GetNewDbContext();
@@ -275,20 +265,6 @@ namespace RingSoft.HomeLogix.Library
             if (dbTransferToBankAccount != null)
             {
                 if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbTransferToBankAccount, "Saving Transfer To Bank Account"))
-                    return false;
-            }
-
-            if (escrowBankAccount != null)
-            {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, escrowBankAccount,
-                    "Saving Escrow Bank Account"))
-                    return false;
-            }
-
-            if (dbEscrowBankAccount != null)
-            {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbEscrowBankAccount,
-                    "Database Saving Escrow Bank Account"))
                     return false;
             }
 
@@ -320,8 +296,7 @@ namespace RingSoft.HomeLogix.Library
             return true;
         }
 
-        public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount,
-            BankAccount dbEscrowBankAccount)
+        public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount)
         {
             var context = AppGlobals.GetNewDbContext();
             if (dbBankAccount != null)
@@ -336,25 +311,11 @@ namespace RingSoft.HomeLogix.Library
                     return false;
             }
 
-            if (dbEscrowBankAccount != null)
-            {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbEscrowBankAccount,
-                    "Database Saving Escrow Bank Account"))
-                    return false;
-            }
-
             var budgetItem = context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
             return budgetItem != null && context.DbContext.DeleteEntity(context.BudgetItems, budgetItem, $"Deleting Budget Item '{budgetItem.Description}'");
         }
 
-        public IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId)
-        {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
-        }
-
         public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
-            List<BankAccountRegisterItemEscrow> newRegisterEscrowItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null)
@@ -382,20 +343,7 @@ namespace RingSoft.HomeLogix.Library
             }
 
             var result = context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
-            if (!result)
-                return false;
-
-            if (newRegisterEscrowItems.Any())
-            {
-                foreach (var registerEscrowItem in newRegisterEscrowItems)
-                {
-                    registerEscrowItem.RegisterId = registerEscrowItem.RegisterItem.Id;
-                    registerEscrowItem.RegisterItem = null;
-                }
-                context.BankAccountRegisterItemEscrows.AddRange(newRegisterEscrowItems);
-                result = context.DbContext.SaveEfChanges("Saving generated Bank Account Register Item Escrows.");
-            }
-
+            
             return result;
         }
 

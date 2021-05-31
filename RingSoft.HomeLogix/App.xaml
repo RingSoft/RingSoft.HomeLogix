@@ -73,17 +73,6 @@
                     </dec:DataEntryCustomContentTemplateItem.DataTemplate>
                 </dec:DataEntryCustomContentTemplateItem>
 
-                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.MonthlyEscrowLineTypeId}" HotKey="E">
-                    <dec:DataEntryCustomContentTemplateItem.DataTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Image Source="Resources/bank.png"  Width="16" Height="16"/>
-                                <TextBlock Text="Escrow" Margin="5,0,0,0"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </dec:DataEntryCustomContentTemplateItem.DataTemplate>
-                </dec:DataEntryCustomContentTemplateItem>
-
             </dec:DataEntryCustomContentTemplate>
 
             <dec:DataEntryCustomContentTemplate x:Key="BankRegisterTransactionType">
