@@ -529,6 +529,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private decimal _dbMonthlyAmount;
         private DateTime _dbStartDate;
         private bool _registerAffected;
+        private BankAccount _newTransferToBankAccount;
         private List<BankAccountRegisterItem> _newBankAccountRegisterItems;
         private List<BankAccountRegisterItem> _bankAccountRegisterItemsToDelete;
         private BudgetItemTypes? _lockBudgetItemType;
@@ -849,14 +850,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id;
 
             BankAccount newBankAccount = null;
-            BankAccount newTransferToBankAccount = null;
             if (newBankAccountId != 0)
             {
                 newBankAccount = AppGlobals.DataRepository.GetBankAccount(newBankAccountId, false);
 
                 if (newTransferToBankAccountId != null)
                 {
-                    newTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)newTransferToBankAccountId, false);
+                    _newTransferToBankAccount = AppGlobals.DataRepository.GetBankAccount((int)newTransferToBankAccountId, false);
                 }
 
                 if (newBankAccountId == DbBankAccountId || DbBankAccountId == 0)
@@ -910,7 +910,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 if (BudgetItemType == BudgetItemTypes.Transfer)
                 {
-                    if (newTransferToBankAccount != null && newBankAccount != null)
+                    if (_newTransferToBankAccount != null && newBankAccount != null)
                     {
                         //DbBankAccount is Old Transfer From Bank Account.
                         DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
@@ -922,16 +922,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             //Same transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount - _dbMonthlyAmount;
-                            if (newTransferToBankAccount.Id == DbTransferToBankId || DbTransferToBankAccount == null)
+                            if (_newTransferToBankAccount.Id == DbTransferToBankId || DbTransferToBankAccount == null)
                             {
                                 //Same new transfer to bank account.
-                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - _dbMonthlyAmount;
+                                _newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount - _dbMonthlyAmount;
                             }
                             else
                             {
                                 //Different transfer to bank account.
                                 DbTransferToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
-                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                                _newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                             }
                         }
                         else
@@ -939,18 +939,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             //Different transfer from (new) bank account
                             newBankAccount.MonthlyBudgetWithdrawals += MonthlyAmount;
                             var swap = false;
-                            if (DbTransferToBankAccount != null && newTransferToBankAccount.Id != DbTransferToBankAccount.Id)
+                            if (DbTransferToBankAccount != null && _newTransferToBankAccount.Id != DbTransferToBankAccount.Id)
                             {
                                 //Different transfer to bank account.
-                                newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
+                                _newTransferToBankAccount.MonthlyBudgetDeposits += MonthlyAmount;
                                 if (newBankAccount.Id == DbTransferToBankAccount.Id)
                                 {
                                     //Swap.
                                     swap = true;
-                                    newTransferToBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                                    _newTransferToBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
                                     newBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
                                 }
-                                else if (DbTransferToBankAccount.Id != newTransferToBankAccount.Id)
+                                else if (DbTransferToBankAccount.Id != _newTransferToBankAccount.Id)
                                 {
                                     DbTransferToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
                                 }
@@ -966,7 +966,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var budgetItem = GetBudgetItem();
             budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
-            budgetItem.TransferToBankAccount = newTransferToBankAccount;
+            budgetItem.TransferToBankAccount = _newTransferToBankAccount;
             budgetItem.BankAccountId = newBankAccountId;
             if (RecordDirty)
             {
@@ -1088,23 +1088,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
-            var noRegisterMessageShown = false;
             var reconciledMessageShown = false;
+            if (_newBankAccountRegisterItems != null && !_newBankAccountRegisterItems.Any() &&
+                entity.StartingDate == _dbStartDate && _registerAffected)
+            {
+                var message =
+                    $"No register items will be updated for this Budget Item.  You must set the Starting Date to be earlier than {entity.StartingDate} in order to update the Bank Register Grid.  Do you wish to continue?";
+
+                if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
+                    return false;
+            }
+
             foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
             {
-                if (!noRegisterMessageShown && bankAccountViewModel.IsBudgetItemInRegisterGrid(Id))
-                {
-                    if (_newBankAccountRegisterItems != null && !_newBankAccountRegisterItems.Any() &&
-                        entity.StartingDate == _dbStartDate && _registerAffected)
-                    {
-                        noRegisterMessageShown = true;
-                        var message =
-                            $"No register items will be updated for this Budget Item.  You must set the Starting Date to be earlier than {entity.StartingDate} in order to update the Bank Register Grid.  Do you wish to continue?";
-
-                        if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
-                            return false;
-                    }
-                }
                 if (!reconciledMessageShown && bankAccountViewModel.IsBeingReconciled(Id))
                 {
                     reconciledMessageShown = true;
@@ -1150,6 +1146,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return false;
 
             if (!RecalcBankAccountRegister(DbBankAccount))
+                return false;
+
+            if (!RecalcBankAccountRegister(_newTransferToBankAccount))
                 return false;
 
             if (!RecalcBankAccountRegister(DbTransferToBankAccount))
