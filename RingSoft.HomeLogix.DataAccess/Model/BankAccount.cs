@@ -22,8 +22,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(0)]
         public decimal CurrentBalance { get; set; }
 
-        public decimal? EscrowBalance { get; set; }
-
         public decimal ProjectedEndingBalance { get; set; }
 
         public DateTime? ProjectedLowestBalanceDate { get; set; }
@@ -40,13 +38,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(0)]
         public decimal MonthlyBudgetWithdrawals { get; set; }
 
-        public int? EscrowToBankAccountId { get; set; }
-
-        public virtual BankAccount EscrowToBankAccount { get; set; }
-
-        public int? EscrowDayOfMonth { get; set; }
-
-        [Required]
         public DateTime LastGenerationDate { get; set; }
 
         public string Notes { get; set; }
@@ -61,8 +52,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
         
-        public virtual ICollection<BankAccount> EscrowFromBankAccounts { get; set; }
-
         public virtual ICollection<History> History { get; set; }
 
         public virtual ICollection<History> TransferToHistory { get; set; }
@@ -74,7 +63,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             BudgetItems = new HashSet<BudgetItem>();
             BudgetTransferFromItems = new HashSet<BudgetItem>();
             RegisterItems = new HashSet<BankAccountRegisterItem>();
-            EscrowFromBankAccounts = new HashSet<BankAccount>();
             History = new HashSet<History>();
             TransferToHistory = new HashSet<History>();
             PeriodHistory = new HashSet<BankAccountPeriodHistory>();

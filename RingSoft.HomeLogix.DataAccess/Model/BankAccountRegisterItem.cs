@@ -46,20 +46,11 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string TransferRegisterGuid { get; set; }
 
-        [Required]
-        public bool IsEscrowFrom { get; set; }
-
-        [Required]
-        public bool ApplyEscrow { get; set; }
-
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
-
-        public virtual ICollection<BankAccountRegisterItemEscrow> Escrows { get; set; }
 
         public BankAccountRegisterItem()
         {
             AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
-            Escrows = new HashSet<BankAccountRegisterItemEscrow>();
         }
     }
 }

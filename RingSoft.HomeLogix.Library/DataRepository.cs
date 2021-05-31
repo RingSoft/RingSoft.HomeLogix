@@ -386,13 +386,6 @@ namespace RingSoft.HomeLogix.Library
             return context.BankAccountRegisterItems.FirstOrDefault(f => f.RegisterGuid == transferGuid);
         }
 
-        public IEnumerable<BankAccountRegisterItemEscrow> GetEscrowsOfRegisterItem(int bankRegisterId)
-        {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BankAccountRegisterItemEscrows.Include(i => i.BudgetItem)
-                .Where(w => w.RegisterId == bankRegisterId);
-        }
-
         public bool SaveNewRegisterItem(BankAccountRegisterItem registerItem, BankAccountRegisterItem transferRegisterItem = null)
         {
             var context = AppGlobals.GetNewDbContext();

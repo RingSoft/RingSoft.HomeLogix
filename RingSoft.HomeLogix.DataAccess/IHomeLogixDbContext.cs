@@ -13,7 +13,6 @@ namespace RingSoft.HomeLogix.DataAccess
         DbSet<BankAccountRegisterItem> BankAccountRegisterItems { get; set; }
         DbSet<BankAccountRegisterItemAmountDetail> BankAccountRegisterItemAmountDetails { get; set; }
         DbSet<BudgetItemSource> BudgetItemSources { get; set; }
-        DbSet<BankAccountRegisterItemEscrow> BankAccountRegisterItemEscrows { get; set; }
         DbSet<History> History { get; set; }
         DbSet<SourceHistory> SourceHistory { get; set; }
         DbSet<BudgetPeriodHistory> BudgetPeriodHistory { get; set; }

@@ -207,38 +207,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal? _escrowBalance;
-
-        public decimal? EscrowBalance
-        {
-            get => _escrowBalance;
-            set
-            {
-                if (_escrowBalance == value)
-                    return;
-
-                _escrowBalance = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _useEscrow;
-
-        public bool UseEscrow
-        {
-            get => _useEscrow;
-            set
-            {
-                if (_useEscrow == value)
-                    return;
-
-                _useEscrow = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-
         public IBankAccountMiscView View { get; private set; }
 
         public RelayCommand OkButtonCommand { get; }
@@ -246,8 +214,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public bool TransferToVisible { get; private set; }
 
         public bool BudgetItemVisible { get; private set; }
-
-        public bool EscrowVisible { get; private set; }
 
         private bool _loading = true;
         private BankAccountRegisterItem _registerItem;
@@ -296,11 +262,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         new AutoFillValue(
                             AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
                             budgetItem.Description);
-                    if (ItemType == BudgetItemTypes.Expense)
-                    {
-                        EscrowBalance = budgetItem.EscrowBalance;
-                        UseEscrow = _registerItem.ApplyEscrow;
-                    }
                 }
                 else
                 {
@@ -352,8 +313,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
-            EscrowVisible = false;
-
             switch (ItemType)
             {
                 case BudgetItemTypes.Income:
@@ -369,11 +328,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue
                                 .PrimaryKeyValue);
                         budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItem.Id);
-                        EscrowVisible = budgetItem.DoEscrow;
-                        if (EscrowVisible)
-                        {
-                            EscrowBalance = budgetItem.EscrowBalance.GetValueOrDefault(0);
-                        }
                     }
                     break;
                 case BudgetItemTypes.Transfer:
@@ -445,7 +399,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     break;
                 case BudgetItemTypes.Expense:
                     _registerItem.ProjectedAmount = -Amount;
-                    _registerItem.ApplyEscrow = UseEscrow;
                     break;
                 case BudgetItemTypes.Transfer:
                     _registerItem.ProjectedAmount = -Amount;

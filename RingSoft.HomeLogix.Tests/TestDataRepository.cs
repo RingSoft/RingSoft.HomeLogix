@@ -34,22 +34,14 @@ namespace RingSoft.HomeLogix.Tests
                     Id = bankAccount.Id,
                     Description = bankAccount.Description,
                     CurrentBalance = bankAccount.CurrentBalance,
-                    EscrowBalance = bankAccount.EscrowBalance,
                     ProjectedEndingBalance = bankAccount.ProjectedEndingBalance,
                     ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate,
                     ProjectedLowestBalanceAmount = bankAccount.ProjectedLowestBalanceAmount,
                     MonthlyBudgetDeposits = bankAccount.MonthlyBudgetDeposits,
                     MonthlyBudgetWithdrawals = bankAccount.MonthlyBudgetWithdrawals,
-                    EscrowToBankAccountId = bankAccount.EscrowToBankAccountId,
-                    EscrowToBankAccount = null,
-                    EscrowDayOfMonth = bankAccount.EscrowDayOfMonth,
                     LastGenerationDate = bankAccount.LastGenerationDate,
                     Notes = bankAccount.Notes
                 };
-
-                if (result.EscrowToBankAccountId != null)
-                    result.EscrowToBankAccount = GetBankAccount((int) result.EscrowToBankAccountId, false);
-
                 return result;
             }
 
@@ -128,13 +120,11 @@ namespace RingSoft.HomeLogix.Tests
                     RecurringType = budgetItem.RecurringType,
                     StartingDate = budgetItem.StartingDate,
                     EndingDate = budgetItem.EndingDate,
-                    DoEscrow = budgetItem.DoEscrow,
                     TransferToBankAccountId = budgetItem.TransferToBankAccountId,
                     TransferToBankAccount = null,
                     MonthlyAmount = budgetItem.MonthlyAmount,
                     CurrentMonthAmount = budgetItem.CurrentMonthAmount,
                     CurrentMonthEnding = budgetItem.CurrentMonthEnding,
-                    EscrowBalance = budgetItem.EscrowBalance,
                     Notes = budgetItem.Notes,
                 };
                 result.BankAccount = GetBankAccount(result.BankAccountId, false);
@@ -194,11 +184,6 @@ namespace RingSoft.HomeLogix.Tests
             return true;
         }
 
-        public IEnumerable<BudgetItem> GetEscrowBudgetItems(int bankAccountId)
-        {
-            return BudgetItems.Where(w => w.BankAccountId == bankAccountId && w.DoEscrow);
-        }
-
         public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,
             IEnumerable<BudgetItem> budgetItems,
             List<BankAccountRegisterItem> registerItemsToDelete = null, BankAccount bankAccount = null)
@@ -232,11 +217,6 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public BankAccountRegisterItem GetTransferRegisterItem(string transferGuid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<BankAccountRegisterItemEscrow> GetEscrowsOfRegisterItem(int bankRegisterId)
         {
             throw new NotImplementedException();
         }
