@@ -60,6 +60,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case ActualAmountGridColumns.Date:
                     return new DataEntryGridDateCellProps(this, columnId, _dateSetup, Date);
                 case ActualAmountGridColumns.Source:
+                    _sourceAutoFillSetup.AddViewParameter = new ViewModelInput() {SourceHistoryIsIncome = IsIncome};
                     return new DataEntryGridAutoFillCellProps(this, columnId, _sourceAutoFillSetup, Source);
                 case ActualAmountGridColumns.Amount:
                     return new DataEntryGridDecimalCellProps(this, columnId, _amountSetup, Amount);

@@ -45,6 +45,10 @@ namespace RingSoft.HomeLogix
             {
                 ShowAddOnTheFlyWindow(new BudgetItemWindow(), e);
             }
+            else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BudgetItemSources)
+            {
+                ShowAddOnTheFlyWindow(new BudgetItemSourceWindow(), e);
+            }
         }
 
         private void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)

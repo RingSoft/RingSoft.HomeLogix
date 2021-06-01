@@ -13,5 +13,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public bool FromRegisterGrid { get; set; }
 
         public BudgetItemTypes? LockBudgetItemType { get; set; }
+
+        public bool SourceHistoryIsIncome { get; set; }
     }
 }
