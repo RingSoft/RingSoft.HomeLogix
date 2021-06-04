@@ -820,7 +820,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private static void ProcessCompletedBudgetMonth(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
             DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
         {
-            if (budgetItem.CurrentMonthEnding < monthEndDate)
+            if (budgetItem.CurrentMonthEnding < monthEndDate || budgetItem.LastCompletedDate == null)
             {
                 budgetItem.CurrentMonthEnding = monthEndDate;
                 budgetItem.CurrentMonthAmount = 0;
