@@ -301,8 +301,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void SetBudgetAutoFillSetup()
         {
             var budgetItemLookup = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
-            budgetItemLookup.FilterDefinition.AddFixedFilter(f => f.Type, Conditions.Equals,
-                ItemType);
+            budgetItemLookup.FilterDefinition.AddFixedFilter(f => (int)f.Type, Conditions.Equals,
+                (int)ItemType);
 
             _viewModelInput.LockBudgetItemType = ItemType;
             BudgetItemAutoFillSetup = new AutoFillSetup(budgetItemLookup) {AddViewParameter = _viewModelInput};
