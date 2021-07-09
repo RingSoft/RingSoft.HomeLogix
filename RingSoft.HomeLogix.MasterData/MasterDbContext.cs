@@ -80,10 +80,17 @@ namespace RingSoft.HomeLogix.MasterData
 
             if (firstTime)
             {
+                var filePath = ProgramDataFolder;
+#if DEBUG
+                var directoryInfo = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent;
+                if (directoryInfo != null)
+                    if (directoryInfo.Parent != null)
+                        filePath = directoryInfo.Parent.FullName;
+#endif
                 SaveHousehold(new Household
                 {
                     Name = "John and Jane Doe Family (Demo)",
-                    FilePath = ProgramDataFolder,
+                    FilePath = filePath,
                     FileName = DemoDataFileName
                 });
             }
