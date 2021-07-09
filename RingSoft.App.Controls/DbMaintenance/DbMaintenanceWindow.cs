@@ -246,7 +246,8 @@ namespace RingSoft.App.Controls
 
         public void ShowRecordSavedMessage()
         {
-            MessageBox.Show("Record Saved!", "Record Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+            var recordSavedWindow = new RecordSavedWindow();
+            recordSavedWindow.ShowDialog();
         }
 
         protected override void OnReadOnlyModeSet(bool readOnlyValue)

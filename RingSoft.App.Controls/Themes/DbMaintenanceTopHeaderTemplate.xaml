@@ -17,6 +17,12 @@
     <BitmapImage x:Key="ExitImage" UriSource="/RingSoft.App.Controls;component/Resources/Exit.png" />
     <BitmapImage x:Key="RightImage" UriSource="/RingSoft.App.Controls;component/Resources/Right.png" />
 
+    <LinearGradientBrush x:Key="DbMaintenanceTopHeaderBackgroundBrush" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Color="AliceBlue" Offset="0.15"/>
+        <GradientStop Color="SkyBlue" Offset="0.5"/>
+        <GradientStop Color="AliceBlue" Offset="0.85"/>
+    </LinearGradientBrush>
+
     <Style TargetType="local:DbMaintenanceButton" x:Key="BigButton" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}">
         <Setter Property="Width" Value="60"/>
     </Style>
@@ -85,15 +91,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Background">
-            <Setter.Value>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="AliceBlue" Offset="0.15"/>
-                    <GradientStop Color="SkyBlue" Offset="0.5"/>
-                    <GradientStop Color="AliceBlue" Offset="0.85"/>
-                </LinearGradientBrush>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Background" Value="{StaticResource DbMaintenanceTopHeaderBackgroundBrush}"/>
         <Setter Property="Margin" Value="5"/>
         <Setter Property="BorderBrush" Value="Black"/>
         <Setter Property="BorderThickness" Value="1"/>
