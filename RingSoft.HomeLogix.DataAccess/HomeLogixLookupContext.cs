@@ -80,6 +80,7 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItemSources.HasLookupDefinition(BudgetItemSourceLookup);
 
             HistoryLookup = new LookupDefinition<HistoryLookup, History>(History);
+            var budgetAlias = HistoryLookup.Include(p => p.BudgetItem).JoinDefinition.Alias;
             HistoryLookup.AddVisibleColumnDefinition(p => p.Date, "Date",
                 p => p.Date, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
@@ -94,11 +95,17 @@ namespace RingSoft.HomeLogix.DataAccess
                 .GetFieldDefinition(p => p.ProjectedAmount).FieldName);
             var actualField = DataProcessor.SqlGenerator.FormatSqlObject(History
                 .GetFieldDefinition(p => p.ActualAmount).FieldName);
+            budgetAlias = DataProcessor.SqlGenerator.FormatSqlObject(budgetAlias);
+            var typeField = DataProcessor.SqlGenerator.FormatSqlObject(BudgetItems
+                .GetFieldDefinition(p => (int)p.Type).FieldName);
 
-            var formula = $"{table}.{projectedField} - {table}.{actualField}";
+            var formula = $"CASE {budgetAlias}.{typeField} WHEN {(int)BudgetItemTypes.Income}"
+            + $" THEN {table}.{actualField} - {table}.{projectedField}"
+            + $" ELSE {table}.{projectedField} - {table}.{actualField} END";
 
             HistoryLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference",
-                formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency);
+                formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .DoShowNegativeValuesInRed();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
         }
 

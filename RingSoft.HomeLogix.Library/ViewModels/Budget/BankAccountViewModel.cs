@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using RingSoft.DbLookup.DataProcessor;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -535,7 +536,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-
+            
             BudgetItemsLookupDefinition.FilterDefinition.ClearFixedFilters();
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                 Id).SetEndLogic(EndLogics.Or);

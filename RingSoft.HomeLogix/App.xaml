@@ -15,8 +15,6 @@
                     Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <local:ValueToForegroundColorConverter x:Key="ValueToForeground" />
-
             <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:ReadOnlyBox}}" x:Key="{x:Type dec:DecimalReadOnlyBox}">
                 <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}}"/>
             </Style>

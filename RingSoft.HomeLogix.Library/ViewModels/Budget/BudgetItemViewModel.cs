@@ -556,7 +556,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var formula = $"{table}.{projectedAmountField} - {table}.{actualAmountField}";
             _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
-                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+                .HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .DoShowNegativeValuesInRed();
 
             _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
         }
