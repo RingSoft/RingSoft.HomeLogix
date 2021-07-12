@@ -185,7 +185,8 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:BudgetItemLookup}}" Header="Budget Item" DesignText="Very Large Description" Width="300"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:BudgetItemLookup}}" Header="Item&#10;Type" DesignText="Income xxx" Width="100"/>
+                                <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:BudgetItemLookup}}"
+                                                              ContentTemplate="{StaticResource BudgetItemType}" Header="Item&#10;Type" DesignerSelectedId="3" Width="100"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf RecurringPeriod, Type={x:Type lm:BudgetItemLookup}}" Header="Recurs&#10;Every" DesignText="100" Width="100" TextAlignment="Center"/>
 

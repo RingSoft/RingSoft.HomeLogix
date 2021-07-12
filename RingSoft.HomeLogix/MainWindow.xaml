@@ -101,8 +101,8 @@
                     <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBudgetLookup}}"
                                      Header="Budget Item" DesignText="A Very Large Budget Item" Width="250" />
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf ItemType, Type={x:Type vm:MainBudgetLookup}}"
-                                     Header="Item Type" DesignText="Expense xxx" Width="90" />
+                    <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type vm:MainBudgetLookup}}"
+                                                  ContentTemplate="{StaticResource BudgetItemType}" Header="Item Type" DesignerSelectedId="3" Width="100"/>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
                                      Header="Monthly Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />

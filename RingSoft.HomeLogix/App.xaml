@@ -99,6 +99,44 @@
 
             </dec:DataEntryCustomContentTemplate>
 
+
+            <dec:DataEntryCustomContentTemplate x:Key="BudgetItemType">
+                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemIncomeType}" HotKey="I">
+                    <dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/stock_index_up.png"  Width="16" Height="16"/>
+                                <TextBlock Text="Income" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                </dec:DataEntryCustomContentTemplateItem>
+
+                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemExpenseType}" HotKey="E">
+                    <dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/stock_index_down.png"  Width="16" Height="16"/>
+                                <TextBlock Text="Expense" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                </dec:DataEntryCustomContentTemplateItem>
+
+                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemTransferType}" HotKey="T">
+                    <dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Resources/transfer_left_right.png"  Width="16" Height="16"/>
+                                <TextBlock Text="Transfer" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </dec:DataEntryCustomContentTemplateItem.DataTemplate>
+                </dec:DataEntryCustomContentTemplateItem>
+
+            </dec:DataEntryCustomContentTemplate>
+
+
         </ResourceDictionary>
     </Application.Resources>
 

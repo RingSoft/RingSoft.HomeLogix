@@ -462,7 +462,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var formula = $"{table}.{depositField} - {table}.{withdrawalsField}";
             _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
-                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+                .HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .DoShowNegativeValuesInRed();
 
             _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
