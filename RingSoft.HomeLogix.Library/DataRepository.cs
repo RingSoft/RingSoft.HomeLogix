@@ -416,11 +416,19 @@ namespace RingSoft.HomeLogix.Library
             var result = new BudgetTotals();
             var context = AppGlobals.GetNewDbContext();
 
-            result.TotalBudgetMonthlyIncome =
-                context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Income).Sum(s => s.MonthlyAmount);
+            result.TotalProjectedMonthlyIncome =
+                context.BudgetPeriodHistory
+                    .Include(i => i.BudgetItem)
+                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
+                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Income)
+                    .Sum(s => s.ProjectedAmount);
 
-            result.TotalBudgetMonthlyExpenses =
-                context.BudgetItems.Where(w => w.Type == BudgetItemTypes.Expense).Sum(s => s.MonthlyAmount);
+            result.TotalProjectedMonthlyExpenses =
+                context.BudgetPeriodHistory
+                    .Include(i => i.BudgetItem)
+                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
+                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                    .Sum(s => s.ProjectedAmount);
 
             result.TotalActualMonthlyIncome = 
                 context.BudgetPeriodHistory

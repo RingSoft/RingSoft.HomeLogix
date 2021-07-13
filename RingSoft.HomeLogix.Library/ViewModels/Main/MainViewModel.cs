@@ -79,32 +79,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalBudgetMonthlyIncome;
+        private decimal _totalProjectedMonthlyIncome;
 
-        public decimal TotalBudgetMonthlyIncome
+        public decimal TotalProjectedMonthlyIncome
         {
-            get => _totalBudgetMonthlyIncome;
+            get => _totalProjectedMonthlyIncome;
             set
             {
-                if (_totalBudgetMonthlyIncome == value)
+                if (_totalProjectedMonthlyIncome == value)
                     return;
 
-                _totalBudgetMonthlyIncome = value;
+                _totalProjectedMonthlyIncome = value;
                 OnPropertyChanged();
             }
         }
 
-        private decimal _totalBudgetMonthlyExpenses;
+        private decimal _totalProjectedMonthlyExpenses;
 
-        public decimal TotalBudgetMonthlyExpenses
+        public decimal TotalProjectedMonthlyExpenses
         {
-            get => _totalBudgetMonthlyExpenses;
+            get => _totalProjectedMonthlyExpenses;
             set
             {
-                if (_totalBudgetMonthlyExpenses == value)
+                if (_totalProjectedMonthlyExpenses == value)
                     return;
 
-                _totalBudgetMonthlyExpenses = value;
+                _totalProjectedMonthlyExpenses = value;
                 OnPropertyChanged();
             }
         }
@@ -398,16 +398,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 GetPeriodEndDate(CurrentMonthEnding.AddMonths(-1)), 
                 GetPeriodEndDate(CurrentMonthEnding.AddMonths(1)));
 
-            TotalBudgetMonthlyIncome = budgetTotals.TotalBudgetMonthlyIncome;
-            TotalBudgetMonthlyExpenses = budgetTotals.TotalBudgetMonthlyExpenses;
-            TotalBudgetMonthlyNetIncome = TotalBudgetMonthlyIncome - TotalBudgetMonthlyExpenses;
+            TotalProjectedMonthlyIncome = budgetTotals.TotalProjectedMonthlyIncome;
+            TotalProjectedMonthlyExpenses = budgetTotals.TotalProjectedMonthlyExpenses;
+            TotalBudgetMonthlyNetIncome = TotalProjectedMonthlyIncome - TotalProjectedMonthlyExpenses;
 
             TotalActualMonthlyIncome = budgetTotals.TotalActualMonthlyIncome;
             TotalActualMonthlyExpenses = budgetTotals.TotalActualMonthlyExpenses;
             TotalActualMonthlyNetIncome = TotalActualMonthlyIncome - TotalActualMonthlyExpenses;
 
-            TotalMonthlyIncomeDifference = TotalActualMonthlyIncome - TotalBudgetMonthlyIncome;
-            TotalMonthlyExpensesDifference = TotalBudgetMonthlyExpenses - TotalActualMonthlyExpenses;
+            TotalMonthlyIncomeDifference = TotalActualMonthlyIncome - TotalProjectedMonthlyIncome;
+            TotalMonthlyExpensesDifference = TotalProjectedMonthlyExpenses - TotalActualMonthlyExpenses;
             TotalMonthlyNetIncomeDifference = TotalActualMonthlyNetIncome - TotalBudgetMonthlyNetIncome;
 
             YearToDateIncome = budgetTotals.YearToDateIncome;

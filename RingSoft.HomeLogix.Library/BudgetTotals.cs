@@ -2,9 +2,9 @@
 {
     public class BudgetTotals
     {
-        public decimal TotalBudgetMonthlyIncome { get; set; }
+        public decimal TotalProjectedMonthlyIncome { get; set; }
 
-        public decimal TotalBudgetMonthlyExpenses { get; set; }
+        public decimal TotalProjectedMonthlyExpenses { get; set; }
 
         public decimal TotalActualMonthlyIncome { get; set; }
 
