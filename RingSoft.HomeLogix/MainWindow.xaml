@@ -94,7 +94,7 @@
 
             <lc:LookupControl Grid.Row="1" x:Name="BudgetLookupControl"
                               LookupDefinition="{Binding BudgetLookupDefinition}"
-                              Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Center" Width="650">
+                              Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Center" Width="750">
 
                 <lc:LookupControl.LookupColumns>
 
@@ -104,11 +104,14 @@
                     <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type vm:MainBudgetLookup}}"
                                                   ContentTemplate="{StaticResource BudgetItemType}" Header="Item Type" DesignerSelectedId="3" Width="100"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
-                                     Header="Monthly Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
+                    <lc:LookupColumn PropertyName="{lc:NameOf ProjectedMonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Projected Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf MonthToDateAmount, Type={x:Type vm:MainBudgetLookup}}"
-                                     Header="Month To Date" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
+                    <lc:LookupColumn PropertyName="{lc:NameOf ActualMonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Actual Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
+
+                    <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmountDifference, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Monthly Difference" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>

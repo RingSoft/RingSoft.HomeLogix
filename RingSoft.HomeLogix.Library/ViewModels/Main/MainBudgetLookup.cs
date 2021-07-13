@@ -10,8 +10,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public string ItemType { get; set; }
 
-        public decimal MonthlyAmount { get; set; }
+        public decimal ProjectedMonthlyAmount { get; set; }
 
-        public decimal MonthToDateAmount { get; set; }
+        public decimal ActualMonthlyAmount { get; set; }
+
+        public decimal MonthlyAmountDifference { get; set; }
     }
 }
