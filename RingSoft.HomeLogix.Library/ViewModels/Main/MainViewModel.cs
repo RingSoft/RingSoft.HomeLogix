@@ -324,14 +324,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             _projectedMonthToDateColumnDefinition =
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedMonthlyAmount, formulaSql);
-            _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .HasKeepNullEmpty();
+            _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
             formulaSql = GetBudgetMonthToDateFormulaSql(false);
             _actualMonthToDateColumnDefinition =
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, formulaSql);
-            _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .HasKeepNullEmpty();
+            _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
             formulaSql = GetBudgetMonthlyAmountDifferenceFormulaSql();
             _monthlyAmountDifferrenceColumnDefinition =

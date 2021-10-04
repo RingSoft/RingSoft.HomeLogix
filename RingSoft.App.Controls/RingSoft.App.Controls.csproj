@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="2.0.2" />
+    <PackageReference Include="RingSoft.DbMaintenance" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Down.png" />
     <Resource Include="Resources\Erase.png" />
     <Resource Include="Resources\Exit.png" />
@@ -31,11 +36,6 @@
     <Resource Include="Resources\save32.png" />
     <Resource Include="Resources\saveselect32.png" />
     <Resource Include="Resources\Search32.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="2.0.2" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
