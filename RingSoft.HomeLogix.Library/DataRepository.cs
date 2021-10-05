@@ -25,6 +25,8 @@ namespace RingSoft.HomeLogix.Library
 
         bool SaveRegisterItem(BankAccountRegisterItem registerItem);
 
+        bool SaveRegisterItems(List<BankAccountRegisterItem> registerItems);
+
         bool SaveRegisterItem(BankAccountRegisterItem registerItem,
             List<BankAccountRegisterItemAmountDetail> amountDetails);
 
@@ -206,6 +208,19 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             return context.DbContext.SaveEntity(context.BankAccountRegisterItems, registerItem,
                 $"Saving Bank Account Register Item '{registerItem.Description}.'");
+        }
+
+        public bool SaveRegisterItems(List<BankAccountRegisterItem> registerItems)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            foreach (var registerItem in registerItems)
+            {
+                if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
+                    $"Saving Bank Account Register Item '{registerItem.Description}.'")) 
+                    return false;
+            }
+
+            return context.DbContext.SaveEfChanges("Saving Bank Register");
         }
 
         public bool SaveRegisterItem(BankAccountRegisterItem registerItem, List<BankAccountRegisterItemAmountDetail> amountDetails)

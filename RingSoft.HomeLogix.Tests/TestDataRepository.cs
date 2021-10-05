@@ -87,6 +87,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public bool SaveRegisterItems(List<BankAccountRegisterItem> registerItems)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool SaveRegisterItem(BankAccountRegisterItem registerItem, List<BankAccountRegisterItemAmountDetail> amountDetails)
         {
             throw new NotImplementedException();

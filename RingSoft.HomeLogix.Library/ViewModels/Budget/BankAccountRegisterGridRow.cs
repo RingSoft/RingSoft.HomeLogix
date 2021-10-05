@@ -168,14 +168,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Completed:
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
-                        Completed = checkBoxCellProps.Value;
-                        if (Completed && ActualAmount == null)
-                        {
-                            ActualAmount = ProjectedAmount;
-                        }
-                        SaveToDbOnTheFly();
+                        SetComplete(checkBoxCellProps.Value);
 
                         Manager.ViewModel.CalculateTotals();
+
+                        SaveToDbOnTheFly();
                     }
                     break;
                 case BankAccountRegisterGridColumns.Balance:
@@ -192,6 +189,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             base.SetCellValue(value);
+        }
+
+        public void SetComplete(bool value)
+        {
+            Completed = value;
+            if (Completed && ActualAmount == null)
+            {
+                ActualAmount = ProjectedAmount;
+            }
         }
 
         protected void SaveToDbOnTheFly()

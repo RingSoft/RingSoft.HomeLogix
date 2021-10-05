@@ -55,7 +55,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             throw new System.NotImplementedException();
         }
 
-        protected override DbMaintenanceDataEntryGridRow<BankAccountRegisterItem> ConstructNewRowFromEntity(BankAccountRegisterItem entity)
+        protected override DbMaintenanceDataEntryGridRow<BankAccountRegisterItem> ConstructNewRowFromEntity(
+            BankAccountRegisterItem entity)
         {
             var itemType = (BankAccountRegisterItemTypes) entity.ItemType;
             switch (itemType)
@@ -69,6 +70,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             throw new ArgumentOutOfRangeException();
         }
 
@@ -79,6 +81,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 AddRowFromEntity(bankAccountRegisterItem);
             }
+
             var newList = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate)
                 .ThenByDescending(t => t.ProjectedAmount).ToList();
             SetupForNewRecord();
@@ -86,6 +89,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 AddRow(registerGridRow);
             }
+
             Grid.SetBulkInsertMode(false);
         }
 
@@ -134,6 +138,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
                     bankAccountRegisterGridRow.Balance = newBalance;
                 }
 
@@ -179,10 +184,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                         AppGlobals.DataRepository.DeleteRegisterItems(registersToDelete);
                     }
+
                     ViewModel.CalculateTotals();
                     break;
             }
+
             base.OnRowsChanged(e);
+        }
+
+        public void CompleteAll(bool value)
+        {
+            var registerItems = new List<BankAccountRegisterItem>();
+            var rows = Rows.OfType<BankAccountRegisterGridRow>();
+            foreach (var bankAccountRegisterGridRow in rows)
+            {
+                bankAccountRegisterGridRow.SetComplete(value);
+                var registerItem = new BankAccountRegisterItem();
+                bankAccountRegisterGridRow.SaveToEntity(registerItem, 0);
+                registerItems.Add(registerItem);
+            }
+
+            ViewModel.CalculateTotals();
+            AppGlobals.DataRepository.SaveRegisterItems(registerItems);
         }
     }
 }

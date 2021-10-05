@@ -71,6 +71,8 @@
 
                 <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
 
+                <CheckBox Grid.Row="1" Grid.Column="2" Content="Completed" IsChecked="{Binding Path=CompleteAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
             </Grid>
 
             <TabControl Grid.Row="1">

@@ -400,6 +400,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         #endregion
 
+        private bool _completeAll;
+
+        public bool CompleteAll
+        {
+            get => _completeAll;
+            set
+            {
+                if (_completeAll == value)
+                    return;
+
+                _completeAll = value;
+                OnPropertyChanged();
+
+                if (_completeGrid && RegisterGridManager != null)
+                    RegisterGridManager.CompleteAll(CompleteAll);
+            }
+        }
+
+
         public ViewModelInput ViewModelInput { get; set; }
 
         public RelayCommand AddNewRegisterItemCommand { get; }
@@ -413,6 +432,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool _loading;
         private decimal _dbCurrentBalance;
+        private bool _completeGrid = true;
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
@@ -500,6 +520,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             RegisterGridManager.SetupForNewRecord();
             BankAccountView.EnableRegisterGrid(false);
+
+            _completeGrid = false;
+            CompleteAll = false;
+            _completeGrid = true;
 
             MonthlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
             YearlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
