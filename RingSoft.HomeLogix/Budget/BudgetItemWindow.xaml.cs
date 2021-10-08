@@ -6,6 +6,8 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Budget
 {
@@ -30,6 +32,15 @@ namespace RingSoft.HomeLogix.Budget
             _monthlyStatsControls.Add(MonthToDatePercentControl);
             _monthlyStatsControls.Add(MonthlyPercentDifferenceLabel);
             _monthlyStatsControls.Add(MonthlyPercentDifferenceControl);
+
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is BudgetCustomPanel budgetCustomPanel)
+                {
+                    budgetCustomPanel.AddButton.Command = BudgetItemViewModel.AddAdjustmentCommand;
+                }
+            };
+
         }
 
         protected override void OnLoaded()
@@ -54,6 +65,17 @@ namespace RingSoft.HomeLogix.Budget
             {
                 control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             }
+        }
+
+        public bool AddAdjustment(BudgetItem budgetItem)
+        {
+            ControlsGlobals.UserInterface.ShowMessageBox("Show Adjustment Window", "Nub", RsMessageBoxIcons.Information);
+            //var win = new BankAccountRegisterActualAmountDetailsWindow(actualAmountCellProps);
+            //win.ShowInTaskbar = false;
+            //win.Owner = this;
+            //win.ShowDialog();
+
+            return true;
         }
 
         public override void ResetViewForNewRecord()

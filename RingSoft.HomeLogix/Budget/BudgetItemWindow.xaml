@@ -12,16 +12,25 @@
         Style="{StaticResource BaseWindowStyle}"
         Title="Budget Item" Width="600" SizeToContent="Height">
     <Window.Resources>
-        <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
-            <Setter Property="DesignText" Value="$123,456,789.00"/>
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
-        <Style TargetType="dec:DateReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DateReadOnlyBox}}">
-            <Setter Property="DesignText" Value="01/01/2021"/>
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-        </Style>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/Budget/BudgetItemWindowHeaderTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
+                <Setter Property="DesignText" Value="$123,456,789.00"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+            <Style TargetType="dec:DateReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DateReadOnlyBox}}">
+                <Setter Property="DesignText" Value="01/01/2021"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+
+        </ResourceDictionary>
     </Window.Resources>
     <Window.DataContext>
         <vm:BudgetItemViewModel x:Name="BudgetItemViewModel"/>

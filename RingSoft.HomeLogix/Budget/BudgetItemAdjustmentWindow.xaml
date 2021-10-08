@@ -1,0 +1,53 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.Budget.BudgetItemAdjustmentWindow"
+                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+                mc:Ignorable="d"
+                Style="{StaticResource BaseWindowStyle}"
+                Title="Budget Item Adjustment" SizeToContent="WidthAndHeight">
+    <Window.DataContext>
+        <vm:BudgetItemAdjustmentViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Budget Item"/>
+
+        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=BudgetItemDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               DesignText="Groceries and Supplies" Width="200" HorizontalAlignment="Left" />
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Type"/>
+
+        <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               DesignText="Expense" Width="100" HorizontalAlignment="Left" />
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Date"/>
+
+        <dec:DateEditControl Grid.Row="2" Grid.Column="1" Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               DateFormatType="DateOnly" DesignText="01/01/1980" Width="100" HorizontalAlignment="Left" />
+
+        <Label Grid.Row="3" Grid.Column="0" Content="Adjustment Description"/>
+
+        <dec:StringEditControl Grid.Row="3" Grid.Column="1" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Width="200" HorizontalAlignment="Left" />
+
+    </Grid>
+
+</dec:BaseWindow>

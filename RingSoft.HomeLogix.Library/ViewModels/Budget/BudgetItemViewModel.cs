@@ -21,6 +21,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void SetViewType();
 
         void ShowMonthlyStatsControls(bool show = true);
+
+        bool AddAdjustment(BudgetItem budgetItem);
     }
 
     public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
@@ -524,6 +526,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool FromRegisterGrid { get; private set; }
 
+        public RelayCommand AddAdjustmentCommand { get; }
+
         private IBudgetItemView _view;
         private bool _loading;
         private decimal _dbMonthlyAmount;
@@ -542,6 +546,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public BudgetItemViewModel()
         {
             DateControlsEnabled = BudgetItemTypeEnabled = true;
+
+            AddAdjustmentCommand = new RelayCommand(AddAdjustment);
 
             _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
             _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedAmount, p => p.ProjectedAmount);
@@ -659,6 +665,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
             YearlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
+
+            AddAdjustmentCommand.IsEnabled = false;
 
             _loading = false;
 
@@ -785,9 +793,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
 
+            AddAdjustmentCommand.IsEnabled = true;
+
             _loading = false;
             _registerAffected = false;
             return budgetItem;
+        }
+
+        private void AddAdjustment()
+        {
+            if (_view.AddAdjustment(GetBudgetItem()))
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox("Refresh Stats Controls.", "Nub", RsMessageBoxIcons.Information);
+            }
         }
 
         protected override void LoadFromEntity(BudgetItem entity)

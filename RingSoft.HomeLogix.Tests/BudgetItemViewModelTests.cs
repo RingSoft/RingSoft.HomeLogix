@@ -20,6 +20,11 @@ namespace RingSoft.HomeLogix.Tests
             
         }
 
+        public bool AddAdjustment(BudgetItem budgetItem)
+        {
+            return true;
+        }
+
         public TestBudgetItemView(string ownerName) : base(ownerName)
         {
         }

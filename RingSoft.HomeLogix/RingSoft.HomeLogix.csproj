@@ -52,4 +52,10 @@
     <Resource Include="Resources\transfer_left_right.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Budget\BudgetItemWindowHeaderTemplate.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
+
 </Project>
