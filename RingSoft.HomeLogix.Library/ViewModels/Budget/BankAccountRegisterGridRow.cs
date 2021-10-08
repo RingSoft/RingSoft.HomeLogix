@@ -223,6 +223,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ProjectedAmount = Math.Abs(entity.ProjectedAmount);
             ActualAmount = entity.ActualAmount;
             ActualAmountDetails = entity.AmountDetails.ToList();
+            Completed = entity.Completed;
         }
 
         public override bool ValidateRow()
@@ -251,6 +252,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            entity.Completed = Completed;
         }
 
         public void SaveToEntity(BankAccountRegisterItem entity, int rowIndex,

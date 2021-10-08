@@ -12,6 +12,7 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.Property(p => p.ActualAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.Completed).HasColumnType(SqliteConstants.BoolColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
             builder.Property(p => p.ItemDate).HasColumnType(SqliteConstants.DateColumnType);

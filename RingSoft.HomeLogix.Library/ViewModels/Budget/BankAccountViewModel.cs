@@ -570,6 +570,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
+            CurrentProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
+            CalculateTotals();
+
             ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = !ReadOnlyMode;
 
@@ -582,7 +585,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
 
-            CurrentProjectedEndingBalance = entity.ProjectedEndingBalance;
             CurrentBalance = entity.CurrentBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
@@ -709,12 +711,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(w => w.Completed).ToList();
 
             var completedRegisterData = new CompletedRegisterData();
-            if (!ProcessCompletedRows(completedRegisterData, completedRows))
-                return false;
+
+            var processCompletedRows = false;
+            if (completedRows.Any())
+            {
+                var message = "Do you wish to post the Completed rows to History and delete them from the Register?";
+                if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
+                    MessageBoxButtonsResult.Yes)
+                    processCompletedRows = true;
+            }
+
+            if (processCompletedRows)
+                if (!ProcessCompletedRows(completedRegisterData, completedRows))
+                    return false;
 
             if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {
-                if (completedRows.Any())
+                if (processCompletedRows)
                 {
                     var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
                     BankAccountRegisterGridRow currentRow = null;

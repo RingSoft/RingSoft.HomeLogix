@@ -46,6 +46,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string TransferRegisterGuid { get; set; }
 
+        public bool Completed { get; set; }
+
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
         public BankAccountRegisterItem()
