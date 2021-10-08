@@ -49,7 +49,7 @@
 
         <Label Grid.Row="3" Grid.Column="0" Content="Amount"/>
 
-        <dec:DecimalEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+        <dec:DecimalEditControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False" MinimumValue="0"/>
 
         <Label Grid.Row="4" Grid.Column="0" x:Name="BudgetItemLabel" Content="Budget Item"/>
 

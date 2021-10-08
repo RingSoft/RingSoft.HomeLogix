@@ -200,14 +200,13 @@
 
                 <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" x:Name="MonthlyAmountRemainingControl" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
 
-                <Label Grid.Row="2" Grid.Column="0" x:Name="LastCompletedDateLabel" Content="Last Completed Date"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Last Completed Date"/>
 
                 <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" x:Name="LastCompletedDateControl" Value="{Binding Path=LastCompletedDate}"/>
 
-                <Label Grid.Row="2" Grid.Column="2" x:Name="CurrentMonthLabel" Content="Current Month Ending" />
+                <Label Grid.Row="2" Grid.Column="2" Content="Current Month Ending" />
 
-                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" x:Name="CurrentMonthControl"
-                                     Value="{Binding CurrentMonthEnding}" />
+                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding CurrentMonthEnding}" />
 
                 <Label Grid.Row="3" Grid.Column="0" x:Name="MonthlyAmountPercentLabel" Content="Monthly Amount Percent"/>
 

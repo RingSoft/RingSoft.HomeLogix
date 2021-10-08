@@ -24,10 +24,6 @@ namespace RingSoft.HomeLogix.Budget
         {
             InitializeComponent();
 
-            _monthlyStatsControls.Add(LastCompletedDateLabel);
-            _monthlyStatsControls.Add(LastCompletedDateControl);
-            _monthlyStatsControls.Add(CurrentMonthLabel);
-            _monthlyStatsControls.Add(CurrentMonthControl);
             _monthlyStatsControls.Add(MonthlyAmountPercentLabel);
             _monthlyStatsControls.Add(MonthlyAmountPercentControl);
             _monthlyStatsControls.Add(MonthToDatePercentLabel);
