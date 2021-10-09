@@ -141,9 +141,9 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
-            History.GetFieldDefinition(p => p.ProjectedAmount).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            History.GetFieldDefinition(p => p.ProjectedAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
 
-            History.GetFieldDefinition(p => p.ActualAmount).HasDecimalFieldType(DecimalFieldTypes.Currency);
+            History.GetFieldDefinition(p => p.ActualAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
 
             SourceHistory.GetFieldDefinition(p => p.Amount).HasDecimalFieldType(DecimalFieldTypes.Currency);
         }

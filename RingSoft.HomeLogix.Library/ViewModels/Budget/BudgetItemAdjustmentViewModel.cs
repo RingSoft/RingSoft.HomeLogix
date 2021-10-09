@@ -76,20 +76,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _amount;
+        private decimal? _projectedAdjustment;
 
-        public decimal Amount
+        public decimal? ProjectedAdjustment
         {
-            get => _amount;
+            get => _projectedAdjustment;
             set
             {
-                if (_amount == value)
+                if (_projectedAdjustment == value)
                     return;
 
-                _amount = value;
+                _projectedAdjustment = value;
                 OnPropertyChanged();
             }
         }
+
+        private decimal? _actualAdjustment;
+
+        public decimal? ActualAdjustment
+        {
+            get => _actualAdjustment;
+            set
+            {
+                if (_actualAdjustment == value)
+                    return;
+                
+                _actualAdjustment = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public IBudgetItemAdjustmentView View { get; set; }
 
@@ -104,16 +120,66 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             OkButtonCommand = new RelayCommand(OnOkButton);
         }
 
-        public void OnViewLoaded(BudgetItem budgetItem)
+        public void OnViewLoaded(IBudgetItemAdjustmentView view, BudgetItem budgetItem)
         {
+            View = view;
             _budgetItem = budgetItem;
             BudgetItemDescription = budgetItem.Description;
         }
 
         private void OnOkButton()
         {
-            ControlsGlobals.UserInterface.ShowMessageBox("Post Adjustment.", "Nub", RsMessageBoxIcons.Information);
+            var monthEndDate = new DateTime(Date.Year, Date.Month,
+                DateTime.DaysInMonth(Date.Year, Date.Month));
+
+            if (_budgetItem.CurrentMonthEnding == monthEndDate)
+                _budgetItem.CurrentMonthAmount += ActualAdjustment.GetValueOrDefault(0);
+
+            var budgetMonthHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(_budgetItem.Id,
+                PeriodHistoryTypes.Monthly, monthEndDate) ?? new BudgetPeriodHistory
+            {
+                BudgetItemId = _budgetItem.Id,
+                PeriodType = (byte)PeriodHistoryTypes.Monthly,
+                PeriodEndingDate = monthEndDate
+            };
+
+            budgetMonthHistory.ProjectedAmount += ProjectedAdjustment.GetValueOrDefault(0);
+            budgetMonthHistory.ActualAmount += ActualAdjustment.GetValueOrDefault(0);
+
+            var yearEndDate = new DateTime(Date.Year, 12, 31);
+
+            var budgetYearHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(_budgetItem.Id,
+                PeriodHistoryTypes.Yearly, yearEndDate) ?? new BudgetPeriodHistory
+            {
+                BudgetItemId = _budgetItem.Id,
+                PeriodType = (byte)PeriodHistoryTypes.Yearly,
+                PeriodEndingDate = yearEndDate
+            };
+
+            budgetYearHistory.ProjectedAmount += ProjectedAdjustment.GetValueOrDefault(0);
+            budgetYearHistory.ActualAmount += ActualAdjustment.GetValueOrDefault(0);
+
+            var historyItem = new History
+            {
+                BankAccountId = _budgetItem.BankAccountId,
+                Date = Date,
+                ItemType = (int)_budgetItem.Type,
+                BudgetItemId = _budgetItem.Id,
+                Description = Description,
+                ProjectedAmount = ProjectedAdjustment.GetValueOrDefault(0),
+                ActualAmount = ActualAdjustment.GetValueOrDefault(0)
+            };
+
+            var periodHistoryRecords = new List<BudgetPeriodHistory>();
+            periodHistoryRecords.Add(budgetMonthHistory);
+            periodHistoryRecords.Add(budgetYearHistory);
+
+            if (!AppGlobals.DataRepository.SaveBudgetItem(_budgetItem, periodHistoryRecords, historyItem))
+                return;
+
             DialogResult = true;
+
+            View.OnOkButtonCloseWindow();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

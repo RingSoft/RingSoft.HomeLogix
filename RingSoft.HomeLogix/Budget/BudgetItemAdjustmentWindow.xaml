@@ -40,14 +40,30 @@
 
         <Label Grid.Row="2" Grid.Column="0" Content="Date"/>
 
-        <dec:DateEditControl Grid.Row="2" Grid.Column="1" Text="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        <dec:DateEditControl Grid.Row="2" Grid.Column="1" Value="{Binding Path=Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                DateFormatType="DateOnly" DesignText="01/01/1980" Width="100" HorizontalAlignment="Left" />
 
         <Label Grid.Row="3" Grid.Column="0" Content="Adjustment Description"/>
 
         <dec:StringEditControl Grid.Row="3" Grid.Column="1" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Width="200" HorizontalAlignment="Left" />
+                             Width="200" DesignText="Reverse 10/10/2021" HorizontalAlignment="Left" />
 
+        <Label Grid.Row="4" Grid.Column="0" Content="Projected Adjustment"/>
+
+        <dec:DecimalEditControl Grid.Row="4" Grid.Column="1" Value="{Binding Path=ProjectedAdjustment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               Width="125" DesignText="-$123,456,789.12" FormatType="Currency" HorizontalAlignment="Left" />
+
+        <Label Grid.Row="5" Grid.Column="0" Content="Actual Adjustment"/>
+
+        <dec:DecimalEditControl Grid.Row="5" Grid.Column="1" Value="{Binding Path=ActualAdjustment, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Width="125" DesignText="-$123,456,789.12" FormatType="Currency" HorizontalAlignment="Left" />
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+
+            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0"/>
+            <Button x:Name="CancelButton" Content="_Cancel" Width="50"/>
+
+        </StackPanel>
     </Grid>
 
 </dec:BaseWindow>

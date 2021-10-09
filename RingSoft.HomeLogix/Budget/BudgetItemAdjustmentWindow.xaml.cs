@@ -1,27 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
 {
     /// <summary>
     /// Interaction logic for BudgetItemAdjustmentWindow.xaml
     /// </summary>
-    public partial class BudgetItemAdjustmentWindow : Window
+    public partial class BudgetItemAdjustmentWindow : IBudgetItemAdjustmentView
     {
-        public BudgetItemAdjustmentWindow()
+        public BudgetItemAdjustmentWindow(BudgetItem budgetItem)
         {
             InitializeComponent();
+            ViewModel.OnViewLoaded(this, budgetItem);
+            CancelButton.Click += (sender, args) => Close();
+        }
+
+        public new bool ShowDialog()
+        {
+            base.ShowDialog();
+            return ViewModel.DialogResult;
+        }
+
+        public void OnOkButtonCloseWindow()
+        {
+            Close();
         }
     }
 }

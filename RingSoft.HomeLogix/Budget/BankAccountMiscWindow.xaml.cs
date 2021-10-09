@@ -16,6 +16,7 @@ namespace RingSoft.HomeLogix.Budget
             InitializeComponent();
 
             ViewModel.OnViewLoaded(this, registerItem, viewModelInput);
+            CancelButton.Click += (sender, args) => Close();
         }
 
         public void SetViewType()

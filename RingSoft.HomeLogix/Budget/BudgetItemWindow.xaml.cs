@@ -69,13 +69,10 @@ namespace RingSoft.HomeLogix.Budget
 
         public bool AddAdjustment(BudgetItem budgetItem)
         {
-            ControlsGlobals.UserInterface.ShowMessageBox("Show Adjustment Window", "Nub", RsMessageBoxIcons.Information);
-            //var win = new BankAccountRegisterActualAmountDetailsWindow(actualAmountCellProps);
-            //win.ShowInTaskbar = false;
-            //win.Owner = this;
-            //win.ShowDialog();
-
-            return true;
+            var win = new BudgetItemAdjustmentWindow(budgetItem);
+            win.ShowInTaskbar = false;
+            win.Owner = this;
+            return win.ShowDialog();
         }
 
         public override void ResetViewForNewRecord()

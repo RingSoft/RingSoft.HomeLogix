@@ -172,6 +172,11 @@ namespace RingSoft.HomeLogix.Tests
             return true;
         }
 
+        public bool SaveBudgetItem(BudgetItem budgetItem, List<BudgetPeriodHistory> budgetPeriodHistoryRecords, History newHistoryRecord)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount,
             BankAccount dbTransferToBankAccount)
         {

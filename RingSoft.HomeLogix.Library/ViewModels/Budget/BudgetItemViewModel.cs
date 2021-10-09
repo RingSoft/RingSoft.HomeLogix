@@ -802,9 +802,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void AddAdjustment()
         {
-            if (_view.AddAdjustment(GetBudgetItem()))
+            if (RecordDirty)
+                if (DoSave() != DbMaintenanceResults.Success)
+                    return;
+            
+            var budgetItem = GetBudgetItem();
+            budgetItem.BankAccountId = DbBankAccountId;
+
+            if (_view.AddAdjustment(budgetItem))
             {
-                ControlsGlobals.UserInterface.ShowMessageBox("Refresh Stats Controls.", "Nub", RsMessageBoxIcons.Information);
+                RecalculateBudgetItem();
+                var primaryKeyValue = AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem);
+                MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+                YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+                HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
             }
         }
 
