@@ -816,6 +816,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
                 YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
                 HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+
+                if (AppGlobals.MainViewModel != null)
+                    AppGlobals.MainViewModel.RefreshView();
             }
         }
 

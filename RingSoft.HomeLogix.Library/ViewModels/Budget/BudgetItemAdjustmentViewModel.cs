@@ -30,21 +30,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private string _type;
-
-        public string Type
-        {
-            get => _type;
-            set
-            {
-                if (_type == value)
-                    return;
-
-                _type = value;
-                OnPropertyChanged();
-            }
-        }
-
         private DateTime _date;
 
         public DateTime Date
@@ -125,6 +110,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             View = view;
             _budgetItem = budgetItem;
             BudgetItemDescription = budgetItem.Description;
+            Date = budgetItem.LastCompletedDate.GetValueOrDefault(DateTime.Today);
         }
 
         private void OnOkButton()
