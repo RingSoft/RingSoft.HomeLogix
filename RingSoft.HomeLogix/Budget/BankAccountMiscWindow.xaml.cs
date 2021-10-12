@@ -43,6 +43,9 @@ namespace RingSoft.HomeLogix.Budget
                 case ValidationFocusControls.TransferToBank:
                     TransferToBankControl.Focus();
                     break;
+                case ValidationFocusControls.Amount:
+                    AmountControl.Focus();
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(control), control, null);
             }

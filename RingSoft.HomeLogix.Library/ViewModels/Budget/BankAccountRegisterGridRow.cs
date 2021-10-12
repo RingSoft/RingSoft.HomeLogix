@@ -55,6 +55,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public bool IsNegative { get; set; }
+
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
         private DecimalEditControlSetup _decimalValueSetup;
@@ -219,8 +221,56 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     new AutoFillValue(AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),
                         entity.BudgetItem.Description);
 
-            TransactionType = entity.ProjectedAmount < 0 ? TransactionTypes.Withdrawal : TransactionTypes.Deposit;
-            ProjectedAmount = Math.Abs(entity.ProjectedAmount);
+            if (entity.TransferRegisterGuid.IsNullOrEmpty())
+            {
+                if (entity.BudgetItem != null)
+                {
+                    if ((BankAccountRegisterItemTypes) entity.ItemType ==
+                        BankAccountRegisterItemTypes.Miscellaneous)
+                    {
+                        IsNegative = entity.IsNegative;
+                        switch (entity.BudgetItem.Type)
+                        {
+                            case BudgetItemTypes.Income:
+                                TransactionType = entity.IsNegative
+                                    ? TransactionTypes.Withdrawal
+                                    : TransactionTypes.Deposit;
+                                break;
+                            case BudgetItemTypes.Expense:
+                                TransactionType = entity.IsNegative
+                                    ? TransactionTypes.Deposit
+                                    : TransactionTypes.Withdrawal;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+                    else
+                    {
+                        switch (entity.BudgetItem.Type)
+                        {
+                            case BudgetItemTypes.Income:
+                                TransactionType = TransactionTypes.Deposit;
+                                break;
+                            case BudgetItemTypes.Expense:
+                                TransactionType = TransactionTypes.Withdrawal;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                    }
+
+                    ProjectedAmount = Math.Abs(entity.ProjectedAmount);
+                }
+            }
+            else
+            {
+                TransactionType = entity.ProjectedAmount < 0
+                    ? TransactionTypes.Withdrawal
+                    : TransactionTypes.Deposit;
+                ProjectedAmount = Math.Abs(entity.ProjectedAmount);
+            }
+
             ActualAmount = entity.ActualAmount;
             ActualAmountDetails = entity.AmountDetails.ToList();
             Completed = entity.Completed;
@@ -254,6 +304,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             entity.Completed = Completed;
+            entity.IsNegative = IsNegative;
         }
 
         public void SaveToEntity(BankAccountRegisterItem entity, int rowIndex,

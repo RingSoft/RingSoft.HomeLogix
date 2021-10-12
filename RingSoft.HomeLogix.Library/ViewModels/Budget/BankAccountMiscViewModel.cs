@@ -15,7 +15,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     public enum ValidationFocusControls
     {
         BudgetItem = 0,
-        TransferToBank = 1
+        TransferToBank = 1,
+        Amount = 2
     }
 
     public interface IBankAccountMiscView
@@ -142,6 +143,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _amount = value;
+                AutofillDescription();
                 OnPropertyChanged();
             }
         }
@@ -173,6 +175,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _budgetItemAutoFillValue = value;
                 SetViewMode();
+                if (BudgetItemAutoFillValue != null)
+                    AutofillDescription();
                 OnPropertyChanged();
             }
         }
@@ -203,6 +207,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _transferToBankAccountAutoFillValue = value;
+
+                if (TransferToBankAccountAutoFillValue != null)
+                    AutofillDescription();
+
                 OnPropertyChanged();
             }
         }
@@ -246,15 +254,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             else
             {
                 RegisterId = _registerItem.Id;
-                Description = _registerItem.Description;
                 Date = _registerItem.ItemDate;
-                Amount = Math.Abs(_registerItem.ProjectedAmount);
+                if (_registerItem.IsNegative)
+                    Amount = -_registerItem.ProjectedAmount;
+                else
+                    Amount = Math.Abs(_registerItem.ProjectedAmount);
+
                 if (_registerItem.TransferRegisterGuid.IsNullOrEmpty())
                 {
-                    if (_registerItem.ProjectedAmount < 0)
-                        ItemType = BudgetItemTypes.Expense;
-                    else
-                        ItemType = BudgetItemTypes.Income;
+                    //if (_registerItem.ProjectedAmount < 0)
+                    //    ItemType = BudgetItemTypes.Expense;
+                    //else
+                    //    ItemType = BudgetItemTypes.Income;
 
                     var budgetItem =
                         AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId.GetValueOrDefault(0));
@@ -262,6 +273,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         new AutoFillValue(
                             AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
                             budgetItem.Description);
+                    ItemType = _registerItem.BudgetItem.Type;
                 }
                 else
                 {
@@ -292,6 +304,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 ItemTypeEnabled = false;
             }
+            Description = _registerItem.Description;
             SetBudgetAutoFillSetup();
             _loading = false;
 
@@ -362,6 +375,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ValidationFocusControls.TransferToBank);
                     return;
                 }
+
+                if (Amount < 0)
+                {
+                    var message = "Transfer amount cannot be less than 0.";
+                    View.OnValidationFail(message, "Invalid Amount", ValidationFocusControls.Amount);
+                    return;
+                }
                 _registerItem.RegisterGuid = Guid.NewGuid().ToString();
                 _registerItem.TransferRegisterGuid = Guid.NewGuid().ToString();
 
@@ -373,7 +393,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _transferToRegisterItem.TransferRegisterGuid = _registerItem.RegisterGuid;
                 _transferToRegisterItem.ItemDate = Date;
                 _transferToRegisterItem.Description = Description;
-                _transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
+                _transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
             }
             else
             {
@@ -386,31 +406,60 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
                     .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+                _registerItem.BudgetItem =
+                    AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId.GetValueOrDefault(0));
             }
 
             _registerItem.ItemType = (int)BankAccountRegisterItemTypes.Miscellaneous;
             _registerItem.ItemDate = Date;
             _registerItem.Description = Description;
             
-            switch (ItemType)
-            {
-                case BudgetItemTypes.Income:
-                    _registerItem.ProjectedAmount = Amount;
-                    break;
-                case BudgetItemTypes.Expense:
-                    _registerItem.ProjectedAmount = -Amount;
-                    break;
-                case BudgetItemTypes.Transfer:
-                    _registerItem.ProjectedAmount = -Amount;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            //switch (ItemType)
+            //{
+            //    case BudgetItemTypes.Income:
+            //        _registerItem.ProjectedAmount = Amount;
+            //        break;
+            //    case BudgetItemTypes.Expense:
+            //        _registerItem.ProjectedAmount = -Amount;
+            //        break;
+            //    case BudgetItemTypes.Transfer:
+            //        _registerItem.ProjectedAmount = -Amount;
+            //        break;
+            //    default:
+            //        throw new ArgumentOutOfRangeException();
+            //}
+            _registerItem.ProjectedAmount = Math.Abs(Amount);
+            _registerItem.IsNegative = Amount < 0;
 
+            if (_registerItem.ActualAmount != null)
+                _registerItem.ActualAmount = _registerItem.ProjectedAmount;
+            
             if (AppGlobals.DataRepository.SaveNewRegisterItem(_registerItem, _transferToRegisterItem))
                 View.OnOkButtonCloseWindow();
         }
 
+        private void AutofillDescription()
+        {
+            if (_loading)
+                return;
+
+            var adjust = "Decrease";
+            if (Amount >= 0)
+                adjust = "Increase";
+
+            var type = "Expense";
+            if (ItemType == BudgetItemTypes.Income)
+                type = "Income";
+
+            if (ItemType == BudgetItemTypes.Transfer)
+            {
+                if (TransferToBankAccountAutoFillValue != null &&
+                    !TransferToBankAccountAutoFillValue.Text.IsNullOrEmpty())
+                    Description = $"Transfer To {TransferToBankAccountAutoFillValue.Text}";
+            }
+            else
+                Description = $"{adjust} {BudgetItemAutoFillValue.Text} {type}";
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

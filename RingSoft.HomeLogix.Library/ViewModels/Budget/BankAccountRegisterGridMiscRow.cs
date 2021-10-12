@@ -62,6 +62,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public override void SaveToEntity(BankAccountRegisterItem entity, int rowIndex)
         {
             entity.TransferRegisterGuid = TransferRegisterGuid;
+            entity.BudgetItem = BudgetItemId != null
+                ? AppGlobals.DataRepository.GetBudgetItem(BudgetItemId.GetValueOrDefault(0))
+                : null;
             base.SaveToEntity(entity, rowIndex);
         }
     }

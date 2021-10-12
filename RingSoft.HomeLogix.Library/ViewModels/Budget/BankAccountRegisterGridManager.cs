@@ -76,6 +76,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void AddGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> registerItems)
         {
+            var isDirty = ViewModel.RecordDirty;
+
             Grid.SetBulkInsertMode();
             foreach (var bankAccountRegisterItem in registerItems)
             {
@@ -91,6 +93,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             Grid.SetBulkInsertMode(false);
+
+            if (!isDirty)
+                ViewModel.RecordDirty = false;
         }
 
         public new List<BankAccountRegisterItem> GetEntityList()

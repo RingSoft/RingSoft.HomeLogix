@@ -42,6 +42,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public decimal ProjectedAmount { get; set; }
 
+        public bool IsNegative { get; set; }
+
         public decimal? ActualAmount { get; set; }
 
         public string TransferRegisterGuid { get; set; }
