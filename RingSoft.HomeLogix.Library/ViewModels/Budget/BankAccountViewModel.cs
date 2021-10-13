@@ -953,32 +953,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         private void ProcessCompletedBankYear(CompletedRegisterData completedRegisterData,
-            DateTime yearEndDate, BankAccountRegisterGridRow completedRow)
+            DateTime periodEndDate, BankAccountRegisterGridRow completedRow, PeriodHistoryTypes periodHistoryType)
         {
-            var bankYearHistory = completedRegisterData.BankAccountPeriodHistoryRecords.FirstOrDefault(f =>
-                f.BankAccountId == Id && f.PeriodType == (byte)PeriodHistoryTypes.Yearly &&
-                f.PeriodEndingDate == yearEndDate);
+            var bankPeriodHistory = completedRegisterData.BankAccountPeriodHistoryRecords.FirstOrDefault(f =>
+                f.BankAccountId == Id && f.PeriodType == (byte)periodHistoryType &&
+                f.PeriodEndingDate == periodEndDate);
 
-            if (bankYearHistory == null)
+            if (bankPeriodHistory == null)
             {
-                bankYearHistory = AppGlobals.DataRepository.GetBankPeriodHistory(Id,
-                    PeriodHistoryTypes.Yearly, yearEndDate) ?? new BankAccountPeriodHistory
+                bankPeriodHistory = AppGlobals.DataRepository.GetBankPeriodHistory(Id,
+                    periodHistoryType, periodEndDate) ?? new BankAccountPeriodHistory
                 {
                     BankAccountId = Id,
-                    PeriodType = (byte)PeriodHistoryTypes.Yearly,
-                    PeriodEndingDate = yearEndDate
+                    PeriodType = (byte)periodHistoryType,
+                    PeriodEndingDate = periodEndDate
                 };
 
-                completedRegisterData.BankAccountPeriodHistoryRecords.Add(bankYearHistory);
+                completedRegisterData.BankAccountPeriodHistoryRecords.Add(bankPeriodHistory);
             }
 
             switch (completedRow.TransactionType)
             {
                 case TransactionTypes.Deposit:
-                    bankYearHistory.TotalDeposits += completedRow.ActualAmount.GetValueOrDefault(0);
-                    break;
+                    bankPeriodHistory.TotalDeposits += completedRow.ActualAmount.GetValueOrDefault(0);
+                    //if (completedRow.IsNegative)
+                        break;
                 case TransactionTypes.Withdrawal:
-                    bankYearHistory.TotalWithdrawals += completedRow.ActualAmount.GetValueOrDefault(0);
+                    bankPeriodHistory.TotalWithdrawals += completedRow.ActualAmount.GetValueOrDefault(0);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -999,6 +1000,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ProjectedAmount = completedRow.ProjectedAmount,
                 ActualAmount = completedRow.ActualAmount.GetValueOrDefault(0)
             };
+            if (registerItem.IsNegative)
+            {
+                historyItem.ProjectedAmount = -historyItem.ProjectedAmount;
+                historyItem.ActualAmount = -historyItem.ActualAmount;
+            }
+
             completedRegisterData.NewHistoryRecords.Add(historyItem);
             var detailId = 1;
             foreach (var amountDetail in amountDetails)

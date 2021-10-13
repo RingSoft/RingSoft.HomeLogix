@@ -293,9 +293,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
-                    if (_registerItem.BankAccount != null)
-                        TransferFromDescription = _registerItem.BankAccount.Description;
-
                     ItemType = BudgetItemTypes.Transfer;
                     if (_registerItem.ProjectedAmount < 0)
                     {
@@ -306,6 +303,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         TransferToBankAccountAutoFillValue = new AutoFillValue(
                             AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(transferToBankAccount),
                             transferToBankAccount.Description);
+
+                        TransferFromDescription = AppGlobals.DataRepository
+                            .GetBankAccount(_registerItem.BankAccountId, false).Description;
                     }
                     else
                     {
@@ -318,6 +318,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         _transferToRegisterItem = _registerItem;
                         _registerItem =
                             AppGlobals.DataRepository.GetTransferRegisterItem(_transferToRegisterItem.TransferRegisterGuid);
+                        TransferFromDescription = _registerItem.BankAccount.Description;
                     }
                 }
 

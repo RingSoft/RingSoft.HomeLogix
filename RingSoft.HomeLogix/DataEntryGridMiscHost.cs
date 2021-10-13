@@ -48,7 +48,6 @@ namespace RingSoft.HomeLogix
                 var registerItem = new BankAccountRegisterItem();
                 _cellProps.Row.SaveToEntity(registerItem, 0);
                 var registerBankAccountId = registerItem.BankAccountId;
-                registerItem.BankAccount = AppGlobals.DataRepository.GetBankAccount(registerBankAccountId, false);
                 if (_cellProps.Row.Manager.ViewModel.BankAccountView.ShowBankAccountMiscWindow(registerItem,
                     _cellProps.Row.Manager.ViewModel.ViewModelInput))
                 {

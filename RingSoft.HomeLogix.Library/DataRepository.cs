@@ -427,7 +427,8 @@ namespace RingSoft.HomeLogix.Library
         public BankAccountRegisterItem GetTransferRegisterItem(string transferGuid)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BankAccountRegisterItems.FirstOrDefault(f => f.RegisterGuid == transferGuid);
+            return context.BankAccountRegisterItems.Include(p => p.BankAccount)
+                .FirstOrDefault(f => f.RegisterGuid == transferGuid);
         }
 
         public bool SaveNewRegisterItem(BankAccountRegisterItem registerItem, BankAccountRegisterItem transferRegisterItem = null)
