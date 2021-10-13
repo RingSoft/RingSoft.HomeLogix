@@ -47,17 +47,21 @@
 
         <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="BudgetItemControl" Setup="{Binding Path=BudgetItemAutoFillSetup}" Value="{Binding Path=BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="200" DesignText="Large Budget Item Description"/>
 
-        <Label Grid.Row="3" Grid.Column="0" x:Name="TransferToBankLabel" Content="Transfer To Bank Account"/>
+        <Label Grid.Row="3" Grid.Column="0" x:Name="TransferFromBankLabel" Content="Transfer From Bank Account"/>
 
-        <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" x:Name="TransferToBankControl" Setup="{Binding Path=TransferToBankAccountAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="200" DesignText="Large Bank Account Description"/>
+        <dec:StringReadOnlyBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" x:Name="TransferFromBankControl" Text="{Binding Path=TransferFromDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Large From Bank" Width="200" HorizontalAlignment="Left" />
 
-        <Label Grid.Row="4" Grid.Column="0" Content="Amount"/>
+        <Label Grid.Row="4" Grid.Column="0" x:Name="TransferToBankLabel" Content="Transfer To Bank Account"/>
 
-        <dec:DecimalEditControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" x:Name="AmountControl" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+        <lc:AutoFillControl Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" x:Name="TransferToBankControl" Setup="{Binding Path=TransferToBankAccountAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="200" DesignText="Large Bank Account Description"/>
 
-        <Label Grid.Row="5" Grid.Column="0" Content="Description"/>
+        <Label Grid.Row="5" Grid.Column="0" Content="Amount"/>
 
-        <dec:StringEditControl Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50" Width="200" DesignText="A Very Big Register Item" HorizontalAlignment="Left"/>
+        <dec:DecimalEditControl Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3" x:Name="AmountControl" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+
+        <Label Grid.Row="6" Grid.Column="0" Content="Description"/>
+
+        <dec:StringEditControl Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="50" Width="200" DesignText="A Very Big Register Item" HorizontalAlignment="Left"/>
 
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
 

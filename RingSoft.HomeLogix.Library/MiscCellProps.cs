@@ -9,9 +9,9 @@ namespace RingSoft.HomeLogix.Library
 
         public override int EditingControlId => MiscControlHostId;
 
-        public new BankAccountRegisterGridMiscRow Row { get; }
+        public new BankAccountRegisterGridRow Row { get; }
 
-        public MiscCellProps(BankAccountRegisterGridMiscRow row, int columnId, string text) : base(row, columnId, text)
+        public MiscCellProps(BankAccountRegisterGridRow row, int columnId, string text) : base(row, columnId, text)
         {
             Row = row;
         }

@@ -132,6 +132,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private string _transferFromDescription;
+
+        public string TransferFromDescription
+        {
+            get => _transferFromDescription;
+            set
+            {
+                if (_transferFromDescription == value)
+                    return;
+
+                _transferFromDescription = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private decimal _amount;
 
         public decimal Amount
@@ -277,6 +293,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
+                    if (_registerItem.BankAccount != null)
+                        TransferFromDescription = _registerItem.BankAccount.Description;
+
                     ItemType = BudgetItemTypes.Transfer;
                     if (_registerItem.ProjectedAmount < 0)
                     {
@@ -394,6 +413,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _transferToRegisterItem.ItemDate = Date;
                 _transferToRegisterItem.Description = Description;
                 _transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
+                _registerItem.ProjectedAmount = -Amount;
             }
             else
             {
@@ -408,6 +428,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
                 _registerItem.BudgetItem =
                     AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId.GetValueOrDefault(0));
+                _registerItem.ProjectedAmount = Math.Abs(Amount);
             }
 
             _registerItem.ItemType = (int)BankAccountRegisterItemTypes.Miscellaneous;
@@ -428,7 +449,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //    default:
             //        throw new ArgumentOutOfRangeException();
             //}
-            _registerItem.ProjectedAmount = Math.Abs(Amount);
             _registerItem.IsNegative = Amount < 0;
 
             if (_registerItem.ActualAmount != null)

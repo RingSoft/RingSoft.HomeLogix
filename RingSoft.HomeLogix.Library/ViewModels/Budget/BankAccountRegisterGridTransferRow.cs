@@ -28,6 +28,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
         }
 
+        public override DataEntryGridCellProps GetCellProps(int columnId)
+        {
+            var column = (BankAccountRegisterGridColumns)columnId;
+            switch (column)
+            {
+                case BankAccountRegisterGridColumns.Description:
+                    if (BudgetItemId == null)
+                    {
+                        return new MiscCellProps(this, columnId, Description);
+                    }
+                    break;
+            }
+            return base.GetCellProps(columnId);
+        }
+
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
             var column = (BankAccountRegisterGridColumns) columnId;
