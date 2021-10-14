@@ -781,9 +781,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     DateTime.DaysInMonth(registerItem.ItemDate.Year, registerItem.ItemDate.Month));
                 var yearEndDate = new DateTime(registerItem.ItemDate.Year, 12, 31);
 
-                ProcessCompletedBankMonth(completedRegisterData, monthEndDate, completedRow);
+                ProcessCompletedBankPeriod(completedRegisterData, monthEndDate, completedRow, PeriodHistoryTypes.Monthly);
 
-                ProcessCompletedBankYear(completedRegisterData, yearEndDate, completedRow);
+                ProcessCompletedBankPeriod(completedRegisterData, yearEndDate, completedRow, PeriodHistoryTypes.Yearly);
 
                 int? transferToBankAccountId = null;
                 var processBudgetRow = true;
@@ -839,20 +839,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BankAccountRegisterItem registerItem, DateTime monthEndDate, BankAccountRegisterGridRow completedRow,
             DateTime yearEndDate)
         {
-            if (registerItem.BudgetItemId != null && registerItem.BudgetItemId != 0)
+            if (registerItem.BudgetItemId != 0)
             {
                 var budgetItem =
                     completedRegisterData.BudgetItems.FirstOrDefault(f => f.Id == registerItem.BudgetItemId);
 
                 if (budgetItem == null)
                 {
-                    budgetItem = AppGlobals.DataRepository.GetBudgetItem(registerItem.BudgetItemId.Value);
+                    budgetItem = AppGlobals.DataRepository.GetBudgetItem(registerItem.BudgetItemId);
                     completedRegisterData.BudgetItems.Add(budgetItem);
                 }
 
                 ProcessCompletedBudgetMonth(completedRegisterData, budgetItem, monthEndDate, completedRow);
 
-                ProcessCompletedBudgetYear(completedRegisterData, budgetItem, yearEndDate, completedRow);
+                ProcessCompletedBudgetPeriod(completedRegisterData, budgetItem, yearEndDate, completedRow, PeriodHistoryTypes.Yearly);
             }
         }
 
@@ -874,85 +874,42 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 budgetItem.LastCompletedDate = completedRow.ItemDate;
             }
 
-            var budgetMonthHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
-                f.BudgetItemId == budgetItem.Id &&
-                f.PeriodType == (byte) PeriodHistoryTypes.Monthly && f.PeriodEndingDate == monthEndDate);
+            ProcessCompletedBudgetPeriod(completedRegisterData, budgetItem, monthEndDate, completedRow, PeriodHistoryTypes.Monthly);
+        }
 
-            if (budgetMonthHistory == null)
+        private static void ProcessCompletedBudgetPeriod(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
+            DateTime periodEndDate, BankAccountRegisterGridRow completedRow, PeriodHistoryTypes periodHistoryType)
+        {
+            var budgetPeriodHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
+                f.BudgetItemId == budgetItem.Id &&
+                f.PeriodType == (byte)periodHistoryType && f.PeriodEndingDate == periodEndDate);
+
+            if (budgetPeriodHistory == null)
             {
-                budgetMonthHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(budgetItem.Id,
-                    PeriodHistoryTypes.Monthly, monthEndDate) ?? new BudgetPeriodHistory
+                budgetPeriodHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(budgetItem.Id,
+                    periodHistoryType, periodEndDate) ?? new BudgetPeriodHistory
                 {
                     BudgetItemId = budgetItem.Id,
-                    PeriodType = (byte) PeriodHistoryTypes.Monthly,
-                    PeriodEndingDate = monthEndDate
+                    PeriodType = (byte)periodHistoryType,
+                    PeriodEndingDate = periodEndDate
                 };
 
-                completedRegisterData.BudgetPeriodHistoryRecords.Add(budgetMonthHistory);
+                completedRegisterData.BudgetPeriodHistoryRecords.Add(budgetPeriodHistory);
             }
 
-            budgetMonthHistory.ProjectedAmount += completedRow.ProjectedAmount;
-            budgetMonthHistory.ActualAmount += completedRow.ActualAmount.GetValueOrDefault(0);
-        }
-
-        private static void ProcessCompletedBudgetYear(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
-            DateTime yearEndDate, BankAccountRegisterGridRow completedRow)
-        {
-            var budgetYearHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
-                f.BudgetItemId == budgetItem.Id &&
-                f.PeriodType == (byte)PeriodHistoryTypes.Yearly && f.PeriodEndingDate == yearEndDate);
-
-            if (budgetYearHistory == null)
+            if (completedRow.IsNegative)
             {
-                budgetYearHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(budgetItem.Id,
-                    PeriodHistoryTypes.Yearly, yearEndDate) ?? new BudgetPeriodHistory
-                {
-                    BudgetItemId = budgetItem.Id,
-                    PeriodType = (byte)PeriodHistoryTypes.Yearly,
-                    PeriodEndingDate = yearEndDate
-                };
-
-                completedRegisterData.BudgetPeriodHistoryRecords.Add(budgetYearHistory);
+                budgetPeriodHistory.ProjectedAmount -= completedRow.ProjectedAmount;
+                budgetPeriodHistory.ActualAmount -= completedRow.ActualAmount.GetValueOrDefault(0);
             }
-
-            budgetYearHistory.ProjectedAmount += completedRow.ProjectedAmount;
-            budgetYearHistory.ActualAmount += completedRow.ActualAmount.GetValueOrDefault(0);
-        }
-
-        private void ProcessCompletedBankMonth(CompletedRegisterData completedRegisterData,
-            DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
-        {
-            var bankMonthHistory = completedRegisterData.BankAccountPeriodHistoryRecords.FirstOrDefault(f =>
-                f.BankAccountId == Id && f.PeriodType == (byte) PeriodHistoryTypes.Monthly &&
-                f.PeriodEndingDate == monthEndDate);
-
-            if (bankMonthHistory == null)
+            else
             {
-                bankMonthHistory = AppGlobals.DataRepository.GetBankPeriodHistory(Id,
-                    PeriodHistoryTypes.Monthly, monthEndDate) ?? new BankAccountPeriodHistory
-                    {
-                        BankAccountId = Id,
-                        PeriodType = (byte)PeriodHistoryTypes.Monthly,
-                        PeriodEndingDate = monthEndDate
-                    };
-
-                completedRegisterData.BankAccountPeriodHistoryRecords.Add(bankMonthHistory);
-            }
-
-            switch (completedRow.TransactionType)
-            {
-                case TransactionTypes.Deposit:
-                    bankMonthHistory.TotalDeposits += completedRow.ActualAmount.GetValueOrDefault(0);
-                    break;
-                case TransactionTypes.Withdrawal:
-                    bankMonthHistory.TotalWithdrawals += completedRow.ActualAmount.GetValueOrDefault(0);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                budgetPeriodHistory.ProjectedAmount += completedRow.ProjectedAmount;
+                budgetPeriodHistory.ActualAmount += completedRow.ActualAmount.GetValueOrDefault(0);
             }
         }
 
-        private void ProcessCompletedBankYear(CompletedRegisterData completedRegisterData,
+        private void ProcessCompletedBankPeriod(CompletedRegisterData completedRegisterData,
             DateTime periodEndDate, BankAccountRegisterGridRow completedRow, PeriodHistoryTypes periodHistoryType)
         {
             var bankPeriodHistory = completedRegisterData.BankAccountPeriodHistoryRecords.FirstOrDefault(f =>
@@ -976,8 +933,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 case TransactionTypes.Deposit:
                     bankPeriodHistory.TotalDeposits += completedRow.ActualAmount.GetValueOrDefault(0);
-                    //if (completedRow.IsNegative)
-                        break;
+                    break;
                 case TransactionTypes.Withdrawal:
                     bankPeriodHistory.TotalWithdrawals += completedRow.ActualAmount.GetValueOrDefault(0);
                     break;

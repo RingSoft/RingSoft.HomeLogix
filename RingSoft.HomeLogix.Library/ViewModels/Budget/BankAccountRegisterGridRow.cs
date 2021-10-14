@@ -23,7 +23,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public DateTime ItemDate { get; private set; }
 
-        public int? BudgetItemId { get; private set; }
+        public int BudgetItemId { get; private set; }
         
         public AutoFillValue BudgetItemValue { get; private set; }
 

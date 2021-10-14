@@ -284,7 +284,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     //    ItemType = BudgetItemTypes.Income;
 
                     var budgetItem =
-                        AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId.GetValueOrDefault(0));
+                        AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
                     BudgetItemAutoFillValue =
                         new AutoFillValue(
                             AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
@@ -428,7 +428,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
                     .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
                 _registerItem.BudgetItem =
-                    AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId.GetValueOrDefault(0));
+                    AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
                 _registerItem.ProjectedAmount = Math.Abs(Amount);
             }
 

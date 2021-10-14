@@ -48,7 +48,7 @@ namespace RingSoft.HomeLogix
                 viewModelInput.FromRegisterGrid = true;
 
                 var budgetItem =
-                    AppGlobals.DataRepository.GetBudgetItem(_cellProps.Row.BudgetItemId.GetValueOrDefault(0));
+                    AppGlobals.DataRepository.GetBudgetItem(_cellProps.Row.BudgetItemId);
                 
                 var lookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
                 lookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,

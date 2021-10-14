@@ -32,7 +32,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public DateTime ItemDate { get; set; }
 
-        public int? BudgetItemId { get; set; }
+        [Required]
+        public int BudgetItemId { get; set; }
 
         public virtual BudgetItem BudgetItem { get; set; }
 

@@ -115,6 +115,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
+            var periodHistoryRecords = ProcessBudgetHistoryPeriodHistories();
+
+            var historyItem = new History
+            {
+                Date = Date,
+                ItemType = (int)_budgetItem.Type,
+                BudgetItemId = _budgetItem.Id,
+                Description = Description,
+                ProjectedAmount = ProjectedAdjustment.GetValueOrDefault(0),
+                ActualAmount = ActualAdjustment.GetValueOrDefault(0)
+            };
+
+            if (!AppGlobals.DataRepository.SaveBudgetItem(_budgetItem, periodHistoryRecords, historyItem))
+                return;
+
+            DialogResult = true;
+
+            View.OnOkButtonCloseWindow();
+        }
+
+        public List<BudgetPeriodHistory> ProcessBudgetHistoryPeriodHistories()
+        {
             var monthEndDate = new DateTime(Date.Year, Date.Month,
                 DateTime.DaysInMonth(Date.Year, Date.Month));
 
@@ -125,7 +147,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 PeriodHistoryTypes.Monthly, monthEndDate) ?? new BudgetPeriodHistory
             {
                 BudgetItemId = _budgetItem.Id,
-                PeriodType = (byte)PeriodHistoryTypes.Monthly,
+                PeriodType = (byte) PeriodHistoryTypes.Monthly,
                 PeriodEndingDate = monthEndDate
             };
 
@@ -138,34 +160,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 PeriodHistoryTypes.Yearly, yearEndDate) ?? new BudgetPeriodHistory
             {
                 BudgetItemId = _budgetItem.Id,
-                PeriodType = (byte)PeriodHistoryTypes.Yearly,
+                PeriodType = (byte) PeriodHistoryTypes.Yearly,
                 PeriodEndingDate = yearEndDate
             };
 
             budgetYearHistory.ProjectedAmount += ProjectedAdjustment.GetValueOrDefault(0);
             budgetYearHistory.ActualAmount += ActualAdjustment.GetValueOrDefault(0);
 
-            var historyItem = new History
-            {
-                BankAccountId = _budgetItem.BankAccountId,
-                Date = Date,
-                ItemType = (int)_budgetItem.Type,
-                BudgetItemId = _budgetItem.Id,
-                Description = Description,
-                ProjectedAmount = ProjectedAdjustment.GetValueOrDefault(0),
-                ActualAmount = ActualAdjustment.GetValueOrDefault(0)
-            };
-
             var periodHistoryRecords = new List<BudgetPeriodHistory>();
             periodHistoryRecords.Add(budgetMonthHistory);
             periodHistoryRecords.Add(budgetYearHistory);
-
-            if (!AppGlobals.DataRepository.SaveBudgetItem(_budgetItem, periodHistoryRecords, historyItem))
-                return;
-
-            DialogResult = true;
-
-            View.OnOkButtonCloseWindow();
+            return periodHistoryRecords;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

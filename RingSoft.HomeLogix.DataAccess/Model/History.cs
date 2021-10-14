@@ -10,8 +10,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public int BankAccountId { get; set; }
+        public int? BankAccountId { get; set; }
 
         public virtual BankAccount BankAccount { get; set; }
 
