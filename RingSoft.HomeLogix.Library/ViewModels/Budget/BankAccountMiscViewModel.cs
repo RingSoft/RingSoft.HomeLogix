@@ -266,6 +266,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 ItemType = BudgetItemTypes.Expense;
                 Date = DateTime.Today;
+                TransferFromDescription = AppGlobals.DataRepository
+                    .GetBankAccount(_registerItem.BankAccountId, false).Description;
             }
             else
             {

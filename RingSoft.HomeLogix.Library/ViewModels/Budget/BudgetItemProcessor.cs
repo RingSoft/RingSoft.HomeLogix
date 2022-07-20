@@ -66,10 +66,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             (decimal) processorData.BudgetItem.LastCompletedDate.Value.Day / currentDays;
 
                         processorData.CurrentMonthPercent = Math.Round(currentMonthPercent, 4);
-                        processorData.MonthToDatePercent =
-                            Math.Round(
-                                processorData.BudgetItem.CurrentMonthAmount / processorData.BudgetItem.MonthlyAmount,
+                        if (processorData.BudgetItem.MonthlyAmount > 0)
+                            processorData.MonthToDatePercent =
+                                Math.Round(
+                                    processorData.BudgetItem.CurrentMonthAmount / processorData.BudgetItem.MonthlyAmount,
                                 4);
+                        else
+                        {
+                            processorData.MonthToDatePercent = 0;
+                        }
 
                         processorData.MonthlyPercentDifference =
                             processorData.CurrentMonthPercent - processorData.MonthToDatePercent;

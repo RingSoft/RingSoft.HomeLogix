@@ -162,6 +162,11 @@ namespace RingSoft.HomeLogix.Library
                     if (!SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord)) return false;
                 }
 
+                foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
+                {
+                    bankAccountRegisterItem.BudgetItemId = 0;
+                    bankAccountRegisterItem.BudgetItem = null;
+                }
                 context.BankAccountRegisterItems.RemoveRange(completedRegisterData.CompletedRegisterItems);
 
                 context.History.AddRange(completedRegisterData.NewHistoryRecords);

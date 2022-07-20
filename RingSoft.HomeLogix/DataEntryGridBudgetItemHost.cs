@@ -53,6 +53,7 @@ namespace RingSoft.HomeLogix
                 var lookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
                 lookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                     budgetItem.BankAccountId);
+                
 
                 var currentRowIndex = Grid.CurrentRowIndex;
                 lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,

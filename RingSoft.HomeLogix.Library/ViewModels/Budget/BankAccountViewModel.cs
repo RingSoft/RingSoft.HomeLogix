@@ -1020,6 +1020,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             RegisterGridManager.LoadGrid(bankAccount.RegisterItems);
             RefreshBudgetTotals();
+            CalculateTotals();
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
         }
 

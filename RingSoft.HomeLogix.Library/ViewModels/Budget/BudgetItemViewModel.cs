@@ -1163,9 +1163,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     PopulatePrimaryKeyControls(entity,
                         AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity));
 
-                if (AppGlobals.MainViewModel != null)
-                    AppGlobals.MainViewModel.RefreshView();
             }
+
+            if (AppGlobals.MainViewModel != null)
+                    AppGlobals.MainViewModel.RefreshView();
 
             return result;
         }
