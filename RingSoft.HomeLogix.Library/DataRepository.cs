@@ -124,6 +124,38 @@ namespace RingSoft.HomeLogix.Library
                 $"Saving Bank Account '{bankAccount.Description}'"))
                 return false;
 
+            foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
+            {
+                if (context.BankAccountPeriodHistory.Any(a =>
+                        a.PeriodType == bankAccountPeriodHistoryRecord.PeriodType &&
+                        a.BankAccountId == bankAccountPeriodHistoryRecord.BankAccountId &&
+                        a.PeriodEndingDate == bankAccountPeriodHistoryRecord.PeriodEndingDate))
+                {
+                    if (!context.DbContext.SaveNoCommitEntity(context.BankAccountPeriodHistory,
+                            bankAccountPeriodHistoryRecord,
+                            $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
+                       )
+                        return false;
+                }
+                else
+                {
+                    if (!context.DbContext.AddNewNoCommitEntity(context.BankAccountPeriodHistory,
+                            bankAccountPeriodHistoryRecord,
+                            $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
+                       )
+                        return false;
+                }
+            }
+
+
+            foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
+            {
+                bankAccountRegisterItem.BudgetItemId = 0;
+                bankAccountRegisterItem.BudgetItem = null;
+                bankAccountRegisterItem.BankAccountId = 0;
+                bankAccountRegisterItem.BankAccount = null;
+            }
+
             if (completedRegisterData != null)
             {
                 foreach (var budgetItem in completedRegisterData.BudgetItems)
@@ -135,62 +167,35 @@ namespace RingSoft.HomeLogix.Library
                         return false;
                 }
 
-                foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
-                {
-                    if (context.BankAccountPeriodHistory.Any(a =>
-                        a.BankAccountId == bankAccountPeriodHistoryRecord.BankAccountId &&
-                        a.PeriodEndingDate == bankAccountPeriodHistoryRecord.PeriodEndingDate))
-                    {
-                        if (!context.DbContext.SaveNoCommitEntity(context.BankAccountPeriodHistory,
-                            bankAccountPeriodHistoryRecord,
-                            $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
-                        )
-                            return false;
-                    }
-                    else
-                    {
-                        if (!context.DbContext.AddNewNoCommitEntity(context.BankAccountPeriodHistory,
-                            bankAccountPeriodHistoryRecord,
-                            $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
-                        )
-                            return false;
-                    }
-                }
 
                 foreach (var budgetPeriodHistoryRecord in completedRegisterData.BudgetPeriodHistoryRecords)
                 {
                     if (!SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord)) return false;
                 }
 
-                foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
-                {
-                    bankAccountRegisterItem.BudgetItemId = 0;
-                    bankAccountRegisterItem.BudgetItem = null;
-                }
                 context.BankAccountRegisterItems.RemoveRange(completedRegisterData.CompletedRegisterItems);
 
                 context.History.AddRange(completedRegisterData.NewHistoryRecords);
-
-                if (!context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}'"))
-                    return false;
 
                 foreach (var newSourceHistoryRecord in completedRegisterData.NewSourceHistoryRecords)
                 {
                     newSourceHistoryRecord.HistoryId = newSourceHistoryRecord.HistoryItem.Id;
                     newSourceHistoryRecord.HistoryItem = null;
+                    newSourceHistoryRecord.HistoryItem.BankAccount = null;
                 }
 
                 context.SourceHistory.AddRange(completedRegisterData.NewSourceHistoryRecords);
             }
 
             return context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}' Source History");
+
         }
 
         private static bool SaveBudgetPeriodRecord(IHomeLogixDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
         {
-            if (context.BudgetPeriodHistory.Any(a =>
-                a.BudgetItemId == budgetPeriodHistoryRecord.BudgetItemId &&
-                a.PeriodEndingDate == budgetPeriodHistoryRecord.PeriodEndingDate))
+            if (context.BudgetPeriodHistory.Any(a => a.PeriodType == budgetPeriodHistoryRecord.PeriodType &&
+                                                     a.BudgetItemId == budgetPeriodHistoryRecord.BudgetItemId &&
+                                                     a.PeriodEndingDate == budgetPeriodHistoryRecord.PeriodEndingDate))
             {
                 if (!context.DbContext.SaveNoCommitEntity(context.BudgetPeriodHistory,
                     budgetPeriodHistoryRecord,

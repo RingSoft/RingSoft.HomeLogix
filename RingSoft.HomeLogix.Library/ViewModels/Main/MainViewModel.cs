@@ -295,7 +295,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             if (loadVm)
             {
-                BudgetLookupDefinition = CreateBudgetLookupDefinition();
                 SetStartupView();
             }
         }
@@ -305,11 +304,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
             if (currentBudgetMonth == null)
             {
+                BudgetLookupDefinition = CreateBudgetLookupDefinition();
                 RefreshView();
             }
             else
             {
                 SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate);
+                BudgetLookupDefinition = CreateBudgetLookupDefinition();
             }
         }
 

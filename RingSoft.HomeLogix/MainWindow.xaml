@@ -105,7 +105,7 @@
                                                   ContentTemplate="{StaticResource BudgetItemType}" Header="Item Type" DesignerSelectedId="3" Width="100"/>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf ProjectedMonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
-                                     Header="Projected Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
+                                     Header="Budget Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
                     <lc:LookupColumn PropertyName="{lc:NameOf ActualMonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
                                      Header="Actual Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
@@ -133,17 +133,17 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <Label Content="Projected Income" />
+                    <Label Content="Budget Income" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1"
                                             Value="{Binding Path=TotalProjectedMonthlyIncome}" />
 
-                    <Label Grid.Row="0" Grid.Column="2" Content="Projected Expenses" />
+                    <Label Grid.Row="0" Grid.Column="2" Content="Budget Expenses" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3"
                                             Value="{Binding Path=TotalProjectedMonthlyExpenses}" />
 
-                    <Label Grid.Row="0" Grid.Column="4" Content="Projected Net Income" />
+                    <Label Grid.Row="0" Grid.Column="4" Content="Budget Net Income" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5"
                                             Value="{Binding Path=TotalBudgetMonthlyNetIncome}" />
