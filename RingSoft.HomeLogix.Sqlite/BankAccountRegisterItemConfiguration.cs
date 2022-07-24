@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Sqlite
@@ -11,7 +12,7 @@ namespace RingSoft.HomeLogix.Sqlite
         {
             builder.Property(p => p.ActualAmount).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType).IsNullable();
             builder.Property(p => p.Completed).HasColumnType(SqliteConstants.BoolColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
@@ -25,11 +26,6 @@ namespace RingSoft.HomeLogix.Sqlite
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.RegisterItems)
                 .HasForeignKey(p => p.BankAccountId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(p => p.BudgetItem)
-                .WithMany(p => p.RegisterItems)
-                .HasForeignKey(p => p.BudgetItemId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

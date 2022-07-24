@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace RingSoft.HomeLogix.DataAccess.Model
@@ -32,9 +34,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public DateTime ItemDate { get; set; }
 
-        [Required]
-        public int BudgetItemId { get; set; }
+        public int? BudgetItemId { get; set; }
 
+        [AllowNull]
         public virtual BudgetItem BudgetItem { get; set; }
 
         [MaxLength(50)]

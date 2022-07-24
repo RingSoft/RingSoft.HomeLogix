@@ -839,7 +839,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BankAccountRegisterItem registerItem, DateTime monthEndDate, BankAccountRegisterGridRow completedRow,
             DateTime yearEndDate)
         {
-            if (registerItem.BudgetItemId != 0)
+            if (registerItem.BudgetItemId != null)
             {
                 var budgetItem =
                     completedRegisterData.BudgetItems.FirstOrDefault(f => f.Id == registerItem.BudgetItemId);
@@ -847,7 +847,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (budgetItem == null)
                 {
                     budgetItem = AppGlobals.DataRepository.GetBudgetItem(registerItem.BudgetItemId);
-                    completedRegisterData.BudgetItems.Add(budgetItem);
+
+                    if (budgetItem != null)
+                        completedRegisterData.BudgetItems.Add(budgetItem);
                 }
 
                 ProcessCompletedBudgetMonth(completedRegisterData, budgetItem, monthEndDate, completedRow);
@@ -859,6 +861,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private static void ProcessCompletedBudgetMonth(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
             DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
         {
+            if (budgetItem == null)
+                return;
             if (budgetItem.CurrentMonthEnding < monthEndDate || budgetItem.LastCompletedDate == null)
             {
                 budgetItem.CurrentMonthEnding = monthEndDate;
@@ -880,6 +884,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private static void ProcessCompletedBudgetPeriod(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
             DateTime periodEndDate, BankAccountRegisterGridRow completedRow, PeriodHistoryTypes periodHistoryType)
         {
+            if (budgetItem == null)
+                return;
+
             var budgetPeriodHistory = completedRegisterData.BudgetPeriodHistoryRecords.FirstOrDefault(f =>
                 f.BudgetItemId == budgetItem.Id &&
                 f.PeriodType == (byte)periodHistoryType && f.PeriodEndingDate == periodEndDate);

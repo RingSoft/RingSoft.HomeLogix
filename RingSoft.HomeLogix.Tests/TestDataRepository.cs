@@ -107,7 +107,7 @@ namespace RingSoft.HomeLogix.Tests
             throw new System.NotImplementedException();
         }
 
-        public BudgetItem GetBudgetItem(int budgetItemId)
+        public BudgetItem GetBudgetItem(int? budgetItemId)
         {
             var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
 

@@ -74,7 +74,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public string Notes { get; set; }
 
 
-        public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
+        //public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
 
         public virtual ICollection<History> History { get; set; }
 
@@ -82,7 +82,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public BudgetItem()
         {
-            RegisterItems = new HashSet<BankAccountRegisterItem>();
+            //RegisterItems = new HashSet<BankAccountRegisterItem>();
             History = new HashSet<History>();
             PeriodHistory = new HashSet<BudgetPeriodHistory>();
         }
