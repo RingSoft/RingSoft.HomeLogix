@@ -10,7 +10,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item" Width="600" SizeToContent="Height">
+        Title="Budget Item" Width="700" SizeToContent="Height">
     <Window.Resources>
         <ResourceDictionary>
 

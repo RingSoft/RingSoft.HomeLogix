@@ -428,12 +428,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,
                 CurrentMonthEnding, DbDateTypes.DateOnly);
 
-            var formulaSql = sqlGenerator.GenerateSelectStatement(query);
-            formulaSql +=
-                $"\r\nAND ";
-            formulaSql += $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
-            formulaSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
-            formulaSql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+            var formulaSql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+            formulaSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)}";
+
+            var equalsClause = $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
+            equalsClause += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+
+            query.AddWhereItemFormula($"{formulaSql} = {equalsClause}");
+
+            formulaSql = sqlGenerator.GenerateSelectStatement(query);
+            //DbDataProcessor.ShowSqlStatementWindow();
+            //formulaSql +=
+            //    $"\r\nAND ";
+            //formulaSql += $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+            //formulaSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
+            //formulaSql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
 
             return formulaSql;
         }
