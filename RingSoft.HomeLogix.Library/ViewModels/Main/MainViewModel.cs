@@ -385,18 +385,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
 
             var sql = GetBudgetMonthToDateFormulaSql(true);
+            var query = new SelectQuery(table.TableName);
             
             var unionSql = $"{sql}\r\n";
             unionSql += $"\r\nUNION ALL\r\n\r\n";
-            unionSql += $"SELECT coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
-            unionSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)})),0) AS Projected\r\n";
-            unionSql += $"FROM {sqlGenerator.FormatSqlObject(table.TableName)}\r\n";
-            unionSql += $"WHERE {sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
-            unionSql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}\r\n ";
-            unionSql += $"AND strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-            unionSql += $"'{CurrentMonthEnding.Month:D2}'";
 
-            var projectedSql = $"(\r\nSELECT SUM(Projected) AS Projected FROM( {unionSql})\r\n)";
+            sql = $"coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
+            sql += ")),0)";
+            query.AddSelectFormulaColumn("Projected",sql);
+
+            sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
+            sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
+            sql += $"{ sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+            query.AddWhereItemFormula(sql);
+
+            sql =
+                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+            sql += $"'{CurrentMonthEnding.Month:D2}'";
+            query.AddWhereItemFormula(sql);
+
+            unionSql += sqlGenerator.GenerateSelectStatement(query);
+
+            var outerQuery = new SelectQuery("Outer");
+            outerQuery.AddSelectFormulaColumn("Projected", "SUM(Projected)");
+            outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
+
+            //var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
+
+            var projectedSql = $"(\r\nSELECT SUM({sqlGenerator.FormatSqlObject("Projected")}) AS ";
+            projectedSql += $"{sqlGenerator.FormatSqlObject("Projected")} FROM( {unionSql})\r\n)";
+
             return projectedSql;
         }
 
@@ -413,13 +434,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var sumField = projected
                 ? "Projected"
                 : "Actual";
-            //query.AddSelectFormulaColumn(
-            //    field,
-            //    $"{sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject(field)}");
-            //query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodType).FieldName, Conditions.Equals,
-            //    (int)PeriodHistoryTypes.Monthly);
-            //query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,
-            //    CurrentMonthEnding, DbDateTypes.DateOnly);
 
             query.AddSelectFormulaColumn(sumField,
                 $"(coalesce(SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{field}), 0)) ");
@@ -437,12 +451,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             query.AddWhereItemFormula($"{formulaSql} = {equalsClause}");
 
             formulaSql = sqlGenerator.GenerateSelectStatement(query);
-            //DbDataProcessor.ShowSqlStatementWindow();
-            //formulaSql +=
-            //    $"\r\nAND ";
-            //formulaSql += $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
-            //formulaSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
-            //formulaSql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
 
             return formulaSql;
         }
