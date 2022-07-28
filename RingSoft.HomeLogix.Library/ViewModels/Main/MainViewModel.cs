@@ -319,47 +319,37 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var budgetLookupDefinition =
                 new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
-            //var table = AppGlobals.LookupContext.BankAccountRegisterItems;
+            var table = AppGlobals.LookupContext.BudgetItems;
+            var query = new SelectQuery(table.TableName);
 
             budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description");
             budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
 
-            var sql = "SELECT [BudgetItems].[Id] AS Id, \r\n";
-            sql += "[BudgetItems].[Description] AS Description, \r\n";
-            sql += "BudgetItems.Type AS Type,\r\n";
-            //sql += "(\r\n";
-            //sql += "CASE [BudgetItems].[Type]\r\n";
-            //sql += "WHEN 0 THEN 'Income'\r\n";
-            //sql += "WHEN 1 THEN 'Expense'\r\n";
-            //sql += "WHEN 2 THEN 'Transfer'\r\n";
-            //sql += "END\r\n";
-            //sql += ") AS [Type],\r\n";
-            sql += $"({GetBudgetMonthToDateFormulaSql()}) AS Projected,\r\n";
-            sql += $"({GetBudgetMonthToDateFormulaSql(false)}) AS Actual,\r\n";
-            sql += $"({GetBudgetMonthlyAmountDifferenceFormulaSql()}) AS Difference\r\n";
-            sql += $"FROM BudgetItems AS BudgetItems\r\n";
-            sql += "WHERE Projected <> 0\r\n";
+            query.AddSelectColumn(table.GetFieldDefinition(p => p.Id).FieldName, "Id");
+            query.AddSelectColumn(table.GetFieldDefinition(p => p.Description).FieldName, "Description");
+            query.AddSelectFormulaColumn("Type", $"{sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject("Type")}");
 
-            budgetLookupDefinition.HasFromFormula(sql);
+            query.AddSelectFormulaColumn("Projected", GetBudgetMonthToDateFormulaSql());
+            query.AddSelectFormulaColumn("Actual", GetBudgetMonthToDateFormulaSql(false));
+            query.AddSelectFormulaColumn("Difference", GetBudgetMonthlyAmountDifferenceFormulaSql());
+
+            query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0);
+
+            budgetLookupDefinition.HasFromFormula(sqlGenerator.GenerateSelectStatement(query));
 
             _projectedMonthToDateColumnDefinition = budgetLookupDefinition.AddVisibleColumnDefinition(
                 p => p.ProjectedMonthlyAmount, "Projected");
             _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
-            //sql = GetBudgetMonthToDateFormulaSql(false);
-
             _actualMonthToDateColumnDefinition =
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual");
             _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
-            //sql = GetBudgetMonthlyAmountDifferenceFormulaSql();
             _monthlyAmountDifferrenceColumnDefinition =
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference");
             _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .HasKeepNullEmpty()
                 .DoShowNegativeValuesInRed();
-
-            //DbDataProcessor.ShowSqlStatementWindow(true);
 
             return budgetLookupDefinition;
         }
