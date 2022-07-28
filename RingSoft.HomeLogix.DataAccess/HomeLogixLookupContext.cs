@@ -117,6 +117,9 @@ namespace RingSoft.HomeLogix.DataAccess
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .HasDescription("Current Balance");
 
+            BankAccounts.GetFieldDefinition(p => p.ProjectedLowestBalanceAmount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
             BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 

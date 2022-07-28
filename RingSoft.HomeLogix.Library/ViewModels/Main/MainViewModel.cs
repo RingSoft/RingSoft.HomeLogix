@@ -80,6 +80,41 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
+        private LookupDefinition<MainBankLookup, BankAccount> _bankLookupDefinition;
+
+        public LookupDefinition<MainBankLookup, BankAccount> BankLookupDefinition
+        {
+            get => _bankLookupDefinition;
+            set
+            {
+                if (_bankLookupDefinition == value)
+                {
+                    return;
+                }
+
+                _bankLookupDefinition = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private LookupCommand _bankLookupCommand;
+
+        public LookupCommand BankLookupCommand
+        {
+            get => _bankLookupCommand;
+            set
+            {
+                if (_bankLookupCommand == value)
+                {
+                    return;
+                }
+                _bankLookupCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+
         private decimal _totalProjectedMonthlyIncome;
 
         public decimal TotalProjectedMonthlyIncome
@@ -303,27 +338,73 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         {
             var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
             if (currentBudgetMonth == null)
-            {
-                BudgetLookupDefinition = CreateBudgetLookupDefinition();
+            { 
+                CreateBudgetLookupDefinition(true);
+                BankLookupDefinition = CreateBankLookupDefinition();
                 RefreshView();
             }
             else
             {
-                SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate);
-                BudgetLookupDefinition = CreateBudgetLookupDefinition();
+                SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate, false); 
+                CreateBudgetLookupDefinition(true);
+                BankLookupDefinition = CreateBankLookupDefinition();
+                RefreshView();
             }
         }
 
-        private LookupDefinition<MainBudgetLookup, BudgetItem> CreateBudgetLookupDefinition()
+        private LookupDefinition<MainBankLookup, BankAccount> CreateBankLookupDefinition()
+        {
+            var bankLookupDefinition =
+                new LookupDefinition<MainBankLookup, BankAccount>(AppGlobals.LookupContext.BankAccounts);
+
+            bankLookupDefinition.AddVisibleColumnDefinition(p => p.Description, 
+                p => p.Description);
+            bankLookupDefinition.AddVisibleColumnDefinition(p => p.CurrentBalance, 
+                p => p.CurrentBalance);
+            bankLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedLowestBalance,
+                p => p.ProjectedLowestBalanceAmount);
+            bankLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedLowestBalanceDate,
+                p => p.ProjectedLowestBalanceDate);
+            return bankLookupDefinition;
+        }
+
+        private void CreateBudgetLookupDefinition(bool createColumns)
+        {
+            var budgetLookupDefinition = BudgetLookupDefinition;
+            
+            if (createColumns)
+            {
+                if (budgetLookupDefinition == null)
+                    budgetLookupDefinition =
+                        new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
+
+                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description");
+                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
+
+                _projectedMonthToDateColumnDefinition = budgetLookupDefinition.AddVisibleColumnDefinition(
+                    p => p.ProjectedMonthlyAmount, "Projected");
+                _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
+
+                _actualMonthToDateColumnDefinition =
+                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual");
+                _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
+
+                _monthlyAmountDifferrenceColumnDefinition =
+                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference");
+                _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
+                    .HasKeepNullEmpty()
+                    .DoShowNegativeValuesInRed();
+
+                BudgetLookupDefinition = budgetLookupDefinition;
+            }
+
+            budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+        }
+        private string CreateBudgetLookupDefinitionFormula()
         {
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            var budgetLookupDefinition =
-                new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
             var table = AppGlobals.LookupContext.BudgetItems;
             var query = new SelectQuery(table.TableName);
-
-            budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description");
-            budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
 
             query.AddSelectColumn(table.GetFieldDefinition(p => p.Id).FieldName, "Id");
             query.AddSelectColumn(table.GetFieldDefinition(p => p.Description).FieldName, "Description");
@@ -335,23 +416,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0);
 
-            budgetLookupDefinition.HasFromFormula(sqlGenerator.GenerateSelectStatement(query));
-
-            _projectedMonthToDateColumnDefinition = budgetLookupDefinition.AddVisibleColumnDefinition(
-                p => p.ProjectedMonthlyAmount, "Projected");
-            _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
-
-            _actualMonthToDateColumnDefinition =
-                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual");
-            _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
-
-            _monthlyAmountDifferrenceColumnDefinition =
-                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference");
-            _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .HasKeepNullEmpty()
-                .DoShowNegativeValuesInRed();
-
-            return budgetLookupDefinition;
+            return sqlGenerator.GenerateSelectStatement(query);
         }
 
         private string GetBudgetMonthlyAmountDifferenceFormulaSql()
@@ -452,7 +517,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public void RefreshView()
         {
+            BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             BudgetLookupCommand = new LookupCommand(LookupCommands.Refresh);
+            BankLookupCommand = new LookupCommand(LookupCommands.Refresh);
 
             var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(CurrentMonthEnding,
                 GetPeriodEndDate(CurrentMonthEnding.AddMonths(-1)), 
@@ -499,10 +566,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             SetCurrentMonthEnding(CurrentMonthEnding.AddMonths(1));
         }
 
-        private void SetCurrentMonthEnding(DateTime value)
+        private void SetCurrentMonthEnding(DateTime value, bool refreshView = true)
         {
             CurrentMonthEnding = GetPeriodEndDate(value);
-            RefreshView();
+
+            if (refreshView)
+                RefreshView();
         }
 
         private static DateTime GetPeriodEndDate(DateTime value)
