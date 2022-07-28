@@ -334,7 +334,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             //sql += "WHEN 2 THEN 'Transfer'\r\n";
             //sql += "END\r\n";
             //sql += ") AS [Type],\r\n";
-            sql += $"{GetBudgetMonthToDateFormulaSql()} AS Projected,\r\n";
+            sql += $"({GetBudgetMonthToDateFormulaSql()}) AS Projected,\r\n";
             sql += $"({GetBudgetMonthToDateFormulaSql(false)}) AS Actual,\r\n";
             sql += $"({GetBudgetMonthlyAmountDifferenceFormulaSql()}) AS Difference\r\n";
             sql += $"FROM BudgetItems AS BudgetItems\r\n";
@@ -413,10 +413,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             outerQuery.AddSelectFormulaColumn("Projected", "SUM(Projected)");
             outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
 
-            //var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
-
-            var projectedSql = $"(\r\nSELECT SUM({sqlGenerator.FormatSqlObject("Projected")}) AS ";
-            projectedSql += $"{sqlGenerator.FormatSqlObject("Projected")} FROM( {unionSql})\r\n)";
+            var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
 
             return projectedSql;
         }
