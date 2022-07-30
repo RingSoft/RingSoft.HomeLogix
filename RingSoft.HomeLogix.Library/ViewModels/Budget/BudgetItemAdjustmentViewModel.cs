@@ -141,7 +141,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 DateTime.DaysInMonth(Date.Year, Date.Month));
 
             if (_budgetItem.CurrentMonthEnding == monthEndDate)
+            {
                 _budgetItem.CurrentMonthAmount += ActualAdjustment.GetValueOrDefault(0);
+            }
 
             var budgetMonthHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(_budgetItem.Id,
                 PeriodHistoryTypes.Monthly, monthEndDate) ?? new BudgetPeriodHistory

@@ -122,7 +122,7 @@ namespace RingSoft.App.Controls
             if (!_addOnFlyMode)
                 DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
 
-            if (ViewModel.LookupAddViewArgs.LookupReadOnlyMode)
+            if (ViewModel.LookupAddViewArgs != null && ViewModel.LookupAddViewArgs.LookupReadOnlyMode)
             {
                 DbMaintenanceTopHeaderControl.SaveSelectButton.IsEnabled = false;
             }

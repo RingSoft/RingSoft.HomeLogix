@@ -31,7 +31,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public TransactionTypes TransactionType { get; private set; }
 
-        public decimal ProjectedAmount { get; private set; }
+        public decimal ProjectedAmount { get; set; }
 
         public bool Completed { get; private set; }
 

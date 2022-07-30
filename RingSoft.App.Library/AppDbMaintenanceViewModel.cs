@@ -17,7 +17,7 @@ namespace RingSoft.App.Library
         {
             base.Initialize();
 
-            if (LookupAddViewArgs.LookupReadOnlyMode)
+            if (LookupAddViewArgs != null && LookupAddViewArgs.LookupReadOnlyMode)
                 SaveSelectButtonCommand.IsEnabled = false;
         }
 

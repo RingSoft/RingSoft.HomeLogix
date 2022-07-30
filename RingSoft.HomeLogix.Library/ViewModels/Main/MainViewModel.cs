@@ -414,7 +414,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             query.AddSelectFormulaColumn("Actual", GetBudgetMonthToDateFormulaSql(false));
             query.AddSelectFormulaColumn("Difference", GetBudgetMonthlyAmountDifferenceFormulaSql());
 
-            query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0);
+            query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or);
+            query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
 
             return sqlGenerator.GenerateSelectStatement(query);
         }
