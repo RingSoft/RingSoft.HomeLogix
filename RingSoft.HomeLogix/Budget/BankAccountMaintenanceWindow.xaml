@@ -96,7 +96,7 @@
 
                                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.TransactionTypeColumnId}" ContentTemplate="{StaticResource BankRegisterTransactionType}" Header="Transaction&#10;Type" DesignerSelectedId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" Width="100"/>
 
-                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.AmountColumnId}" Header="Projected&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="100"/>
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.AmountColumnId}" Header="Budget&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="100"/>
 
                                 <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.CompletedColumnId}" Header="Completed" Width="75"/>
 
@@ -168,7 +168,7 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="300"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Budget Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 

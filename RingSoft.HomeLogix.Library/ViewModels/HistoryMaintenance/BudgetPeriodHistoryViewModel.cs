@@ -152,6 +152,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
 
             BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
+            BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
             ReadOnlyMode = true;
 
             BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))

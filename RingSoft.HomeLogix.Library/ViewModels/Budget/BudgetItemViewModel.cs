@@ -540,30 +540,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
-                new LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>(AppGlobals.LookupContext
-                    .BudgetPeriodHistory);
-
+                AppGlobals.LookupContext.BudgetPeriodLookup.Clone();
         public BudgetItemViewModel()
         {
             DateControlsEnabled = BudgetItemTypeEnabled = true;
 
             AddAdjustmentCommand = new RelayCommand(AddAdjustment);
 
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedAmount, p => p.ProjectedAmount);
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.ActualAmount, p => p.ActualAmount);
+            //_periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
+            //_periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedAmount, p => p.ProjectedAmount);
+            //_periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.ActualAmount, p => p.ActualAmount);
 
-            var table = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext
-                .BudgetPeriodHistory.TableName);
-            var projectedAmountField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
-                .LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount).FieldName);
-            var actualAmountField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
-                .LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName);
+            //var table = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext
+            //    .BudgetPeriodHistory.TableName);
+            //var projectedAmountField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
+            //    .LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount).FieldName);
+            //var actualAmountField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
+            //    .LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName);
 
-            var formula = $"{table}.{projectedAmountField} - {table}.{actualAmountField}";
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
-                .HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .DoShowNegativeValuesInRed();
+            //var formula = $"{table}.{projectedAmountField} - {table}.{actualAmountField}";
+            //_periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
+            //    .HasDecimalFieldType(DecimalFieldTypes.Currency)
+            //    .DoShowNegativeValuesInRed();
 
             _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
         }

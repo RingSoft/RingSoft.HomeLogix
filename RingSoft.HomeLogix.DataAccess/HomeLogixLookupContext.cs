@@ -86,7 +86,7 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.Date, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
                 p => p.Description, 40);
-            HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Projected\r\nAmount",
+            HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",
                 p => p.ProjectedAmount, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
                 p => p.ActualAmount, 15);
@@ -117,6 +117,7 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.ProjectedAmount, 25);
             budgetPeriodLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual Amount",
                 p => p.ActualAmount, 25);
+             budgetAlias = budgetPeriodLookup.Include(p => p.BudgetItem).JoinDefinition.Alias;
 
             table = DataProcessor.SqlGenerator.FormatSqlObject(BudgetPeriodHistory.TableName);
             var projectedAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
@@ -124,7 +125,9 @@ namespace RingSoft.HomeLogix.DataAccess
             var actualAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
                 BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName);
 
-            formula = $"{table}.{projectedAmountField} - {table}.{actualAmountField}";
+            formula = $"CASE {budgetAlias}.{typeField} WHEN {(int)BudgetItemTypes.Income}"
+                      + $" THEN {table}.{actualAmountField} - {table}.{projectedAmountField}"
+                      + $" ELSE {table}.{projectedAmountField} - {table}.{actualAmountField} END";
             budgetPeriodLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference"
                     , formula, 25)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)

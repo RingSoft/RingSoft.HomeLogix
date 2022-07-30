@@ -60,9 +60,8 @@
 
             <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}"></dec:DecimalReadOnlyBox>
 
-
-
-</Grid>
+        </Grid>
+            <Label Content="History" HorizontalAlignment="Left"/>
             <lc:LookupControl Height="300" LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
                 <lc:LookupControl.LookupColumns>
 
@@ -70,7 +69,7 @@
 
                     <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="300"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Projected Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Budget Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
 
