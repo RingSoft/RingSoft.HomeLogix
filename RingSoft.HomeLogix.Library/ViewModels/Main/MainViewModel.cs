@@ -328,6 +328,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (AppGlobals.LoggedInHousehold == null)
                 loadVm = View.ChangeHousehold();
 
+            BankLookupDefinition = CreateBankLookupDefinition();
             if (loadVm)
             {
                 SetStartupView();
@@ -338,16 +339,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         {
             var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
             if (currentBudgetMonth == null)
-            { 
+            {
                 CreateBudgetLookupDefinition(true);
-                BankLookupDefinition = CreateBankLookupDefinition();
                 RefreshView();
             }
             else
             {
-                SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate, false); 
+                SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate, false);
+                //BankLookupDefinition = CreateBankLookupDefinition();
                 CreateBudgetLookupDefinition(true);
-                BankLookupDefinition = CreateBankLookupDefinition();
                 RefreshView();
             }
         }

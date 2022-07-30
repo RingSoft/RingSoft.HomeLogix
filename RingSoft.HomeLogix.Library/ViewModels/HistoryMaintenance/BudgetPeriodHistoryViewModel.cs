@@ -174,7 +174,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             var budgetPeriodHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(newEntity.BudgetItemId,
                 (PeriodHistoryTypes)newEntity.PeriodType, newEntity.PeriodEndingDate);
 
-            var budgetItem = budgetPeriodHistory.BudgetItem;
+            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetPeriodHistory.BudgetItemId);
 
             BudgetAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
@@ -221,8 +221,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         {
             ProjectedAmount = entity.ProjectedAmount;
             ActualAmount = entity.ActualAmount;
+            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(entity.BudgetItemId);
 
-            if (entity.BudgetItem.Type == BudgetItemTypes.Income)
+            if (budgetItem.Type == BudgetItemTypes.Income)
             {
                 Difference = ActualAmount - ProjectedAmount;
             }

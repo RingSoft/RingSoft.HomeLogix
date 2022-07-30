@@ -124,6 +124,7 @@ namespace RingSoft.HomeLogix.Library
                 $"Saving Bank Account '{bankAccount.Description}'"))
                 return false;
 
+            //DateTime? checkDate = null;
             if (completedRegisterData != null)
             {
                 foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
@@ -152,9 +153,9 @@ namespace RingSoft.HomeLogix.Library
 
                 foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
                 {
-                    bankAccountRegisterItem.BudgetItemId = 0;
+                    //bankAccountRegisterItem.BudgetItemId = 0;
                     bankAccountRegisterItem.BudgetItem = null;
-                    bankAccountRegisterItem.BankAccountId = 0;
+                    //bankAccountRegisterItem.BankAccountId = 0;
                     bankAccountRegisterItem.BankAccount = null;
                 }
 
@@ -182,16 +183,32 @@ namespace RingSoft.HomeLogix.Library
                     foreach (var newSourceHistoryRecord in completedRegisterData.NewSourceHistoryRecords)
                     {
                         newSourceHistoryRecord.HistoryId = newSourceHistoryRecord.HistoryItem.Id;
-                        newSourceHistoryRecord.HistoryItem = null;
-                        newSourceHistoryRecord.HistoryItem.BankAccount = null;
+                        //newSourceHistoryRecord.HistoryItem.BankAccount = null;
+                        //newSourceHistoryRecord.HistoryItem = null;
                     }
+
+                    //foreach (var newHistoryRecord in completedRegisterData.NewHistoryRecords)
+                    //{
+                    //    if (checkDate == null)
+                    //    {
+                    //        checkDate = newHistoryRecord.Date;
+                    //    }
+                    //    else
+                    //    {
+                    //        if (newHistoryRecord.Date < checkDate)
+                    //            checkDate = newHistoryRecord.Date;
+                    //    }
+                    //}
 
                     context.SourceHistory.AddRange(completedRegisterData.NewSourceHistoryRecords);
                 }
             }
 
-            return context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}' Source History");
+            var result = context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}' Source History");
 
+            //var historyItems = context.History.Where(p => p.Date >= (DateTime)checkDate);
+
+            return result;
         }
 
         private static bool SaveBudgetPeriodRecord(IHomeLogixDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
@@ -426,7 +443,7 @@ namespace RingSoft.HomeLogix.Library
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BudgetPeriodHistory.Include(i => i.BudgetItem).FirstOrDefault(f =>
+            return context.BudgetPeriodHistory.FirstOrDefault(f =>
                 f.BudgetItemId == budgetId && f.PeriodType == (byte) type && f.PeriodEndingDate == periodEndDate);
         }
 
