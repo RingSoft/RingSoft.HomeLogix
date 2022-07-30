@@ -19,11 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="2.0.8" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="2.0.8" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\Down.png" />
     <Resource Include="Resources\Erase.png" />
     <Resource Include="Resources\Exit.png" />
@@ -39,6 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj" />
+    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj" />
     <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
   </ItemGroup>
 

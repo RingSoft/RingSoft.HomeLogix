@@ -239,7 +239,7 @@
                 <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
 
                 <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}"/>
-                
+
                 <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
 
                 <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100"/>
@@ -258,7 +258,7 @@
 
                 <Label Grid.Row="2" Grid.Column="4" Content="Monthly Budget Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5" Value="{Binding Path=MonthlyBudgetDifference}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="4" Value="{Binding Path=MonthlyBudgetDifference}" Margin="198,3,0,3" Grid.ColumnSpan="2"/>
 
             </Grid>
         </Grid>

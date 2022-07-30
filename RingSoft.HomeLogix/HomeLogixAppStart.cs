@@ -4,6 +4,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library;
 using System.Windows;
+using RingSoft.HomeLogix.HistoryMaintenance;
 
 namespace RingSoft.HomeLogix
 {
@@ -48,6 +49,10 @@ namespace RingSoft.HomeLogix
             else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BudgetItemSources)
             {
                 ShowAddOnTheFlyWindow(new BudgetItemSourceWindow(), e);
+            }
+            else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BudgetPeriodHistory)
+            {
+                ShowAddOnTheFlyWindow(new BudgetPeriodHistoryWindow(), e);
             }
         }
 

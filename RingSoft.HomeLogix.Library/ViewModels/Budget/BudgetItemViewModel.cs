@@ -604,6 +604,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             YearlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
             HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
 
+            //if (LookupAddViewArgs != null && LookupAddViewArgs.LookupReadOnlyMode
+            
             _loading = false;
 
             base.Initialize();
@@ -778,7 +780,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId,
                 Conditions.Equals, Id);
 
-            MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             YearlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType,
@@ -786,14 +788,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId,
                 Conditions.Equals, Id);
 
-            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId, Conditions.Equals, Id);
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
-            AddAdjustmentCommand.IsEnabled = true;
+            AddAdjustmentCommand.IsEnabled = !ReadOnlyMode;
 
             _loading = false;
             _registerAffected = false;

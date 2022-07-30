@@ -26,6 +26,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
         public LookupDefinition<SourceLookup, BudgetItemSource> BudgetItemSourceLookup { get; set; }
+        public LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory> BudgetPeriodLookup { get; set; }
 
         public LookupDefinition<HistoryLookup, History> HistoryLookup { get; set; }
         //----------------------------------------------------------------------
@@ -107,6 +108,31 @@ namespace RingSoft.HomeLogix.DataAccess
                 formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .DoShowNegativeValuesInRed();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
+
+            var budgetPeriodLookup =
+                new LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>(BudgetPeriodHistory);
+            budgetPeriodLookup.AddVisibleColumnDefinition(p => p.PeriodEndingDate, "Period Ending Date",
+                p => p.PeriodEndingDate, 25);
+            budgetPeriodLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget Amount", 
+                p => p.ProjectedAmount, 25);
+            budgetPeriodLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual Amount",
+                p => p.ActualAmount, 25);
+
+            table = DataProcessor.SqlGenerator.FormatSqlObject(BudgetPeriodHistory.TableName);
+            var projectedAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
+                BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount).FieldName);
+            var actualAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
+                BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName);
+
+            formula = $"{table}.{projectedAmountField} - {table}.{actualAmountField}";
+            budgetPeriodLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference"
+                    , formula, 25)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .DoShowNegativeValuesInRed();
+
+            BudgetPeriodLookup = budgetPeriodLookup;
+
+        BudgetPeriodHistory.HasLookupDefinition(BudgetPeriodLookup);
         }
 
         protected override void SetupModel()
