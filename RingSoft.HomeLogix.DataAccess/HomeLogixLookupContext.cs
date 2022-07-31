@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
@@ -12,6 +13,8 @@ namespace RingSoft.HomeLogix.DataAccess
 {
     public class HomeLogixLookupContext : LookupContext
     {
+        public const int RegisterTypeCustomContentId = 100;
+
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<BudgetItem> BudgetItems { get; set; }
         public TableDefinition<BankAccount> BankAccounts { get; set; }
@@ -86,11 +89,13 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.Date, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
                 p => p.Description, 40);
+            HistoryLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
+                p => p.ItemType, 25);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",
                 p => p.ProjectedAmount, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
                 p => p.ActualAmount, 15);
-
+            
             var table = DataProcessor.SqlGenerator.FormatSqlObject(History.TableName);
             var projectedField = DataProcessor.SqlGenerator.FormatSqlObject(History
                 .GetFieldDefinition(p => p.ProjectedAmount).FieldName);
@@ -108,6 +113,7 @@ namespace RingSoft.HomeLogix.DataAccess
                 formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .DoShowNegativeValuesInRed();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
+            History.HasLookupDefinition(HistoryLookup);
 
             var budgetPeriodLookup =
                 new LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>(BudgetPeriodHistory);
@@ -172,6 +178,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            History.GetFieldDefinition(p => p.ItemType).HasContentTemplateId(RegisterTypeCustomContentId);
 
             History.GetFieldDefinition(p => p.ProjectedAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
 

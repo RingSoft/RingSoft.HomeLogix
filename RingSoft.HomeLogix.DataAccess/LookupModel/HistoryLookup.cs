@@ -10,6 +10,8 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
 
         public string Description { get; set; }
 
+        public byte ItemType { get; set; }
+
         public decimal ProjectedAmount { get; set; }
 
         public decimal ActualAmount { get; set; }

@@ -156,6 +156,9 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="180"/>
 
+                                <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:HistoryLookup}}"
+                                                              ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="3" Width="110"/>
+
                                 <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Budget&#10;Amount" DesignText="$12,3456.00" Width="90" TextAlignment="Right"/>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual&#10;Amount" DesignText="$12,3456.00" Width="90" TextAlignment="Right"/>

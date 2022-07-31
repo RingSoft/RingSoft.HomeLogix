@@ -65,15 +65,18 @@
             <lc:LookupControl Height="300" LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
                 <lc:LookupControl.LookupColumns>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="100"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="300"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="250"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Budget Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                    <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:HistoryLookup}}"
+                                                  ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="3" Width="110"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Budget Amount" DesignText="$123,456,789.00" Width="110" TextAlignment="Right"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+                    <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$123,456,789.00" Width="110" TextAlignment="Right"/>
+
+                    <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$123,456,789.00" Width="110" TextAlignment="Right"/>
 
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>

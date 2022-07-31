@@ -69,6 +69,8 @@ namespace RingSoft.HomeLogix.Library
         BudgetPeriodHistory GetMaxMonthBudgetPeriodHistory();
 
         BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding, DateTime nextMonthEnding);
+
+        History GetHistoryItem(int historyId);
     }
 
     public class DataRepository : IDataRepository
@@ -540,6 +542,13 @@ namespace RingSoft.HomeLogix.Library
             result.NextMonthHasValues = context.BudgetPeriodHistory.Any(a =>
                 a.PeriodType == (int)PeriodHistoryTypes.Monthly && a.PeriodEndingDate == nextMonthEnding);
 
+            return result;
+        }
+
+        public History GetHistoryItem(int historyId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var result = context.History.FirstOrDefault(p => p.Id == historyId);
             return result;
         }
     }
