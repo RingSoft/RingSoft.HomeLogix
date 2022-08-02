@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -13,36 +11,36 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
-    public class BudgetPeriodHistoryViewModel : AppDbMaintenanceViewModel<BudgetPeriodHistory>
+    public class BankPeriodHistoryViewModel : AppDbMaintenanceViewModel<BankAccountPeriodHistory>
     {
-        private AutoFillSetup _budgetAutoFillSetup;
+        private AutoFillSetup _bankAutoFillSetup;
 
-        public AutoFillSetup BudgetAutoFillSetup
+        public AutoFillSetup BankAutoFillSetup
         {
-            get => _budgetAutoFillSetup;
+            get => _bankAutoFillSetup;
             set
             {
-                if (_budgetAutoFillSetup == value)
+                if (_bankAutoFillSetup == value)
                 {
                     return;
                 }
-                _budgetAutoFillSetup = value;
+                _bankAutoFillSetup = value;
                 OnPropertyChanged();
             }
         }
 
-        private AutoFillValue _budgetAutoFillValue;
+        private AutoFillValue _bankAutoFillValue;
 
-        public AutoFillValue BudgetAutoFillValue
+        public AutoFillValue BankAutoFillValue
         {
-            get => _budgetAutoFillValue;
+            get => _bankAutoFillValue;
             set
             {
-                if (_budgetAutoFillValue == value)
+                if (_bankAutoFillValue == value)
                 {
                     return;
                 }
-                _budgetAutoFillValue = value;
+                _bankAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
@@ -63,37 +61,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private decimal _projectedAmount;
+        private decimal _totalDeposits;
 
-        public decimal ProjectedAmount
+        public decimal TotalDeposits
         {
-            get => _projectedAmount;
+            get => _totalDeposits;
             set
             {
-                if (_projectedAmount == value)
+                if (_totalDeposits == value)
                 {
                     return;
                 }
-                _projectedAmount = value;
+                _totalDeposits = value;
                 OnPropertyChanged();
             }
         }
 
-        private decimal _actualAmount;
+        private decimal _totalWithdrawals ;
 
-        public decimal ActualAmount
+        public decimal TotalWithdrawals
         {
-            get => _actualAmount;
+            get => _totalWithdrawals;
             set
             {
-                if (_actualAmount == value)
+                if (_totalWithdrawals == value)
                 {
                     return;
                 }
-                _actualAmount = value;
+                _totalWithdrawals  = value;
                 OnPropertyChanged();
             }
         }
+
 
         private decimal _difference;
 
@@ -142,9 +141,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         public ViewModelInput ViewModelInput { get; set; }
 
-        public override TableDefinition<BudgetPeriodHistory> TableDefinition =>
-            AppGlobals.LookupContext.BudgetPeriodHistory;
-
         private PeriodHistoryTypes _mode;
 
         protected override void Initialize()
@@ -166,11 +162,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 _mode = PeriodHistoryTypes.Monthly;
             }
 
-            BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
-            BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
+            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
+            BankAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
             ReadOnlyMode = true;
 
-            BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))
+            BankAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BankAccountId))
             {
                 AddViewParameter = ViewModelInput,
                 //AllowLookupAdd = false
@@ -185,39 +181,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             SelectButtonEnabled = SaveButtonEnabled = DeleteButtonEnabled = NewButtonEnabled = false;
         }
 
-        protected override BudgetPeriodHistory PopulatePrimaryKeyControls(BudgetPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override BankAccountPeriodHistory
+            PopulatePrimaryKeyControls(BankAccountPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var budgetPeriodHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(newEntity.BudgetItemId,
+            var bankPeriodHistory = AppGlobals.DataRepository.GetBankPeriodHistory(newEntity.BankAccountId,
                 (PeriodHistoryTypes)newEntity.PeriodType, newEntity.PeriodEndingDate);
 
-            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetPeriodHistory.BudgetItemId);
+            var bankItem = AppGlobals.DataRepository.GetBankAccount(bankPeriodHistory.BankAccountId);
 
-            BudgetAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
-                budgetItem.Description);
-            
-            PeriodEndingDate = budgetPeriodHistory.PeriodEndingDate;
+            BankAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankItem),
+                bankItem.Description);
+
+            PeriodEndingDate = bankPeriodHistory.PeriodEndingDate;
 
             FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-                TableDefinition.GetFieldDefinition(p => p.BudgetItemId),
-                Conditions.Equals, budgetPeriodHistory.BudgetItemId);
+                TableDefinition.GetFieldDefinition(p => p.BankAccountId),
+                Conditions.Equals, bankPeriodHistory.BankAccountId);
 
             FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
                 TableDefinition.GetFieldDefinition(p => p.PeriodType),
-                Conditions.Equals, budgetPeriodHistory.PeriodType);
+                Conditions.Equals, bankPeriodHistory.PeriodType);
 
             FindButtonLookupDefinition.ReadOnlyMode = false;
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId, Conditions.Equals,
-                budgetPeriodHistory.BudgetItemId);
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
+                bankPeriodHistory.BankAccountId);
 
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var table = AppGlobals.LookupContext.History;
             var sql =
                 $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
             sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
+            sql += $"'{bankPeriodHistory.PeriodEndingDate.Month:D2}'";
             if (_mode == PeriodHistoryTypes.Monthly)
             {
                 HistoryLookupDefinition.FilterDefinition.AddFixedFilter(sql);
@@ -226,55 +223,50 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             sql =
                 $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
             sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            sql += $"'{budgetPeriodHistory.PeriodEndingDate.Year:D4}'";
+            sql += $"'{bankPeriodHistory.PeriodEndingDate.Year:D4}'";
 
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(sql);
 
-            ViewModelInput.HistoryFilterBudgetPeriodItem = budgetPeriodHistory;
+            ViewModelInput.HistoryFilterBankAccountPeriod = bankPeriodHistory;
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
-            return budgetPeriodHistory;
+            return bankPeriodHistory;
+
         }
 
-        protected override void LoadFromEntity(BudgetPeriodHistory entity)
+        protected override void LoadFromEntity(BankAccountPeriodHistory entity)
         {
-            ProjectedAmount = entity.ProjectedAmount;
-            ActualAmount = entity.ActualAmount;
-            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(entity.BudgetItemId);
-
-            if (budgetItem.Type == BudgetItemTypes.Income)
-            {
-                Difference = ActualAmount - ProjectedAmount;
-            }
-            else
-            {
-                Difference = ProjectedAmount - ActualAmount;
-            }
+            TotalDeposits = entity.TotalDeposits;
+            TotalWithdrawals = entity.TotalWithdrawals;
+            Difference = TotalDeposits - TotalWithdrawals;
         }
 
-        protected override BudgetPeriodHistory GetEntityData()
+        protected override BankAccountPeriodHistory GetEntityData()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         protected override void ClearData()
         {
-            BudgetAutoFillValue = null;
+            BankAutoFillValue = null;
             PeriodEndingDate = DateTime.Today;
-            ProjectedAmount = ActualAmount = Difference = 0;
+            TotalDeposits = TotalWithdrawals = Difference = 0;
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
         }
 
-        protected override bool SaveEntity(BudgetPeriodHistory entity)
+        protected override bool SaveEntity(BankAccountPeriodHistory entity)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
         protected override bool DeleteEntity()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
+
+        public override TableDefinition<BankAccountPeriodHistory> TableDefinition =>
+            AppGlobals.LookupContext.BankAccountPeriodHistory;
     }
 }

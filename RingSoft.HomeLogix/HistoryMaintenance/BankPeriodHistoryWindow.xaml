@@ -1,19 +1,19 @@
-﻿<ac:DbMaintenanceWindow x:Class="RingSoft.HomeLogix.HistoryMaintenance.BudgetPeriodHistoryWindow"
-                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
-                        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
-                        xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
-                        xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
-                        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;assembly=RingSoft.HomeLogix.Library"
-                        xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
-                        mc:Ignorable="d"
-                        Style="{StaticResource BaseWindowStyle}"
-                        Title="BudgetPeriodHistoryWindow" SizeToContent="WidthAndHeight">
+﻿<ac:DbMaintenanceWindow x:Class="RingSoft.HomeLogix.HistoryMaintenance.BankPeriodHistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+        xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+        xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;assembly=RingSoft.HomeLogix.Library"
+        xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="BankPeriodHistoryWindow" SizeToContent="WidthAndHeight">
     <Window.DataContext>
-        <vm:BudgetPeriodHistoryViewModel x:Name="BudgetPeridHistoryViewModel"/>
+        <vm:BankPeriodHistoryViewModel x:Name="BankPeridHistoryViewModel"/>
     </Window.DataContext>
     <Window.Resources>
         <ResourceDictionary>
@@ -27,6 +27,7 @@
     </Window.Resources>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+
         <StackPanel Orientation="Vertical" Margin="5">
             <Grid>
                 <Grid.RowDefinitions>
@@ -41,20 +42,20 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Budget Item"/>
-                <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding BudgetAutoFillSetup}" Value="{Binding BudgetAutoFillValue, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                <Label Grid.Row="0" Grid.Column="0" Content="Bank Account"/>
+                <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding BankAutoFillSetup}" Value="{Binding BankAutoFillValue, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
                 <Label Grid.Row="0" Grid.Column="2" Content="Period End Date"/>
 
                 <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding PeriodEndingDate, UpdateSourceTrigger=PropertyChanged}"></dec:DateEditControl>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Budget Amount"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Total Deposits"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedAmount, UpdateSourceTrigger=PropertyChanged}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding TotalDeposits, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label Grid.Row="1" Grid.Column="2" Content="Actual Amount"/>
+                <Label Grid.Row="1" Grid.Column="2" Content="Total Withdrawals"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding ActualAmount, UpdateSourceTrigger=PropertyChanged}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding TotalWithdrawals, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Difference"/>
 
@@ -81,5 +82,6 @@
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>
         </StackPanel>
-    </DockPanel>
+
+        </DockPanel>
 </ac:DbMaintenanceWindow>

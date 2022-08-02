@@ -93,6 +93,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 new LookupDefinition<SourceHistoryLookup, SourceHistory>(AppGlobals.LookupContext.SourceHistory);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Date, p => p.Date);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Amount, p => p.Amount);
+            sourceHistoryLookupDefinition.AddHiddenColumn(p => p.HistoryId, p => p.HistoryId);
             sourceHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             SourceHistoryLookupDefinition = sourceHistoryLookupDefinition;
@@ -141,6 +142,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override bool DeleteEntity()
         {
             return AppGlobals.DataRepository.DeleteBudgetItemSource(Id);
+        }
+
+        protected override PrimaryKeyValue GetAddViewPrimaryKeyValue(PrimaryKeyValue addViewPrimaryKeyValue)
+        {
+            if (LookupAddViewArgs.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.SourceHistory)
+            {
+                var sourceHistory = AppGlobals.LookupContext.SourceHistory.GetEntityFromPrimaryKeyValue(
+                    addViewPrimaryKeyValue);
+
+                sourceHistory =
+                    AppGlobals.DataRepository.GetSourceHistory(sourceHistory.HistoryId, sourceHistory.DetailId);
+
+                return AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(sourceHistory.Source);
+            }
+            return base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
         }
     }
 }

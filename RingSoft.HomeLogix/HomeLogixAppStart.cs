@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System.Linq;
+using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.Budget;
@@ -6,6 +7,7 @@ using RingSoft.HomeLogix.Library;
 using System.Windows;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.HomeLogix.HistoryMaintenance;
+using PathReferenceAttribute = RingSoft.DataEntryControls.WPF.PathReferenceAttribute;
 
 namespace RingSoft.HomeLogix
 {
@@ -47,6 +49,10 @@ namespace RingSoft.HomeLogix
             {
                 ShowAddOnTheFlyWindow(new BankAccountMaintenanceWindow(), e);
             }
+            else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BankAccountPeriodHistory)
+            {
+                ShowAddOnTheFlyWindow(new BankPeriodHistoryWindow(), e);
+            }
             else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BudgetItems)
             {
                 ShowAddOnTheFlyWindow(new BudgetItemWindow(), e);
@@ -62,6 +68,19 @@ namespace RingSoft.HomeLogix
             else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.History)
             {
                 ShowAddOnTheFlyWindow(new HistoryItemMaintenanceWindow(), e);
+            }
+            else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.SourceHistory)
+            {
+                var historyIdColumn = e.LookupData.LookupDefinition.HiddenColumns.
+                    FirstOrDefault(p => p.PropertyName == "HistoryId");
+                
+                if (historyIdColumn != null)
+                {
+                    ShowAddOnTheFlyWindow(new HistoryItemMaintenanceWindow(), e);
+                    return;
+                }
+
+                ShowAddOnTheFlyWindow(new BudgetItemSourceWindow(), e);
             }
         }
 

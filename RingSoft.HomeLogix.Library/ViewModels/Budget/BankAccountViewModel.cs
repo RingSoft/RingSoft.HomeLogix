@@ -433,6 +433,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _loading;
         private decimal _dbCurrentBalance;
         private bool _completeGrid = true;
+        private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
@@ -463,27 +464,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 ViewModelInput = new ViewModelInput();
             }
+            _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
             ViewModelInput.BankAccountViewModels.Add(this);
 
-            _periodHistoryLookupDefinition =
-                new LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>(AppGlobals.LookupContext
-                    .BankAccountPeriodHistory);
-
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalDeposits, p => p.TotalDeposits);
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalWithdrawals, p => p.TotalWithdrawals);
-
-            var table = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals.LookupContext
-                .BankAccountPeriodHistory.TableName);
-            var depositField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
-                .LookupContext.BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits).FieldName);
-            var withdrawalsField = AppGlobals.LookupContext.DataProcessor.SqlGenerator.FormatSqlObject(AppGlobals
-                .LookupContext.BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalWithdrawals).FieldName);
-
-            var formula = $"{table}.{depositField} - {table}.{withdrawalsField}";
-            _periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference, formula)
-                .HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .DoShowNegativeValuesInRed();
+            _periodHistoryLookupDefinition = AppGlobals.LookupContext.BankPeriodHistoryLookup.Clone();
 
             _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
@@ -541,13 +525,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, bankAccount.Description);
 
+            ViewModelInput.HistoryFilterBankAccount = bankAccount;
+
             MonthlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType, 
                 Conditions.Equals, (int) PeriodHistoryTypes.Monthly);
             MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, 
                 Conditions.Equals, Id);
 
-            MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             YearlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType,
@@ -555,12 +541,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId,
                 Conditions.Equals, Id);
 
-            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, _yearlyHistoryFilter);
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
             
             BudgetItemsLookupDefinition.FilterDefinition.ClearFixedFilters();
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,

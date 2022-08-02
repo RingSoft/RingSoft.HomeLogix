@@ -10,5 +10,9 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
         public DateTime Date { get; set; }
 
         public decimal Amount { get; set; }
+
+        public string Source { get; set; }
+
+        public int HistoryId { get; set; }
     }
 }

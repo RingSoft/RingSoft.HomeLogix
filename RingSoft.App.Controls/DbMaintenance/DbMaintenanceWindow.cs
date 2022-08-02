@@ -52,6 +52,8 @@ namespace RingSoft.App.Controls
 
         public abstract DbMaintenanceViewModelBase ViewModel { get; }
 
+        public AutoFillControl KeyAutoFillControl { get; private set; }
+
         public event EventHandler<LookupSelectArgs> LookupFormReturn;
 
         private bool _addOnFlyMode;
@@ -131,6 +133,7 @@ namespace RingSoft.App.Controls
 
         protected void RegisterFormKeyControl(AutoFillControl keyAutoFillControl)
         {
+            KeyAutoFillControl = keyAutoFillControl;
             BindingOperations.SetBinding(keyAutoFillControl, AutoFillControl.IsDirtyProperty, new Binding
             {
                 Source = ViewModel,
@@ -275,6 +278,15 @@ namespace RingSoft.App.Controls
 
             DbMaintenanceTopHeaderControl.ReadOnlyMode = readOnlyValue;
             base.OnReadOnlyModeSet(readOnlyValue);
+        }
+
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (control == KeyAutoFillControl)
+            {
+                return;
+            }
+            base.SetControlReadOnlyMode(control, readOnlyValue);
         }
     }
 }

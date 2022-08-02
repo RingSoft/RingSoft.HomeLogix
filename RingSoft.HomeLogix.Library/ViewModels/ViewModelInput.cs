@@ -15,5 +15,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public BudgetItemTypes? LockBudgetItemType { get; set; }
 
         public bool SourceHistoryIsIncome { get; set; }
+
+        public BudgetItem HistoryFilterBudgetItem { get; set; }
+
+        public BudgetPeriodHistory HistoryFilterBudgetPeriodItem { get; set; }
+
+        public BankAccount HistoryFilterBankAccount { get; set; }
+
+        public  BankAccountPeriodHistory HistoryFilterBankAccountPeriod { get; set; }
     }
 }

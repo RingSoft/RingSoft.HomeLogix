@@ -247,6 +247,16 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public History GetHistoryItem(int historyId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public SourceHistory GetSourceHistory(int historyId, int detailId)
+        {
+            throw new NotImplementedException();
+        }
+
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)
         {
             throw new NotImplementedException();

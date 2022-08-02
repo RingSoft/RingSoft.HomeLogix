@@ -12,7 +12,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-    Title="HistoryItemMaintenanceWindow" Height="450" Width="800">
+    Title="HistoryItemMaintenanceWindow" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:HistoryItemMaintenanceViewModel x:Name="HistoryItemMaintenanceViewModel"/>
     </Window.DataContext>
@@ -28,7 +28,71 @@
     </Window.Resources>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
-        <Grid>
-        </Grid>
-        </DockPanel>
+        <StackPanel Orientation="Vertical" Margin="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="History ID"/>
+
+                <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Id, UpdateSourceTrigger=PropertyChanged}" Width="75" HorizontalAlignment="Left"></dec:StringReadOnlyBox>
+
+                <Label Grid.Row="0" Grid.Column="2" Content="Date"/>
+
+                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Description"/>
+
+                <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="1" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+                <Label Grid.Row="1" Grid.Column="2" Content="Item Type"/>
+
+                <dec:CustomContentControl Grid.Row="1" Grid.Column="3" ContentTemplate="{StaticResource RegisterLineType}" SelectedItemId="{Binding ItemType ,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Budget Item"/>
+
+                <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Setup="{Binding BudgetAutoFillSetup}" Value="{Binding BudgetAutoFillValue, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="2" Grid.Column="2" Content="Bank Account"/>
+
+                <lc:AutoFillControl Grid.Row="2" Grid.Column="3" Setup="{Binding BankAutoFillSetup}" Value="{Binding BankAutoFillValue}" Width="200"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Budget Amount"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1" Value="{Binding ProjectedAmount, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="3" Grid.Column="2" Content="Actual Amount"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="3" Value="{Binding ActualAmount, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="4" Grid.Column="0" Content="Difference"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            <Label Content="Sources" HorizontalAlignment="Left"/>
+            <lc:LookupControl Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
+                
+                <lc:LookupControl.LookupColumns>
+                    <lc:LookupColumn Header="Date" PropertyName="{lc:NameOf Date, Type={x:Type lm:SourceHistoryLookup}}" Width="100" DesignText="01/01/1980"/>
+
+                    <lc:LookupColumn Header="Source" PropertyName="{lc:NameOf Source, Type={x:Type lm:SourceHistoryLookup}}" Width="250"/>
+
+                    <lc:LookupColumn Header="Amount" PropertyName="{lc:NameOf Amount, Type={x:Type lm:SourceHistoryLookup}}" DesignText="$123,456.78" Width="120"/>
+
+                </lc:LookupControl.LookupColumns>
+
+            </lc:LookupControl>
+        </StackPanel>
+    </DockPanel>
 </ac:DbMaintenanceWindow>

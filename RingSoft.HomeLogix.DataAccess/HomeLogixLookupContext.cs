@@ -32,6 +32,8 @@ namespace RingSoft.HomeLogix.DataAccess
         public LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory> BudgetPeriodLookup { get; set; }
 
         public LookupDefinition<HistoryLookup, History> HistoryLookup { get; set; }
+
+        public LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> BankPeriodHistoryLookup { get; set; }
         //----------------------------------------------------------------------
 
         public override DbDataProcessor DataProcessor => SqliteDataProcessor;
@@ -86,11 +88,11 @@ namespace RingSoft.HomeLogix.DataAccess
             HistoryLookup = new LookupDefinition<HistoryLookup, History>(History);
             var budgetAlias = HistoryLookup.Include(p => p.BudgetItem).JoinDefinition.Alias;
             HistoryLookup.AddVisibleColumnDefinition(p => p.Date, "Date",
-                p => p.Date, 15);
+                p => p.Date, 12);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
-                p => p.Description, 40);
+                p => p.Description, 25);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
-                p => p.ItemType, 25);
+                p => p.ItemType, 20);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",
                 p => p.ProjectedAmount, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
@@ -141,7 +143,31 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BudgetPeriodLookup = budgetPeriodLookup;
 
-        BudgetPeriodHistory.HasLookupDefinition(BudgetPeriodLookup);
+            BudgetPeriodHistory.HasLookupDefinition(BudgetPeriodLookup);
+
+            var bankPeriodHistoryLookupDefinition =
+                new LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>(BankAccountPeriodHistory);
+
+            bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate,
+                "Date Ending", p => p.PeriodEndingDate, 20);
+            bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalDeposits, 
+                "Total Deposits", p => p.TotalDeposits, 20);
+            bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalWithdrawals, 
+                "Total Withdrawals", p => p.TotalWithdrawals, 20);
+
+            var tableString = DataProcessor.SqlGenerator.FormatSqlObject(BankAccountPeriodHistory.TableName);
+            var depositField = DataProcessor.SqlGenerator.FormatSqlObject(BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits).FieldName);
+            var withdrawalsField = DataProcessor.SqlGenerator.FormatSqlObject(
+                BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalWithdrawals).FieldName);
+
+            formula = $"{tableString}.{depositField} - {tableString}.{withdrawalsField}";
+            bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference,
+                    "Difference", formula, 20)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .DoShowNegativeValuesInRed();
+
+            BankPeriodHistoryLookup = bankPeriodHistoryLookupDefinition;
+            BankAccountPeriodHistory.HasLookupDefinition(BankPeriodHistoryLookup);
         }
 
         protected override void SetupModel()

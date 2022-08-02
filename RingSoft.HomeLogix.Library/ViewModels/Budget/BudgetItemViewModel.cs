@@ -25,6 +25,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         bool AddAdjustment(BudgetItem budgetItem);
     }
 
+    public class YearlyHistoryFilter
+    {
+        public ViewModelInput ViewModelInput { get; set; }
+    }
+
     public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
     {
         public override TableDefinition<BudgetItem> TableDefinition => AppGlobals.LookupContext.BudgetItems;
@@ -537,6 +542,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private List<BankAccountRegisterItem> _newBankAccountRegisterItems;
         private List<BankAccountRegisterItem> _bankAccountRegisterItemsToDelete;
         private BudgetItemTypes? _lockBudgetItemType;
+        private BudgetItem _budgetItemHistoryFilter;
+        private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
@@ -583,6 +590,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 ViewModelInput = new ViewModelInput();
             }
+
+            _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
+            
             ViewModelInput.BudgetItemViewModels.Add(this);
             _lockBudgetItemType = ViewModelInput.LockBudgetItemType;
             ViewModelInput.LockBudgetItemType = null;
@@ -761,6 +771,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
 
+            _budgetItemHistoryFilter = budgetItem;
+            ViewModelInput.HistoryFilterBudgetItem = budgetItem;
+
             ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
             StartingDate = budgetItem.StartingDate;
@@ -786,7 +799,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId,
                 Conditions.Equals, Id);
 
-            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, _yearlyHistoryFilter);
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId, Conditions.Equals, Id);

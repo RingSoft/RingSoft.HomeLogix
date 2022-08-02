@@ -71,6 +71,8 @@ namespace RingSoft.HomeLogix.Library
         BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding, DateTime nextMonthEnding);
 
         History GetHistoryItem(int historyId);
+
+        SourceHistory GetSourceHistory(int historyId, int detailId);
     }
 
     public class DataRepository : IDataRepository
@@ -548,8 +550,19 @@ namespace RingSoft.HomeLogix.Library
         public History GetHistoryItem(int historyId)
         {
             var context = AppGlobals.GetNewDbContext();
-            var result = context.History.FirstOrDefault(p => p.Id == historyId);
+            var result = context.History.Include(p => p.BudgetItem)
+                .Include(p => p.BankAccount).
+                Include(p => p.Sources).FirstOrDefault(p => p.Id == historyId);
             return result;
+        }
+
+        public SourceHistory GetSourceHistory(int historyId, int detailId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.SourceHistory.
+                Include(p => p.HistoryItem).
+                Include(p => p.Source)
+                .FirstOrDefault(p => p.HistoryId == historyId && p.DetailId == detailId);
         }
     }
 }
