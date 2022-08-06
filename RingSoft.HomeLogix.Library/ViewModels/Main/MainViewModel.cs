@@ -444,6 +444,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var table = AppGlobals.LookupContext.BudgetItems;
             var query = new SelectQuery(table.TableName);
+            var outerQuery = new SelectQuery(table.TableName, query);
+
+            outerQuery.AddSelectColumn("Id", "Id");
+            outerQuery.AddSelectColumn("Description", "Description");
+            outerQuery.AddSelectColumn("Type", "Type");
+            outerQuery.AddSelectColumn("Projected", "Projected");
+            outerQuery.AddSelectColumn("Actual", "Actual");
+
+            var formula = $"CASE WHEN {sqlGenerator.FormatSqlObject("Actual")}=0 THEN 0 ELSE ";
+            formula += $"{sqlGenerator.FormatSqlObject("Difference")} END";
+            outerQuery.AddSelectFormulaColumn("Difference", formula);
 
             query.AddSelectColumn(table.GetFieldDefinition(p => p.Id).FieldName, "Id");
             query.AddSelectColumn(table.GetFieldDefinition(p => p.Description).FieldName, "Description");
@@ -456,7 +467,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or);
             query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
 
-            return sqlGenerator.GenerateSelectStatement(query);
+            return sqlGenerator.GenerateSelectStatement(outerQuery);
         }
 
         private string GetBudgetMonthlyAmountDifferenceFormulaSql()
