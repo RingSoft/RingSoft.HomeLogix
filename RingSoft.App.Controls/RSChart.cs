@@ -181,26 +181,30 @@ namespace RingSoft.App.Controls
                         height += 20;
                         index++;
                     }
-                    WpfPlot.Plot.Clear();
-                    var pie = WpfPlot.Plot.AddPie(newValues.ToArray());
 
-                    pie.ShowValues = false;
-                    pie.SliceFillColors = newColors.ToArray();
+                    if (Items.Items.Any())
+                    {
+                        WpfPlot.Plot.Clear();
+                        var pie = WpfPlot.Plot.AddPie(newValues.ToArray());
 
-                    WpfPlot.Plot.Grid(false);
-                    WpfPlot.Plot.XTicks();
-                    WpfPlot.Plot.YTicks();
-                    WpfPlot.Plot.Style(dataBackground: Color.Transparent, figureBackground: Color.Transparent);
+                        pie.ShowValues = false;
+                        pie.SliceFillColors = newColors.ToArray();
 
-                    groupBox.Content = groupPanel;
-                    groupBox.Header = "Legend";
-                    groupBox.UpdateLayout();
-                    WpfPlot.UpdateLayout();
+                        WpfPlot.Plot.Grid(false);
+                        WpfPlot.Plot.XTicks();
+                        WpfPlot.Plot.YTicks();
+                        WpfPlot.Plot.Style(dataBackground: Color.Transparent, figureBackground: Color.Transparent);
 
-                    LegendPanel.Children.Add(groupBox);
+                        groupBox.Content = groupPanel;
+                        groupBox.Header = "Legend";
+                        groupBox.UpdateLayout();
+                        WpfPlot.UpdateLayout();
 
-                    groupBox.Height = WpfPlot.ActualHeight - 20;
-                    groupBox.UpdateLayout();
+                        LegendPanel.Children.Add(groupBox);
+
+                        groupBox.Height = WpfPlot.ActualHeight - 20;
+                        groupBox.UpdateLayout();
+                    }
                 }
                 LegendPanel.UpdateLayout();
                 TitleLabel.Content = Items.Title;
