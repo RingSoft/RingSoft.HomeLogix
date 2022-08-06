@@ -137,6 +137,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     style = new DataEntryGridCellStyle { State = DataEntryGridCellStates.Disabled };
                     if (Difference < 0)
                         style.DisplayStyleId = BankAccountRegisterGridManager.NegativeDisplayId;
+                    if (Difference > 0)
+                        style.DisplayStyleId = BankAccountRegisterGridManager.PositiveDisplayId;
+
                     return style;
                 case BankAccountRegisterGridColumns.Completed:
                     return new DataEntryGridControlCellStyle();

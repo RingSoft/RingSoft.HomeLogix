@@ -210,7 +210,7 @@
 
                 <Label Grid.Row="1" Grid.Column="2" x:Name="MonthlyAmountRemainingLabel" Content="Budget Monthly Amount Remaining"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" x:Name="MonthlyAmountRemainingControl" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" x:Name="MonthlyAmountRemainingControl" FormatType="Currency" Value="{Binding MonthlyAmountRemaining}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Last Completed Date"/>
 
@@ -230,7 +230,7 @@
 
                 <Label Grid.Row="4" Grid.Column="0" x:Name="MonthlyPercentDifferenceLabel" Content="Monthly Percent Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" x:Name="MonthlyPercentDifferenceControl" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="100" TextAlignment="Left"/>
+                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" x:Name="MonthlyPercentDifferenceControl" FormatType="Percent" Value="{Binding MonthlyPercentDifference}" DesignText="99.99%" Width="100" TextAlignment="Left" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
             </Grid>
         </Grid>

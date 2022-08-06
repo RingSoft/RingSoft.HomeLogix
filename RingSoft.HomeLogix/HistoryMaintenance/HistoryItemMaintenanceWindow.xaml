@@ -78,7 +78,7 @@
 
                 <Label Grid.Row="4" Grid.Column="0" Content="Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
             </Grid>
             <Label Content="Sources" HorizontalAlignment="Left"/>
             <lc:LookupControl Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">

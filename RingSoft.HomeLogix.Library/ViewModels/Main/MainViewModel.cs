@@ -2,6 +2,7 @@
 using RingSoft.DataEntryControls.Engine;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.App.Library;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
 using RingSoft.DbLookup.Lookup;
@@ -21,7 +22,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ManageBankAccounts();
     }
 
-    public class MainViewModel : INotifyPropertyChanged, IMainViewModel
+    public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
     {
         private DateTime _currentMonthEnding;
 
@@ -295,6 +296,36 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
+        private ChartData _budgetChartData;
+        public ChartData BudgetChartData
+        {
+            get => _budgetChartData;
+            set
+            {
+                if (_budgetChartData == value)
+                {
+                    return;
+                }
+                _budgetChartData = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ChartData _actualChartData;
+        public ChartData ActualChartData
+        {
+            get => _activeChartData;
+            set
+            {
+                if (_actualChartData == value)
+                {
+                    return;
+                }
+                _actualChartData = value;
+                OnPropertyChanged();
+            }
+        }
+
         public IMainView View { get; private set; }
 
         public RelayCommand PreviousMonthCommand { get; }
@@ -303,9 +334,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand ManageBudgetCommand { get; }
         public RelayCommand ManageBankAccountsCommand { get; }
 
+        public int PageSize { get; } = 50;
+        public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
+        public string SearchText { get; set; } = string.Empty;
+
         private LookupFormulaColumnDefinition _projectedMonthToDateColumnDefinition;
         private LookupFormulaColumnDefinition _actualMonthToDateColumnDefinition;
         private LookupFormulaColumnDefinition _monthlyAmountDifferrenceColumnDefinition;
+        private ChartData _initialBudgetChartData;
+        private ChartData _initialActualChartData;
+        private ChartData _activeChartData;
 
         public MainViewModel()
         {
@@ -393,7 +431,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference");
                 _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
                     .HasKeepNullEmpty()
-                    .DoShowNegativeValuesInRed();
+                    .DoShowNegativeValuesInRed()
+                    .DoShowPositiveValuesInGreen();
 
                 BudgetLookupDefinition = budgetLookupDefinition;
             }
@@ -544,7 +583,99 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             PreviousMonthCommand.IsEnabled = budgetTotals.PreviousMonthHasValues;
             NextMonthCommand.IsEnabled = budgetTotals.NextMonthHasValues;
+
+            MakeBudgetChartData();
+            MakeActualChartData();
         }
+
+        private void MakeBudgetChartData()
+        {
+            _initialBudgetChartData = new ChartData();
+            _initialBudgetChartData.Title = "Budget";
+
+            var lookupDefinition = BudgetLookupDefinition.Clone();
+            lookupDefinition.InitialSortColumnDefinition =
+                lookupDefinition.GetColumnDefinition(p => p.ProjectedMonthlyAmount);
+
+            _activeChartData = _initialBudgetChartData;
+
+            MakeChartData(lookupDefinition);
+
+            BudgetChartData = _initialBudgetChartData;
+        }
+
+        private void MakeActualChartData()
+        {
+            _initialActualChartData = new ChartData();
+            _initialActualChartData.Title = "Actual";
+
+            var lookupDefinition = BudgetLookupDefinition.Clone();
+            lookupDefinition.InitialSortColumnDefinition =
+                lookupDefinition.GetColumnDefinition(p => p.ActualMonthlyAmount);
+
+            _activeChartData = _initialActualChartData;
+
+            MakeChartData(lookupDefinition);
+
+            ActualChartData = _initialActualChartData;
+        }
+
+
+        private void MakeChartData(LookupDefinition<MainBudgetLookup, BudgetItem> lookupDefinition)
+        {
+            
+            lookupDefinition.InitialOrderByType = OrderByTypes.Descending;
+
+            var lookupData = new LookupData<MainBudgetLookup, BudgetItem>(lookupDefinition, this);
+
+            lookupData.LookupDataChanged -= LookupData_LookupDataChanged;
+            lookupData.LookupDataChanged += LookupData_LookupDataChanged;
+
+            lookupData.GetInitData();
+
+            var stop = false;
+
+            while (!stop)
+            {
+                switch (lookupData.ScrollPosition)
+                {
+                    case LookupScrollPositions.Bottom:
+                    case LookupScrollPositions.Disabled:
+                        stop = true;
+                        break;
+                    default:
+                        lookupData.GotoNextPage();
+                        break;
+                }
+            }
+        }
+
+        private void LookupData_LookupDataChanged(object sender, LookupDataChangedArgs<MainBudgetLookup, BudgetItem> e)
+        {
+            foreach (var mainLookup in e.LookupData.LookupResultsList)
+            {
+                if (mainLookup.ItemType == "Expense")
+                {
+                    if (_activeChartData == _initialBudgetChartData)
+                    {
+                        _activeChartData.Items.Add(new ChartDataItem
+                        {
+                            Name = mainLookup.Description,
+                            Value = (double)mainLookup.ProjectedMonthlyAmount
+                        });
+                    }
+                    else if (_activeChartData == _initialActualChartData)
+                    {
+                        _activeChartData.Items.Add(new ChartDataItem
+                        {
+                            Name = mainLookup.Description,
+                            Value = (double)mainLookup.ActualMonthlyAmount
+                        });
+                    }
+                }
+            }
+        }
+
 
         private void ManageBudget()
         {

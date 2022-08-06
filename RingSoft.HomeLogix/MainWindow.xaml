@@ -7,11 +7,12 @@
                   xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                   xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                   xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Main;assembly=RingSoft.HomeLogix.Library"
-                  xmlns:local="clr-namespace:RingSoft.HomeLogix"
+                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+                  xmlns:sp="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
                   mc:Ignorable="d"
                   Style="{StaticResource BaseWindowStyle}"
                   CloseOnEscape="False"
-                  Title="MainWindow" Height="450" Width="800">
+                  Title="MainWindow" WindowState="Maximized">
     <Window.DataContext>
         <vm:MainViewModel x:Name="ViewModel" />
     </Window.DataContext>
@@ -119,6 +120,15 @@
 
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>
+
+            <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+
+                <ac:RSChart Width="400" Height="200" Items="{Binding BudgetChartData}"/>
+
+                <ac:RSChart Width="400" Height="200" Items="{Binding ActualChartData}" Margin="5,0,0,0"/>
+
+            </StackPanel>
+
             <lc:LookupControl Grid.Row="1" Grid.Column="1" x:Name="BankLookupControl" LookupDefinition="{Binding BankLookupDefinition}" Command="{Binding BankLookupCommand}" HorizontalAlignment="Right" Width="750" Margin="5">
                 <lc:LookupControl.LookupColumns>
 
@@ -133,7 +143,8 @@
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>
 
-            <GroupBox Grid.Row="2" Grid.Column="0" Header="Monthly Totals" HorizontalAlignment="Center">
+            
+            <GroupBox Grid.Row="3" Grid.Column="0" Header="Monthly Totals" HorizontalAlignment="Center">
 
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
@@ -163,7 +174,7 @@
                     <Label Grid.Row="0" Grid.Column="4" Content="Budget Net Income" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5"
-                                            Value="{Binding Path=TotalBudgetMonthlyNetIncome}" />
+                                            Value="{Binding Path=TotalBudgetMonthlyNetIncome}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Content="Actual Income" />
 
@@ -178,27 +189,27 @@
                     <Label Grid.Row="1" Grid.Column="4" Content="Actual Net Income" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="5"
-                                            Value="{Binding Path=TotalActualMonthlyNetIncome}" />
+                                            Value="{Binding Path=TotalActualMonthlyNetIncome}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                     <Label Grid.Row="2" Grid.Column="0" Content="Income Difference" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1"
-                                            Value="{Binding Path=TotalMonthlyIncomeDifference}" />
+                                            Value="{Binding Path=TotalMonthlyIncomeDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                     <Label Grid.Row="2" Grid.Column="2" Content="Expenses Difference" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3"
-                                            Value="{Binding Path=TotalMonthlyExpensesDifference}" />
+                                            Value="{Binding Path=TotalMonthlyExpensesDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                     <Label Grid.Row="2" Grid.Column="4" Content="Net Income Difference" />
 
                     <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5"
-                                            Value="{Binding Path=TotalMonthlyNetIncomeDifference}" />
+                                            Value="{Binding Path=TotalMonthlyNetIncomeDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Row="3" Grid.Column="0" Header="Yearly Totals" HorizontalAlignment="Center">
+            <GroupBox Grid.Row="5" Grid.Column="0" Header="Yearly Totals" HorizontalAlignment="Center">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -222,7 +233,7 @@
 
                     <Label Grid.Row="0" Grid.Column="4" Content="Actual Net Income" />
 
-                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=YearToDateNetIncome}" />
+                    <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=YearToDateNetIncome}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                 </Grid>
             </GroupBox>

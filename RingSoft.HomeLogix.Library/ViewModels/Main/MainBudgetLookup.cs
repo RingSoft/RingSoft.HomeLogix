@@ -15,5 +15,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public decimal ActualMonthlyAmount { get; set; }
 
         public decimal MonthlyAmountDifference { get; set; }
+
+        public int BudgetItemType { get; set; }
     }
 }

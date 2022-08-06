@@ -109,6 +109,9 @@
                             </deg:DataEntryGrid.Columns>
                             <deg:DataEntryGrid.DisplayStyles>
                                 <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:BankAccountRegisterGridManager.NegativeDisplayId}" ForegroundBrush="Red"/>
+
+                                <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:BankAccountRegisterGridManager.PositiveDisplayId}" ForegroundBrush="Green"/>
+
                             </deg:DataEntryGrid.DisplayStyles>
                         </deg:DataEntryGrid>
 
@@ -241,7 +244,7 @@
 
                 <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
 
@@ -261,7 +264,7 @@
 
                 <Label Grid.Row="2" Grid.Column="4" Content="Monthly Budget Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="4" Value="{Binding Path=MonthlyBudgetDifference}" Margin="198,3,0,3" Grid.ColumnSpan="2"/>
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="4" Value="{Binding Path=MonthlyBudgetDifference}" Margin="198,3,0,3" Grid.ColumnSpan="2" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
             </Grid>
         </Grid>

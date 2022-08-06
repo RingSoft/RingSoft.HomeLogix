@@ -112,8 +112,8 @@ namespace RingSoft.HomeLogix.DataAccess
             + $" ELSE {table}.{projectedField} - {table}.{actualField} END";
 
             HistoryLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference",
-                formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .DoShowNegativeValuesInRed();
+                formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
+                .DoShowPositiveValuesInGreen();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
             History.HasLookupDefinition(HistoryLookup);
 
@@ -139,7 +139,8 @@ namespace RingSoft.HomeLogix.DataAccess
             budgetPeriodLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference"
                     , formula, 25)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .DoShowNegativeValuesInRed();
+                .DoShowNegativeValuesInRed()
+                .DoShowPositiveValuesInGreen();
 
             BudgetPeriodLookup = budgetPeriodLookup;
 
@@ -164,7 +165,8 @@ namespace RingSoft.HomeLogix.DataAccess
             bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference,
                     "Difference", formula, 20)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
-                .DoShowNegativeValuesInRed();
+                .DoShowNegativeValuesInRed()
+                .DoShowPositiveValuesInGreen();
 
             BankPeriodHistoryLookup = bankPeriodHistoryLookupDefinition;
             BankAccountPeriodHistory.HasLookupDefinition(BankPeriodHistoryLookup);

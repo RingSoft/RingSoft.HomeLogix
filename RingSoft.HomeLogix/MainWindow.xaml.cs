@@ -1,6 +1,11 @@
-﻿using RingSoft.HomeLogix.Budget;
+﻿using System.Collections.ObjectModel;
+using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;
+using System.Windows.Media;
+using RingSoft.App.Library;
+using ScottPlot;
+using Color = System.Drawing.Color;
 
 namespace RingSoft.HomeLogix
 {
@@ -17,10 +22,7 @@ namespace RingSoft.HomeLogix
 
             PreviewKeyDown += MainWindow_PreviewKeyDown;
 
-            Loaded += (sender, args) =>
-            {
-                BudgetLookupControl.Focus();
-            };
+            Loaded += (sender, args) => { BudgetLookupControl.Focus(); };
 
             ChangeHouseholdButton.ToolTip.HeaderText = "Change Household (Alt + T)";
             ChangeHouseholdButton.ToolTip.DescriptionText = "Login to a different household.";
@@ -36,6 +38,30 @@ namespace RingSoft.HomeLogix
 
             NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
             NextMonthButton.ToolTip.DescriptionText = "See budget totals for the ext month.";
+
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            //ObservableCollection<PieSegment> pieCollection = new ObservableCollection<PieSegment>();
+            //pieCollection.Add(new PieSegment { Color = Colors.Green, Value = 5, Name = "Dogs" });
+            //pieCollection.Add(new PieSegment { Color = Colors.Yellow, Value = 12, Name = "Cats" });
+            //pieCollection.Add(new PieSegment { Color = Colors.Red, Value = 20, Name = "Mice" });
+            //pieCollection.Add(new PieSegment { Color = Colors.DarkCyan, Value = 22, Name = "Lizards" });
+            //pie1.Data = pieCollection;
+            //chart1.Data = pieCollection;
+
+            //double[] values = {778, 43, 283, 76, 184};
+            //WpfPlot.plt.PlotPie(values, showValues: true);
+
+            //WpfPlot.plt.Grid(false);
+            //WpfPlot.plt.Frame(false);
+            //WpfPlot.plt.Ticks(false, false);
+            //WpfPlot.plt.Style(figBg: Color.Transparent, dataBg: Color.Transparent);
+            //WpfPlot.plt.Title("Hello");
+
+            //WpfPlot.Render();
         }
 
         private void MainWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

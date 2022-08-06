@@ -40,6 +40,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public const int DifferenceColumnId = 8;
 
         public const int NegativeDisplayId = 101;
+        public const int PositiveDisplayId = 102;
 
         public new BankAccountViewModel ViewModel { get; }
 
