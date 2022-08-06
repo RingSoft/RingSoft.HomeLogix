@@ -571,7 +571,7 @@ namespace RingSoft.HomeLogix.Tests
                 "Saving Income To Junior's Savings Budget Item");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
-            Assert.AreEqual(400, bankAccount.MonthlyBudgetDeposits,
+            Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
                 "Junior's Initial Savings Deposit");
 
             //-----------------------------------------------------------------------------------------------------------
