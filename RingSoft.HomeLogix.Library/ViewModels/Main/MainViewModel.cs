@@ -439,6 +439,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
         }
+
+
+
         private string CreateBudgetLookupDefinitionFormula()
         {
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
@@ -461,7 +464,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             query.AddSelectFormulaColumn("Type", $"{sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject("Type")}");
 
             query.AddSelectFormulaColumn("Projected", GetBudgetMonthToDateFormulaSql());
-            query.AddSelectFormulaColumn("Actual", GetBudgetMonthToDateFormulaSql(false));
+            query.AddSelectFormulaColumn("Actual", GeActualtMonthToDateFormulaSql());
             query.AddSelectFormulaColumn("Difference", GetBudgetMonthlyAmountDifferenceFormulaSql());
 
             query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or);
@@ -478,12 +481,52 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 .GetFieldDefinition(p => (int) p.Type).FieldName);
 
             var result =
-                $"CASE {table}.{typeField} WHEN {(int) BudgetItemTypes.Income} THEN ({GetBudgetMonthToDateFormulaSql(false)})"
+                $"CASE {table}.{typeField} WHEN {(int) BudgetItemTypes.Income} THEN ({GeActualtMonthToDateFormulaSql()})"
                 + $" - ({GetBudgetMonthToDateFormulaSql()}) "
-                + $"ELSE ({GetBudgetMonthToDateFormulaSql()}) - ({GetBudgetMonthToDateFormulaSql(false)}) END";
+                + $"ELSE ({GetBudgetMonthToDateFormulaSql()}) - ({GeActualtMonthToDateFormulaSql()}) END";
 
             return result;
         }
+
+        private string GeActualtMonthToDateFormulaSql()
+        {
+            var table = AppGlobals.LookupContext.BankAccountRegisterItems;
+            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+
+            var sql = GetBudgetMonthToDateFormulaSql(false);
+            var query = new SelectQuery(table.TableName);
+
+            var unionSql = $"{sql}\r\n";
+            unionSql += $"\r\nUNION ALL\r\n\r\n";
+
+            sql = $"coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
+            sql += ")),0)";
+            query.AddSelectFormulaColumn("Actual", sql);
+
+            sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
+            sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+            query.AddWhereItemFormula(sql);
+
+            sql =
+                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+            sql += $"'{CurrentMonthEnding.Month:D2}'";
+            query.AddWhereItemFormula(sql);
+
+            unionSql += sqlGenerator.GenerateSelectStatement(query);
+
+            var outerQuery = new SelectQuery("Outer");
+            outerQuery.AddSelectFormulaColumn("Actual", "SUM(Actual)");
+            outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
+
+            var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
+
+            return projectedSql;
+        }
+
 
         private string GetBudgetMonthToDateFormulaSql()
         {
