@@ -161,7 +161,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var row in Rows)
             {
-                Grid?.UpdateRow(row);
+                try
+                {
+                    Grid?.UpdateRow(row);
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
 
