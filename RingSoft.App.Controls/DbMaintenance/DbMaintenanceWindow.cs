@@ -61,6 +61,7 @@ namespace RingSoft.App.Controls
         private bool _addOnFlyMode;
         private AutoFillControl _registerKeyControl;
         private LookupAddViewArgs _initializeFromLookupData;
+        private bool _initializeRunning;
 
         static DbMaintenanceWindow()
         {
@@ -104,7 +105,7 @@ namespace RingSoft.App.Controls
                 DbMaintenanceTopHeaderControl.NextButton.ToolTip.DescriptionText =
                     $"Go to the next {ItemText} in the database.";
 
-                DbMaintenanceTopHeaderControl.Loaded += (o, eventArgs) => Initialize();
+                Initialize();
                 
                 OnLoaded();
             };
@@ -112,6 +113,7 @@ namespace RingSoft.App.Controls
 
         public void Initialize()
         {
+            _initializeRunning = true;
             Processor = LookupControlsGlobals.DbMaintenanceProcessorFactory.GetProcessor();
             Processor.Initialize(this, DbMaintenanceTopHeaderControl, ViewModel, this);
             if (_registerKeyControl != null)
@@ -130,6 +132,15 @@ namespace RingSoft.App.Controls
             {
                 ViewModel.OnViewLoaded(this);
             }
+
+            if (!_addOnFlyMode)
+                DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
+
+            if (ViewModel.LookupAddViewArgs != null && ViewModel.LookupAddViewArgs.LookupReadOnlyMode)
+            {
+                DbMaintenanceTopHeaderControl.SaveSelectButton.IsEnabled = false;
+            }
+
         }
 
         protected virtual void OnLoaded()
@@ -177,6 +188,21 @@ namespace RingSoft.App.Controls
             else
             {
                 Processor.InitializeFromLookupData(e);
+                if (!_initializeRunning)
+                {
+                    Initialize();
+                }
+
+                switch (e.LookupFormMode)
+                {
+                    case LookupFormModes.Add:
+                    case LookupFormModes.View:
+                        if (!e.FromLookupControl)
+                            _addOnFlyMode = true;
+                        break;
+                }
+                ViewModel.InitializeFromLookupData(e);
+
             }
         }
     }
