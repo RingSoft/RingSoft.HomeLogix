@@ -994,7 +994,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             if (RegisterGridManager.Rows
                 .OfType<BankAccountRegisterGridRow>().Any(a => a.Completed
-                || a.ActualAmount != null && a.BudgetItemId == budgetItemId))
+                || a.ActualAmount != null))
                 return true;
 
             return false;

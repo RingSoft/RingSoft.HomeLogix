@@ -24,9 +24,12 @@ namespace RingSoft.App.Library
         public override void OnSelectButton()
         {
             if (SaveButtonEnabled)
-                if (DoSave() != DbMaintenanceResults.Success)
+            {
+                var result = DoSave();
+                if (result != DbMaintenanceResults.Success)
                     return;
-            
+            }
+
             base.OnSelectButton();
         }
     }

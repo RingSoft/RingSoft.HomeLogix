@@ -21,6 +21,7 @@ namespace RingSoft.App.Controls
         public sealed override bool Start()
         {
             LookupControlsGlobals.InitUi();
+            LookupControlsGlobals.DbMaintenanceProcessorFactory = new AppDbMaintenanceProcessorFactory();
             _mainWindow.Done += (sender, args) => CloseSplash();
 
             if (!base.Start())

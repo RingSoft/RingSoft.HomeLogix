@@ -112,7 +112,7 @@ namespace RingSoft.HomeLogix.DataAccess
             + $" ELSE {table}.{projectedField} - {table}.{actualField} END";
 
             HistoryLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference",
-                formula, 15).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
+                formula, 15, "").HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
                 .DoShowPositiveValuesInGreen();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
             History.HasLookupDefinition(HistoryLookup);
@@ -137,7 +137,7 @@ namespace RingSoft.HomeLogix.DataAccess
                       + $" THEN {table}.{actualAmountField} - {table}.{projectedAmountField}"
                       + $" ELSE {table}.{projectedAmountField} - {table}.{actualAmountField} END";
             budgetPeriodLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference"
-                    , formula, 25)
+                    , formula, 25, "")
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .DoShowNegativeValuesInRed()
                 .DoShowPositiveValuesInGreen();
@@ -163,7 +163,7 @@ namespace RingSoft.HomeLogix.DataAccess
 
             formula = $"{tableString}.{depositField} - {tableString}.{withdrawalsField}";
             bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference,
-                    "Difference", formula, 20)
+                    "Difference", formula, 20, "")
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .DoShowNegativeValuesInRed()
                 .DoShowPositiveValuesInGreen();

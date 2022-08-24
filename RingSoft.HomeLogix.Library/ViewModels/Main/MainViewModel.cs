@@ -416,19 +416,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     budgetLookupDefinition =
                         new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
 
-                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description");
+                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description","");
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
 
                 _projectedMonthToDateColumnDefinition = budgetLookupDefinition.AddVisibleColumnDefinition(
-                    p => p.ProjectedMonthlyAmount, "Projected");
+                    p => p.ProjectedMonthlyAmount, "Projected", "");
                 _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
                 _actualMonthToDateColumnDefinition =
-                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual");
+                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual", "");
                 _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
                 _monthlyAmountDifferrenceColumnDefinition =
-                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference");
+                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference", "");
                 _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
                     .HasKeepNullEmpty()
                     .DoShowNegativeValuesInRed()

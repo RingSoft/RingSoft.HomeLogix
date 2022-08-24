@@ -84,7 +84,7 @@ namespace RingSoft.HomeLogix
             }
         }
 
-        private void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
+        public void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
         {
             if (e.OwnerWindow is Window ownerWindow)
                 maintenanceWindow.Owner = ownerWindow;

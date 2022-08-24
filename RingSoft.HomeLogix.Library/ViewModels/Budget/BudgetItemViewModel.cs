@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using RingSoft.DbLookup.EfCore;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -1072,8 +1073,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 DbBankAccount = null;
             }
-            newBankAccount.RegisterItems = null;
-            budgetItem.BankAccount = newBankAccount;
+
+            if (newBankAccount != null)
+            {
+                newBankAccount.RegisterItems = null;
+                budgetItem.BankAccount = newBankAccount;
+            }
 
             if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
             {
@@ -1134,6 +1139,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
+            if (!BankAutoFillValue.IsValid())
+            {
+                var message = "Invalid Bank Account";
+                OnValidationFail(
+                    AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
+                    message,
+                    "Invalid Bank Account");
+                return false;
+
+            }
+
             var reconciledMessageShown = false;
             if (_newBankAccountRegisterItems != null && !_newBankAccountRegisterItems.Any() &&
                 entity.StartingDate == _dbStartDate && _registerAffected)
@@ -1141,7 +1157,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var message =
                     $"No register items will be updated for this Budget Item.  You must set the Starting Date to be earlier than {entity.StartingDate} in order to update the Bank Register Grid.  Do you wish to continue?";
 
-                if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
+                if (!Processor.ShowYesNoMessage(message, "Budget Item Being Modified", true))
                     return false;
             }
 
@@ -1153,10 +1169,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     var message =
                         "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this budget item in the Register.  Do you wish to continue?";
 
-                    if (!View.ShowYesNoMessage(message, "Budget Item Being Modified", true))
+                    if (!Processor.ShowYesNoMessage(message, "Budget Item Being Modified", true))
                         return false;
                 }
             }
+
             return base.ValidateEntity(entity);
         }
 
