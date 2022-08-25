@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
@@ -11,9 +13,10 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
 {
-    public class HomeLogixLookupContext : LookupContext
+    public class HomeLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
         public const int RegisterTypeCustomContentId = 100;
+        public const int BudgetItemTypeContentId = 101;
 
         public TableDefinition<SystemMaster> SystemMaster { get; set; }
         public TableDefinition<BudgetItem> BudgetItems { get; set; }
@@ -25,7 +28,10 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<SourceHistory> SourceHistory { get; set; }
         public TableDefinition<BudgetPeriodHistory> BudgetPeriodHistory { get; set; }
         public TableDefinition<BankAccountPeriodHistory> BankAccountPeriodHistory { get; set; }
-
+        public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
+        public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
+        public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
+        public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
         public LookupDefinition<SourceLookup, BudgetItemSource> BudgetItemSourceLookup { get; set; }
@@ -52,6 +58,11 @@ namespace RingSoft.HomeLogix.DataAccess
         public void Initialize(IHomeLogixDbContext dbContext)
         {
             _dbContext = dbContext.DbContext;
+            SystemGlobals.AdvancedFindLookupContext = this;
+            var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
+            configuration.InitializeModel();
+            configuration.ConfigureLookups();
+
             Initialize();
         }
 
@@ -192,6 +203,8 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItems.GetFieldDefinition(p => p.BankAccountId)
                 .HasDescription("Bank Account");
 
+            BudgetItems.GetFieldDefinition(p => (int)p.Type).HasContentTemplateId(BudgetItemTypeContentId);
+
             BudgetItems.GetFieldDefinition(p => p.Amount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
@@ -215,6 +228,5 @@ namespace RingSoft.HomeLogix.DataAccess
 
             SourceHistory.GetFieldDefinition(p => p.Amount).HasDecimalFieldType(DecimalFieldTypes.Currency);
         }
-
     }
 }

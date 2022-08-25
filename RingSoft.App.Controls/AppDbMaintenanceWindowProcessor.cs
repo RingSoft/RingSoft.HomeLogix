@@ -24,7 +24,7 @@ namespace RingSoft.App.Controls
         public override BaseWindow MaintenanceWindow { get; set; }
         public override Control MaintenanceButtonsControl { get; set; }
 
-        public bool DontLoadViewModel { get; set; }
+        private bool _setReadOnlyMode;
 
         public override void Initialize(BaseWindow window, Control buttonsControl,
             DbMaintenanceViewModelBase viewModel, IDbMaintenanceView view)
@@ -32,8 +32,44 @@ namespace RingSoft.App.Controls
             MaintenanceWindow = window;
             ViewModel = viewModel;
             MaintenanceButtonsControl = buttonsControl;
+            //if (NewButton == null)
+            {
+                //MaintenanceButtonsControl.Loaded += (sender, args) =>
+                {
 
-            var dbMaintenanceButtons = (DbMaintenanceTopHeaderControl)buttonsControl;
+                    MaintenanceWindow.Closing += (o, eventArgs) => ViewModel.OnWindowClosing(eventArgs);
+
+                    if (_setReadOnlyMode)
+                        OnReadOnlyModeSet(true);
+                    _setReadOnlyMode = false;
+                    SetupControl(view);
+
+                };
+            }
+        }
+
+        public override void SetupControl(IDbMaintenanceView view)
+        {
+            var dbMaintenanceButtons = (DbMaintenanceTopHeaderControl)MaintenanceButtonsControl;
+            if (dbMaintenanceButtons.SaveButton == null)
+            {
+                MaintenanceButtonsControl.Loaded += (sender, args) =>
+                {
+                    CreateButtons(dbMaintenanceButtons);
+                    ViewModel.OnViewLoaded(view);
+                    base.SetupControl(view);
+                };
+            }
+            else
+            {
+                CreateButtons(dbMaintenanceButtons);
+                ViewModel.OnViewLoaded(view);
+                base.SetupControl(view);
+            }
+        }
+
+        private void CreateButtons(DbMaintenanceTopHeaderControl dbMaintenanceButtons)
+        {
             SaveButton = dbMaintenanceButtons.SaveButton;
             SelectButton = dbMaintenanceButtons.SaveSelectButton;
             DeleteButton = dbMaintenanceButtons.DeleteButton;
@@ -42,14 +78,31 @@ namespace RingSoft.App.Controls
             CloseButton = dbMaintenanceButtons.CloseButton;
             NextButton = dbMaintenanceButtons.NextButton;
             PreviousButton = dbMaintenanceButtons.PreviousButton;
-
-            SetupControl(view);
         }
 
         public override void ShowRecordSavedMessage()
         {
             var recordSavedWindow = new RecordSavedWindow();
             recordSavedWindow.ShowDialog();
+        }
+
+        public override void OnReadOnlyModeSet(bool readOnlyValue)
+        {
+            if (MaintenanceButtonsControl == null)
+            {
+                _setReadOnlyMode = true;
+            }
+            else
+            {
+                var dbMaintenanceTopHeaderControl = MaintenanceButtonsControl as DbMaintenanceTopHeaderControl;
+                if (readOnlyValue)
+                    dbMaintenanceTopHeaderControl.SaveSelectButton.Content = "Se_lect";
+                else
+                    dbMaintenanceTopHeaderControl.SaveSelectButton.Content = "Save/Se_lect";
+                dbMaintenanceTopHeaderControl.ReadOnlyMode = readOnlyValue;
+
+                base.OnReadOnlyModeSet(readOnlyValue);
+            }
         }
     }
 }

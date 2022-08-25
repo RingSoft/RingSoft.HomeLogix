@@ -5,6 +5,7 @@
              xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
              xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
              xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
+             xmlns:af="clr-namespace:RingSoft.DbLookup.Controls.WPF.AdvancedFind;assembly=RingSoft.DbLookup.Controls.WPF"
              xmlns:local="clr-namespace:RingSoft.HomeLogix">
 
     <Application.Resources>
@@ -35,6 +36,8 @@
             </Style>
 
             <Style TargetType="lc:LookupWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+            <Style TargetType="af:AdvancedFindWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 

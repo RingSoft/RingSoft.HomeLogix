@@ -19,6 +19,11 @@ namespace RingSoft.HomeLogix
         {
             if (contentTemplateId == HomeLogixLookupContext.RegisterTypeCustomContentId)
                 return _application.Resources["RegisterLineType"] as DataEntryCustomContentTemplate;
+            else if (contentTemplateId == HomeLogixLookupContext.BudgetItemTypeContentId)
+            {
+                var result = _application.Resources["BudgetItemType"] as DataEntryCustomContentTemplate;
+                return result;
+            }
 
             return base.GetContentTemplate(contentTemplateId);
         }

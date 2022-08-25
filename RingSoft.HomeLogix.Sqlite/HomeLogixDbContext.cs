@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.AdvancedFind;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -30,6 +32,10 @@ namespace RingSoft.HomeLogix.Sqlite
         public virtual DbSet<SourceHistory> SourceHistory { get; set; }
         public virtual DbSet<BudgetPeriodHistory> BudgetPeriodHistory { get; set; }
         public virtual DbSet<BankAccountPeriodHistory> BankAccountPeriodHistory { get; set; }
+        public DbSet<AdvancedFind> AdvancedFinds { get; set; }
+        public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
+        public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
+
         //-----------------------------------------------------------------------
 
         private static HomeLogixLookupContext _lookupContext;
@@ -75,7 +81,19 @@ namespace RingSoft.HomeLogix.Sqlite
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Name)
                 .HasColumnType(SqliteConstants.StringColumnType);
 
+            AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
+
             base.OnModelCreating(modelBuilder);
+        }
+
+        public DbContext GetDbContextEf()
+        {
+            return this;
+        }
+
+        public IAdvancedFindDbContextEfCore GetNewDbContext()
+        {
+            return new HomeLogixDbContext();
         }
     }
 }

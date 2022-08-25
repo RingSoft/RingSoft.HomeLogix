@@ -22,6 +22,7 @@ namespace RingSoft.App.Controls
         {
             LookupControlsGlobals.InitUi();
             LookupControlsGlobals.DbMaintenanceProcessorFactory = new AppDbMaintenanceProcessorFactory();
+            LookupControlsGlobals.DbMaintenanceButtonsFactory = new AppDbMaintenanceButtonsFactory();
             _mainWindow.Done += (sender, args) => CloseSplash();
 
             if (!base.Start())

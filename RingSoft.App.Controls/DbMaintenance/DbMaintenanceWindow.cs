@@ -116,22 +116,27 @@ namespace RingSoft.App.Controls
             _initializeRunning = true;
             Processor = LookupControlsGlobals.DbMaintenanceProcessorFactory.GetProcessor();
             Processor.Initialize(this, DbMaintenanceTopHeaderControl, ViewModel, this);
-            if (_registerKeyControl != null)
-            {
-                Processor.RegisterFormKeyControl(_registerKeyControl);
-                _registerKeyControl = null;
-            }
-
             if (_initializeFromLookupData != null)
             {
                 InitializeFromLookupData(_initializeFromLookupData);
+                if (_registerKeyControl != null)
+                {
+                    Processor.RegisterFormKeyControl(_registerKeyControl);
+                    _registerKeyControl = null;
+                }
                 ViewModel.OnViewLoaded(this);
                 _initializeFromLookupData = null;
             }
             else
             {
+                if (_registerKeyControl != null)
+                {
+                    Processor.RegisterFormKeyControl(_registerKeyControl);
+                    _registerKeyControl = null;
+                }
                 ViewModel.OnViewLoaded(this);
             }
+
 
             if (!_addOnFlyMode)
                 DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;

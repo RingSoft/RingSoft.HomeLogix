@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
 {
-    public interface IHomeLogixDbContext
+    public interface IHomeLogixDbContext: IAdvancedFindDbContextEfCore
     {
         DbContext DbContext { get; }
 
