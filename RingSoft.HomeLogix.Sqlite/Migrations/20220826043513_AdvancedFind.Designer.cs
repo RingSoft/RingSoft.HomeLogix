@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
     [DbContext(typeof(HomeLogixDbContext))]
-    partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220826043513_AdvancedFind")]
+    partial class AdvancedFind
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,34 +44,34 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("ColumnId")
-                        .HasColumnType("integer");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Caption")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte>("DecimalFormatType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<byte>("FieldDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FieldName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Formula")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<double>("PercentWidth")
-                        .HasColumnType("numeric");
+                        .HasColumnType("REAL");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PrimaryTableName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("TableName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
@@ -82,46 +84,46 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<int>("FilterId")
-                        .HasColumnType("integer");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("CustomDate")
-                        .HasColumnType("bit");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DisplayValue")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte>("EndLogic")
-                        .HasColumnType("smallint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FieldName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Formula")
-                        .HasColumnType("ntext");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte>("LeftParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<byte>("Operand")
-                        .HasColumnType("smallint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("PrimaryFieldName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PrimaryTableName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<byte>("RightParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SearchForAdvancedFindId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SearchForValue")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("TableName")
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("AdvancedFindId", "FilterId");
 

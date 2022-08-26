@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess;
@@ -47,7 +48,9 @@ namespace RingSoft.HomeLogix.Sqlite
 
         public HomeLogixDbContext()
         {
-            
+            EfCoreGlobals.DbAdvancedFindContextCore = this;
+            SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

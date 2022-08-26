@@ -20,7 +20,7 @@
         <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
     </Style>
 
-    <Style TargetType="Button" x:Key="{x:Type Button}">
+    <Style TargetType="Button" x:Key="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
         <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -44,6 +44,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style TargetType="dec:NotificationButton" BasedOn="{StaticResource {x:Type Button}}"/>
 
     <Style TargetType="TabItem" x:Key="{x:Type TabItem}">
         <Setter Property="Template">

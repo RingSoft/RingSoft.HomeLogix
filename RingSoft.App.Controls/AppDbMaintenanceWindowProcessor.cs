@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -58,6 +59,9 @@ namespace RingSoft.App.Controls
                     CreateButtons(dbMaintenanceButtons);
                     ViewModel.OnViewLoaded(view);
                     base.SetupControl(view);
+
+                    CheckAddOnFlyMode();
+
                 };
             }
             else
@@ -65,7 +69,39 @@ namespace RingSoft.App.Controls
                 CreateButtons(dbMaintenanceButtons);
                 ViewModel.OnViewLoaded(view);
                 base.SetupControl(view);
+                CheckAddOnFlyMode();
             }
+        }
+
+        public void CheckAddOnFlyMode()
+        {
+            MaintenanceButtonsControl.Loaded += (sender, args) =>
+            {
+                var dbMaintenanceButtons = MaintenanceButtonsControl as DbMaintenanceTopHeaderControl;
+                var addOnFlyMode = false;
+                if (ViewModel.LookupAddViewArgs != null)
+                {
+                    switch (ViewModel.LookupAddViewArgs.LookupFormMode)
+                    {
+                        case LookupFormModes.Add:
+                        case LookupFormModes.View:
+                            if (!ViewModel.LookupAddViewArgs.FromLookupControl)
+                                addOnFlyMode = true;
+                            break;
+                    }
+
+                    //SelectButton.IsEnabled = false;
+                }
+
+                if (!addOnFlyMode)
+                    dbMaintenanceButtons.SaveSelectButton.Visibility=Visibility.Collapsed;
+                else
+                {
+                    dbMaintenanceButtons.SaveSelectButton.Visibility = Visibility.Visible;
+                    ViewModel.SelectButtonEnabled = !ViewModel.LookupAddViewArgs.LookupReadOnlyMode;
+                    
+                }
+            };
         }
 
         private void CreateButtons(DbMaintenanceTopHeaderControl dbMaintenanceButtons)

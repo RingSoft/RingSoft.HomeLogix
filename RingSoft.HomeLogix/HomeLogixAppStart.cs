@@ -90,7 +90,7 @@ namespace RingSoft.HomeLogix
                 maintenanceWindow.Owner = ownerWindow;
             maintenanceWindow.ShowInTaskbar = false;
 
-            maintenanceWindow.InitializeFromLookupData(e);
+            maintenanceWindow.ViewModel.InitializeFromLookupData(e);
             maintenanceWindow.ShowDialog();
         }
     }
