@@ -97,13 +97,15 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItemSources.HasLookupDefinition(BudgetItemSourceLookup);
 
             HistoryLookup = new LookupDefinition<HistoryLookup, History>(History);
-            var budgetAlias = HistoryLookup.Include(p => p.BudgetItem).JoinDefinition.Alias;
+            var budgetInclude = HistoryLookup.Include(p => p.BudgetItem);
+            var budgetAlias = budgetInclude.JoinDefinition.Alias;
+
             HistoryLookup.AddVisibleColumnDefinition(p => p.Date, "Date",
                 p => p.Date, 12);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
                 p => p.Description, 25);
-            HistoryLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
-                p => p.ItemType, 20);
+            budgetInclude.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
+                p => p.Type, 20);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",
                 p => p.ProjectedAmount, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
@@ -136,7 +138,9 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.ProjectedAmount, 25);
             budgetPeriodLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual Amount",
                 p => p.ActualAmount, 25);
-             budgetAlias = budgetPeriodLookup.Include(p => p.BudgetItem).JoinDefinition.Alias;
+             
+            var budgetPeriodInclude = budgetPeriodLookup.Include(p => p.BudgetItem);
+            budgetAlias = budgetPeriodInclude.JoinDefinition.Alias;
 
             table = DataProcessor.SqlGenerator.FormatSqlObject(BudgetPeriodHistory.TableName);
             var projectedAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
@@ -147,8 +151,8 @@ namespace RingSoft.HomeLogix.DataAccess
             formula = $"CASE {budgetAlias}.{typeField} WHEN {(int)BudgetItemTypes.Income}"
                       + $" THEN {table}.{actualAmountField} - {table}.{projectedAmountField}"
                       + $" ELSE {table}.{projectedAmountField} - {table}.{actualAmountField} END";
-            budgetPeriodLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference"
-                    , formula, 25, "")
+            budgetPeriodInclude.AddVisibleColumnDefinition(p => p.Difference, "Difference"
+                    , formula, 25, FieldDataTypes.Decimal)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .DoShowNegativeValuesInRed()
                 .DoShowPositiveValuesInGreen();

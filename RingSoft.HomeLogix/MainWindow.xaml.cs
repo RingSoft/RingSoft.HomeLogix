@@ -4,6 +4,7 @@ using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;
 using System.Windows.Media;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using ScottPlot;
 using Color = System.Drawing.Color;
 
@@ -119,6 +120,14 @@ namespace RingSoft.HomeLogix
         {
             var bankAccountMaintenanceWindow = new BankAccountMaintenanceWindow { Owner = this };
             bankAccountMaintenanceWindow.ShowDialog();
+        }
+
+        public void LaunchAdvancedFind()
+        {
+            var window = new AdvancedFindWindow();
+            window.Owner = this;
+            window.ShowInTaskbar = false;
+            window.ShowDialog();
         }
     }
 }

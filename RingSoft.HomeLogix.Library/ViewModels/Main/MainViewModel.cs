@@ -20,6 +20,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ManageBudget();
 
         void ManageBankAccounts();
+
+        void LaunchAdvancedFind();
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -333,6 +335,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand ChangeHouseholdCommand { get; }
         public RelayCommand ManageBudgetCommand { get; }
         public RelayCommand ManageBankAccountsCommand { get; }
+        public RelayCommand AdvancedFindCommand { get; }
 
         public int PageSize { get; } = 50;
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
@@ -355,6 +358,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             ChangeHouseholdCommand = new RelayCommand(ChangeHousehold);
             ManageBudgetCommand = new RelayCommand(ManageBudget);
             ManageBankAccountsCommand = new RelayCommand(ManageBankAccounts);
+            AdvancedFindCommand = new RelayCommand(LaunchAdvancedFind);
         }
 
         public void OnViewLoaded(IMainView view)
@@ -750,6 +754,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private void GotoNextMonth()
         {
             SetCurrentMonthEnding(CurrentMonthEnding.AddMonths(1));
+        }
+
+        private void LaunchAdvancedFind()
+        {
+            View.LaunchAdvancedFind();
         }
 
         private void SetCurrentMonthEnding(DateTime value, bool refreshView = true)

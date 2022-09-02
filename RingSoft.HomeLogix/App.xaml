@@ -44,6 +44,8 @@
 
             <Style TargetType="deg:DataEntryGridMemoEditor" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="af:AdvancedFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 
                 <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemLineTypeId}" HotKey="B">
