@@ -11,16 +11,20 @@
     <None Remove="Resources\Exit.png" />
     <None Remove="Resources\Left.png" />
     <None Remove="Resources\New file.png" />
+    <None Remove="Resources\refresh-arrow.png" />
     <None Remove="Resources\Right.png" />
     <None Remove="Resources\RingSoft Logo.png" />
     <None Remove="Resources\save32.png" />
     <None Remove="Resources\saveselect32.png" />
     <None Remove="Resources\Search32.png" />
+    <None Remove="Resources\sql-file.png" />
+    <None Remove="Resources\stock_index_down.png" />
+    <None Remove="Resources\stock_index_up.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="2.0.22.1" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="2.0.22" />
+    <PackageReference Include="RingSoft.DbLookup.Controls.WPF" Version="2.1.0" />
+    <PackageReference Include="RingSoft.DbMaintenance" Version="2.1.0" />
     <PackageReference Include="ScottPlot.WPF" Version="4.1.52" />
   </ItemGroup>
 
@@ -30,6 +34,7 @@
     <Resource Include="Resources\Exit.png" />
     <Resource Include="Resources\Left.png" />
     <Resource Include="Resources\New file.png" />
+    <Resource Include="Resources\refresh-arrow.png" />
     <Resource Include="Resources\Right.png" />
     <Resource Include="Resources\RingSoft Logo.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
@@ -37,6 +42,9 @@
     <Resource Include="Resources\save32.png" />
     <Resource Include="Resources\saveselect32.png" />
     <Resource Include="Resources\Search32.png" />
+    <Resource Include="Resources\sql-file.png" />
+    <Resource Include="Resources\stock_index_down.png" />
+    <Resource Include="Resources\stock_index_up.png" />
   </ItemGroup>
 
   <ItemGroup>

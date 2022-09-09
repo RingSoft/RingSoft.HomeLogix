@@ -17,6 +17,10 @@
                     Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
+            <Image x:Key="RedAlertImage" Source="/Resources/homeRed.png" />
+            <Image x:Key="YellowAlertImage" Source="Resources/homeYellow.png"/>
+            <Image x:Key="GreenAlertImage" Source="Resources/home.png"/>
+
             <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:ReadOnlyBox}}" x:Key="{x:Type dec:DecimalReadOnlyBox}">
                 <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}}"/>
             </Style>
@@ -45,6 +49,8 @@
             <Style TargetType="deg:DataEntryGridMemoEditor" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <Style TargetType="af:AdvancedFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+            <Style TargetType="af:AdvancedFindRefreshRateWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 

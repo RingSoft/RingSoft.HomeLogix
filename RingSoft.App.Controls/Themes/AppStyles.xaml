@@ -8,6 +8,8 @@
             Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/ControlStylesResourceDictionary.xaml" />
         <ResourceDictionary
             Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/DbMaintenanceTopHeaderTemplate.xaml" />
+        <ResourceDictionary
+            Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/AdvancedFindAdditionalButtonsTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <dec:ComparisonConverter x:Key="ComparisonConverter"/>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;
@@ -126,8 +127,19 @@ namespace RingSoft.HomeLogix
         {
             var window = new AdvancedFindWindow();
             window.Owner = this;
-            window.ShowInTaskbar = false;
-            window.ShowDialog();
+            window.Loaded += (sender, args) =>
+            {
+                window.ShowInTaskbar = false;
+            };
+            window.StateChanged += (sender, args) =>
+            {
+                if (window.WindowState == WindowState.Minimized)
+                {
+                    window.Owner = this;
+                }
+            };
+            
+            window.Show();
         }
     }
 }

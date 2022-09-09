@@ -105,5 +105,51 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <BitmapImage x:Key="AfUpImage" UriSource="/RingSoft.App.Controls;component/Resources/stock_index_up.png" />
+    <BitmapImage x:Key="AfDownImage" UriSource="/RingSoft.App.Controls;component/Resources/stock_index_down.png" />
+    <BitmapImage x:Key="AfSqlImage" UriSource="/RingSoft.App.Controls;component/Resources/sql-file.png" />
+    <BitmapImage x:Key="AfRefreshImage" UriSource="/RingSoft.App.Controls;component/Resources/refresh-arrow.png" />
+
+    <Style TargetType="{x:Type local:AdvancedFindAdditionalButtons}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:AdvancedFindAdditionalButtons}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <Border.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="10"/>
+
+                            </Style>
+                        </Border.Resources>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <local:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="ImportDefaultLookupButton" Content="Import Default Lookup" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}" FontSize="12"/>
+
+                            <local:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="ApplyToLookupButton" Content="Apply To Lookup" ImageSource="{StaticResource AfDownImage}" Style="{StaticResource SubButton}"/>
+
+                            <local:DbMaintenanceButton Grid.Row="0" Grid.Column="1" x:Name="SqlViewerButton" Content="View SQL Statement" ImageSource="{StaticResource AfSqlImage}" Style="{StaticResource SubButton}"/>
+
+                            <local:DbMaintenanceButton Grid.Row="1" Grid.Column="1" x:Name="RefreshSettingsButton" Content="Refresh Settings" ImageSource="{StaticResource AfRefreshImage}" Style="{StaticResource SubButton}"/>
+
+                        </Grid>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>
