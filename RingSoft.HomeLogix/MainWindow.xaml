@@ -64,6 +64,8 @@
                 </LinearGradientBrush>
             </StackPanel.Background>
 
+            <ac:DbMaintenanceButton x:Name="ExitButton" Content="E_xit" ImageSource="{StaticResource ExitImage}" Command="{Binding CloseAppCommand}"/>
+
             <ac:DbMaintenanceButton x:Name="ChangeHouseholdButton" Content="_Change Household" ImageSource="{StaticResource ChangeHouseholdImage}"
                                     Command="{Binding ChangeHouseholdCommand}"/>
 

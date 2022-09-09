@@ -127,19 +127,14 @@ namespace RingSoft.HomeLogix
         {
             var window = new AdvancedFindWindow();
             window.Owner = this;
-            window.Loaded += (sender, args) =>
-            {
-                window.ShowInTaskbar = false;
-            };
-            window.StateChanged += (sender, args) =>
-            {
-                if (window.WindowState == WindowState.Minimized)
-                {
-                    window.Owner = this;
-                }
-            };
+            window.Closed += (sender, args) => Activate();
             
             window.Show();
+        }
+
+        public void CloseApp()
+        {
+            Close();
         }
     }
 }

@@ -22,6 +22,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ManageBankAccounts();
 
         void LaunchAdvancedFind();
+
+        void CloseApp();
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -330,6 +332,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public IMainView View { get; private set; }
 
+        public RelayCommand CloseAppCommand { get; private set; }
         public RelayCommand PreviousMonthCommand { get; }
         public RelayCommand NextMonthCommand { get; }
         public RelayCommand ChangeHouseholdCommand { get; }
@@ -359,6 +362,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             ManageBudgetCommand = new RelayCommand(ManageBudget);
             ManageBankAccountsCommand = new RelayCommand(ManageBankAccounts);
             AdvancedFindCommand = new RelayCommand(LaunchAdvancedFind);
+            CloseAppCommand = new RelayCommand(CloseApp);
         }
 
         public void OnViewLoaded(IMainView view)
@@ -767,6 +771,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             if (refreshView)
                 RefreshView();
+        }
+
+        private void CloseApp()
+        {
+            View.CloseApp();
         }
 
         private static DateTime GetPeriodEndDate(DateTime value)

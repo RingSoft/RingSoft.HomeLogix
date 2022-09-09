@@ -49,6 +49,7 @@
     </Style>
 
     <Style TargetType="{x:Type local:DbMaintenanceButton}" BasedOn="{StaticResource {x:Type local:DbMaintenanceButton}}" x:Key="SubButton">
+        <Setter Property="FontSize" Value="12"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:DbMaintenanceButton}">
@@ -60,7 +61,7 @@
                             <ContentPresenter Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" RecognizesAccessKey="True">
                                 <ContentPresenter.Resources>
                                     <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="10"/>
+                                        <!--<Setter Property="FontSize" Value="10"/>-->
                                         <Setter Property="TextAlignment" Value="Left"/>
                                         <Setter Property="Margin" Value="5"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>
