@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
@@ -43,14 +44,17 @@ namespace RingSoft.HomeLogix.Sqlite
         
         public HomeLogixDbContext(HomeLogixLookupContext lookupContext)
         {
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
             _lookupContext = lookupContext;
         }
 
         public HomeLogixDbContext()
         {
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
             SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
 
+            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

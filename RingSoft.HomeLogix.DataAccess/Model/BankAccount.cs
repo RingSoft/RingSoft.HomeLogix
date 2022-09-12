@@ -20,6 +20,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         [DefaultValue(0)]
+        public byte AccountType { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
         public decimal CurrentBalance { get; set; }
 
         public decimal ProjectedEndingBalance { get; set; }

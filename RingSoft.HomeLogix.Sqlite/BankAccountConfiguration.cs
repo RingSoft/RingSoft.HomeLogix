@@ -9,6 +9,7 @@ namespace RingSoft.HomeLogix.Sqlite
     {
         public void Configure(EntityTypeBuilder<BankAccount> builder)
         {
+            builder.Property(p => p.AccountType).HasColumnType(SqliteConstants.ByteColumnType);
             builder.Property(p => p.CurrentBalance).HasColumnType(SqliteConstants.DecimalColumnType);
             builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
             builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
