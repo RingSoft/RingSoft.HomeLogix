@@ -40,7 +40,7 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="250"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
@@ -56,7 +56,7 @@
                                     DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left" />
             </StackPanel>
 
-            <TabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0">
+            <TabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
                 <TabItem Header="Details">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -113,9 +113,9 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Monthly Totals">
+                <TabItem Header="Monthly Totals" VerticalAlignment="Stretch">
                     <DockPanel>
-                        <lc:LookupControl LookupDefinition="{Binding MonthlyLookupDefinition}" Command="{Binding MonthlyLookupCommand}">
+                        <lc:LookupControl LookupDefinition="{Binding MonthlyLookupDefinition}" Command="{Binding MonthlyLookupCommand}" MinHeight="250">
                             <lc:LookupControl.LookupColumns>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Month Ending" DesignText="01/01/1980" Width="100"/>
@@ -130,9 +130,9 @@
                         </lc:LookupControl>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Yearly Totals">
+                <TabItem Header="Yearly Totals" VerticalAlignment="Stretch">
                     <DockPanel>
-                        <lc:LookupControl LookupDefinition="{Binding YearlyLookupDefinition}" Command="{Binding YearlyLookupCommand}">
+                        <lc:LookupControl LookupDefinition="{Binding YearlyLookupDefinition}" Command="{Binding YearlyLookupCommand}" MinHeight="250" VerticalAlignment="Stretch">
                             <lc:LookupControl.LookupColumns>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Year Ending" DesignText="01/01/1980" Width="100"/>
@@ -147,14 +147,14 @@
                         </lc:LookupControl>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="History" Height="16" VerticalAlignment="Bottom">
+                <TabItem Header="History" Height="16" VerticalAlignment="Stretch" >
                     <DockPanel>
-                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}" MinHeight="250">
                             <lc:LookupControl.LookupColumns>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="180"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="160"/>
 
                                 <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:HistoryLookup}}"
                                                               ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="3" Width="110"/>

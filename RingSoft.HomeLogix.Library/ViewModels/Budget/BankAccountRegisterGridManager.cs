@@ -136,10 +136,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     switch (bankAccountRegisterGridRow.TransactionType)
                     {
                         case TransactionTypes.Deposit:
-                            newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                            switch (ViewModel.AccountType)
+                            {
+                                case BankAccountTypes.Checking:
+                                case BankAccountTypes.Savings:
+                                    newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                                    break;
+                                case BankAccountTypes.CreditCard:
+                                    newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
                             break;
                         case TransactionTypes.Withdrawal:
-                            newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                            switch (ViewModel.AccountType)
+                            {
+                                case BankAccountTypes.Checking:
+                                case BankAccountTypes.Savings:
+                                    newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                                    break;
+                                case BankAccountTypes.CreditCard:
+                                    newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

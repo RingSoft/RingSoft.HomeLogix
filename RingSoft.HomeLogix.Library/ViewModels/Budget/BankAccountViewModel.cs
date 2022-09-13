@@ -15,9 +15,21 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.HomeLogix.Sqlite.Migrations;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+
+    public enum BankAccountTypes
+    {
+        [Description("Checking")]
+        Checking = 0,
+        [Description("Savings")]
+        Savings = 1,
+        [Description("Credit Card")]
+        CreditCard = 2
+    }
+
     public interface IBankAccountView : IDbMaintenanceView
     {
         void EnableRegisterGrid(bool value);
@@ -68,6 +80,45 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _id = value;
                 OnPropertyChanged();
             }
+        }
+
+        private TextComboBoxControlSetup _typeSetup;
+
+        public TextComboBoxControlSetup TypeSetup
+        {
+            get => _typeSetup;
+            set
+            {
+                if (_typeSetup == value)
+                {
+                    return;
+                }
+                _typeSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private TextComboBoxItem _typeItem;
+
+        public TextComboBoxItem TypeItem
+        {
+            get => _typeItem;
+            set
+            {
+                if (_typeItem == value)
+                {
+                    return;
+                }
+                _typeItem = value;
+                CalculateTotals();
+                OnPropertyChanged();
+            }
+        }
+
+        public BankAccountTypes AccountType
+        {
+            get => (BankAccountTypes) TypeItem.NumericValue;
+            set => TypeItem = TypeSetup.GetItem((int) value);
         }
 
         private decimal _currentProjectedEndingBalance;
@@ -467,6 +518,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
             ViewModelInput.BankAccountViewModels.Add(this);
 
+            TypeSetup = new TextComboBoxControlSetup();
+            TypeSetup.LoadFromEnum<BankAccountTypes>();
+
             _periodHistoryLookupDefinition = AppGlobals.LookupContext.BankPeriodHistoryLookup.Clone();
 
             _periodHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
@@ -488,6 +542,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = true;
 
             Id = 0;
+            AccountType = BankAccountTypes.Checking;
             CurrentProjectedEndingBalance = 0;
             _dbCurrentBalance = CurrentBalance = 0;
             NewProjectedEndingBalance = 0;
@@ -571,6 +626,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
 
+            AccountType = (BankAccountTypes)entity.AccountType;
             CurrentBalance = entity.CurrentBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
@@ -678,6 +734,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = new BankAccount
             {
                 Id = Id,
+                AccountType = (byte)AccountType,
                 Description = KeyAutoFillValue.Text,
                 ProjectedEndingBalance = NewProjectedEndingBalance,
                 CurrentBalance = CurrentBalance,

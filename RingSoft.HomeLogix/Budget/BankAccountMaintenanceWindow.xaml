@@ -63,15 +63,19 @@
 
                 <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
-                <Label Grid.Row="0" Grid.Column="4" Content="Last Register Generate To Date"/>
+                <Label Grid.Row="0" Grid.Column="4" Content="Account Type"/>
 
-                <dec:DateReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding LastGenerationDate}" DesignText="01/01/1980" Width="80"/>
+                <dec:TextComboBoxControl Grid.Row="0" Grid.Column="5" Setup="{Binding TypeSetup}" SelectedItem="{Binding TypeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Bank Balance"/>
 
                 <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left"/>
 
                 <CheckBox Grid.Row="1" Grid.Column="2" Content="Completed" IsChecked="{Binding Path=CompleteAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
+                <Label Grid.Row="1" Grid.Column="4" Content="Last Register Generate To Date"/>
+
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="5" Value="{Binding LastGenerationDate}" DesignText="01/01/1980" Width="80" HorizontalAlignment="Left"/>
 
             </Grid>
 

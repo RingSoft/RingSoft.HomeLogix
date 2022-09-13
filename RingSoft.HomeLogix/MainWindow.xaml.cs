@@ -114,13 +114,15 @@ namespace RingSoft.HomeLogix
         public void ManageBudget()
         {
             var budgetItemWindow = new BudgetItemWindow { Owner = this };
-            budgetItemWindow.ShowDialog();
+            budgetItemWindow.Closed += (sender, args) => Activate();
+            budgetItemWindow.Show();
         }
 
         public void ManageBankAccounts()
         {
             var bankAccountMaintenanceWindow = new BankAccountMaintenanceWindow { Owner = this };
-            bankAccountMaintenanceWindow.ShowDialog();
+            bankAccountMaintenanceWindow.Closed += (sender, args) => Activate();
+            bankAccountMaintenanceWindow.Show();
         }
 
         public void LaunchAdvancedFind()
