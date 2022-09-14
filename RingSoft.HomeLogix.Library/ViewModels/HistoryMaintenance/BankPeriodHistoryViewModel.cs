@@ -216,13 +216,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"'{bankPeriodHistory.PeriodEndingDate.Month:D2}'", sql);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Month:D2}", sql);
             }
 
             sql =
                 $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
             sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"'{bankPeriodHistory.PeriodEndingDate.Year:D4}'", sql);
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Year:D4}", sql);
 
             ViewModelInput.HistoryFilterBankAccountPeriod = bankPeriodHistory;
 

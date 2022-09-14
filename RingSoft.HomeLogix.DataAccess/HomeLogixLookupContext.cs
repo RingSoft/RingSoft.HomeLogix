@@ -105,8 +105,8 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.Date, 12);
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
                 p => p.Description, 25);
-            budgetInclude.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
-                p => p.Type, 20);
+            HistoryLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
+                p => p.ItemType, 20);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",
                 p => p.ProjectedAmount, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
@@ -125,8 +125,8 @@ namespace RingSoft.HomeLogix.DataAccess
             + $" THEN {table}.{actualField} - {table}.{projectedField}"
             + $" ELSE {table}.{projectedField} - {table}.{actualField} END";
 
-            HistoryLookup.AddVisibleColumnDefinition(p => p.Difference, "Difference",
-                formula, 15, "").HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
+            HistoryLookup.Include(p => p.BudgetItem).
+            AddVisibleColumnDefinition(p => p.Difference, "Difference", formula, 15, FieldDataTypes.Decimal).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
                 .DoShowPositiveValuesInGreen();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
             History.HasLookupDefinition(HistoryLookup);
