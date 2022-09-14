@@ -42,6 +42,13 @@
             <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background" Value="{StaticResource ButtonMouseOverBrush}"/>
             </Trigger>
+            <Trigger Property="IsDefault" Value="True">
+                <Setter Property="BorderBrush" Value="Blue"/>
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Background" Value="Blue"/>
+            </Trigger>
+
         </Style.Triggers>
     </Style>
 

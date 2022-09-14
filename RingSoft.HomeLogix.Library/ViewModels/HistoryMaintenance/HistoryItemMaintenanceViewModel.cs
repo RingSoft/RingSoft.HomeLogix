@@ -286,55 +286,58 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             var historyItem = AppGlobals.DataRepository.GetHistoryItem(newEntity.Id);
             Id = newEntity.Id;
 
-            //ViewLookupDefinition.FilterDefinition.ClearFixedFilters();
+            ViewLookupDefinition.FilterDefinition.ClearFixedFilters();
             //DbDataProcessor.ShowSqlStatementWindow();
-            //if (_budgetItemFilter != null)
-            //{
-            //    ViewLookupDefinition.FilterDefinition.AddFixedFilter(
-            //        AppGlobals.LookupContext.History.GetFieldDefinition(p => p.BudgetItemId),
-            //        Conditions.Equals, _budgetItemFilter.Id);
-            //}
+            if (_budgetItemFilter != null)
+            {
+                ViewLookupDefinition.FilterDefinition.AddFixedFilter(
+                    AppGlobals.LookupContext.History.GetFieldDefinition(p => p.BudgetItemId),
+                    Conditions.Equals, _budgetItemFilter.Id);
+            }
 
-            //DateTime filterDate = DateTime.Today;
+            DateTime filterDate = DateTime.Today;
 
-            //var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            //var table = AppGlobals.LookupContext.History;
-            //var formula = $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+            var table = AppGlobals.LookupContext.History;
+            var formula = $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
 
 
-            //if (_budgetPeriodHistoryFilter != null)
-            //{
-            //    filterDate = _budgetPeriodHistoryFilter.PeriodEndingDate;
-                
-            //    formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            //    formula += $"'{filterDate.Month:D2}'";
+            if (_budgetPeriodHistoryFilter != null)
+            {
+                filterDate = _budgetPeriodHistoryFilter.PeriodEndingDate;
 
-            //    ViewLookupDefinition.FilterDefinition.AddFixedFilter(formula);
+                formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}";
+                //formula += $"'{filterDate.Month:D2}'";
 
-            //}
+                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month", 
+                    Conditions.Equals, $"'{filterDate.Month:D2}'", formula);
 
-            //if (_bankAccountPeriodHistoryFilter != null)
-            //{
-            //    filterDate= _bankAccountPeriodHistoryFilter.PeriodEndingDate;
-            //    formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            //    formula += $"'{filterDate.Month:D2}'";
+            }
 
-            //    ViewLookupDefinition.FilterDefinition.AddFixedFilter(formula);
-            //}
+            if (_bankAccountPeriodHistoryFilter != null)
+            {
+                filterDate = _bankAccountPeriodHistoryFilter.PeriodEndingDate;
+                formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
 
-            //formula =
-            //    $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            //formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
+                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month",
+                    Conditions.Equals, $"'{filterDate.Month:D2}'", formula);
+            }
+
+            formula =
+                $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+            formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
             //formula += $"'{filterDate.Year:D4}'";
 
-            //ViewLookupDefinition.FilterDefinition.AddFixedFilter(formula);
+            ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
+                Conditions.Equals, $"'{filterDate.Year:D4}'", formula);
 
-            //if (_bankAccountFilter != null)
-            //{
-            //    ViewLookupDefinition.FilterDefinition.AddFixedFilter(
-            //        AppGlobals.LookupContext.History.GetFieldDefinition(p => p.BankAccountId), 
-            //        Conditions.Equals, _bankAccountFilter.Id);
-            //}
+
+            if (_bankAccountFilter != null)
+            {
+                ViewLookupDefinition.FilterDefinition.AddFixedFilter(
+                    AppGlobals.LookupContext.History.GetFieldDefinition(p => p.BankAccountId),
+                    Conditions.Equals, _bankAccountFilter.Id);
+            }
 
             SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             SourceHistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.HistoryId, Conditions.Equals, Id);

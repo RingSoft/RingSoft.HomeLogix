@@ -213,19 +213,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             var table = AppGlobals.LookupContext.History;
             var sql =
                 $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            sql += $"'{bankPeriodHistory.PeriodEndingDate.Month:D2}'";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(sql);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"'{bankPeriodHistory.PeriodEndingDate.Month:D2}'", sql);
             }
 
             sql =
                 $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            sql += $"'{bankPeriodHistory.PeriodEndingDate.Year:D4}'";
-
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter(sql);
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"'{bankPeriodHistory.PeriodEndingDate.Year:D4}'", sql);
 
             ViewModelInput.HistoryFilterBankAccountPeriod = bankPeriodHistory;
 

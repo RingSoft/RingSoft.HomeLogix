@@ -4,6 +4,7 @@ using System.Text;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -216,20 +217,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             var table = AppGlobals.LookupContext.History;
             var sql =
                 $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+            //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(sql);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{budgetPeriodHistory.PeriodEndingDate.Month:D2}", sql);
             }
-
             sql =
                 $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}) = ";
-            sql += $"'{budgetPeriodHistory.PeriodEndingDate.Year:D4}'";
-
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter(sql);
-
+            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{budgetPeriodHistory.PeriodEndingDate.Year:D4}", sql);
             ViewModelInput.HistoryFilterBudgetPeriodItem = budgetPeriodHistory;
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
