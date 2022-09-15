@@ -11,6 +11,8 @@ namespace RingSoft.App.Library
 
         private object _lockCloseWindow = new object();
 
+        private bool _splashDisposed = false;
+
         public virtual bool Start()
         {
             SplashThread = new Thread(ShowSplash);
@@ -56,8 +58,9 @@ namespace RingSoft.App.Library
 
         protected void CloseSplash()
         {
-            if (SplashWindow != null && !SplashWindow.Disposing && !SplashWindow.IsDisposed)
+            if (SplashWindow != null && !SplashWindow.Disposing && !SplashWindow.IsDisposed && !_splashDisposed)
             {
+                _splashDisposed = true;
                 Monitor.Enter(_lockCloseWindow);
                 try
                 {

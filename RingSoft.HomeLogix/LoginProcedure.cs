@@ -1,5 +1,8 @@
-﻿using RingSoft.App.Controls;
+﻿using System.Windows;
+using System.Windows.Threading;
+using RingSoft.App.Controls;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.MasterData;
 
@@ -29,10 +32,15 @@ namespace RingSoft.HomeLogix
 
             var result = AppGlobals.LoginToHousehold(_household);
             CloseSplash();
-
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
-            return result;
+            if (!result.IsNullOrEmpty())
+            {
+                var caption = "File access failure";
+                MessageBox.Show(result, caption, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return result.IsNullOrEmpty();
         }
 
         private void AppGlobals_AppSplashProgress(object sender, AppProgressArgs e)

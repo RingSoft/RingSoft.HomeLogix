@@ -7,6 +7,7 @@ using RingSoft.HomeLogix.Sqlite;
 using System;
 using System.IO;
 using System.Linq;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -80,7 +81,7 @@ namespace RingSoft.HomeLogix.Library
                 var defaultHousehold = MasterDbContext.GetDefaultHousehold();
                 if (defaultHousehold != null)
                 {
-                    if (LoginToHousehold(defaultHousehold))
+                    if (LoginToHousehold(defaultHousehold).IsNullOrEmpty())
                         LoggedInHousehold = defaultHousehold;
                 }
             }
@@ -91,7 +92,7 @@ namespace RingSoft.HomeLogix.Library
             return new HomeLogixDbContext();
         }
 
-        public static bool LoginToHousehold(Household household)
+        public static string LoginToHousehold(Household household)
         {
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
 
@@ -102,6 +103,21 @@ namespace RingSoft.HomeLogix.Library
 
             LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
             LookupContext.SqliteDataProcessor.FileName = household.FileName;
+
+            if (newFile == false)
+            {
+                try
+                {
+                    var file = new FileInfo($"{household.FilePath}{household.FileName}");
+                    file.IsReadOnly = false;
+                }
+                catch (Exception e)
+                {
+                    var message = $"Can't access household file path: {household.FilePath} ";
+                    return message;
+                }
+                
+            }
 
             var context = GetNewDbContext();
             context.DbContext.Database.Migrate();
@@ -122,7 +138,7 @@ namespace RingSoft.HomeLogix.Library
             var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
             LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
-            return true;
+            return string.Empty;
         }
     }
 }
