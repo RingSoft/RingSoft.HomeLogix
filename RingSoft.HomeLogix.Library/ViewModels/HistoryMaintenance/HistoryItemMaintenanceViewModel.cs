@@ -310,7 +310,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 //formula += $"'{filterDate.Month:D2}'";
 
                 ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month", 
-                    Conditions.Equals, $"'{filterDate.Month:D2}'", formula);
+                    Conditions.Equals, $"{filterDate.Month:D2}", formula);
 
             }
 
@@ -320,7 +320,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
 
                 ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month",
-                    Conditions.Equals, $"'{filterDate.Month:D2}'", formula);
+                    Conditions.Equals, $"{filterDate.Month:D2}", formula);
             }
 
             formula =
@@ -329,7 +329,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             //formula += $"'{filterDate.Year:D4}'";
 
             ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
-                Conditions.Equals, $"'{filterDate.Year:D4}'", formula);
+                Conditions.Equals, $"{filterDate.Year:D4}", formula);
 
 
             if (_bankAccountFilter != null)
