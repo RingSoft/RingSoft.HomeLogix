@@ -41,6 +41,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput);
 
         object OwnerWindow { get; }
+
+        bool ImportFromBank(BankAccountViewModel bankAccountViewModel);
     }
 
     public class CompletedRegisterData
@@ -494,6 +496,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public RelayCommand BudgetItemsAddModifyCommand { get; }
 
+        public RelayCommand ImportTransactionsCommand { get; }
+
         public List<BankAccountRegisterItemAmountDetail> RegisterDetails { get; } =
             new List<BankAccountRegisterItemAmountDetail>();
 
@@ -511,6 +515,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             GenerateRegisterItemsFromBudgetCommand = new RelayCommand(GenerateRegisterItemsFromBudget);
 
             BudgetItemsAddModifyCommand = new RelayCommand(OnAddModifyBudgetItems);
+
+            ImportTransactionsCommand = new RelayCommand(ImportTransactions);
 
             LastGenerationDate = null;
         }
@@ -585,7 +591,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Clear);
 
-            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = false;
+            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
+                ImportTransactionsCommand.IsEnabled = false;
 
             _loading = false;
         }
@@ -631,7 +638,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CalculateTotals();
 
             ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
-            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled = !ReadOnlyMode;
+            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled  =
+                ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
 
             _dbCurrentBalance = bankAccount.CurrentBalance;
 
@@ -1120,6 +1128,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 RegisterGridManager.InternalRemoveRow(budgetRow);
             }
+        }
+
+        private void ImportTransactions()
+        {
+            BankAccountView.ImportFromBank(this);
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)

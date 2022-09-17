@@ -21,10 +21,13 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<SourceHistory> History { get; set; }
 
+        public ICollection<BankTransaction> Transactions { get; set; }
+
         public BudgetItemSource()
         {
             AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
             History = new HashSet<SourceHistory>();
+            Transactions = new HashSet<BankTransaction>();
         }
     }
 }

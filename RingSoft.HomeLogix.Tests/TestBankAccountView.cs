@@ -30,6 +30,10 @@ namespace RingSoft.HomeLogix.Tests
 
         // ReSharper disable once UnassignedGetOnlyAutoProperty
         public object OwnerWindow { get; }
+        public bool ImportFromBank(BankAccountViewModel bankAccountViewModel)
+        {
+            throw new NotImplementedException();
+        }
 
         public TestBankAccountView(string ownerName) : base(ownerName)
         {

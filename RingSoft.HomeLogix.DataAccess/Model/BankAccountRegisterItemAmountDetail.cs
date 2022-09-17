@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RingSoft.HomeLogix.DataAccess.Model
@@ -23,5 +24,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         public decimal Amount { get; set; }
+
+        public ICollection<BankTransaction> Transactions { get; set; }
+
+        public BankAccountRegisterItemAmountDetail()
+        {
+            Transactions = new HashSet<BankTransaction>();
+        }
     }
 }

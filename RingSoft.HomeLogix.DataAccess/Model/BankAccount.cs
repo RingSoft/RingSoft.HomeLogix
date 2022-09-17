@@ -64,6 +64,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public ICollection<BankAccountPeriodHistory> PeriodHistory { get; set; }
 
+        public ICollection<BankTransaction> Transactions { get; set; }
+
         public BankAccount()
         {
             BudgetItems = new HashSet<BudgetItem>();
@@ -72,6 +74,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             History = new HashSet<History>();
             TransferToHistory = new HashSet<History>();
             PeriodHistory = new HashSet<BankAccountPeriodHistory>();
+            Transactions = new HashSet<BankTransaction>();
         }
 
         public override string ToString()

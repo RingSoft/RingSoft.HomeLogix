@@ -73,6 +73,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string Notes { get; set; }
 
+        public ICollection<BankTransaction> Transactions { get; set; }
 
         //public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
 
@@ -85,6 +86,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             //RegisterItems = new HashSet<BankAccountRegisterItem>();
             History = new HashSet<History>();
             PeriodHistory = new HashSet<BudgetPeriodHistory>();
+            Transactions = new HashSet<BankTransaction>();
         }
 
         public override string ToString()

@@ -2,6 +2,7 @@
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.ImportBank;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -18,6 +19,12 @@ namespace RingSoft.HomeLogix.Budget
         public override DbMaintenanceViewModelBase ViewModel => BankAccountViewModel;
 
         public object OwnerWindow => this;
+        public bool ImportFromBank(BankAccountViewModel bankAccountViewModel)
+        {
+            var importTransactionsWindow = new ImportBankTransactionsWindow(bankAccountViewModel);
+            importTransactionsWindow.ShowDialog();
+            return importTransactionsWindow.DialogResult != null && importTransactionsWindow.DialogResult.Value;
+        }
 
         public BankAccountMaintenanceWindow()
         {
@@ -30,6 +37,7 @@ namespace RingSoft.HomeLogix.Budget
                     bankCustomPanel.GenerateButton.Command =
                         BankAccountViewModel.GenerateRegisterItemsFromBudgetCommand;
                     bankCustomPanel.AddButton.Command = BankAccountViewModel.AddNewRegisterItemCommand;
+                    bankCustomPanel.ImportButton.Command = BankAccountViewModel.ImportTransactionsCommand;
                 }
             };
         }

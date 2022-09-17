@@ -5,6 +5,7 @@
 
     <BitmapImage x:Key="GearsImage" UriSource="/RingSoft.HomeLogix;component/Resources/gears.png" />
     <BitmapImage x:Key="AddImage" UriSource="/RingSoft.HomeLogix;component/Resources/add.png" />
+    <BitmapImage x:Key="ImportImage" UriSource="/RingSoft.HomeLogix;component/Resources/Import.png"/>
 
     <Style TargetType="{x:Type local:BankCustomPanel}">
         <Setter Property="Template">
@@ -21,9 +22,16 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <ac:DbMaintenanceButton x:Name="GenerateButton" Content="Generate _Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                            <ac:DbMaintenanceButton Grid.Row="1" x:Name="AddButton" Content="Add Register _Item" ImageSource="{StaticResource AddImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="GenerateButton" Content="Generate _Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
+
+                            <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="AddButton" Content="Add Register _Item" ImageSource="{StaticResource AddImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+
+                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="ImportButton" Content="I_mport Bank Transactions" ImageSource="{StaticResource ImportImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
                         </Grid>
 

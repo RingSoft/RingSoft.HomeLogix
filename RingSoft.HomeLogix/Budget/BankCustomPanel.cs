@@ -38,6 +38,7 @@ namespace RingSoft.HomeLogix.Budget
     {
         public DbMaintenanceButton GenerateButton { get; set; }
         public DbMaintenanceButton AddButton { get; set; }
+        public DbMaintenanceButton ImportButton { get; set; }
 
         static BankCustomPanel()
         {
@@ -48,6 +49,7 @@ namespace RingSoft.HomeLogix.Budget
         {
             GenerateButton = GetTemplateChild(nameof(GenerateButton)) as DbMaintenanceButton;
             AddButton = GetTemplateChild(nameof(AddButton)) as DbMaintenanceButton;
+            ImportButton = GetTemplateChild(nameof(ImportButton)) as DbMaintenanceButton;
 
             GenerateButton.ToolTip.HeaderText = "Generate Register Items From Budget (Alt + R)";
             GenerateButton.ToolTip.DescriptionText = "Generate register items from budget.";
@@ -57,6 +59,13 @@ namespace RingSoft.HomeLogix.Budget
                 AddButton.ToolTip.HeaderText = "Add New Register Item (Alt + I)";
                 AddButton.ToolTip.DescriptionText = "Add a new miscellaneous item to the register.";
             }
+
+            if (ImportButton != null)
+            {
+                ImportButton.ToolTip.HeaderText = "Import Transactions From Bank (Alt + M)";
+                ImportButton.ToolTip.DescriptionText = "Import new transactions from the bank website.";
+            }
+
 
             base.OnApplyTemplate();
         }
