@@ -469,6 +469,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private DateTime _lastCompletedDate;
+
+        public DateTime LastCompleteDate
+        {
+            get => _lastCompletedDate;
+            set
+            {
+                if (_lastCompletedDate == value)
+                {
+                    return;
+                }
+                _lastCompletedDate = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public ViewModelInput ViewModelInput { get; set; }
 
@@ -619,6 +635,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _dbCurrentBalance = bankAccount.CurrentBalance;
 
+            if (bankAccount.LastCompletedDate.HasValue)
+            {
+                LastCompleteDate = bankAccount.LastCompletedDate.Value;
+            }
+            else
+            {
+                LastCompleteDate = DateTime.MinValue;
+            }
+
             return bankAccount;
         }
 
@@ -767,6 +792,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (processCompletedRows)
                 if (!ProcessCompletedRows(completedRegisterData, completedRows))
                     return false;
+
+            var lastCompletedDate = DateTime.Today;
+            var lastRegisterDate = completedRows.Max(p => p.ItemDate);
+            if (lastRegisterDate < lastCompletedDate)
+            {
+                lastCompletedDate = lastRegisterDate;
+            }
+            entity.LastCompletedDate = lastCompletedDate;
+            {
+                
+            }
 
             if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {

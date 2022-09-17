@@ -50,6 +50,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(true)]
         public bool ShowInGraph { get; set; }
 
+        public DateTime? LastCompletedDate { get; set; }
+
         public virtual ICollection<BudgetItem> BudgetItems { get; set; }
 
         public virtual ICollection<BudgetItem> BudgetTransferFromItems { get; set; }
