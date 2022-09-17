@@ -18,16 +18,39 @@
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Bank Account"/>
 
         <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Transactions"/>
+
+        <deg:DataEntryGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="700" Height="300" HorizontalAlignment="Left">
+            <deg:DataEntryGrid.Columns>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date" Width="75"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BankTextColumnId}" Header="Bank Text" Width="200"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BudgetItemColumnId}" Header="Budget Item" Width="100"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.SourceColumnId}" Header="Source" Width="100"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.AmountColumnId}" Header="Amount" Width="75"/>
+
+                <deg:DataEntryGridCheckBoxColumn  ColumnId="{x:Static vm:ImportTransactionGridRow.MapColumnId}" Header="Map&#10;Transaction" Width="75"/>
+
+            </deg:DataEntryGrid.Columns>
+        </deg:DataEntryGrid>
 
     </Grid>
 </dec:BaseWindow>

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
@@ -22,12 +23,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
+        private ImportTransactionsGridManager _manager;
+
+        public ImportTransactionsGridManager Manager
+        {
+            get => _manager;
+            set
+            {
+                if (_manager == value)
+                {
+                    return;
+                }
+                _manager = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public BankAccountViewModel BankViewModel { get; set; }
 
         public void Initialize(BankAccountViewModel bankAccountViewModel)
         {
             BankViewModel = bankAccountViewModel;
             BankAccountText = bankAccountViewModel.KeyAutoFillValue.Text;
+            Manager = new ImportTransactionsGridManager(this);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

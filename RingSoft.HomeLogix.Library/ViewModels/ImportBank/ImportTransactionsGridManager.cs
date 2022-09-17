@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         protected override DataEntryGridRow GetNewRow()
         {
-            throw new System.NotImplementedException();
+            return new ImportTransactionGridRow(this);
         }
     }
 }
