@@ -15,7 +15,9 @@
     <None Remove="Resources\card_visa.png" />
     <None Remove="Resources\change_household.png" />
     <None Remove="Resources\gears.png" />
+    <None Remove="Resources\homeRed.ico" />
     <None Remove="Resources\homeRed.png" />
+    <None Remove="Resources\homeYellow.ico" />
     <None Remove="Resources\homeYellow.png" />
     <None Remove="Resources\manage_bank.png" />
     <None Remove="Resources\manage_budget.png" />
@@ -46,7 +48,9 @@
     <Resource Include="Resources\card_visa.png" />
     <Resource Include="Resources\change_household.png" />
     <Resource Include="Resources\gears.png" />
+    <Resource Include="Resources\homeRed.ico" />
     <Resource Include="Resources\homeRed.png" />
+    <Resource Include="Resources\homeYellow.ico" />
     <Resource Include="Resources\homeYellow.png" />
     <Resource Include="Resources\manage_bank.png" />
     <Resource Include="Resources\manage_budget.png" />
