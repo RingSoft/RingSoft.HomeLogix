@@ -12,6 +12,7 @@ namespace RingSoft.HomeLogix.ImportBank
         {
             InitializeComponent();
             ViewModel.Initialize(bankAccountViewModel);
+            ContentRendered += (sender, args) => DataEntryGrid.Focus();
         }
     }
 }

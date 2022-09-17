@@ -14,12 +14,14 @@
     <Window.DataContext>
         <vm:ImportBankTransactionsViewModel x:Name="ViewModel"/>
     </Window.DataContext>
-    <Grid>
+    <Grid Margin="5">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -32,18 +34,18 @@
 
         <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Transactions"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Transactions"/>
 
-        <deg:DataEntryGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="700" Height="300" HorizontalAlignment="Left">
+        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="800" Height="300" HorizontalAlignment="Left">
             <deg:DataEntryGrid.Columns>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date" Width="75"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date" Width="100" DesignText="01/01/1980"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BankTextColumnId}" Header="Bank Text" Width="200"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BudgetItemColumnId}" Header="Budget Item" Width="100"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BudgetItemColumnId}" Header="Budget Item" Width="150"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.SourceColumnId}" Header="Source" Width="100"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.SourceColumnId}" Header="Source" Width="150"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.AmountColumnId}" Header="Amount" Width="75"/>
 
@@ -52,5 +54,11 @@
             </deg:DataEntryGrid.Columns>
         </deg:DataEntryGrid>
 
+        <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+
+            <Button Content="_OK" HorizontalAlignment="Left" Width="75" IsDefault="True"/>
+
+            <Button Content="_Cancel" HorizontalAlignment="Left" Width="75" Margin="5,0,0,0"/>
+        </StackPanel>
     </Grid>
 </dec:BaseWindow>
