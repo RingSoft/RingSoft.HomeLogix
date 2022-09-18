@@ -1,10 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
+    public interface IImportBankBudgetsView
+    {
+        void CloseWindow(bool dialogResult);
+    }
+
     public class ImportBankTransactionsBudgetsViewModel : INotifyPropertyChanged
     {
         private string _bankText;
@@ -91,8 +97,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public ImportTransactionGridRow Row { get; set; }
 
-        public void Initialize(ImportTransactionGridRow row)
+        public IImportBankBudgetsView View { get; set; }
+
+        public RelayCommand OkCommand { get; set; }
+
+        public ImportBankTransactionsBudgetsViewModel()
         {
+            OkCommand = new RelayCommand(OnOk);
+        }
+        public void Initialize(ImportTransactionGridRow row, IImportBankBudgetsView view)
+        {
+            View = view;
             Row = row;
             BankText = row.Manager.ViewModel.BankAccountText;
             if (row.SourceAutoFillValue != null && row.SourceAutoFillValue.IsValid())
@@ -102,6 +117,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             TransactionAmount = row.Amount;
             TransactionDate = row.Date;
             GridManager = new ImportBankTransactionsBudgetManager(this);
+            GridManager.LoadGrid(row.BudgetItemSplits);
+        }
+
+        private void OnOk()
+        {
+            var splitList = GridManager.SaveData();
+            if (splitList != null)
+            {
+                Row.BudgetItemSplits = splitList;
+                Row.BudgetItemAutoFillValue = null;
+                Row.Manager.Grid?.RefreshGridView();
+                View.CloseWindow(true);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -14,6 +16,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         Source = 3,
         Amount = 4,
         Map = 5
+    }
+
+    public class BudgetSplit
+    {
+        public AutoFillValue BudgetItem { get; set; }
+        public decimal Amount { get; set; }
     }
     public class ImportTransactionGridRow : DataEntryGridRow
     {
@@ -32,12 +40,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public AutoFillValue SourceAutoFillValue { get; set; }
         public decimal Amount { get; set; }
         public bool MapTransaction { get; set; }
+        public List<BudgetSplit> BudgetItemSplits { get; set; }
 
         public new ImportTransactionsGridManager Manager { get; set; }
 
         public ImportTransactionGridRow(ImportTransactionsGridManager manager) : base(manager)
         {
             Manager = manager;
+            BudgetItemSplits = new List<BudgetSplit>();
             BudgetItemAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.BudgetId));
             SourceAutoFillSetup =
@@ -76,8 +86,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var column = (ImportColumns)columnId;
             switch (column)
             {
-                case ImportColumns.Date:
                 case ImportColumns.BudgetItem:
+                    if (BudgetItemSplits.Any())
+                    {
+                        return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
+                    }
+                    break;
+                case ImportColumns.Date:
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
                     break;
@@ -112,6 +127,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 case ImportColumns.BankText:
                     break;
                 case ImportColumns.BudgetItem:
+                    var budgetAutoFillCellProps = value as DataEntryGridAutoFillCellProps;
+                    if (budgetAutoFillCellProps != null && budgetAutoFillCellProps.AutoFillValue.IsValid())
+                    {
+                        BudgetItemAutoFillValue = budgetAutoFillCellProps.AutoFillValue;
+                    }
+
                     break;
                 case ImportColumns.Source:
                     var autoFillCellProps = value as DataEntryGridAutoFillCellProps;
