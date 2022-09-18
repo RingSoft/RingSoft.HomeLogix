@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+﻿using System.Linq;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
@@ -12,7 +13,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         }
         protected override DataEntryGridRow GetNewRow()
         {
-            return new ImportBankTransactionsBudgetsGridRow(this);
+            var result = new ImportBankTransactionsBudgetsGridRow(this);
+            SetLastRowAmount(result);
+            return result;
         }
+
+        public void SetLastRowAmount(ImportBankTransactionsBudgetsGridRow gridRow = null)
+        {
+            var rows = Rows.OfType<ImportBankTransactionsBudgetsGridRow>();
+            if (gridRow == null)
+            {
+                gridRow = rows.LastOrDefault();
+            }
+            var total = (decimal)0;
+            foreach (var row in rows)
+            {
+                
+                if (!(row.IsNew && row.BudgetAmount < 0))
+                {
+                    total += row.BudgetAmount;
+                }
+            }
+
+            if (gridRow != null)
+            {
+                gridRow.BudgetAmount = ViewModel.TransactionAmount - total;
+            }
+            Grid?.RefreshGridView();
+        }
+
     }
 }
