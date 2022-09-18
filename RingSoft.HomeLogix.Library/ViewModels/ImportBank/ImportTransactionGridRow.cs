@@ -94,5 +94,45 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
             return base.GetCellStyle(columnId);
         }
+
+        public override void SetCellValue(DataEntryGridEditingCellProps value)
+        {
+            var column = (ImportColumns)value.ColumnId;
+
+            switch (column)
+            {
+                case ImportColumns.Date:
+                    var dateProps = value as DataEntryGridDateCellProps;
+                    if (dateProps != null)
+                    {
+                        if (dateProps.Value != null) 
+                            Date = dateProps.Value.Value;
+                    }
+                    break;
+                case ImportColumns.BankText:
+                    break;
+                case ImportColumns.BudgetItem:
+                    break;
+                case ImportColumns.Source:
+                    var autoFillCellProps = value as DataEntryGridAutoFillCellProps;
+                    if (autoFillCellProps != null && autoFillCellProps.AutoFillValue.IsValid())
+                    {
+                        SourceAutoFillValue = autoFillCellProps.AutoFillValue;
+                    }
+                    break;
+                case ImportColumns.Amount:
+                    var decimalProps = value as ActualAmountCellProps;
+                    if (decimalProps != null)
+                    {
+                        if (decimalProps.Value != null) Amount = decimalProps.Value.Value;
+                    }
+                    break;
+                case ImportColumns.Map:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            base.SetCellValue(value);
+        }
     }
 }

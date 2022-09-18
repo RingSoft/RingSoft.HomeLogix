@@ -26,7 +26,7 @@ namespace RingSoft.HomeLogix.ImportBank
             InitializeComponent();
             ViewModel.Initialize(row);
 
-            
+            Loaded += (sender, args) => TransactionDateControl.SetReadOnlyMode(true);
         }
     }
 }

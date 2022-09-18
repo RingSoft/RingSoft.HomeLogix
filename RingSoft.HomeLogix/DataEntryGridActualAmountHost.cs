@@ -19,7 +19,7 @@ namespace RingSoft.HomeLogix
 
         public override DataEntryGridEditingCellProps GetCellValue()
         {
-            return new DataEntryGridDecimalCellProps(Row, ColumnId,
+            return new ActualAmountCellProps(Row, ColumnId,
                 ActualAmountCellProps.NumericEditSetup, Control.Value);
         }
 
@@ -46,22 +46,23 @@ namespace RingSoft.HomeLogix
             control.CalculatorValueChanged += (_, _) => OnUpdateSource(GetCellValue());
             control.ShowDetailsWindow += (_, _) =>
             {
+                var newCellProps = GetCellValue() as ActualAmountCellProps;
+                OnUpdateSource(newCellProps);
+
                 if (ActualAmountCellProps.RegisterGridRow != null)
                 {
                     ActualAmountCellProps.RegisterGridRow.Manager.ViewModel
-                        .BankAccountView.ShowActualAmountDetailsWindow(ActualAmountCellProps);
+                        .BankAccountView.ShowActualAmountDetailsWindow(newCellProps);
                 }
 
                 if (ActualAmountCellProps.ImportTransactionGridRow != null)
                 {
-                    ActualAmountCellProps.ImportTransactionGridRow.Manager.ViewModel.View.ShowImportBankBudgetWindow(
+                    newCellProps?.ImportTransactionGridRow.Manager.ViewModel.View.ShowImportBankBudgetWindow(
                         ActualAmountCellProps.ImportTransactionGridRow);
                 }
 
-                OnUpdateSource(ActualAmountCellProps);
-
                 SetAmountMode();
-                control.Value = ActualAmountCellProps.Value;
+                control.Value = newCellProps.Value;
                 control.TextBox.SelectAll();
             };
 

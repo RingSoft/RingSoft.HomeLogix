@@ -19,6 +19,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>    
@@ -32,9 +33,31 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="Bank Account"/>
 
-        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankText, 
-            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankText,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                Width="200"/>
+
+        <Label Grid.Row="0" Grid.Column="2" Content="Transaction Date"/>
+
+        <dec:DateEditControl Grid.Row="0" Grid.Column="3"
+                             x:Name="TransactionDateControl"
+                             Value="{Binding TransactionDate,
+            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Width="100" HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="1" Grid.Column="2" Content="Source"/>
+
+        <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="3"
+                               Text="{Binding Source
+            , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               HorizontalAlignment="Left" Width="200"/>
+
+        <Label Grid.Row="1" Grid.Column="0" 
+               Content="Transaction Amount"/>
+
+        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1"
+                               Value="{Binding TransactionAmount, 
+            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" FormatType="Currency"
+                               HorizontalAlignment="Left"/>
 
     </Grid>
 </dec:BaseWindow>
