@@ -1,4 +1,5 @@
-﻿using RingSoft.DataEntryControls.WPF;
+﻿using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
 
@@ -14,6 +15,17 @@ namespace RingSoft.HomeLogix.ImportBank
             InitializeComponent();
             ViewModel.Initialize(bankAccountViewModel, this);
             ContentRendered += (sender, args) => DataEntryGrid.Focus();
+            Loaded += (sender, args) =>
+            {
+                DataEntryGrid.PreviewKeyDown += (o, eventArgs) =>
+                {
+                    if (eventArgs.Key == Key.Enter)
+                    {
+                        ViewModel.OkCommand.Execute(null);
+                        eventArgs.Handled = true;
+                    }
+                };
+            };
         }
 
         public bool ShowImportBankBudgetWindow(ImportTransactionGridRow row)
@@ -23,6 +35,12 @@ namespace RingSoft.HomeLogix.ImportBank
             window.ShowInTaskbar = false;
             window.ShowDialog();
             return window.DialogResult != null && window.DialogResult.Value;
+        }
+
+        public void CloseWindow(bool dialogResult)
+        {
+            DialogResult = dialogResult;
+            Close();
         }
     }
 }

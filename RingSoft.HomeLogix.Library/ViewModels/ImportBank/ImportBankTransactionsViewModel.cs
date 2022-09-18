@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
@@ -8,6 +9,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     public interface IImportTransactionView
     {
         bool ShowImportBankBudgetWindow(ImportTransactionGridRow row);
+
+        void CloseWindow(bool dialogResult);
     }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {
@@ -48,6 +51,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public IImportTransactionView View { get; set; }
 
+        public RelayCommand OkCommand { get; set; }
+
+        public ImportBankTransactionsViewModel()
+        {
+            OkCommand = new RelayCommand(OnOk);
+        }
+
         public void Initialize(BankAccountViewModel bankAccountViewModel, IImportTransactionView view)
         {
             BankViewModel = bankAccountViewModel;
@@ -56,6 +66,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             Manager = new ImportTransactionsGridManager(this);
         }
 
+        private void OnOk()
+        {
+            View.CloseWindow(true);
+        }
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -17,11 +17,11 @@ namespace RingSoft.HomeLogix.ImportBank
             Loaded += (sender, args) =>
             {
                 TransactionDateControl.SetReadOnlyMode(true);
-                Grid.KeyDown += (sender, args) =>
+                Grid.PreviewKeyDown += (sender, args) =>
                 {
                     if (args.Key == Key.Enter)
                     {
-
+                        ViewModel.OkCommand.Execute(null);
                     }
                 };
 

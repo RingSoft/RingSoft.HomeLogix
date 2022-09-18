@@ -1132,7 +1132,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void ImportTransactions()
         {
-            BankAccountView.ImportFromBank(this);
+            if (BankAccountView.ImportFromBank(this))
+            {
+                
+            }
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
