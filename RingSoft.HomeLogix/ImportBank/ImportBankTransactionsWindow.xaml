@@ -10,7 +10,7 @@
 
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="ImportBankTransactionsWindow" Height="450" Width="800" SizeToContent="WidthAndHeight">
+        Title="ImportBankTransactionsWindow" Height="450" Width="900" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:ImportBankTransactionsViewModel x:Name="ViewModel"/>
     </Window.DataContext>
@@ -36,7 +36,7 @@
 
         <Label Grid.Row="2" Grid.Column="0" Content="Transactions"/>
 
-        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="800" Height="300" HorizontalAlignment="Left">
+        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="900" Height="300" HorizontalAlignment="Left">
             <deg:DataEntryGrid.Columns>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date" Width="100" DesignText="01/01/1980"/>
@@ -47,7 +47,7 @@
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.SourceColumnId}" Header="Source" Width="150"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.AmountColumnId}" Header="Amount" Width="75"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.AmountColumnId}" Header="Amount" Width="150" Alignment="Right"/>
 
                 <deg:DataEntryGridCheckBoxColumn  ColumnId="{x:Static vm:ImportTransactionGridRow.MapColumnId}" Header="Map&#10;Transaction" Width="75"/>
 

@@ -1,6 +1,7 @@
 ﻿using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -10,12 +11,15 @@ namespace RingSoft.HomeLogix.Library
 
         public override int EditingControlId => ActualAmountControlHostId;
 
-        public BankAccountRegisterGridRow RegisterGridRow { get; }
+        public BankAccountRegisterGridRow RegisterGridRow { get; set; }
 
-        public ActualAmountCellProps(BankAccountRegisterGridRow row, int columnId, 
+        public ImportTransactionGridRow ImportTransactionGridRow { get; set; }
+
+        public ActualAmountCellProps(DataEntryGridRow row, int columnId, 
             DecimalEditControlSetup setup, decimal? value) : base(row, columnId, setup, value)
         {
-            RegisterGridRow = row;
+            RegisterGridRow = row as BankAccountRegisterGridRow;
+            ImportTransactionGridRow = row as ImportTransactionGridRow;
         }
     }
 }

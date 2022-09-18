@@ -1,0 +1,40 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.ImportBank.ImportBankTransactionsBudgetsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.ImportBank;assembly=RingSoft.HomeLogix.Library"
+        xmlns:local="clr-namespace:RingSoft.HomeLogix.ImportBank"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="ImportBankTransactionsBudgetsWindow" Height="450" Width="800"
+        SizeToContent="WidthAndHeight">
+    <Window.DataContext>
+        <vm:ImportBankTransactionsBudgetsViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>    
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Bank Account"/>
+
+        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankText, 
+            Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                               Width="200"/>
+
+    </Grid>
+</dec:BaseWindow>

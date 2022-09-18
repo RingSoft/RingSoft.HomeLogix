@@ -19,8 +19,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string BankTransactionText { get; set; }
 
-        [Required]
-        public int BudgetId { get; set; }
+        public int? BudgetId { get; set; }
 
         public virtual BudgetItem BudgetItem { get; set; }
 

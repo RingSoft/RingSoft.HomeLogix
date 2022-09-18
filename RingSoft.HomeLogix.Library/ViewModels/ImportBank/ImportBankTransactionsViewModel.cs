@@ -5,6 +5,10 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
+    public interface IImportTransactionView
+    {
+        bool ShowImportBankBudgetWindow(ImportTransactionGridRow row);
+    }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {
         private string _bankAccountText;
@@ -42,9 +46,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public BankAccountViewModel BankViewModel { get; set; }
 
-        public void Initialize(BankAccountViewModel bankAccountViewModel)
+        public IImportTransactionView View { get; set; }
+
+        public void Initialize(BankAccountViewModel bankAccountViewModel, IImportTransactionView view)
         {
             BankViewModel = bankAccountViewModel;
+            View = view;
             BankAccountText = bankAccountViewModel.KeyAutoFillValue.Text;
             Manager = new ImportTransactionsGridManager(this);
         }

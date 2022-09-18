@@ -4,6 +4,7 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
 using RingSoft.HomeLogix.Budget;
+using RingSoft.HomeLogix.ImportBank;
 using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix
@@ -45,8 +46,17 @@ namespace RingSoft.HomeLogix
             control.CalculatorValueChanged += (_, _) => OnUpdateSource(GetCellValue());
             control.ShowDetailsWindow += (_, _) =>
             {
-                ActualAmountCellProps.RegisterGridRow.Manager.ViewModel
-                    .BankAccountView.ShowActualAmountDetailsWindow(ActualAmountCellProps);
+                if (ActualAmountCellProps.RegisterGridRow != null)
+                {
+                    ActualAmountCellProps.RegisterGridRow.Manager.ViewModel
+                        .BankAccountView.ShowActualAmountDetailsWindow(ActualAmountCellProps);
+                }
+
+                if (ActualAmountCellProps.ImportTransactionGridRow != null)
+                {
+                    ActualAmountCellProps.ImportTransactionGridRow.Manager.ViewModel.View.ShowImportBankBudgetWindow(
+                        ActualAmountCellProps.ImportTransactionGridRow);
+                }
 
                 OnUpdateSource(ActualAmountCellProps);
 
@@ -60,10 +70,13 @@ namespace RingSoft.HomeLogix
 
         private void SetAmountMode()
         {
-            if (ActualAmountCellProps.RegisterGridRow.ActualAmountDetails.Any())
-                Control.AmountMode = ActualAmountMode.Details;
-            else
-                Control.AmountMode = ActualAmountMode.Value;
+            if (ActualAmountCellProps.RegisterGridRow != null)
+            {
+                if (ActualAmountCellProps.RegisterGridRow.ActualAmountDetails.Any())
+                    Control.AmountMode = ActualAmountMode.Details;
+                else
+                    Control.AmountMode = ActualAmountMode.Value;
+            }
         }
     }
 }

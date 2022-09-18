@@ -27,9 +27,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public DateTime Date { get; set; } = DateTime.Today;
         public string BankText { get; set; }
         public AutoFillSetup BudgetItemAutoFillSetup { get; set; }
-
         public AutoFillValue BudgetItemAutoFillValue { get; set; }
-
+        public AutoFillSetup SourceAutoFillSetup { get; set; }
+        public AutoFillValue SourceAutoFillValue { get; set; }
+        public decimal Amount { get; set; }
         public bool MapTransaction { get; set; }
 
         public new ImportTransactionsGridManager Manager { get; set; }
@@ -39,6 +40,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             Manager = manager;
             BudgetItemAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.BudgetId));
+            SourceAutoFillSetup =
+                new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)
@@ -56,9 +59,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return new DataEntryGridAutoFillCellProps(this, columnId, BudgetItemAutoFillSetup,
                         BudgetItemAutoFillValue);
                 case ImportColumns.Source:
-                    return new DataEntryGridTextCellProps(this, columnId);
+                    return new DataEntryGridAutoFillCellProps(this, columnId, SourceAutoFillSetup,
+                        SourceAutoFillValue);
                 case ImportColumns.Amount:
-                    return new DataEntryGridTextCellProps(this, columnId);
+                    return new ActualAmountCellProps(this, columnId,
+                        new DecimalEditControlSetup {FormatType = DecimalEditFormatTypes.Currency}, Amount);
                 case ImportColumns.Map:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, MapTransaction);
                 default:
