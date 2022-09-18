@@ -20,12 +20,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>    
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -34,30 +34,50 @@
         <Label Grid.Row="0" Grid.Column="0" Content="Bank Account"/>
 
         <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankText,   Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                               Width="200"/>
+                               Width="200" HorizontalAlignment="Left"/>
 
-        <Label Grid.Row="0" Grid.Column="2" Content="Transaction Date"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Transaction Date"/>
 
-        <dec:DateEditControl Grid.Row="0" Grid.Column="3"
+        <dec:DateEditControl Grid.Row="1" Grid.Column="1"
                              x:Name="TransactionDateControl"
                              Value="{Binding TransactionDate,
             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              Width="100" HorizontalAlignment="Left"/>
 
-        <Label Grid.Row="1" Grid.Column="2" Content="Source"/>
+        <Label Grid.Row="2" Grid.Column="0" Content="Source"/>
 
-        <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="3"
+        <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="1"
                                Text="{Binding Source
             , Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                HorizontalAlignment="Left" Width="200"/>
 
-        <Label Grid.Row="1" Grid.Column="0" 
+        <Label Grid.Row="3" Grid.Column="0" 
                Content="Transaction Amount"/>
 
-        <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="1"
+        <dec:DecimalReadOnlyBox Grid.Row="3" Grid.Column="1"
                                Value="{Binding TransactionAmount, 
             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" FormatType="Currency"
                                HorizontalAlignment="Left"/>
+
+        <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Budget Items" HorizontalAlignment="Left"/>
+
+        <deg:DataEntryGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Grid" Manager="{Binding GridManager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400" Height="200" HorizontalAlignment="Left">
+
+            <deg:DataEntryGrid.Columns>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportBankTransactionsBudgetsGridRow.BudgetColumnId}" Header="Budget Item" Width="200"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportBankTransactionsBudgetsGridRow.AmountColumnId}" Width="100" Header="Amount" Alignment="Right"/>
+
+            </deg:DataEntryGrid.Columns>
+        </deg:DataEntryGrid>
+
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
+
+            <Button Content="_OK" IsDefault="True" Width="50"/>
+
+            <Button Content="_Cancel" Width="50" Margin="5,0,0,0"/>
+
+        </StackPanel>
 
     </Grid>
 </dec:BaseWindow>

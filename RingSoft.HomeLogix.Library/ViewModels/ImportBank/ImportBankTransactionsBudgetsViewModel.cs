@@ -72,6 +72,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
+        private ImportBankTransactionsBudgetManager _gridManager;
+
+        public ImportBankTransactionsBudgetManager GridManager
+        {
+            get => _gridManager;
+            set
+            {
+                if (_gridManager == value)
+                {
+                    return;
+                }
+                _gridManager = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public ImportTransactionGridRow Row { get; set; }
 
@@ -85,6 +101,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
             TransactionAmount = row.Amount;
             TransactionDate = row.Date;
+            GridManager = new ImportBankTransactionsBudgetManager(this);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
