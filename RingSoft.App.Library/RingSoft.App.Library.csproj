@@ -12,7 +12,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.17" />
     <PackageReference Include="RingSoft.DbLookup.EfCore" Version="2.1.14" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="2.1.14" />
+    <PackageReference Include="RingSoft.DbMaintenance" Version="2.1.14.1" />
   </ItemGroup>
 
 </Project>

@@ -99,9 +99,15 @@ namespace RingSoft.App.Controls
                 {
                     dbMaintenanceButtons.SaveSelectButton.Visibility = Visibility.Visible;
                     ViewModel.SelectButtonEnabled = !ViewModel.LookupAddViewArgs.LookupReadOnlyMode;
-                    
+                    ViewModel.NewEvent += ViewModel_NewEvent;
+
                 }
             };
+        }
+
+        private void ViewModel_NewEvent(object sender, System.EventArgs e)
+        {
+            ViewModel.SelectButtonEnabled = !ViewModel.LookupAddViewArgs.LookupReadOnlyMode;
         }
 
         private void CreateButtons(DbMaintenanceTopHeaderControl dbMaintenanceButtons)

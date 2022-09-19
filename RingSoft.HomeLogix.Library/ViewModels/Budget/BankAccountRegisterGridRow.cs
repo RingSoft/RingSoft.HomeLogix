@@ -33,11 +33,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public decimal ProjectedAmount { get; set; }
 
-        public bool Completed { get; private set; }
+        public bool Completed { get; set; }
 
         public decimal? Balance { get; set; }
 
-        public decimal? ActualAmount { get; protected set; }
+        public decimal? ActualAmount { get; set; }
 
         public decimal? Difference
         {

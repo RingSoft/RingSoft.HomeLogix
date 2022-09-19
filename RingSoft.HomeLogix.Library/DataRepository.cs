@@ -81,6 +81,8 @@ namespace RingSoft.HomeLogix.Library
 
         bool SaveBankTransactions(List<BankTransaction> transactions, List<BankTransactionBudget> splits, int bankAccountId);
 
+        bool DeleteTransactions(int bankAccountId);
+
     }
 
     public class DataRepository : IDataRepository
@@ -282,7 +284,11 @@ namespace RingSoft.HomeLogix.Library
             if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
                 $"Saving Bank Account Register Item'{registerItem.Description}'"))
                 return false;
-
+        
+            foreach (var amountDetail in amountDetails)
+            {
+                amountDetail.RegisterItem = null;
+            }
             context.BankAccountRegisterItemAmountDetails.RemoveRange(
                 context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id));
 
@@ -640,6 +646,18 @@ namespace RingSoft.HomeLogix.Library
             context.BankTransactionBudget.AddRange(splits);
 
             return context.DbContext.SaveEfChanges("Saving Bank Transactions");
+        }
+
+        public bool DeleteTransactions(int bankAccountId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var existingTransactions = context.BankTransactions.Where(p => p.BankAccountId == bankAccountId).ToList();
+            var existingSplits = context.BankTransactionBudget.Where(p => p.BankId == bankAccountId).ToList();
+
+            context.BankTransactions.RemoveRange(existingTransactions);
+            context.BankTransactionBudget.RemoveRange(existingSplits);
+
+            return context.DbContext.SaveEfChanges("Deleting Bank Transactions");
         }
     }
 }

@@ -13,13 +13,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         public new BankAccountRegisterActualAmountGridManager Manager { get; }
 
-        public DateTime Date { get; private set; } = DateTime.Today;
+        public DateTime Date { get; set; } = DateTime.Today;
 
-        public AutoFillValue Source { get; private set; }
+        public AutoFillValue Source { get; set; }
 
-        public decimal Amount { get; private set; }
+        public decimal Amount { get; set; }
 
-        public bool IsIncome { get; private set; }
+        public bool IsIncome { get; set; }
 
         private DateEditControlSetup _dateSetup;
         private AutoFillSetup _sourceAutoFillSetup;

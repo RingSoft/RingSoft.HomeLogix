@@ -268,6 +268,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public bool DeleteTransactions(int bankAccountId)
+        {
+            throw new NotImplementedException();
+        }
+
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)
         {
             throw new NotImplementedException();

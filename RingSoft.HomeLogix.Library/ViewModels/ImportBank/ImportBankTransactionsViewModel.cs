@@ -69,6 +69,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         private void OnOk()
         {
+            var message = "Do you wish to post the transactions to the register?";
+            var caption = "Post To Register?";
+            var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
+            if (result == MessageBoxButtonsResult.Yes)
+            {
+                Manager.PostTransactions();
+                return;
+            }
             if (Manager.SaveTransactions())
             {
                 View.CloseWindow(true);
