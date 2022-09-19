@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
@@ -30,5 +31,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         public decimal Amount { get; set; }
+
+        public virtual ICollection<BankTransactionBudget> BudgetItems { get; set; }
+
+        public BankTransaction()
+        {
+            BudgetItems = new HashSet<BankTransactionBudget>();
+        }
     }
 }

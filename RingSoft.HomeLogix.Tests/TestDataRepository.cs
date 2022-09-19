@@ -257,6 +257,17 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public List<BankTransaction> GetBankTransactions(int bankAccountId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SaveBankTransactions(List<BankTransaction> transactions, List<BankTransactionBudget> splits,
+            int bankAccountId)
+        {
+            throw new NotImplementedException();
+        }
+
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)
         {
             throw new NotImplementedException();

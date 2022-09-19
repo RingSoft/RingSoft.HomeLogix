@@ -81,12 +81,15 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BudgetPeriodHistory> PeriodHistory { get; set; }
 
+        public virtual ICollection<BankTransactionBudget> TransactionBudgets { get; set; }
+
         public BudgetItem()
         {
             //RegisterItems = new HashSet<BankAccountRegisterItem>();
             History = new HashSet<History>();
             PeriodHistory = new HashSet<BudgetPeriodHistory>();
             Transactions = new HashSet<BankTransaction>();
+            TransactionBudgets = new HashSet<BankTransactionBudget>();
         }
 
         public override string ToString()

@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Linq;
+using System.Windows.Input;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
@@ -21,6 +22,13 @@ namespace RingSoft.HomeLogix.ImportBank
                 {
                     if (eventArgs.Key == Key.Enter)
                     {
+                        if (DataEntryGrid.EditingControlHost != null && DataEntryGrid.EditingControlHost.HasDataChanged())
+                        {
+                            DataEntryGrid.EditingControlHost.Row.IsNew = false;
+                            DataEntryGrid.EditingControlHost.Row.SetCellValue(DataEntryGrid.EditingControlHost
+                                .GetCellValue());
+                        }
+
                         ViewModel.OkCommand.Execute(null);
                         eventArgs.Handled = true;
                     }

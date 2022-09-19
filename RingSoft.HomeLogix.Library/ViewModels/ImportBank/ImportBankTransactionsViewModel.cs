@@ -64,11 +64,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             View = view;
             BankAccountText = bankAccountViewModel.KeyAutoFillValue.Text;
             Manager = new ImportTransactionsGridManager(this);
+            Manager.LoadGrid();
         }
 
         private void OnOk()
         {
-            View.CloseWindow(true);
+            if (Manager.SaveTransactions())
+            {
+                View.CloseWindow(true);
+            }
         }
         public event PropertyChangedEventHandler PropertyChanged;
 

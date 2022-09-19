@@ -38,6 +38,7 @@ namespace RingSoft.HomeLogix.Sqlite
         public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbSet<BankTransaction> BankTransactions { get; set; }
+        public DbSet<BankTransactionBudget> BankTransactionBudget { get; set; }
 
         //-----------------------------------------------------------------------
 
@@ -82,6 +83,7 @@ namespace RingSoft.HomeLogix.Sqlite
             modelBuilder.ApplyConfiguration(new BudgetPeriodHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountPeriodHistoryConfiguration());
             modelBuilder.ApplyConfiguration(new BankTransactionConfiguration());
+            modelBuilder.ApplyConfiguration(new BankTransactionBudgetConfiguration());
 
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Id)
                 .HasColumnType(SqliteConstants.IntegerColumnType);

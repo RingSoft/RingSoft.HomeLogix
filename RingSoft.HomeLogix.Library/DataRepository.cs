@@ -76,6 +76,11 @@ namespace RingSoft.HomeLogix.Library
         History GetHistoryItem(int historyId);
 
         SourceHistory GetSourceHistory(int historyId, int detailId);
+
+        List<BankTransaction> GetBankTransactions(int bankAccountId);
+
+        bool SaveBankTransactions(List<BankTransaction> transactions, List<BankTransactionBudget> splits, int bankAccountId);
+
     }
 
     public class DataRepository : IDataRepository
@@ -608,6 +613,33 @@ namespace RingSoft.HomeLogix.Library
                 Include(p => p.HistoryItem).
                 Include(p => p.Source)
                 .FirstOrDefault(p => p.HistoryId == historyId && p.DetailId == detailId);
+        }
+
+        public List<BankTransaction> GetBankTransactions(int bankAccountId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BankTransactions.Include(p => p.BudgetItems)
+                .ThenInclude(p => p.BudgetItem)
+                .Include(p => p.BankAccount)
+                .Include(p => p.BudgetItem)
+                .Include(p => p.Source)
+                .Where(p => p.BankAccountId == bankAccountId).ToList();
+        }
+
+        public bool SaveBankTransactions(List<BankTransaction> transactions, List<BankTransactionBudget> splits,
+            int bankAccountId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var existingTransactions = context.BankTransactions.Where(p => p.BankAccountId == bankAccountId).ToList();
+            var existingSplits = context.BankTransactionBudget.Where(p => p.BankId == bankAccountId).ToList();
+
+            context.BankTransactions.RemoveRange(existingTransactions);
+            context.BankTransactionBudget.RemoveRange(existingSplits);
+
+            context.BankTransactions.AddRange(transactions);
+            context.BankTransactionBudget.AddRange(splits);
+
+            return context.DbContext.SaveEfChanges("Saving Bank Transactions");
         }
     }
 }

@@ -19,6 +19,6 @@ namespace RingSoft.HomeLogix.DataAccess
         DbSet<BudgetPeriodHistory> BudgetPeriodHistory { get; set; }
         DbSet<BankAccountPeriodHistory> BankAccountPeriodHistory { get; set; }
         DbSet<BankTransaction> BankTransactions { get; set; }
-
+        DbSet<BankTransactionBudget> BankTransactionBudget { get; set; }
     }
 }
