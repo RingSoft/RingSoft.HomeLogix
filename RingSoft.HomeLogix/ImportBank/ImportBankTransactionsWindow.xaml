@@ -10,7 +10,7 @@
 
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="ImportBankTransactionsWindow" Height="450" Width="900" SizeToContent="WidthAndHeight">
+        Title="ImportBankTransactionsWindow" Height="450" Width="1000" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:ImportBankTransactionsViewModel x:Name="ViewModel"/>
     </Window.DataContext>
@@ -30,18 +30,21 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Bank Account"/>
+        <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="_Import From .QIF File" Command="{Binding ImportQifCommand}"/>
 
-        <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BankAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Bank Account"/>
+
+        <dec:StringReadOnlyBox Grid.Row="1" Grid.Column="1" Text="{Binding BankAccountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Transactions"/>
 
-        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="900" Height="300" HorizontalAlignment="Left" EnterToTab="False">
+        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="1000" Height="300" HorizontalAlignment="Left" EnterToTab="False">
             <deg:DataEntryGrid.Columns>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date" Width="100" DesignText="01/01/1980"/>
-
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BankTextColumnId}" Header="Bank Text" Width="200"/>
+
+                <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:ImportTransactionGridRow.TransactionTypeColumnId}" Header="Transaction&#10;Type" Width="100" ContentTemplate="{StaticResource BankRegisterTransactionType}" />
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BudgetItemColumnId}" Header="Budget Item" Width="150"/>
 

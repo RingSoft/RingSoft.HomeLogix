@@ -1,7 +1,12 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DbLookup;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
@@ -11,6 +16,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         bool ShowImportBankBudgetWindow(ImportTransactionGridRow row);
 
         void CloseWindow(bool dialogResult);
+
+        string GetQifFile();
     }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {
@@ -53,9 +60,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public RelayCommand OkCommand { get; set; }
 
+        public RelayCommand ImportQifCommand { get; set; }
+
         public ImportBankTransactionsViewModel()
         {
             OkCommand = new RelayCommand(OnOk);
+            ImportQifCommand = new RelayCommand(ImportQif);
         }
 
         public void Initialize(BankAccountViewModel bankAccountViewModel, IImportTransactionView view)
@@ -82,6 +92,97 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 View.CloseWindow(true);
             }
         }
+
+        private void ImportQif()
+        {
+            var qifText = View.GetQifFile();
+            if (qifText.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var startDate = BankViewModel.LastCompleteDate;
+            if (startDate == DateTime.MinValue)
+            {
+                var registerRows = BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
+                    .OrderBy(p => p.ItemDate);
+                if (!registerRows.Any())
+                {
+                    return;
+                }
+                startDate = registerRows.FirstOrDefault().ItemDate;
+            }
+            var importRows = new List<ImportTransactionGridRow>();
+
+            var columnPos = qifText.IndexOf("C*");
+
+            while (columnPos >= 0)
+            {
+                var row = GetRowValue(qifText, columnPos, startDate);
+                if (row == null)
+                {
+                    Manager.ImportFromQif(importRows);
+                    if (importRows.Any())
+                    {
+                        Manager.Grid?.GotoCell(importRows[0],ImportTransactionGridRow.BudgetItemColumnId);
+                    }
+                    return;
+                }
+                importRows.Add(row);
+                columnPos = qifText.IndexOf("^", columnPos);
+                columnPos = qifText.IndexOf("C*", columnPos);
+            }
+            Manager.ImportFromQif(importRows);
+            if (importRows.Any())
+            {
+                Manager.Grid?.GotoCell(importRows[0], ImportTransactionGridRow.BudgetItemColumnId);
+            }
+        }
+
+        private ImportTransactionGridRow GetRowValue(string qifText, int columnPos, DateTime startDate)
+        {
+            var date = GetQifValue(qifText, columnPos, "D");
+            var rowDate = DateTime.Parse(date);
+            if (rowDate >= startDate)
+            {
+                var text = GetQifValue(qifText, columnPos, "P");
+                var amountText = GetQifValue(qifText, columnPos, "T");
+                var amount = decimal.Parse(amountText);
+                var row = new ImportTransactionGridRow(Manager);
+                if (amount < 0)
+                {
+                    row.TransactionTypes = TransactionTypes.Withdrawal;
+                }
+                else
+                {
+                    row.TransactionTypes = TransactionTypes.Deposit;
+                }
+                amount = Math.Abs(amount);
+                row.Amount = amount;
+                row.Date = rowDate;
+                row.BankText = text;
+                row.MapTransaction = true;
+                return row;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private static string GetQifValue(string qifText, int columnPos, string prefix)
+        {
+            var checkPrefix = $"\r\n{prefix}";
+            var valuePos = qifText.IndexOf(checkPrefix, columnPos);
+            var crLfPos = qifText.IndexOf("\r\n", valuePos + checkPrefix.Length);
+            var result = qifText.MidStr(valuePos, crLfPos - valuePos).Trim();
+            if (result.StartsWith(prefix))
+            {
+                result = result.RightStr(result.Length - 1);
+            }
+            return result;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

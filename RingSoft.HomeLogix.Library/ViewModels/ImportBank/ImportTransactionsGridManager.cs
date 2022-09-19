@@ -318,5 +318,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
             Grid?.RefreshGridView();
         }
+
+        public void ImportFromQif(List<ImportTransactionGridRow> rows)
+        {
+            Grid?.SetBulkInsertMode(true);
+            PreLoadGridFromEntity();
+            foreach (var importTransactionGridRow in rows)
+            {
+                AddRow(importTransactionGridRow);
+            }
+            PostLoadGridFromEntity();
+            Grid?.SetBulkInsertMode(false);
+            Grid?.RefreshGridView();
+        }
     }
 }

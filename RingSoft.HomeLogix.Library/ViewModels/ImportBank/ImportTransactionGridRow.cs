@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
@@ -12,10 +14,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     {
         Date = 0,
         BankText = 1,
-        BudgetItem = 2,
-        Source = 3,
-        Amount = 4,
-        Map = 5
+        TransactionType = 2,
+        BudgetItem = 3,
+        Source = 4,
+        Amount = 5,
+        Map = 6
     }
 
     public class BudgetSplit
@@ -27,6 +30,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     {
         public const int DateColumnId = (int) ImportColumns.Date;
         public const int BankTextColumnId = (int) ImportColumns.BankText;
+        public const int TransactionTypeColumnId = (int) ImportColumns.TransactionType;
         public const int BudgetItemColumnId = (int) ImportColumns.BudgetItem;
         public const int SourceColumnId = (int) ImportColumns.Source;
         public const int AmountColumnId = (int) ImportColumns.Amount;
@@ -34,6 +38,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public DateTime Date { get; set; } = DateTime.Today;
         public string BankText { get; set; }
+
+        public TransactionTypes TransactionTypes
+        {
+            get => (Budget.TransactionTypes) TransactionTypeItem.NumericValue;
+            set => TransactionTypeItem = TransactionTypeComboBoxControlSetup.GetItem((int) value);
+        }
+        public TextComboBoxControlSetup TransactionTypeComboBoxControlSetup { get; set; }
+        public TextComboBoxItem TransactionTypeItem { get; set; }
         public AutoFillSetup BudgetItemAutoFillSetup { get; set; }
         public AutoFillValue BudgetItemAutoFillValue { get; set; }
         public AutoFillSetup SourceAutoFillSetup { get; set; }
@@ -48,6 +60,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             Manager = manager;
             BudgetItemSplits = new List<BudgetSplit>();
+            TransactionTypeComboBoxControlSetup = new TextComboBoxControlSetup();
+            TransactionTypeComboBoxControlSetup.LoadFromEnum<TransactionTypes>();
+            TransactionTypes = TransactionTypes.Withdrawal;
             BudgetItemAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.BudgetId));
             SourceAutoFillSetup =
@@ -64,7 +79,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return new DataEntryGridDateCellProps(this, columnId,
                         new DateEditControlSetup() {DateFormatType = DateFormatTypes.DateOnly}, Date);
                 case ImportColumns.BankText:
-                    return new DataEntryGridTextCellProps(this, columnId);
+                    return new DataEntryGridTextCellProps(this, columnId, BankText);
+                case ImportColumns.TransactionType:
+                    return new DataEntryGridCustomControlCellProps(this, columnId, (int)TransactionTypes);
                 case ImportColumns.BudgetItem:
                     return new DataEntryGridAutoFillCellProps(this, columnId, BudgetItemAutoFillSetup,
                         BudgetItemAutoFillValue);
@@ -91,11 +108,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                     }
-                    break;
-                case ImportColumns.Date:
+                    return new DataEntryGridControlCellStyle();
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
-                    break;
+                    return new DataEntryGridControlCellStyle();
                 case ImportColumns.BankText:
                     return new DataEntryGridControlCellStyle() {State = DataEntryGridCellStates.Disabled};
                 case ImportColumns.Map:
@@ -103,7 +119,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                     }
-                    break;
+                    return new DataEntryGridControlCellStyle();
+                case ImportColumns.Date:
+                case ImportColumns.TransactionType:
+                    if (!BankText.IsNullOrEmpty())
+                    {
+                        return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
+                    }
+                    return new DataEntryGridControlCellStyle();
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -125,6 +148,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     }
                     break;
                 case ImportColumns.BankText:
+                    break;
+                case ImportColumns.TransactionType:
+                    var comboProps = value as DataEntryGridTextComboBoxCellProps;
+                    TransactionTypeItem = comboProps.SelectedItem;
                     break;
                 case ImportColumns.BudgetItem:
                     var budgetAutoFillCellProps = value as DataEntryGridAutoFillCellProps;

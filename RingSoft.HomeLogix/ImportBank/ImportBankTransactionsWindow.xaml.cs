@@ -1,6 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Windows.Input;
+using Microsoft.Win32;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
+using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
 
@@ -49,6 +54,48 @@ namespace RingSoft.HomeLogix.ImportBank
         {
             DialogResult = dialogResult;
             Close();
+        }
+
+        public string GetQifFile()
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\Downloads";
+            var openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = folder,
+                DefaultExt = "qif",
+                Filter = "Quicken QIF Files(*.qif)|*.qif"
+            };
+
+            var file = string.Empty;
+            if (openFileDialog.ShowDialog() == true)
+            {
+                file = openFileDialog.FileName;
+            }
+
+            if (file.IsNullOrEmpty())
+            {
+                return string.Empty;
+            }
+
+            var qifText = OpenTextFile(file);
+
+            return qifText;
+        }
+
+        public static string OpenTextFile(string fileName)
+        {
+            var result = string.Empty;
+            try
+            {
+                var openFile = new StreamReader(fileName);
+                result = openFile.ReadToEnd();
+            }
+            catch (Exception e)
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(e.Message, "Error Opening Text File", RsMessageBoxIcons.Error);
+            }
+
+            return result;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Accessibility;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
@@ -77,6 +78,18 @@ namespace RingSoft.HomeLogix
                     Control.AmountMode = ActualAmountMode.Details;
                 else
                     Control.AmountMode = ActualAmountMode.Value;
+            }
+
+            if (ActualAmountCellProps.ImportTransactionGridRow != null)
+            {
+                if (!ActualAmountCellProps.ImportTransactionGridRow.BankText.IsNullOrEmpty())
+                {
+                    Control.AmountMode = ActualAmountMode.Details;
+                }
+                else
+                {
+                    Control.AmountMode = ActualAmountMode.Value;
+                }
             }
         }
     }
