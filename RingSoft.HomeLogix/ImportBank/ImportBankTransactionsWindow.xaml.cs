@@ -39,6 +39,7 @@ namespace RingSoft.HomeLogix.ImportBank
                     }
                 };
             };
+            CancelButton.Click += (sender, args) => Close();
         }
 
         public bool ShowImportBankBudgetWindow(ImportTransactionGridRow row)
@@ -63,7 +64,7 @@ namespace RingSoft.HomeLogix.ImportBank
             {
                 InitialDirectory = folder,
                 DefaultExt = "qif",
-                Filter = "Quicken QIF Files(*.qif)|*.qif"
+                Filter = "Quicken/Microsoft Money QIF Files(*.qif)|*.qif"
             };
 
             var file = string.Empty;

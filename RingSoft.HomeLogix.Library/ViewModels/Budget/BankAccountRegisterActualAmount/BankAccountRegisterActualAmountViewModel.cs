@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 // ReSharper disable once CheckNamespace
@@ -151,6 +153,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
+            var invalidSources = GridManager.Rows.OfType<ActualAmountGridRow>()
+                .Where(p => p.IsNew == false && (p.Source == null || !p.Source.IsValid())).ToList();
+            if (invalidSources.Any())
+            {
+                var message = "You must select a valid source.";
+                var caption = "Invalid Source";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                GridManager.Grid?.GotoCell(invalidSources[0], BankAccountRegisterActualAmountGridManager.SourceColumnId);
+                return;
+            }
             var amountDetails = GridManager.SaveData();
             ActualAmountCellProps.Value = TotalActualAmount;
             var registerItem = new BankAccountRegisterItem();

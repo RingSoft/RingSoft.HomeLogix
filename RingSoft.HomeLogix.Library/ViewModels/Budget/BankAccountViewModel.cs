@@ -776,7 +776,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 MonthlyBudgetDeposits = MonthlyBudgetDeposits,
                 MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals,
                 Notes = Notes,
-                LastGenerationDate = (DateTime)LastGenerationDate
+                LastGenerationDate = (DateTime)LastGenerationDate,
+                LastCompletedDate = LastCompleteDate
             };
 
             return bankAccount;
@@ -801,21 +802,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (!ProcessCompletedRows(completedRegisterData, completedRows))
                     return false;
 
-            var lastCompletedDate = DateTime.Today;
-            DateTime lastRegisterDate = DateTime.MinValue;
-            if (completedRows.Any())
-            {
-                 lastRegisterDate = completedRows.Max(p => p.ItemDate);
-                 if (lastRegisterDate < lastCompletedDate)
-                 {
-                     lastCompletedDate = lastRegisterDate;
-                 }
-                 entity.LastCompletedDate = lastCompletedDate;
-            }
-            else
-            {
-                entity.LastCompletedDate = LastCompleteDate;
-            }
+            //var lastCompletedDate = DateTime.Today;
+            //DateTime lastRegisterDate = DateTime.MinValue;
+            //if (completedRows.Any())
+            //{
+            //     lastRegisterDate = completedRows.Max(p => p.ItemDate);
+            //     if (lastRegisterDate < lastCompletedDate)
+            //     {
+            //         lastCompletedDate = lastRegisterDate;
+            //     }
+            //     entity.LastCompletedDate = lastCompletedDate;
+            //}
+            //else
+            //{
+            //    entity.LastCompletedDate = LastCompleteDate;
+            //}
 
             if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {

@@ -21,7 +21,16 @@ namespace RingSoft.HomeLogix.ImportBank
                 {
                     if (args.Key == Key.Enter)
                     {
+                        if (Grid.EditingControlHost != null && Grid.EditingControlHost.HasDataChanged())
+                        {
+                            Grid.EditingControlHost.Row.IsNew = false;
+                            Grid.EditingControlHost.Row.SetCellValue(Grid.EditingControlHost
+                                .GetCellValue());
+                        }
+
+
                         ViewModel.OkCommand.Execute(null);
+                        args.Handled = true;
                     }
                 };
 

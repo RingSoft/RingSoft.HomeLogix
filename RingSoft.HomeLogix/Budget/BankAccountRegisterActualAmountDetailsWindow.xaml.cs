@@ -1,4 +1,5 @@
-﻿using RingSoft.HomeLogix.Library;
+﻿using System.Windows.Input;
+using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Budget
@@ -20,6 +21,24 @@ namespace RingSoft.HomeLogix.Budget
             };
 
             CancelButton.Click += (sender, args) => Close();
+            Loaded += (sender, args) =>
+            {
+                Grid.PreviewKeyDown += (o, eventArgs) =>
+                {
+                    if (eventArgs.Key == Key.Enter)
+                    {
+                        if (Grid.EditingControlHost != null && Grid.EditingControlHost.HasDataChanged())
+                        {
+                            Grid.EditingControlHost.Row.IsNew = false;
+                            Grid.EditingControlHost.Row.SetCellValue(Grid.EditingControlHost
+                                .GetCellValue());
+                        }
+
+                        ViewModel.OkButtonCommand.Execute(null);
+                        eventArgs.Handled = true;
+                    }
+                };
+            };
         }
 
         public void OnOkButtonCloseWindow()

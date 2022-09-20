@@ -94,74 +94,86 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
 
             }
+            SaveQifMaps();
             return AppGlobals.DataRepository.SaveBankTransactions(transactions, splits, ViewModel.BankViewModel.Id);
         }
 
         public bool PostTransactions()
         {
             var bankBalance = ViewModel.BankViewModel.CurrentBalance;
-            var rows = Rows.OfType<ImportTransactionGridRow>();
+            var rows = Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false);
+            var registerDate = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
+                .Min(p => p.ItemDate);
+
             foreach (var gridRow in rows)
             {
-                if (!gridRow.IsNew)
+                if (gridRow.BudgetItemSplits.Any())
                 {
-                    if (gridRow.BudgetItemSplits.Any())
+                    foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
                     {
-                        foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
-                        {
-                            var budgetItemId = gridRowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value
-                                .ToInt();
-                            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
-                            var row = PostBudgetItem(budgetItem, gridRowBudgetItemSplit.Amount, gridRow);
-                            if (row != null)
-                                bankBalance = UpdateBankBalance(row, bankBalance, gridRowBudgetItemSplit.Amount);
-                        }
-                    }
-                    else
-                    {
-                        var budgetItemId = gridRow.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
+                        var budgetItemId = gridRowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value
                             .ToInt();
                         var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
-                        var row = PostBudgetItem(budgetItem, gridRow.Amount, gridRow);
-                        if (row != null) bankBalance = UpdateBankBalance(row, bankBalance, gridRow.Amount);
+                        var row = PostBudgetItem(budgetItem, gridRowBudgetItemSplit.Amount, gridRow, registerDate);
+                        if (row != null)
+                            bankBalance = UpdateBankBalance(row, bankBalance, gridRowBudgetItemSplit.Amount);
                     }
-
-                    if (gridRow.MapTransaction && !gridRow.BankText.IsNullOrEmpty())
-                    {
-                        var qifMap = gridRow.QifMap;
-                        if (qifMap == null)
-                        {
-                            qifMap = AppGlobals.DataRepository.GetQifMap(gridRow.BankText);
-                            if (qifMap == null)
-                            {
-                                qifMap = new QifMap();
-                                qifMap.BankText = gridRow.BankText;
-                                qifMap.BudgetId = AppGlobals.LookupContext.BudgetItems
-                                    .GetEntityFromPrimaryKeyValue(gridRow.BudgetItemAutoFillValue.PrimaryKeyValue).Id;
-                                if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
-                                {
-                                    qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
-                                        .GetEntityFromPrimaryKeyValue(gridRow.SourceAutoFillValue.PrimaryKeyValue).Id;
-                                }
-
-                                AppGlobals.DataRepository.SaveQifMap(qifMap);
-                            }
-                        }
-                    }
+                }
+                else
+                {
+                    var budgetItemId = gridRow.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
+                        .ToInt();
+                    var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
+                    var row = PostBudgetItem(budgetItem, gridRow.Amount, gridRow, registerDate);
+                    if (row != null) bankBalance = UpdateBankBalance(row, bankBalance, gridRow.Amount);
                 }
             }
 
             if (AppGlobals.DataRepository.DeleteTransactions(ViewModel.BankViewModel.Id))
             {
-                ViewModel.BankViewModel.CurrentBalance = bankBalance;
-                ViewModel.BankViewModel.RegisterGridManager.CalculateProjectedBalanceData();
-                ViewModel.BankViewModel.RegisterGridManager.Grid?.RefreshGridView();
-                ViewModel.View.CloseWindow(true);
-                ViewModel.BankViewModel.DoSave();
+                if (rows.Any())
+                {
+                    SaveQifMaps();
+                    var lastCompletedDate = rows.Max(p => p.Date);
+                    ViewModel.BankViewModel.LastCompleteDate = lastCompletedDate;
+                    ViewModel.BankViewModel.CurrentBalance = bankBalance;
+                    ViewModel.BankViewModel.RegisterGridManager.CalculateProjectedBalanceData();
+                    ViewModel.BankViewModel.RegisterGridManager.Grid?.RefreshGridView();
+                    ViewModel.View.CloseWindow(true);
+                    ViewModel.BankViewModel.DoSave();
+                }
+                else
+                {
+                    ViewModel.View.CloseWindow(true);
+                }
+
                 return true;
             }
 
             return false;
+        }
+
+        private void SaveQifMaps()
+        {
+            foreach (var gridRow in Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false && p.MapTransaction == true && !p.BankText.IsNullOrEmpty()))
+            {
+                
+                var qifMap = AppGlobals.DataRepository.GetQifMap(gridRow.BankText);
+                if (qifMap == null)
+                {
+                    qifMap = new QifMap();
+                    qifMap.BankText = gridRow.BankText;
+                    qifMap.BudgetId = AppGlobals.LookupContext.BudgetItems
+                        .GetEntityFromPrimaryKeyValue(gridRow.BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+                    if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
+                    {
+                        qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
+                            .GetEntityFromPrimaryKeyValue(gridRow.SourceAutoFillValue.PrimaryKeyValue).Id;
+                    }
+
+                    AppGlobals.DataRepository.SaveQifMap(qifMap);
+                }
+            }
         }
 
         private decimal UpdateBankBalance(BankAccountRegisterGridRow row, decimal bankBalance, decimal amount)
@@ -196,10 +208,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return bankBalance;
         }
 
-        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow)
+        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow, DateTime minDate)
         {
             var dateMinValue = gridRow.Date;
             var dateMaxValue = gridRow.Date;
+            if (minDate < gridRow.Date)
+            {
+                dateMinValue = minDate;
+            }
             switch (budgetItem.RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
@@ -458,8 +474,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         break;
                     }
+
                     spacePos = importTransactionGridRow.BankText.IndexOf(" ", spacePos + 1);
-                    text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
+                    if (spacePos == -1)
+                    {
+                        foundMap = true;
+                    }
+                    else
+                    {
+                        text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
+                    }
 
                 }
                 AddRow(importTransactionGridRow);

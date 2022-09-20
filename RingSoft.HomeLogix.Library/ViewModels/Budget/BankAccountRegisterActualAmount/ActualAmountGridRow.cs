@@ -81,21 +81,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case ActualAmountGridColumns.Source:
                     if (value is DataEntryGridAutoFillCellProps autoFillCellProps)
                     {
-                        if (!autoFillCellProps.AutoFillValue.IsValid())
-                        {
-                            var source = new BudgetItemSource
-                            {
-                                Name = autoFillCellProps.AutoFillValue.Text,
-                                IsIncome = IsIncome
-                            };
-                            if (AppGlobals.DataRepository.SaveBudgetItemSource(source))
-                            {
-                                Source = new AutoFillValue(
-                                    AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(source), source.Name);
-                            }
-                        }
-                        else 
-                            Source = autoFillCellProps.AutoFillValue;
+                        //if (autoFillCellProps.AutoFillValue.IsValid())
+                        //{
+                        //    var source = new BudgetItemSource
+                        //    {
+                        //        Name = autoFillCellProps.AutoFillValue.Text,
+                        //        IsIncome = IsIncome
+                        //    };
+                        //    if (AppGlobals.DataRepository.SaveBudgetItemSource(source))
+                        //    {
+                        //        Source = new AutoFillValue(
+                        //            AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(source), source.Name);
+                        //    }
+                        //}
+                        //else 
+                        Source = autoFillCellProps.AutoFillValue;
                     }
 
                     break;

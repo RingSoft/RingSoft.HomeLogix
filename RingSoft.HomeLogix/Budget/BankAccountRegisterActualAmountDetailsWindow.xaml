@@ -55,7 +55,7 @@
         </Grid>
         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Left" Content="Details"/>
 
-        <deg:DataEntryGrid x:Name="Grid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Manager="{Binding GridManager}">
+        <deg:DataEntryGrid x:Name="Grid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Manager="{Binding GridManager}" EnterToTab="False">
             <deg:DataEntryGrid.Columns>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.DateColumnId}" Header="Date" DesignText="01/01/1980" Width="100"/>
@@ -80,7 +80,7 @@
         <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
 
         <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0"/>
+            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0" IsDefault="True"/>
             <Button x:Name="CancelButton" Content="_Cancel" Width="50"/>
         </StackPanel>
     </Grid>

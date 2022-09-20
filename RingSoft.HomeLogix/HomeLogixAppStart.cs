@@ -91,6 +91,12 @@ namespace RingSoft.HomeLogix
             maintenanceWindow.ShowInTaskbar = false;
 
             maintenanceWindow.ViewModel.InitializeFromLookupData(e);
+
+            maintenanceWindow.Loaded += (sender, args) =>
+            {
+                var processor = maintenanceWindow.ViewModel.Processor as AppDbMaintenanceWindowProcessor;
+                processor.CheckAddOnFlyAfterLoaded();
+            };
             maintenanceWindow.ShowDialog();
         }
     }

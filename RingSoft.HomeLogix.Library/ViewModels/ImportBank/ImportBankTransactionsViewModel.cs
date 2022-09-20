@@ -79,17 +79,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         private void OnOk()
         {
-            var message = "Do you wish to post the transactions to the register?";
-            var caption = "Post To Register?";
-            var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
-            if (result == MessageBoxButtonsResult.Yes)
+            if (Manager.Rows.FirstOrDefault(p => p.IsNew == false) != null)
             {
-                Manager.PostTransactions();
-                return;
+                var message = "Do you wish to post the transactions to the register?";
+                var caption = "Post To Register?";
+                var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
+                if (result == MessageBoxButtonsResult.Yes)
+                {
+                    Manager.PostTransactions();
+                    return;
+                }
+
+                if (Manager.SaveTransactions())
+                {
+                    View.CloseWindow(true);
+                }
             }
-            if (Manager.SaveTransactions())
+            else
             {
-                View.CloseWindow(true);
+                if (AppGlobals.DataRepository.DeleteTransactions(BankViewModel.Id))
+                    View.CloseWindow(false);
             }
         }
 
@@ -153,7 +162,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
             else
             {
-                processRow = rowDate >= startDate;
+                processRow = rowDate > startDate;
             }
             if (processRow)
             {
@@ -184,13 +193,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         private static string GetQifValue(string qifText, int columnPos, string prefix)
         {
-            var checkPrefix = $"\n{prefix}";
+            var crlfText = "\n";
+            var checkPrefix = $"{crlfText}{prefix}";
             var valuePos = qifText.IndexOf(checkPrefix, columnPos);
             if (valuePos < 0)
             {
-                return string.Empty;
+                crlfText = "\r\n";
+                checkPrefix = $"{crlfText}{prefix}";
+                valuePos = qifText.IndexOf(checkPrefix, columnPos);
+                if (valuePos < 0)
+                {
+                    return string.Empty;
+                }
             }
-            var crLfPos = qifText.IndexOf("\n", valuePos + checkPrefix.Length);
+            var crLfPos = qifText.IndexOf(crlfText, valuePos + checkPrefix.Length);
             var result = qifText.MidStr(valuePos, crLfPos - valuePos).Trim();
             if (result.StartsWith(prefix))
             {

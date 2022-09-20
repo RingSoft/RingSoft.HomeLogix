@@ -30,7 +30,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="_Import From .QIF File" Command="{Binding ImportQifCommand}"/>
+        <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="_Import From Quicken/Microsoft Money .QIF File" Command="{Binding ImportQifCommand}"/>
 
         <Label Grid.Row="1" Grid.Column="0" Content="Bank Account"/>
 

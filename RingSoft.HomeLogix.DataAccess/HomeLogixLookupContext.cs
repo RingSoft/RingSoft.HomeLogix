@@ -43,6 +43,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public LookupDefinition<HistoryLookup, History> HistoryLookup { get; set; }
 
         public LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> BankPeriodHistoryLookup { get; set; }
+        public LookupDefinition<QifMapLookup, QifMap> QifMapLookup { get; set; }
         //----------------------------------------------------------------------
 
         public override DbDataProcessor DataProcessor => SqliteDataProcessor;
@@ -188,6 +189,14 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankPeriodHistoryLookup = bankPeriodHistoryLookupDefinition;
             BankAccountPeriodHistory.HasLookupDefinition(BankPeriodHistoryLookup);
+
+            QifMapLookup = new LookupDefinition<QifMapLookup, QifMap>(QifMaps);
+            QifMapLookup.AddVisibleColumnDefinition(p => p.BankText, "Bank Text", q => q.BankText, 34);
+            QifMapLookup.Include(p => p.BudgetItem)
+                .AddVisibleColumnDefinition(p => p.BudgetItem, "Budget Item", p => p.Description, 33);
+            QifMapLookup.Include(p => p.Source)
+                .AddVisibleColumnDefinition(p => p.Source, "Source", p => p.Name, 33);
+            QifMaps.HasLookupDefinition(QifMapLookup);
         }
 
         protected override void SetupModel()
@@ -200,6 +209,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankAccounts.GetFieldDefinition(p => p.ProjectedLowestBalanceAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            BankAccounts.GetFieldDefinition(p => p.LastCompletedDate).HasDescription("Last Transaction Date");
 
             BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
