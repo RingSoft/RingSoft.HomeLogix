@@ -32,6 +32,14 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public decimal Amount { get; set; }
 
+        public int? QifMapId { get; set; }
+
+        public virtual QifMap QifMap { get; set; }
+
+        public bool MapTransaction { get; set; }
+
+        public byte TransactionType { get; set; }
+
         public virtual ICollection<BankTransactionBudget> BudgetItems { get; set; }
 
         public BankTransaction()

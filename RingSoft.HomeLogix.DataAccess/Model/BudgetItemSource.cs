@@ -23,11 +23,14 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public ICollection<BankTransaction> Transactions { get; set; }
 
+        public virtual ICollection<QifMap> Maps { get; set; }
+
         public BudgetItemSource()
         {
             AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
             History = new HashSet<SourceHistory>();
             Transactions = new HashSet<BankTransaction>();
+            Maps = new HashSet<QifMap>();
         }
     }
 }

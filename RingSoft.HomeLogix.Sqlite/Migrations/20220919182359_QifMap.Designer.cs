@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
     [DbContext(typeof(HomeLogixDbContext))]
-    partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220919182359_QifMap")]
+    partial class QifMap
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,26 +321,15 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("BudgetId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("MapTransaction")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("QifMapId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("SourceId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime");
 
-                    b.Property<byte>("TransactionType")
-                        .HasColumnType("smallint");
-
                     b.HasKey("BankAccountId", "TransactionId");
 
                     b.HasIndex("BudgetId");
-
-                    b.HasIndex("QifMapId");
 
                     b.HasIndex("SourceId");
 
@@ -525,7 +516,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("BudgetId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SourceId")
+                    b.Property<int>("SourceId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -661,11 +652,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasForeignKey("BudgetId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.QifMap", "QifMap")
-                        .WithMany("Transactions")
-                        .HasForeignKey("QifMapId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", "Source")
                         .WithMany("Transactions")
                         .HasForeignKey("SourceId")
@@ -678,8 +664,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Navigation("BankAccount");
 
                     b.Navigation("BudgetItem");
-
-                    b.Navigation("QifMap");
 
                     b.Navigation("Source");
                 });
@@ -767,7 +751,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", "Source")
                         .WithMany("Maps")
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BudgetItem");
 
@@ -861,11 +846,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.History", b =>
                 {
                     b.Navigation("Sources");
-                });
-
-            modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.QifMap", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

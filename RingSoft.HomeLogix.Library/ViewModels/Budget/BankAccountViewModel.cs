@@ -802,14 +802,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return false;
 
             var lastCompletedDate = DateTime.Today;
-            var lastRegisterDate = completedRows.Max(p => p.ItemDate);
-            if (lastRegisterDate < lastCompletedDate)
+            DateTime lastRegisterDate = DateTime.MinValue;
+            if (completedRows.Any())
             {
-                lastCompletedDate = lastRegisterDate;
+                 lastRegisterDate = completedRows.Max(p => p.ItemDate);
+                 if (lastRegisterDate < lastCompletedDate)
+                 {
+                     lastCompletedDate = lastRegisterDate;
+                 }
+                 entity.LastCompletedDate = lastCompletedDate;
             }
-            entity.LastCompletedDate = lastCompletedDate;
+            else
             {
-                
+                entity.LastCompletedDate = LastCompleteDate;
             }
 
             if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))

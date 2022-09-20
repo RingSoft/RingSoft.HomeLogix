@@ -129,8 +129,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return;
                 }
                 importRows.Add(row);
-                columnPos = qifText.IndexOf("^", columnPos);
-                columnPos = qifText.IndexOf("C*", columnPos);
+                //columnPos = qifText.IndexOf("^", columnPos);
+                columnPos = qifText.IndexOf("C*", columnPos + 2);
             }
             Manager.ImportFromQif(importRows);
             if (importRows.Any())
@@ -142,8 +142,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         private ImportTransactionGridRow GetRowValue(string qifText, int columnPos, DateTime startDate)
         {
             var date = GetQifValue(qifText, columnPos, "D");
+            if (date.IsNullOrEmpty())
+                return null;
+
             var rowDate = DateTime.Parse(date);
-            if (rowDate >= startDate)
+            var processRow = false;
+            if (BankViewModel.LastCompleteDate == DateTime.MinValue)
+            {
+                processRow = rowDate >= DateTime.Today.AddDays(-7);
+            }
+            else
+            {
+                processRow = rowDate >= startDate;
+            }
+            if (processRow)
             {
                 var text = GetQifValue(qifText, columnPos, "P");
                 var amountText = GetQifValue(qifText, columnPos, "T");
@@ -172,9 +184,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         private static string GetQifValue(string qifText, int columnPos, string prefix)
         {
-            var checkPrefix = $"\r\n{prefix}";
+            var checkPrefix = $"\n{prefix}";
             var valuePos = qifText.IndexOf(checkPrefix, columnPos);
-            var crLfPos = qifText.IndexOf("\r\n", valuePos + checkPrefix.Length);
+            if (valuePos < 0)
+            {
+                return string.Empty;
+            }
+            var crLfPos = qifText.IndexOf("\n", valuePos + checkPrefix.Length);
             var result = qifText.MidStr(valuePos, crLfPos - valuePos).Trim();
             if (result.StartsWith(prefix))
             {

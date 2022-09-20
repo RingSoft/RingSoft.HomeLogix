@@ -6,6 +6,8 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
@@ -56,6 +58,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public new ImportTransactionsGridManager Manager { get; set; }
 
+        public QifMap QifMap { get; set; }
+
         public ImportTransactionGridRow(ImportTransactionsGridManager manager) : base(manager)
         {
             Manager = manager;
@@ -83,6 +87,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 case ImportColumns.TransactionType:
                     return new DataEntryGridCustomControlCellProps(this, columnId, (int)TransactionTypes);
                 case ImportColumns.BudgetItem:
+                    BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+                    if (TransactionTypes == TransactionTypes.Withdrawal)
+                    {
+                        BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
+                            .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int) p.Type),
+                                Conditions.Equals, (int) BudgetItemTypes.Expense).SetEndLogic(EndLogics.Or);
+                    }
+                    if (TransactionTypes == TransactionTypes.Deposit)
+                    {
+                        BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
+                            .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int)p.Type),
+                                Conditions.Equals, (int)BudgetItemTypes.Income).SetEndLogic(EndLogics.Or);
+                    }
+                    BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
+                        .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int)p.Type),
+                            Conditions.Equals, (int)BudgetItemTypes.Transfer);
+
                     return new DataEntryGridAutoFillCellProps(this, columnId, BudgetItemAutoFillSetup,
                         BudgetItemAutoFillValue);
                 case ImportColumns.Source:
@@ -163,7 +184,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     break;
                 case ImportColumns.Source:
                     var autoFillCellProps = value as DataEntryGridAutoFillCellProps;
-                    if (autoFillCellProps != null && autoFillCellProps.AutoFillValue.IsValid())
+                    if (autoFillCellProps != null)
                     {
                         SourceAutoFillValue = autoFillCellProps.AutoFillValue;
                     }
@@ -176,6 +197,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     }
                     break;
                 case ImportColumns.Map:
+                    var checkBoxProps = value as DataEntryGridCheckBoxCellProps;
+                    MapTransaction = checkBoxProps.Value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

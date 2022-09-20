@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
     [DbContext(typeof(HomeLogixDbContext))]
-    partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220919211213_QifMapIdNullable")]
+    partial class QifMapIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,9 +321,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("BudgetId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("MapTransaction")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("QifMapId")
                         .HasColumnType("integer");
 
@@ -330,9 +329,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime");
-
-                    b.Property<byte>("TransactionType")
-                        .HasColumnType("smallint");
 
                     b.HasKey("BankAccountId", "TransactionId");
 
@@ -525,7 +521,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("BudgetId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("SourceId")
+                    b.Property<int>("SourceId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -767,7 +763,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", "Source")
                         .WithMany("Maps")
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BudgetItem");
 

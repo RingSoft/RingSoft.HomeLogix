@@ -29,6 +29,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<BudgetPeriodHistory> BudgetPeriodHistory { get; set; }
         public TableDefinition<BankAccountPeriodHistory> BankAccountPeriodHistory { get; set; }
         public TableDefinition<BankTransaction> BankTransactions { get; set; }
+        public TableDefinition<QifMap> QifMaps { get; set; }
         public LookupContextBase Context => this;
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }

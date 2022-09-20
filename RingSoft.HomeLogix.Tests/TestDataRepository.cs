@@ -273,6 +273,21 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public QifMap GetQifMap(int qifMapId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public QifMap GetQifMap(string bankText)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SaveQifMap(QifMap qifMap)
+        {
+            throw new NotImplementedException();
+        }
+
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)
         {
             throw new NotImplementedException();

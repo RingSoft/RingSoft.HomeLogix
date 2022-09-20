@@ -83,6 +83,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BankTransactionBudget> TransactionBudgets { get; set; }
 
+        public virtual ICollection<QifMap> Maps { get; set; }
+
         public BudgetItem()
         {
             //RegisterItems = new HashSet<BankAccountRegisterItem>();
@@ -90,6 +92,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             PeriodHistory = new HashSet<BudgetPeriodHistory>();
             Transactions = new HashSet<BankTransaction>();
             TransactionBudgets = new HashSet<BankTransactionBudget>();
+            Maps = new HashSet<QifMap>();
         }
 
         public override string ToString()

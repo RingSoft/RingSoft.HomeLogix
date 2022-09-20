@@ -83,6 +83,11 @@ namespace RingSoft.HomeLogix.Library
 
         bool DeleteTransactions(int bankAccountId);
 
+        QifMap GetQifMap(int qifMapId);
+
+        QifMap GetQifMap(string bankText);
+
+        bool SaveQifMap(QifMap qifMap);
     }
 
     public class DataRepository : IDataRepository
@@ -290,7 +295,7 @@ namespace RingSoft.HomeLogix.Library
                 amountDetail.RegisterItem = null;
             }
             context.BankAccountRegisterItemAmountDetails.RemoveRange(
-                context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id));
+                context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id).ToList());
 
            context.BankAccountRegisterItemAmountDetails.AddRange(amountDetails);
 
@@ -629,6 +634,7 @@ namespace RingSoft.HomeLogix.Library
                 .Include(p => p.BankAccount)
                 .Include(p => p.BudgetItem)
                 .Include(p => p.Source)
+                .Include(p => p.QifMap)
                 .Where(p => p.BankAccountId == bankAccountId).ToList();
         }
 
@@ -658,6 +664,33 @@ namespace RingSoft.HomeLogix.Library
             context.BankTransactionBudget.RemoveRange(existingSplits);
 
             return context.DbContext.SaveEfChanges("Deleting Bank Transactions");
+        }
+
+        public QifMap GetQifMap(int qifMapId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var result = context.QifMaps.Include(p => p.BudgetItem)
+                .Include(p => p.Source)
+                .FirstOrDefault(p => p.Id == qifMapId);
+
+            return result;
+        }
+
+        public QifMap GetQifMap(string bankText)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var result = context.QifMaps.Include(p => p.BudgetItem)
+                .Include(p => p.Source)
+                .FirstOrDefault(p => p.BankText == bankText);
+
+            return result;
+        }
+
+        public bool SaveQifMap(QifMap qifMap)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            context.QifMaps.Add(qifMap);
+            return context.DbContext.SaveEfChanges("Saving QifMap");
         }
     }
 }
