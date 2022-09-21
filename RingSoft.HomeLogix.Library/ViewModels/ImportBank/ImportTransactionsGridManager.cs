@@ -102,8 +102,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             var bankBalance = ViewModel.BankViewModel.CurrentBalance;
             var rows = Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false);
-            var registerDate = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
-                .Min(p => p.ItemDate);
 
             foreach (var gridRow in rows)
             {
@@ -114,7 +112,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         var budgetItemId = gridRowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value
                             .ToInt();
                         var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
-                        var row = PostBudgetItem(budgetItem, gridRowBudgetItemSplit.Amount, gridRow, registerDate);
+                        var row = PostBudgetItem(budgetItem, gridRowBudgetItemSplit.Amount, gridRow);
                         if (row != null)
                             bankBalance = UpdateBankBalance(row, bankBalance, gridRowBudgetItemSplit.Amount);
                     }
@@ -124,7 +122,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var budgetItemId = gridRow.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
                         .ToInt();
                     var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
-                    var row = PostBudgetItem(budgetItem, gridRow.Amount, gridRow, registerDate);
+                    var row = PostBudgetItem(budgetItem, gridRow.Amount, gridRow);
                     if (row != null) bankBalance = UpdateBankBalance(row, bankBalance, gridRow.Amount);
                 }
             }
@@ -140,7 +138,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     ViewModel.BankViewModel.RegisterGridManager.CalculateProjectedBalanceData();
                     ViewModel.BankViewModel.RegisterGridManager.Grid?.RefreshGridView();
                     ViewModel.View.CloseWindow(true);
-                    ViewModel.BankViewModel.DoSave();
+                    ViewModel.BankViewModel.SaveNoPost();
                 }
                 else
                 {
@@ -208,14 +206,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return bankBalance;
         }
 
-        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow, DateTime minDate)
+        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow)
         {
             var dateMinValue = gridRow.Date;
-            var dateMaxValue = gridRow.Date;
-            if (minDate < gridRow.Date)
+            var incompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(p => !p.Completed && p.BudgetItemId == budgetItem.Id);
+            if (incompleteRows.Any())
             {
-                dateMinValue = minDate;
+                var budgetDate = incompleteRows.Min(p => p.ItemDate);
+                if (budgetDate < dateMinValue)
+                {
+                    dateMinValue = budgetDate;
+                }
             }
+
+            var dateMaxValue = gridRow.Date;
             switch (budgetItem.RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
@@ -240,7 +244,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             
             registerRow =
                 registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id &&
-                                                 (p.ItemDate >= dateMinValue || p.ItemDate <= dateMaxValue));
+                                                 (p.ItemDate >= dateMinValue && p.ItemDate <= dateMaxValue));
 
             
             if (registerRow == null)
@@ -261,14 +265,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         detailId = registerRow.ActualAmountDetails.Max(p => p.DetailId) + 1;
                     }
-                    //registerItem.AmountDetails.Add( new BankAccountRegisterItemAmountDetail()
-                    //{
-                    //    Amount = amount,
-                    //    Date = gridRow.Date,
-                    //    SourceId = gridRow.SourceAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
-                    //    RegisterId = registerRow.RegisterId,
-                    //    DetailId = detailId
-                    //}                                                                                                                                                                                                                                           );
+
                     registerRow.ActualAmountDetails.Add(new BankAccountRegisterItemAmountDetail()
                     {
                         Amount = amount,

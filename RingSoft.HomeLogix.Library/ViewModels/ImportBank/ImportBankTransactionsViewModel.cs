@@ -110,17 +110,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 return;
             }
 
-            var startDate = BankViewModel.LastCompleteDate;
-            if (startDate == DateTime.MinValue)
+            var registerStartDate = DateTime.MinValue;
+            var startDate = DateTime.MinValue;
+            var incompleteRows = BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(p => !p.Completed);
+            if (incompleteRows.Any())
             {
-                var registerRows = BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
-                    .OrderBy(p => p.ItemDate);
-                if (!registerRows.Any())
-                {
-                    return;
-                }
-                startDate = registerRows.FirstOrDefault().ItemDate;
+                registerStartDate = incompleteRows.Min(p => p.ItemDate);
             }
+
+            if (BankViewModel.LastCompleteDate == DateTime.MinValue)
+            {
+                startDate = registerStartDate;
+            }
+            else
+            {
+                
+                startDate = BankViewModel.LastCompleteDate;
+            }
+            
             var importRows = new List<ImportTransactionGridRow>();
 
             var columnPos = qifText.IndexOf("C*");
@@ -130,22 +137,35 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var row = GetRowValue(qifText, columnPos, startDate);
                 if (row == null)
                 {
-                    Manager.ImportFromQif(importRows);
-                    if (importRows.Any())
-                    {
-                        Manager.Grid?.GotoCell(importRows[0],ImportTransactionGridRow.BudgetItemColumnId);
-                    }
+                    FinishImport(importRows);
                     return;
                 }
                 importRows.Add(row);
                 //columnPos = qifText.IndexOf("^", columnPos);
                 columnPos = qifText.IndexOf("C*", columnPos + 2);
             }
+            FinishImport(importRows);
+        }
+
+        private void FinishImport(List<ImportTransactionGridRow> importRows)
+        {
+            importRows = importRows.OrderBy(p => p.Date).ToList();
             Manager.ImportFromQif(importRows);
             if (importRows.Any())
             {
                 Manager.Grid?.GotoCell(importRows[0], ImportTransactionGridRow.BudgetItemColumnId);
             }
+            else
+            {
+                ShowNothingToDo();
+            }
+        }
+
+        private static void ShowNothingToDo()
+        {
+            var message = "Nothing was found to import.";
+            var caption = "Nothing To Do";
+            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
         }
 
         private ImportTransactionGridRow GetRowValue(string qifText, int columnPos, DateTime startDate)
@@ -154,21 +174,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             if (date.IsNullOrEmpty())
                 return null;
 
-            var rowDate = DateTime.Parse(date);
-            var processRow = false;
-            if (BankViewModel.LastCompleteDate == DateTime.MinValue)
-            {
-                processRow = rowDate >= DateTime.Today.AddDays(-7);
-            }
-            else
-            {
-                processRow = rowDate > startDate;
-            }
-            if (processRow)
+            var rowDate = DateTime.MinValue;
+            if (!DateTime.TryParse(date, out rowDate))
+                return null;
+
+            if (rowDate > startDate)
             {
                 var text = GetQifValue(qifText, columnPos, "P");
                 var amountText = GetQifValue(qifText, columnPos, "T");
-                var amount = decimal.Parse(amountText);
+
+                var amount = (decimal) 0;
+                if (!decimal.TryParse(amountText, out amount))
+                    return null;
+
                 var row = new ImportTransactionGridRow(Manager);
                 if (amount < 0)
                 {

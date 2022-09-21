@@ -504,6 +504,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _loading;
         private decimal _dbCurrentBalance;
         private bool _completeGrid = true;
+        private bool _processCompletedRows = true;
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
@@ -790,7 +791,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var completedRegisterData = new CompletedRegisterData();
 
             var processCompletedRows = false;
-            if (completedRows.Any())
+            if (completedRows.Any() && _processCompletedRows)
             {
                 var message = "Do you wish to post the Completed rows to History and delete them from the Register?";
                 if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
@@ -1151,6 +1152,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             }
             base.OnPropertyChanged(propertyName, raiseDirtyFlag);
+        }
+
+        public void SaveNoPost()
+        {
+            _processCompletedRows = false;
+            DoSave();
+            _processCompletedRows = true;
         }
     }
 }
