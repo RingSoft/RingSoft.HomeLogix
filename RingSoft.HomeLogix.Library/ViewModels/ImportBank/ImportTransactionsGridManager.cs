@@ -37,18 +37,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 if (!row.IsNew)
                 {
-                    if (!row.BudgetItemSplits.Any())
-                    {
-                        if (row.BudgetItemAutoFillValue == null || !row.BudgetItemAutoFillValue.IsValid())
-                        {
-                            var message = "You must select a budget item for this transaction.";
-                            var caption = "Invalid Budget Item";
-                            ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
-                                RsMessageBoxIcons.Exclamation);
-                            Grid.GotoCell(row, ImportTransactionGridRow.BudgetItemColumnId);
-                            return false;
-                        }
-                    }
+                    if (!ValidateTransactionRow(row)) return false;
 
                     var bankTransaction = new BankTransaction();
                     if (row != null)
@@ -98,6 +87,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return AppGlobals.DataRepository.SaveBankTransactions(transactions, splits, ViewModel.BankViewModel.Id);
         }
 
+        private bool ValidateTransactionRow(ImportTransactionGridRow row)
+        {
+            if (!row.BudgetItemSplits.Any())
+            {
+                if (row.BudgetItemAutoFillValue == null || !row.BudgetItemAutoFillValue.IsValid())
+                {
+                    var message = "You must select a budget item for this transaction.";
+                    var caption = "Invalid Budget Item";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
+                        RsMessageBoxIcons.Exclamation);
+                    Grid.GotoCell(row, ImportTransactionGridRow.BudgetItemColumnId);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public bool PostTransactions()
         {
             var bankBalance = ViewModel.BankViewModel.CurrentBalance;
@@ -119,6 +126,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
                 else
                 {
+                    if (!ValidateTransactionRow(gridRow)) return false;
+
                     var budgetItemId = gridRow.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
                         .ToInt();
                     var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);

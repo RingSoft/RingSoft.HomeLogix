@@ -124,7 +124,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
             else
             {
-                
                 startDate = BankViewModel.LastCompleteDate;
             }
             

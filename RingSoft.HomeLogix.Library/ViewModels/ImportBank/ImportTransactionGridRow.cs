@@ -171,8 +171,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 case ImportColumns.BankText:
                     break;
                 case ImportColumns.TransactionType:
-                    var comboProps = value as DataEntryGridTextComboBoxCellProps;
-                    TransactionTypeItem = comboProps.SelectedItem;
+                    var comboProps = value as DataEntryGridCustomControlCellProps;
+                    TransactionTypes = (TransactionTypes) comboProps.SelectedItemId;
                     break;
                 case ImportColumns.BudgetItem:
                     var budgetAutoFillCellProps = value as DataEntryGridAutoFillCellProps;

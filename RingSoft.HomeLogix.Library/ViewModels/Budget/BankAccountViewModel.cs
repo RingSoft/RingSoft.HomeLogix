@@ -634,15 +634,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Conditions.Equals, Id);
 
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
-
             CurrentProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
+
+            if (_processCompletedRows)
+            {
+                _dbCurrentBalance = bankAccount.CurrentBalance;
+            }
+
             CalculateTotals();
 
             ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled  =
                 ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
-
-            _dbCurrentBalance = bankAccount.CurrentBalance;
 
             if (bankAccount.LastCompletedDate.HasValue)
             {
@@ -770,7 +773,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Id = Id,
                 AccountType = (byte)AccountType,
                 Description = KeyAutoFillValue.Text,
-                ProjectedEndingBalance = NewProjectedEndingBalance,
                 CurrentBalance = CurrentBalance,
                 ProjectedLowestBalanceDate = ProjectedLowestBalanceDate,
                 ProjectedLowestBalanceAmount = ProjectedLowestBalanceAmount,
@@ -780,6 +782,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastGenerationDate = (DateTime)LastGenerationDate,
                 LastCompletedDate = LastCompleteDate
             };
+
+            if (_processCompletedRows)
+            {
+                bankAccount.ProjectedEndingBalance = NewProjectedEndingBalance;
+            }
+            else
+            {
+                bankAccount.ProjectedEndingBalance = CurrentProjectedEndingBalance;
+            }
 
             return bankAccount;
         }
