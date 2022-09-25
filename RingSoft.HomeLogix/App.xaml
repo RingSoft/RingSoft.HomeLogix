@@ -102,7 +102,7 @@
                     </dec:DataEntryCustomContentTemplateItem.DataTemplate>
                 </dec:DataEntryCustomContentTemplateItem>
 
-                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" HotKey="D">
+                <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" HotKey="W">
                     <dec:DataEntryCustomContentTemplateItem.DataTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

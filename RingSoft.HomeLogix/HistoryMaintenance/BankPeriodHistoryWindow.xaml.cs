@@ -14,6 +14,7 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
         public BankPeriodHistoryWindow()
         {
             InitializeComponent();
+            Loaded += (sender, args) => LookupControl.Focus();
         }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;

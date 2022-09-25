@@ -123,7 +123,16 @@ namespace RingSoft.App.Controls
                     _registerKeyControl = null;
                 }
                 ViewModel.OnViewLoaded(this);
+
             }
+            Closing += (sender, args) =>
+            {
+                //if (ViewModel.RecordDirty)
+                {
+                    ViewModel.OnWindowClosing(args);
+                }
+            };
+
 
             //if (!_addOnFlyMode)
             //    DbMaintenanceTopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;

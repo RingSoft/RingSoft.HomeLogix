@@ -214,11 +214,11 @@
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Last Completed Date"/>
 
-                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="1" x:Name="LastCompletedDateControl" Value="{Binding Path=LastCompletedDate}"/>
+                <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="LastCompletedDateControl" Value="{Binding Path=LastCompletedDate}" ReadOnlyMode="True"/>
 
                 <Label Grid.Row="2" Grid.Column="2" Content="Current Month Ending" />
 
-                <dec:DateReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding CurrentMonthEnding}" />
+                <dec:DateEditControl Grid.Row="2" Grid.Column="3" Value="{Binding CurrentMonthEnding}" ReadOnlyMode="True" />
 
                 <Label Grid.Row="3" Grid.Column="0" x:Name="MonthlyAmountPercentLabel" Content="Budget Monthly Amount Percent"/>
 

@@ -104,7 +104,7 @@
 
             <lc:LookupControl Grid.Row="1" Grid.Column="0" x:Name="BudgetLookupControl"
                               LookupDefinition="{Binding BudgetLookupDefinition}"
-                              Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Left" Width="750" Margin="5">
+                              Command="{Binding BudgetLookupCommand}" HorizontalAlignment="Left" Width="750" Margin="5" ShowAdvancedFindButton="False">
 
                 <lc:LookupControl.LookupColumns>
 
@@ -134,7 +134,7 @@
 
             </StackPanel>
 
-            <lc:LookupControl Grid.Row="1" Grid.Column="1" x:Name="BankLookupControl" LookupDefinition="{Binding BankLookupDefinition}" Command="{Binding BankLookupCommand}" HorizontalAlignment="Right" Width="750" Margin="5">
+            <lc:LookupControl Grid.Row="1" Grid.Column="1" x:Name="BankLookupControl" LookupDefinition="{Binding BankLookupDefinition}" Command="{Binding BankLookupCommand}" HorizontalAlignment="Right" Width="750" Margin="5" ShowAdvancedFindButton="False">
                 <lc:LookupControl.LookupColumns>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBankLookup}}" Header="Bank Account" Width="250" DesignText = "A Very Large Bank" />

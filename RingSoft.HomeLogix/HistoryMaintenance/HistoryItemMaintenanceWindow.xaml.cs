@@ -24,10 +24,12 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
         public HistoryItemMaintenanceWindow()
         {
             InitializeComponent();
+            Loaded += (sender, args) => LookupControl.Focus();
         }
 
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "History Item";
         public override DbMaintenanceViewModelBase ViewModel => HistoryItemMaintenanceViewModel;
+
     }
 }

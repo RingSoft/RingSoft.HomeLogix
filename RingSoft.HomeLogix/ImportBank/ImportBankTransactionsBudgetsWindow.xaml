@@ -42,7 +42,7 @@
                              x:Name="TransactionDateControl"
                              Value="{Binding TransactionDate,
             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             Width="100" HorizontalAlignment="Left"/>
+                             Width="100" HorizontalAlignment="Left" ReadOnlyMode="True"/>
 
         <Label Grid.Row="2" Grid.Column="0" Content="Source"/>
 

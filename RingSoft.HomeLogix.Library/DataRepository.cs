@@ -602,8 +602,21 @@ namespace RingSoft.HomeLogix.Library
             result.PreviousMonthHasValues = context.BudgetPeriodHistory.Any(a =>
                 a.PeriodType == (int) PeriodHistoryTypes.Monthly && a.PeriodEndingDate == previousMonthEnding);
 
+            if (!result.PreviousMonthHasValues)
+            {
+                result.PreviousMonthHasValues = context.BankAccountRegisterItems.Any(a =>
+                    a.ItemDate < nextMonthEnding);
+            }
+
+
             result.NextMonthHasValues = context.BudgetPeriodHistory.Any(a =>
                 a.PeriodType == (int)PeriodHistoryTypes.Monthly && a.PeriodEndingDate == nextMonthEnding);
+
+            if (!result.NextMonthHasValues)
+            {
+                result.NextMonthHasValues = context.BankAccountRegisterItems.Any(a =>
+                    a.ItemDate > nextMonthEnding);
+            }
 
             return result;
         }

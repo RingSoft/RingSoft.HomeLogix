@@ -39,7 +39,10 @@ namespace RingSoft.App.Controls
                 //MaintenanceButtonsControl.Loaded += (sender, args) =>
                 {
 
-                    MaintenanceWindow.Closing += (o, eventArgs) => ViewModel.OnWindowClosing(eventArgs);
+                    //MaintenanceWindow.Closing += (o, eventArgs) =>
+                    //{
+                    //    ViewModel.OnWindowClosing(eventArgs);
+                    //};
 
                     if (_setReadOnlyMode)
                         OnReadOnlyModeSet(true);

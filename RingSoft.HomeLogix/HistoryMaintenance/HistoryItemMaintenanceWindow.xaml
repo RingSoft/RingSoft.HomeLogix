@@ -50,7 +50,7 @@
 
                 <Label Grid.Row="0" Grid.Column="2" Content="Date"/>
 
-                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" ReadOnlyMode="True"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Description"/>
 
@@ -81,7 +81,7 @@
                 <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
             </Grid>
             <Label Content="Sources" HorizontalAlignment="Left"/>
-            <lc:LookupControl Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
+            <lc:LookupControl x:Name="LookupControl" Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
                 
                 <lc:LookupControl.LookupColumns>
                     <lc:LookupColumn Header="Date" PropertyName="{lc:NameOf Date, Type={x:Type lm:SourceHistoryLookup}}" Width="100" DesignText="01/01/1980"/>

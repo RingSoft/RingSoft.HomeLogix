@@ -46,7 +46,7 @@
 
                 <Label Grid.Row="0" Grid.Column="2" Content="Period End Date"/>
 
-                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding PeriodEndingDate, UpdateSourceTrigger=PropertyChanged}"></dec:DateEditControl>
+                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding PeriodEndingDate, UpdateSourceTrigger=PropertyChanged}" ReadOnlyMode="True"></dec:DateEditControl>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Budget Amount"/>
 
@@ -62,7 +62,7 @@
 
             </Grid>
             <Label Content="History" HorizontalAlignment="Left"/>
-            <lc:LookupControl Height="300" LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
+            <lc:LookupControl x:Name="LookupControl" Height="300" LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
                 <lc:LookupControl.LookupColumns>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>

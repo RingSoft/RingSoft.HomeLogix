@@ -61,7 +61,7 @@ namespace RingSoft.HomeLogix
             Button.Click += (sender, args) => ShowLookupWindow();
         }
 
-        protected override void ShowLookupWindow()
+        public override void ShowLookupWindow()
         {
             ShowBudgetWindow?.Invoke(this, EventArgs.Empty);
         }

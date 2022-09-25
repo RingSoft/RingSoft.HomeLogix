@@ -430,7 +430,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var query = new SelectQuery(AppGlobals.LookupContext.QifMaps.TableName);
                 var foundMap = false;
                 var spacePos = importTransactionGridRow.BankText.IndexOf(" ");
-                var text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
+                var text = importTransactionGridRow.BankText;
+                if (spacePos > 0)
+                    text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
                 while (foundMap == false)
                 {
                     if (query.WhereItems.Any())
