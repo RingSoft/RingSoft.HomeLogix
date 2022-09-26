@@ -136,13 +136,13 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <local:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="ImportDefaultLookupButton" Content="Import Default Lookup" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}"/>
+                            <local:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="ImportDefaultLookupButton" Content="_Import Default Lookup" ImageSource="{StaticResource AfUpImage}" Style="{StaticResource SubButton}"/>
 
-                            <local:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="ApplyToLookupButton" Content="Apply To Lookup" ImageSource="{StaticResource AfDownImage}" Style="{StaticResource SubButton}"/>
+                            <local:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="ApplyToLookupButton" Content="Apply _To Lookup" ImageSource="{StaticResource AfDownImage}" Style="{StaticResource SubButton}"/>
 
-                            <local:DbMaintenanceButton Grid.Row="0" Grid.Column="1" x:Name="SqlViewerButton" Content="View SQL Statement" ImageSource="{StaticResource AfSqlImage}" Style="{StaticResource SubButton}"/>
+                            <local:DbMaintenanceButton Grid.Row="0" Grid.Column="1" x:Name="SqlViewerButton" Content="View S_QL Statement" ImageSource="{StaticResource AfSqlImage}" Style="{StaticResource SubButton}"/>
 
-                            <local:DbMaintenanceButton Grid.Row="1" Grid.Column="1" x:Name="RefreshSettingsButton" Content="Refresh Settings" ImageSource="{StaticResource AfRefreshImage}" Style="{StaticResource SubButton}"/>
+                            <local:DbMaintenanceButton Grid.Row="1" Grid.Column="1" x:Name="RefreshSettingsButton" Content="_Refresh Settings" ImageSource="{StaticResource AfRefreshImage}" Style="{StaticResource SubButton}"/>
 
                         </Grid>
 

@@ -39,7 +39,10 @@ namespace RingSoft.HomeLogix
             PreviousMonthButton.ToolTip.DescriptionText = "See budget totals for the previous month.";
 
             NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
-            NextMonthButton.ToolTip.DescriptionText = "See budget totals for the ext month.";
+            NextMonthButton.ToolTip.DescriptionText = "See budget totals for the next month.";
+
+            NextMonthButton.ToolTip.HeaderText = "Advanced Find (Ctrl + A)";
+            NextMonthButton.ToolTip.DescriptionText = "Show the advanced find window.";
 
             Loaded += MainWindow_Loaded;
         }

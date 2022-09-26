@@ -86,8 +86,13 @@ namespace RingSoft.HomeLogix
 
         public void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
         {
+            Window ownWindow = null;
             if (e.OwnerWindow is Window ownerWindow)
+            {
+                ownWindow = ownerWindow;
                 maintenanceWindow.Owner = ownerWindow;
+            }
+
             maintenanceWindow.ShowInTaskbar = false;
 
             maintenanceWindow.ViewModel.InitializeFromLookupData(e);
@@ -97,7 +102,8 @@ namespace RingSoft.HomeLogix
                 var processor = maintenanceWindow.ViewModel.Processor as AppDbMaintenanceWindowProcessor;
                 processor.CheckAddOnFlyAfterLoaded();
             };
-            maintenanceWindow.ShowDialog();
+            maintenanceWindow.Show();
+            maintenanceWindow.Closed += (sender, args) => ownWindow?.Activate();
         }
     }
 }

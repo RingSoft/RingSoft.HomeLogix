@@ -66,6 +66,22 @@ namespace RingSoft.App.Controls
             SqlViewerButton = GetTemplateChild(nameof(SqlViewerButton)) as DbMaintenanceButton;
             RefreshSettingsButton = GetTemplateChild(nameof(RefreshSettingsButton)) as DbMaintenanceButton;
 
+            ImportDefaultLookupButton.ToolTip.HeaderText = "Import Default Lookup (Alt + I)";
+            ImportDefaultLookupButton.ToolTip.DescriptionText =
+                "Import the default lookup for this table.";
+
+            ApplyToLookupButton.ToolTip.HeaderText = "Apply To Lookup (Alt + T)";
+            ApplyToLookupButton.ToolTip.DescriptionText =
+                "Apply this advanced find to the default lookup.";
+
+            SqlViewerButton.ToolTip.HeaderText = "View SQL Statement (Alt + Q)";
+            SqlViewerButton.ToolTip.DescriptionText =
+                "Show the SQL statement that this advanced find generates.";
+
+            RefreshSettingsButton.ToolTip.HeaderText = "Refresh Settings (Alt + R)";
+            RefreshSettingsButton.ToolTip.DescriptionText =
+                "Set up properties to define when this advanced find automatically refreshes and set up alert levels.";
+
             base.OnApplyTemplate();
         }
     }

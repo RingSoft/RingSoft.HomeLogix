@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Lookup;
@@ -125,6 +126,43 @@ namespace RingSoft.App.Controls
             CloseButton = dbMaintenanceButtons.CloseButton;
             NextButton = dbMaintenanceButtons.NextButton;
             PreviousButton = dbMaintenanceButtons.PreviousButton;
+            var itemText = "Advanced Find";
+            if (MaintenanceWindow is DbMaintenanceWindow dbMaintenanceWindow)
+            {
+                itemText = dbMaintenanceWindow.ItemText;
+            }
+
+            dbMaintenanceButtons.PreviousButton.ToolTip.HeaderText = "Previous (Ctrl + Left Arrow)";
+            dbMaintenanceButtons.PreviousButton.ToolTip.DescriptionText =
+                $"Go to the previous {itemText} in the database.";
+
+            dbMaintenanceButtons.SaveButton.ToolTip.HeaderText = "Save (Alt + S)";
+            dbMaintenanceButtons.SaveButton.ToolTip.DescriptionText =
+                $"Save this {itemText} to the database.";
+
+            dbMaintenanceButtons.SaveSelectButton.ToolTip.HeaderText = "Save/Select (Alt + L)";
+            dbMaintenanceButtons.SaveSelectButton.ToolTip.DescriptionText =
+                $"Save and select this {itemText}.";
+
+            dbMaintenanceButtons.DeleteButton.ToolTip.HeaderText = "Delete (Alt + D)";
+            dbMaintenanceButtons.DeleteButton.ToolTip.DescriptionText =
+                $"Delete this {itemText} from the database.";
+
+            dbMaintenanceButtons.FindButton.ToolTip.HeaderText = "Find (Alt + F)";
+            dbMaintenanceButtons.FindButton.ToolTip.DescriptionText =
+                $"Find {itemText.GetArticle()} {itemText} in the database.";
+
+            dbMaintenanceButtons.NewButton.ToolTip.HeaderText = "New (Alt + N)";
+            dbMaintenanceButtons.NewButton.ToolTip.DescriptionText =
+                $"Clear existing {itemText} data in this window and create a new {itemText}.";
+
+            dbMaintenanceButtons.CloseButton.ToolTip.HeaderText = "Close (Alt + C)";
+            dbMaintenanceButtons.CloseButton.ToolTip.DescriptionText = "Close this window.";
+
+            dbMaintenanceButtons.NextButton.ToolTip.HeaderText = "Next (Ctrl + Right Arrow)";
+            dbMaintenanceButtons.NextButton.ToolTip.DescriptionText =
+                $"Go to the next {itemText} in the database.";
+
         }
 
         public override void ShowRecordSavedMessage()

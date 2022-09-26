@@ -12,7 +12,7 @@
                   mc:Ignorable="d"
                   Style="{StaticResource BaseWindowStyle}"
                   CloseOnEscape="False"
-                  Title="MainWindow" WindowState="Maximized">
+                  Title="HomeLogix" WindowState="Maximized">
     <Window.DataContext>
         <vm:MainViewModel x:Name="ViewModel" />
     </Window.DataContext>
