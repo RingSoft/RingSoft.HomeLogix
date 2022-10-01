@@ -11,8 +11,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.17" />
-    <PackageReference Include="RingSoft.DbLookup.EfCore" Version="2.1.26" />
-    <PackageReference Include="RingSoft.DbMaintenance" Version="2.1.26" />
+    <PackageReference Include="RingSoft.DbLookup.EfCore" Version="2.1.27" />
+    <PackageReference Include="RingSoft.DbMaintenance" Version="2.1.27" />
   </ItemGroup>
 
 </Project>

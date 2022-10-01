@@ -25,7 +25,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public ImportBankTransactionsBudgetsGridRow(ImportBankTransactionsBudgetManager manager) : base(manager)
         {
             Manager = manager;
-            BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
+            BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup)
+                {AddViewParameter = Manager.ViewModel.Row.Manager.ViewModel.BankViewModel.ViewModelInput};
         }
 
         public override DataEntryGridCellProps GetCellProps(int columnId)

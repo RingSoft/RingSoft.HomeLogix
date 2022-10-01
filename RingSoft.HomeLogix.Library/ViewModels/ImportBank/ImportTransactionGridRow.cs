@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             TransactionTypeComboBoxControlSetup.LoadFromEnum<TransactionTypes>();
             TransactionTypes = TransactionTypes.Withdrawal;
             BudgetItemAutoFillSetup =
-                new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.BudgetId));
+                new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.BudgetId)){AddViewParameter = Manager.ViewModel.BankViewModel.ViewModelInput};
             SourceAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }

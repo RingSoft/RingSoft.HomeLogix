@@ -893,7 +893,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 int? transferToBankAccountId = null;
                 var processBudgetRow = true;
-                //var addToHistory = true;
+                var addToBudgetHistory = true;
                 switch (completedRow.LineType)
                 {
                     case BankAccountRegisterItemTypes.BudgetItem:
@@ -909,15 +909,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                             if (transferRegisterItem == null)
                             {
-                                processBudgetRow = false;
+                                //processBudgetRow = false;
                                 //addToHistory = false;
                             }
                             else
                             {
                                 if (completedRow.TransactionType == TransactionTypes.Deposit)
+                                {
                                     transferToBankAccountId = registerItem.BankAccountId;
+                                }
                                 else
+                                {
+                                    processBudgetRow = false;
+                                    addToBudgetHistory = false;
                                     transferToBankAccountId = transferRegisterItem.BankAccountId;
+                                }
                             }
                         }
                         break;
@@ -934,7 +940,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 //if (addToHistory)
                 {
-                    AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails);
+                    AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails, addToBudgetHistory);
                 }
 
                 //RegisterDetails.AddRange(amountDetails);
@@ -1057,7 +1063,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         private void AddCompletedToHistory(CompletedRegisterData completedRegisterData, BankAccountRegisterItem registerItem,
-            int? transferToBankAccountId, BankAccountRegisterGridRow completedRow, List<BankAccountRegisterItemAmountDetail> amountDetails)
+            int? transferToBankAccountId, BankAccountRegisterGridRow completedRow, List<BankAccountRegisterItemAmountDetail> amountDetails, bool addToBudgetHistory)
         {
             var historyItem = new History
             {
@@ -1070,6 +1076,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ProjectedAmount = completedRow.ProjectedAmount,
                 ActualAmount = completedRow.ActualAmount.GetValueOrDefault(0)
             };
+            if (!addToBudgetHistory)
+            {
+                historyItem.BudgetItemId = null;
+            }
             if (registerItem.IsNegative)
             {
                 historyItem.ProjectedAmount = -historyItem.ProjectedAmount;

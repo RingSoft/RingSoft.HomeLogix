@@ -268,7 +268,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _transferToBankAccountAutoFillValue = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -1301,6 +1301,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnWindowClosing(e);
             if (!e.Cancel)
                 ViewModelInput.BudgetItemViewModels.Remove(this);
+        }
+
+        protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
+        {
+            if (raiseDirtyFlag)
+            {
+                
+            }
+            base.OnPropertyChanged(propertyName, raiseDirtyFlag);
         }
     }
 }
