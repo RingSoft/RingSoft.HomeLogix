@@ -238,6 +238,10 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
+            BudgetPeriodHistory.GetFieldDefinition(p => p.PeriodType).IsEnum<PeriodHistoryTypes>();
+
+            BankAccountPeriodHistory.GetFieldDefinition(p => p.PeriodType).IsEnum<PeriodHistoryTypes>();
+
             History.GetFieldDefinition(p => p.ItemType).HasContentTemplateId(RegisterTypeCustomContentId);
 
             History.GetFieldDefinition(p => p.ProjectedAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
