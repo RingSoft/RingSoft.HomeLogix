@@ -171,7 +171,7 @@
                 </TabItem>
                 <dec:DataEntryMemoTabItem Header="Notes">
 
-                    <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="250"/>
 
                 </dec:DataEntryMemoTabItem>
             </TabControl>

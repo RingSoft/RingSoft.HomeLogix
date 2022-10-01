@@ -212,6 +212,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankAccounts.GetFieldDefinition(p => p.LastCompletedDate).HasDescription("Last Transaction Date");
 
+            BankAccounts.GetFieldDefinition(p => p.Notes).IsMemo();
+
             BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
@@ -231,6 +233,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BudgetItems.GetFieldDefinition(p => p.MonthlyAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+            BudgetItems.GetFieldDefinition(p => p.Notes).IsMemo();
 
             BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
