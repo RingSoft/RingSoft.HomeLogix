@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿
+using System.Collections.ObjectModel;
 using System.Windows;
 using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
@@ -41,8 +42,8 @@ namespace RingSoft.HomeLogix
             NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
             NextMonthButton.ToolTip.DescriptionText = "See budget totals for the next month.";
 
-            NextMonthButton.ToolTip.HeaderText = "Advanced Find (Ctrl + A)";
-            NextMonthButton.ToolTip.DescriptionText = "Show the advanced find window.";
+            AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
+            AdvancedFindButton.ToolTip.DescriptionText = "Show the advanced find window.";
 
             Loaded += MainWindow_Loaded;
         }

@@ -12,7 +12,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="BankAccountMaintenanceWindow" Width="1200" Height="800">
+        Title="Bank Account Maintenance Window" Width="1200" Height="800">
     <Window.DataContext>
         <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
     </Window.DataContext>

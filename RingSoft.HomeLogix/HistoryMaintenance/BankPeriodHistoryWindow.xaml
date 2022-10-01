@@ -11,7 +11,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="BankPeriodHistoryWindow" SizeToContent="WidthAndHeight">
+        Title="Bank Period History Window" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:BankPeriodHistoryViewModel x:Name="BankPeridHistoryViewModel"/>
     </Window.DataContext>

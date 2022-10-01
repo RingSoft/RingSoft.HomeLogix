@@ -12,7 +12,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-    Title="HistoryItemMaintenanceWindow" SizeToContent="WidthAndHeight">
+    Title="History Item Maintenance Window" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:HistoryItemMaintenanceViewModel x:Name="HistoryItemMaintenanceViewModel"/>
     </Window.DataContext>

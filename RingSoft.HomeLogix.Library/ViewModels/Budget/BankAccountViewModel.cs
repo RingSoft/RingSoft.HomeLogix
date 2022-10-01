@@ -656,6 +656,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastCompleteDate = DateTime.MinValue;
             }
 
+            CompleteAll = false;
             return bankAccount;
         }
 
