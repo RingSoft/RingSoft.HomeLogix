@@ -44,7 +44,7 @@ namespace RingSoft.HomeLogix.Sqlite
         //-----------------------------------------------------------------------
 
         private static HomeLogixLookupContext _lookupContext;
-        
+
         public HomeLogixDbContext(HomeLogixLookupContext lookupContext)
         {
             DbConstants.ConstantGenerator = new SqliteDbConstants();
