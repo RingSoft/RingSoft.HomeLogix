@@ -9,6 +9,7 @@
     <Description>Base Foundation of all RingSoft Libraries</Description>
     <Copyright>2022</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
