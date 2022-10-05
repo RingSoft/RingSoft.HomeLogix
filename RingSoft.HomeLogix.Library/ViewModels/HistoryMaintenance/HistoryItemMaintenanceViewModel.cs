@@ -77,67 +77,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private AutoFillSetup _budgetAutoFillSetup;
+        private string _budgetItem;
 
-        public AutoFillSetup BudgetAutoFillSetup
+        public string BudgetItem
         {
-            get => _budgetAutoFillSetup;
+            get => _budgetItem;
             set
             {
-                if (_budgetAutoFillSetup == value)
+                if (_budgetItem == value)
                 {
                     return;
                 }
-                _budgetAutoFillSetup = value;
+                _budgetItem = value;
                 OnPropertyChanged();
             }
         }
 
-        private AutoFillValue _budgetAutoFillValue;
+        private string _bankAccount;
 
-        public AutoFillValue BudgetAutoFillValue
+        public string BankAccount
         {
-            get => _budgetAutoFillValue;
+            get => _bankAccount;
             set
             {
-                if (_budgetAutoFillValue == value)
+                if (_bankAccount == value)
                 {
                     return;
                 }
-                _budgetAutoFillValue = value;
+                _bankAccount = value;
                 OnPropertyChanged();
             }
         }
 
-        private AutoFillSetup _bankAutoFillSetup;
-
-        public AutoFillSetup BankAutoFillSetup
-        {
-            get => _bankAutoFillSetup;
-            set
-            {
-                if (_bankAutoFillSetup == value)
-                    return;
-
-                _bankAutoFillSetup = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private AutoFillValue _bankAutoFillValue;
-
-        public AutoFillValue BankAutoFillValue
-        {
-            get => _bankAutoFillValue;
-            set
-            {
-                if (_bankAutoFillValue == value)
-                    return;
-
-                _bankAutoFillValue = value;
-                OnPropertyChanged();
-            }
-        }
 
         private decimal _projectedAmount;
 
@@ -252,20 +223,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             ViewModelInput.HistoryFilterBankAccount = null;
             ViewModelInput.HistoryFilterBankAccountPeriod = null;
 
-            BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
-            BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
             ReadOnlyMode = true;
-
-            BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))
-            {
-                AddViewParameter = ViewModelInput,
-                //AllowLookupAdd = false
-            };
-
-            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup)
-            {
-                AddViewParameter = ViewModelInput
-            };
 
             var sourceHistoryLookupDefinition = new LookupDefinition<SourceHistoryLookup, SourceHistory>(AppGlobals.LookupContext.SourceHistory);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Date,
@@ -374,18 +332,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             if (entity.BudgetItem != null)
             {
-                BudgetAutoFillValue =
-                    new AutoFillValue(
-                        AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),
-                        entity.BudgetItem.Description);
+                BudgetItem = entity.BudgetItem.Description;
             }
 
             if (entity.BankAccount != null)
             {
-                BankAutoFillValue =
-                    new AutoFillValue(
-                        AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
-                        entity.BankAccount.Description);
+                BankAccount = entity.BankAccount.Description;
             }
         }
 
@@ -398,8 +350,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         {
             Id = 0;
             Description = string.Empty;
-            BankAutoFillValue = null;
-            BudgetAutoFillValue = null;
+            BankAccount = string.Empty;
+            BudgetItem = string.Empty;
             ProjectedAmount = ActualAmount = Difference = 0;
 
             SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);

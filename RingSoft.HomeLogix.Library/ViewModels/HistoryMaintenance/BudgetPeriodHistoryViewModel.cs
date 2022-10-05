@@ -16,34 +16,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
     public class BudgetPeriodHistoryViewModel : AppDbMaintenanceViewModel<BudgetPeriodHistory>
     {
-        private AutoFillSetup _budgetAutoFillSetup;
 
-        public AutoFillSetup BudgetAutoFillSetup
+        private string _budgetItem;
+
+        public string BudgetItem
         {
-            get => _budgetAutoFillSetup;
+            get => _budgetItem;
             set
             {
-                if (_budgetAutoFillSetup == value)
+                if (_budgetItem == value)
                 {
                     return;
                 }
-                _budgetAutoFillSetup = value;
-                OnPropertyChanged();
-            }
-        }
+                _budgetItem = value;
 
-        private AutoFillValue _budgetAutoFillValue;
-
-        public AutoFillValue BudgetAutoFillValue
-        {
-            get => _budgetAutoFillValue;
-            set
-            {
-                if (_budgetAutoFillValue == value)
-                {
-                    return;
-                }
-                _budgetAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
@@ -167,15 +153,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 _mode = PeriodHistoryTypes.Monthly;
             }
 
-            BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
-            BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
-            ReadOnlyMode = true;
-
-            BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))
-            {
-                AddViewParameter = ViewModelInput,
-                //AllowLookupAdd = false
-            };
 
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
@@ -193,9 +170,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetPeriodHistory.BudgetItemId);
 
-            BudgetAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
-                budgetItem.Description);
+            BudgetItem = budgetItem.Description;
             
             PeriodEndingDate = budgetPeriodHistory.PeriodEndingDate;
 
@@ -257,7 +232,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         protected override void ClearData()
         {
-            BudgetAutoFillValue = null;
+            BudgetItem = string.Empty;
             PeriodEndingDate = DateTime.Today;
             ProjectedAmount = ActualAmount = Difference = 0;
 

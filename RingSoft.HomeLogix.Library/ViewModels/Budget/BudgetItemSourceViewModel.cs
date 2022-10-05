@@ -79,6 +79,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private decimal _totalAmount;
+
+        public decimal TotalAmount
+        {
+            get => _totalAmount;
+            set
+            {
+                if (_totalAmount == value)
+                {
+                    return;
+                }
+                _totalAmount = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private bool _isIncome;
 
         protected override void Initialize()
@@ -117,6 +134,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override void LoadFromEntity(BudgetItemSource entity)
         {
+            TotalAmount = AppGlobals.DataRepository.GetSourceTotal(entity.Id);
         }
 
         protected override BudgetItemSource GetEntityData()
@@ -132,6 +150,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override void ClearData()
         {
             SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            TotalAmount = 0;
         }
 
         protected override bool SaveEntity(BudgetItemSource entity)

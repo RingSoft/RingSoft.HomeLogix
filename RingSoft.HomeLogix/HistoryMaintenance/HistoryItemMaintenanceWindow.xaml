@@ -50,7 +50,7 @@
 
                 <Label Grid.Row="0" Grid.Column="2" Content="Date"/>
 
-                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" ReadOnlyMode="True"/>
+                <dec:DateReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding Date, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Description"/>
 
@@ -62,11 +62,11 @@
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Budget Item"/>
 
-                <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Setup="{Binding BudgetAutoFillSetup}" Value="{Binding BudgetAutoFillValue, UpdateSourceTrigger=PropertyChanged}"/>
+                <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="1"  Text="{Binding BudgetItem, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Grid.Row="2" Grid.Column="2" Content="Bank Account"/>
 
-                <lc:AutoFillControl Grid.Row="2" Grid.Column="3" Setup="{Binding BankAutoFillSetup}" Value="{Binding BankAutoFillValue}" Width="200"/>
+                <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="3" Text="{Binding BankAccount}" Width="200"/>
 
                 <Label Grid.Row="3" Grid.Column="0" Content="Budget Amount"/>
 

@@ -206,6 +206,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new System.NotImplementedException();
         }
 
+        public decimal GetSourceTotal(int storeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool SaveBudgetItemSource(BudgetItemSource source)
         {
             throw new System.NotImplementedException();

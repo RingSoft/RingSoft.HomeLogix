@@ -21,6 +21,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -40,9 +41,13 @@
             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="NameControl"
                                 DesignText="Big Budget Item ABCDEFG" HorizontalAlignment="Left" Width="200" />
 
-            <Label Grid.Row="2" Grid.Column="0" Content="History" HorizontalAlignment="Left"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Total Amount"/>
 
-            <lc:LookupControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
+            <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding TotalAmount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" HorizontalAlignment="Left" Width="100" TextAlignment="Left"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="History" HorizontalAlignment="Left"/>
+
+            <lc:LookupControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
                 <lc:LookupControl.LookupColumns>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:SourceHistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="120"/>

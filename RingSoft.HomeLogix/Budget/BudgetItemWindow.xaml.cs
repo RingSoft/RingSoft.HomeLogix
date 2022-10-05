@@ -20,18 +20,10 @@ namespace RingSoft.HomeLogix.Budget
         public override string ItemText => "Budget Item";
         public override DbMaintenanceViewModelBase ViewModel => BudgetItemViewModel;
 
-        private List<Control> _monthlyStatsControls = new List<Control>();
-
         public BudgetItemWindow()
         {
             InitializeComponent();
 
-            _monthlyStatsControls.Add(MonthlyAmountPercentLabel);
-            _monthlyStatsControls.Add(MonthlyAmountPercentControl);
-            _monthlyStatsControls.Add(MonthToDatePercentLabel);
-            _monthlyStatsControls.Add(MonthToDatePercentControl);
-            _monthlyStatsControls.Add(MonthlyPercentDifferenceLabel);
-            _monthlyStatsControls.Add(MonthlyPercentDifferenceControl);
 
             TopHeaderControl.Loaded += (sender, args) =>
             {
@@ -65,10 +57,6 @@ namespace RingSoft.HomeLogix.Budget
 
         public void ShowMonthlyStatsControls(bool show = true)
         {
-            foreach (var control in _monthlyStatsControls)
-            {
-                control.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
-            }
         }
 
         public bool AddAdjustment(BudgetItem budgetItem)

@@ -55,6 +55,8 @@ namespace RingSoft.HomeLogix.Library
 
         BudgetItemSource GetBudgetItemSource(int storeId);
 
+        decimal GetSourceTotal(int storeId);
+
         bool SaveBudgetItemSource(BudgetItemSource store);
 
         bool DeleteBudgetItemSource(int storeId);
@@ -450,6 +452,14 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BudgetItemSources.FirstOrDefault(f => f.Id == sourceId);
+        }
+
+        public decimal GetSourceTotal(int storeId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var amount = context.SourceHistory.Where(p => p.SourceId == storeId).ToList().Sum(p => p.Amount);
+            return amount;
+
         }
 
         public bool SaveBudgetItemSource(BudgetItemSource source)

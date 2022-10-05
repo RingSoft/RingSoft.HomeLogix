@@ -41,12 +41,14 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
+
                 <Label Grid.Row="0" Grid.Column="0" Content="Budget Item"/>
-                <lc:AutoFillControl Grid.Row="0" Grid.Column="1" Setup="{Binding BudgetAutoFillSetup}" Value="{Binding BudgetAutoFillValue, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+               
+                <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BudgetItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
                 <Label Grid.Row="0" Grid.Column="2" Content="Period End Date"/>
 
-                <dec:DateEditControl Grid.Row="0" Grid.Column="3" Value="{Binding PeriodEndingDate, UpdateSourceTrigger=PropertyChanged}" ReadOnlyMode="True"></dec:DateEditControl>
+                <dec:DateReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding PeriodEndingDate, UpdateSourceTrigger=PropertyChanged}" ></dec:DateReadOnlyBox>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Budget Amount"/>
 

@@ -13,34 +13,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
     public class BankPeriodHistoryViewModel : AppDbMaintenanceViewModel<BankAccountPeriodHistory>
     {
-        private AutoFillSetup _bankAutoFillSetup;
 
-        public AutoFillSetup BankAutoFillSetup
+        private string _bankAccount;
+
+        public string BankAccount
         {
-            get => _bankAutoFillSetup;
+            get => _bankAccount;
             set
             {
-                if (_bankAutoFillSetup == value)
+                if (_bankAccount == value)
                 {
                     return;
                 }
-                _bankAutoFillSetup = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private AutoFillValue _bankAutoFillValue;
-
-        public AutoFillValue BankAutoFillValue
-        {
-            get => _bankAutoFillValue;
-            set
-            {
-                if (_bankAutoFillValue == value)
-                {
-                    return;
-                }
-                _bankAutoFillValue = value;
+                _bankAccount = value;
                 OnPropertyChanged();
             }
         }
@@ -162,16 +147,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 _mode = PeriodHistoryTypes.Monthly;
             }
 
-            BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup);
-            BankAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
-            ReadOnlyMode = true;
-
-            BankAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BankAccountId))
-            {
-                AddViewParameter = ViewModelInput,
-                //AllowLookupAdd = false
-            };
-
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
@@ -189,9 +164,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             var bankItem = AppGlobals.DataRepository.GetBankAccount(bankPeriodHistory.BankAccountId);
 
-            BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankItem),
-                bankItem.Description);
+            BankAccount = bankItem.Description;
 
             PeriodEndingDate = bankPeriodHistory.PeriodEndingDate;
 
@@ -246,7 +219,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         protected override void ClearData()
         {
-            BankAutoFillValue = null;
+            BankAccount = string.Empty;
             PeriodEndingDate = DateTime.Today;
             TotalDeposits = TotalWithdrawals = Difference = 0;
 

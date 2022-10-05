@@ -75,11 +75,11 @@
 
                 <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
                     <Label Content="Last Transaction Date" HorizontalAlignment="Left"/>
-                    <dec:DateEditControl Value="{Binding LastCompleteDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ReadOnlyMode="True" Width="100"></dec:DateEditControl>
+                    <dec:DateReadOnlyBox Value="{Binding LastCompleteDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="100"></dec:DateReadOnlyBox>
                 </StackPanel>
                 <Label Grid.Row="1" Grid.Column="4" Content="Last Register Generate To Date"/>
 
-                <dec:DateEditControl Grid.Row="1" Grid.Column="5" Value="{Binding LastGenerationDate}" DesignText="01/01/1980" Width="100" HorizontalAlignment="Left" ReadOnlyMode="True"/>
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="5" Value="{Binding LastGenerationDate}" DesignText="01/01/1980" Width="100" HorizontalAlignment="Left"/>
 
             </Grid>
 
@@ -256,7 +256,7 @@
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
 
-                <dec:DateEditControl Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100" ReadOnlyMode="True"/>
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100"/>
 
                 <Label Grid.Row="1" Grid.Column="2" Content="Projected Lowest Balance Amount"/>
 
