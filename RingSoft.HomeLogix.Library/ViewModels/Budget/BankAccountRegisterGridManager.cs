@@ -43,6 +43,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public const int PositiveDisplayId = 102;
 
         public new BankAccountViewModel ViewModel { get; }
+        public decimal MonthlyBudgetDeposits { get; set; }
+        public decimal MonthlyBudgetWithdrawals { get; set; }
+
 
         private bool _noRemoveRowFromDb;
 
@@ -122,6 +125,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DateTime? lowestBalanceDate = null;
 
             var rows = Rows.OfType<BankAccountRegisterGridRow>();
+
+            var bankTotals =
+                AppGlobals.DataRepository.GetBankBudgetTotals(AppGlobals.MainViewModel.CurrentMonthEnding,
+                    ViewModel.Id);
+
+            var monthBudgetDeposits = rows
+                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.GreaterThan &&
+                            w.ItemDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month && w.ItemDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year && w.TransactionType == TransactionTypes.Deposit)
+                .Sum(s => s.ProjectedAmount);
+
+            monthBudgetDeposits += bankTotals.TotalProjectedMonthlyIncome;
+
+            var monthBudgetWithdrawals = rows
+                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.GreaterThan &&
+                            w.ItemDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month && w.ItemDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year && w.TransactionType == TransactionTypes.Withdrawal)
+                .Sum(s => s.ProjectedAmount);
+
+            monthBudgetWithdrawals += bankTotals.TotalProjectedMonthlyExpenses;
+
+            MonthlyBudgetDeposits = monthBudgetDeposits;
+            MonthlyBudgetWithdrawals = monthBudgetWithdrawals;
+
             foreach (var bankAccountRegisterGridRow in rows)
             {
                 if (lowestBalanceDate == null)

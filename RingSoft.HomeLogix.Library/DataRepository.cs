@@ -73,6 +73,8 @@ namespace RingSoft.HomeLogix.Library
 
         BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding, DateTime nextMonthEnding);
 
+        BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId);
+
         History GetHistoryItem(int historyId);
 
         SourceHistory GetSourceHistory(int historyId, int detailId);
@@ -616,6 +618,26 @@ namespace RingSoft.HomeLogix.Library
             {
                 result.NextMonthHasValues = context.BankAccountRegisterItems.Any(a =>
                     a.ItemDate > nextMonthEnding);
+            }
+
+            return result;
+        }
+
+        public BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId)
+        {
+            var result =new BudgetTotals();
+            var context = AppGlobals.GetNewDbContext();
+
+            var bankPeriodRecords = 
+                context.BankAccountPeriodHistory
+                    .Include(i => i.BankAccount)
+                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
+                                w.PeriodEndingDate == monthEndDate && w.BankAccount.Id == bankAccountId);
+
+            foreach (var bankPeriodRecord in bankPeriodRecords)
+            {
+                result.TotalProjectedMonthlyIncome += bankPeriodRecord.TotalDeposits;
+                result.TotalProjectedMonthlyExpenses += bankPeriodRecord.TotalWithdrawals;
             }
 
             return result;

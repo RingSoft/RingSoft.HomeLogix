@@ -680,6 +680,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = false;
             CalculateTotals();
 
+            if (RegisterGridManager.MonthlyBudgetDeposits != 0)
+            {
+                MonthlyBudgetDeposits = RegisterGridManager.MonthlyBudgetDeposits;
+            }
+
+            if (RegisterGridManager.MonthlyBudgetWithdrawals != 0)
+            {
+                MonthlyBudgetWithdrawals = RegisterGridManager.MonthlyBudgetWithdrawals;
+            }
+            MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
+
             if (ReadOnlyMode)
                 ControlsGlobals.UserInterface.ShowMessageBox(
                     "This Bank Account is being modified in another window.  Editing not allowed.", "Editing not allowed",

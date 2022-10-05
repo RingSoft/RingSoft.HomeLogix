@@ -16,6 +16,8 @@ namespace RingSoft.HomeLogix.Library
     public interface IMainViewModel
     {
         void RefreshView();
+
+        DateTime CurrentMonthEnding { get; set; }
     }
 
     public class AppProgressArgs

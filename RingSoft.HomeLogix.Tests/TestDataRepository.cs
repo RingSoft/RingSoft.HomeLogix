@@ -247,6 +247,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId)
+        {
+            throw new NotImplementedException();
+        }
+
         public History GetHistoryItem(int historyId)
         {
             throw new NotImplementedException();
