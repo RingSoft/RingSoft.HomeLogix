@@ -62,11 +62,11 @@
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Budget Item"/>
 
-                <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="1"  Text="{Binding BudgetItem, UpdateSourceTrigger=PropertyChanged}"/>
+                <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="1" Setup="{Binding BudgetAutoFillSetup}" Value="{Binding BudgetAutoFillValue, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Label Grid.Row="2" Grid.Column="2" Content="Bank Account"/>
 
-                <dec:StringReadOnlyBox Grid.Row="2" Grid.Column="3" Text="{Binding BankAccount}" Width="200"/>
+                <lc:AutoFillReadOnlyControl Grid.Row="2" Grid.Column="3" Setup="{Binding BankAutoFillSetup}" Value="{Binding BankAutoFillValue}" Width="200"/>
 
                 <Label Grid.Row="3" Grid.Column="0" Content="Budget Amount"/>
 
