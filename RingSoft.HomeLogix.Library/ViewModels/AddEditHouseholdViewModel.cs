@@ -20,6 +20,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         void CloseWindow();
 
         void SetFocus(SetFocusControls control);
+
+        void SetPlatform();
     }
     public class AddEditHouseholdViewModel : INotifyPropertyChanged
     {
@@ -56,6 +58,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
+        private DbPlatforms _dbPlatform;
+
+        public DbPlatforms DbPlatform
+        {
+            get => _dbPlatform;
+            set
+            {
+                if (_dbPlatform == value)
+                {
+                    return;
+                }
+                _dbPlatform = value;
+                OnPropertyChanged();
+                View.SetPlatform();
+            }
+        }
+
+
 
         public Household Household { get; private set; }
 
@@ -69,23 +89,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             OkCommand = new RelayCommand(OnOk);
             CancelCommand = new RelayCommand(OnCancel);
-
-            SetFileName();
         }
 
         public void OnViewLoaded(IAddEditHouseholdView addEditHouseholdView)
         {
             View = addEditHouseholdView;
+            DbPlatform = DbPlatforms.Sqlite;
+            SetFileName();
         }
 
-        private void SetFileName()
+        public void SetFileName()
         {
             var folder = Environment.GetEnvironmentVariable("OneDriveConsumer");
             if (folder.IsNullOrEmpty())
                 folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             var fileName = $"{HouseholdName} HomeLogix.sqlite";
-            SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
+
+            if (SqliteLoginViewModel != null)
+            {
+                SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
+            }
         }
 
 

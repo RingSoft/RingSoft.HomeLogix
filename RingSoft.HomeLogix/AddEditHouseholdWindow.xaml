@@ -6,6 +6,7 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels;assembly=RingSoft.HomeLogix.Library"
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+        xmlns:applib="clr-namespace:RingSoft.App.Library;assembly=RingSoft.App.Library"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="Add Household" SizeToContent="WidthAndHeight">
@@ -30,9 +31,22 @@
 
         <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="HouseholdNameTextBox" HorizontalAlignment="Left" Width="200"/>
 
-       <ac:SqliteLogin Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="SqliteLogin"/>
+        <Label Grid.Row="1" Content="Database Platform"/>
 
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,5,0,0">
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" >
+
+
+            <RadioButton Content="Sqlite" Margin="0,0,5,0" IsChecked="{Binding Path=DbPlatform, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static applib:DbPlatforms.Sqlite}, Mode=TwoWay}"/>
+
+            <RadioButton Content="Microsoft SQL Server" HorizontalAlignment="Center" Margin="0,0,5,0" IsChecked="{Binding Path=DbPlatform, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static applib:DbPlatforms.SqlServer}, Mode=TwoWay}"/>
+
+            <RadioButton Content="My SQL" HorizontalAlignment="Right" Margin="0,0,5,0" IsChecked="{Binding Path=DbPlatform, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static applib:DbPlatforms.MySql}, Mode=TwoWay}"/>
+
+        </Grid>
+
+       <ac:SqliteLogin Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="SqliteLogin"/>
+
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,5,0,0">
             
             <Button Content="_OK" Command="{Binding OkCommand}" Width="100" Margin="2.5,0" IsDefault="True"/>
 
