@@ -14,7 +14,8 @@ namespace RingSoft.HomeLogix
         public AddEditHouseholdWindow()
         {
             InitializeComponent();
-            
+
+            ViewModel.SqliteLoginViewModel = SqliteLogin.ViewModel;
             ViewModel.OnViewLoaded(this);
         }
 
@@ -26,25 +27,6 @@ namespace RingSoft.HomeLogix
 
         public void CloseWindow() => Close();
 
-        public string ShowFileDialog()
-        {
-            var fileName = Path.GetFileName(ViewModel.FileName);
-            var directory = new FileInfo(ViewModel.FileName ?? string.Empty).DirectoryName;
-            var saveFileDialog = new SaveFileDialog
-            {
-                FileName = fileName ?? string.Empty,
-                InitialDirectory = directory ?? string.Empty,
-                DefaultExt = "sqlite",
-                Filter = "HomeLogix SQLite Files(*.sqlite)|*.sqlite"
-            };
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                return saveFileDialog.FileName;
-            }
-
-            return string.Empty;
-        }
 
         public void SetFocus(SetFocusControls control)
         {
@@ -52,9 +34,6 @@ namespace RingSoft.HomeLogix
             {
                 case SetFocusControls.HouseholdName:
                     HouseholdNameTextBox.Focus();
-                    break;
-                case SetFocusControls.FileName:
-                    FileNameTextBox.Focus();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(control), control, null);

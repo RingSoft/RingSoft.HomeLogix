@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -17,8 +18,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
     public interface IAddEditHouseholdView
     {
         void CloseWindow();
-
-        string ShowFileDialog();
 
         void SetFocus(SetFocusControls control);
     }
@@ -41,20 +40,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
-        private string _fileName;
+        private SqliteLoginViewModel _sqliteLoginViewModel;
 
-        public string FileName
+        public SqliteLoginViewModel SqliteLoginViewModel
         {
-            get => _fileName;
+            get => _sqliteLoginViewModel;
             set
             {
-                if (_fileName == value)
+                if (_sqliteLoginViewModel == value)
+                {
                     return;
-                
-                _fileName = value;
+                }
+                _sqliteLoginViewModel = value;
                 OnPropertyChanged();
             }
         }
+
 
         public Household Household { get; private set; }
 
@@ -66,7 +67,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public AddEditHouseholdViewModel()
         {
-            ShowFileDialogCommand = new RelayCommand(ShowFileDialog);
             OkCommand = new RelayCommand(OnOk);
             CancelCommand = new RelayCommand(OnCancel);
 
@@ -85,15 +85,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
             var fileName = $"{HouseholdName} HomeLogix.sqlite";
-            FileName = $"{folder?.Trim()}\\{fileName.Trim()}";
+            SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
         }
 
-        private void ShowFileDialog()
-        {
-            var fileName = View.ShowFileDialog();
-            if (!fileName.IsNullOrEmpty())
-                FileName = fileName;
-        }
 
         private void OnOk()
         {
@@ -105,7 +99,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return;
             }
 
-            if (FileName.IsNullOrEmpty())
+            if (SqliteLoginViewModel.FilenamePath.IsNullOrEmpty())
             {
                 var message = "File Name must have a value";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid File Name", RsMessageBoxIcons.Exclamation);
@@ -113,7 +107,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return;
             }
 
-            var fileInfo = new FileInfo(FileName);
+            var fileInfo = new FileInfo(SqliteLoginViewModel.FilenamePath);
 
             Household = new Household
             {
