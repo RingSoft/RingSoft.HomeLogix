@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.App.Library;
 using RingSoft.HomeLogix.DataAccess.Model;
 
-namespace RingSoft.HomeLogix.Sqlite
+namespace RingSoft.HomeLogix.DataAccess
 {
     public class BankAccountPeriodHistoryConfiguration : IEntityTypeConfiguration<BankAccountPeriodHistory>
     {

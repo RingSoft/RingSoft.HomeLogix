@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.DbLookup.EfCore;
-using RingSoft.HomeLogix.Sqlite.Migrations;
-using RingSoft.HomeLogix.DataAccess.Model;
 
-namespace RingSoft.HomeLogix.Sqlite
+namespace RingSoft.HomeLogix.DataAccess
 {
     public class BankTransactionBudgetConfiguration : IEntityTypeConfiguration<RingSoft.HomeLogix.DataAccess.Model.BankTransactionBudget>
     {

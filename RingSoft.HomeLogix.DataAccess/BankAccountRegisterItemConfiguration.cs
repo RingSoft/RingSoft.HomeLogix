@@ -4,7 +4,7 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.DataAccess.Model;
 
-namespace RingSoft.HomeLogix.Sqlite
+namespace RingSoft.HomeLogix.DataAccess
 {
     public class BankAccountRegisterItemConfiguration : IEntityTypeConfiguration<BankAccountRegisterItem>
     {

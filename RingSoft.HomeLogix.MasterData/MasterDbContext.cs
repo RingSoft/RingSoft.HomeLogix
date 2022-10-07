@@ -50,19 +50,32 @@ namespace RingSoft.HomeLogix.MasterData
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
             modelBuilder.Entity<Household>(entity =>
             {
                 entity.HasKey(hk => hk.Id);
 
-                entity.Property(p => p.Id).HasColumnType("integer");
+                entity.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
 
-                entity.Property(p => p.Name).HasColumnType("nvarchar");
+                entity.Property(p => p.Name).HasColumnType(DbConstants.StringColumnType);
 
-                entity.Property(p => p.FilePath).HasColumnType("nvarchar");
+                entity.Property(p => p.FilePath).HasColumnType(DbConstants.StringColumnType);
 
-                entity.Property(p => p.FileName).HasColumnType("nvarchar");
+                entity.Property(p => p.FileName).HasColumnType(DbConstants.StringColumnType);
 
-                entity.Property(p => p.IsDefault).HasColumnType("bit");
+                entity.Property(p => p.IsDefault).HasColumnType(DbConstants.BoolColumnType);
+
+                entity.Property(p => p.Platform).HasColumnType(DbConstants.ByteColumnType);
+
+                entity.Property(p => p.Server).HasColumnType(DbConstants.StringColumnType);
+
+                entity.Property(p => p.Database).HasColumnType(DbConstants.StringColumnType);
+
+                entity.Property(p => p.AuthenticationType).HasColumnType(DbConstants.ByteColumnType);
+
+                entity.Property(p => p.Username).HasColumnType(DbConstants.StringColumnType);
+
+                entity.Property(p => p.Password).HasColumnType(DbConstants.StringColumnType);
             });
 
             base.OnModelCreating(modelBuilder);

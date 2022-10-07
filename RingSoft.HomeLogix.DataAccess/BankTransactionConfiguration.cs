@@ -4,7 +4,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
-namespace RingSoft.HomeLogix.Sqlite
+namespace RingSoft.HomeLogix.DataAccess
 {
     public class BankTransactionConfiguration : IEntityTypeConfiguration<BankTransaction>
     {

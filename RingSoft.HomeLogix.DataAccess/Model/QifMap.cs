@@ -9,6 +9,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Key]
         public int Id { get; set; }
 
+        [MaxLength(100)]
         public string BankText { get; set; }
 
         public int BudgetId { get; set; }

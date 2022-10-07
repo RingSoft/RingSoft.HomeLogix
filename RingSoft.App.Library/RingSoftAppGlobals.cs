@@ -5,6 +5,12 @@ using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 
 namespace RingSoft.App.Library
 {
+    public enum DbPlatforms
+    {
+        Sqlite = 0,
+        SqlServer = 1,
+        MySql = 2,
+    }
     public class RingSoftAppGlobals
     {
         public static string AssemblyDirectory
