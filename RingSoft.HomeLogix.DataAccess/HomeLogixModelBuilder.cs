@@ -10,7 +10,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public static void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SystemMaster>().Property(p => p.HouseholdName)
-                .HasColumnType(SqliteConstants.StringColumnType);
+                .HasColumnType(DbConstants.StringColumnType);
 
             modelBuilder.ApplyConfiguration(new BudgetItemConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
@@ -25,11 +25,11 @@ namespace RingSoft.HomeLogix.DataAccess
             modelBuilder.ApplyConfiguration(new QifMapConfiguration());
 
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Id)
-                .HasColumnType(SqliteConstants.IntegerColumnType);
+                .HasColumnType(DbConstants.IntegerColumnType);
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.IsIncome)
-                .HasColumnType(SqliteConstants.BoolColumnType);
+                .HasColumnType(DbConstants.BoolColumnType);
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Name)
-                .HasColumnType(SqliteConstants.StringColumnType);
+                .HasColumnType(DbConstants.StringColumnType);
 
             AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
@@ -9,11 +10,11 @@ namespace RingSoft.HomeLogix.DataAccess
     {
         public void Configure(EntityTypeBuilder<SourceHistory> builder)
         {
-            builder.Property(p => p.Amount).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.Date).HasColumnType(SqliteConstants.DateColumnType);
-            builder.Property(p => p.DetailId).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.HistoryId).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.SourceId).HasColumnType(SqliteConstants.IntegerColumnType);
+            builder.Property(p => p.Amount).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.Date).HasColumnType(DbConstants.DateColumnType);
+            builder.Property(p => p.DetailId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.HistoryId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.SourceId).HasColumnType(DbConstants.IntegerColumnType);
 
             builder.HasKey(p => new { p.HistoryId, p.DetailId });
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.App.Library;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
@@ -9,12 +10,12 @@ namespace RingSoft.HomeLogix.DataAccess
     {
         public void Configure(EntityTypeBuilder<BudgetPeriodHistory> builder)
         {
-            builder.Property(p => p.ActualAmount).HasColumnType(SqliteConstants.DecimalColumnType)
+            builder.Property(p => p.ActualAmount).HasColumnType(DbConstants.DecimalColumnType)
                 .HasConversion<double>();
-            builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.PeriodEndingDate).HasColumnType(SqliteConstants.DateColumnType);
-            builder.Property(p => p.PeriodType).HasColumnType(SqliteConstants.ByteColumnType);
-            builder.Property(p => p.ProjectedAmount).HasColumnType(SqliteConstants.DecimalColumnType)
+            builder.Property(p => p.BudgetItemId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.PeriodEndingDate).HasColumnType(DbConstants.DateColumnType);
+            builder.Property(p => p.PeriodType).HasColumnType(DbConstants.ByteColumnType);
+            builder.Property(p => p.ProjectedAmount).HasColumnType(DbConstants.DecimalColumnType)
                 .HasConversion<double>();
 
             builder.HasKey(hk => new {hk.BudgetItemId, hk.PeriodType, hk.PeriodEndingDate});

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
@@ -10,18 +11,18 @@ namespace RingSoft.HomeLogix.DataAccess
     {
         public void Configure(EntityTypeBuilder<BankAccountRegisterItem> builder)
         {
-            builder.Property(p => p.ActualAmount).HasColumnType(SqliteConstants.DecimalColumnType);
-            builder.Property(p => p.BankAccountId).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.BudgetItemId).HasColumnType(SqliteConstants.IntegerColumnType).IsNullable();
-            builder.Property(p => p.Completed).HasColumnType(SqliteConstants.BoolColumnType);
-            builder.Property(p => p.Description).HasColumnType(SqliteConstants.StringColumnType);
-            builder.Property(p => p.Id).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.IsNegative).HasColumnType(SqliteConstants.BoolColumnType);
-            builder.Property(p => p.ItemDate).HasColumnType(SqliteConstants.DateColumnType);
-            builder.Property(p => p.ItemType).HasColumnType(SqliteConstants.IntegerColumnType);
-            builder.Property(p => p.ProjectedAmount).HasColumnType(SqliteConstants.DecimalColumnType).HasConversion<double>();
-            builder.Property(p => p.RegisterGuid).HasColumnType(SqliteConstants.StringColumnType);
-            builder.Property(p => p.TransferRegisterGuid).HasColumnType(SqliteConstants.StringColumnType);
+            builder.Property(p => p.ActualAmount).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.BankAccountId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.BudgetItemId).HasColumnType(DbConstants.IntegerColumnType).IsNullable();
+            builder.Property(p => p.Completed).HasColumnType(DbConstants.BoolColumnType);
+            builder.Property(p => p.Description).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.IsNegative).HasColumnType(DbConstants.BoolColumnType);
+            builder.Property(p => p.ItemDate).HasColumnType(DbConstants.DateColumnType);
+            builder.Property(p => p.ItemType).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.ProjectedAmount).HasColumnType(DbConstants.DecimalColumnType).HasConversion<double>();
+            builder.Property(p => p.RegisterGuid).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.TransferRegisterGuid).HasColumnType(DbConstants.StringColumnType);
 
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.RegisterItems)
