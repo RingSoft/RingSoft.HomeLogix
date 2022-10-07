@@ -7,8 +7,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
-        <ResourceDictionary
-            Source="pack://application:,,,/RingSoft.App.Controls;component/Themes/SqliteLoginControlTemplate.xaml" />
+        <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/SqliteLoginControlTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type local:DbMaintenanceWindow}" BasedOn="{StaticResource {x:Type Window}}"/>

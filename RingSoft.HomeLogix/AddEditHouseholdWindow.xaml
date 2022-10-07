@@ -8,7 +8,7 @@
         xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Add Household" SizeToContent="Width" Height="300">
+        Title="Add Household" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <vm:AddEditHouseholdViewModel x:Name="ViewModel"/>
     </Window.DataContext>
@@ -23,12 +23,12 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Household Name"/>
+        <Label Grid.Row="0" Grid.Column="0" Content="Household Name" HorizontalAlignment="Left"/>
 
-        <TextBox Grid.Row="0" Grid.Column="1" x:Name="HouseholdNameTextBox" HorizontalAlignment="Left"/>
+        <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="HouseholdNameTextBox" HorizontalAlignment="Left" Width="200"/>
 
        <ac:SqliteLogin Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="SqliteLogin"/>
 

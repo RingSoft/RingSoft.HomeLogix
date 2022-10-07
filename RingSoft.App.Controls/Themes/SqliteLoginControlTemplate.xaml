@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+                    xmlns:local="clr-namespace:RingSoft.App.Controls"
                     xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                     xmlns:rsal="clr-namespace:RingSoft.App.Library;assembly=RingSoft.App.Library">
 
@@ -15,23 +15,16 @@
 
                         <Border.Resources>
                             <rsal:SqliteLoginViewModel x:Key="SqliteLoginViewModel"/>
-                            <Style TargetType="{x:Type local:SqliteLogin}">
-                                <Setter Property="SizeToContent" Value="WidthAndHeight"/>
-                            </Style>
                         </Border.Resources>
                         <Grid DataContext="{DynamicResource SqliteLoginViewModel}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Grid.Row="0" Grid.Column="0" Content="Sqlite File Name"/>
                             <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="FileNameTextBox" Text="{Binding Path=FilenamePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="C:\ProgramData\RingSoft\HomeLogix\JohnJaneDemo.sqlite" Width="400"/>
-                            <Button Grid.Row="1" Grid.Column="1" Command="{Binding ShowFileDialogCommand}" Content="..." Height="20" Width="20"/>
+                            <Button Grid.Row="0" Grid.Column="2" Command="{Binding ShowFileDialogCommand}" Content="..." Height="20" Width="20"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
