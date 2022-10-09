@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
     [DbContext(typeof(HomeLogixDbContext))]
-    partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221008175221_BankText")]
+    partial class BankText
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,10 +303,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<string>("BankText")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
 
@@ -574,10 +572,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
-
-                    b.Property<string>("BankText")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");

@@ -12,6 +12,7 @@ namespace RingSoft.HomeLogix.DataAccess
         {
             builder.Property(p => p.ActualAmount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.BankAccountId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.BankText).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.BudgetItemId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Date).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Description).HasColumnType(DbConstants.StringColumnType);

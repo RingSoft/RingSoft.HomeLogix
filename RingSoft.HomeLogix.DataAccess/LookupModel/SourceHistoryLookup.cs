@@ -13,6 +13,8 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
 
         public string Source { get; set; }
 
+        public string BankText { get; set; }
+
         public int HistoryId { get; set; }
     }
 }

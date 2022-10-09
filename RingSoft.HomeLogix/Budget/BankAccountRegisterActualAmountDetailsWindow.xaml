@@ -6,9 +6,11 @@
                 xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
                 xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                 xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+                xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+
                 mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item Actual Amount Details" Height="350" Width="500">
+        Title="Budget Item Actual Amount Details" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
             <Setter Property="Width" Value="100"/>
@@ -50,12 +52,14 @@
 
             <Label Grid.Row="0" Grid.Column="2" Content="Budget Item"/>
 
-            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="3" Text="{Binding Description}" DesignText="A Very Large Budget Item" Width="250"/>
+            <!--<dec:StringReadOnlyBox Grid.Row="0" Grid.Column="3" Text="{Binding Description}" DesignText="A Very Large Budget Item" Width="250"/>-->
+
+            <lc:AutoFillReadOnlyControl Grid.Row="0" Grid.Column="3" Width="250" DesignText="A Very Large Budget Item" Setup="{Binding BudgetAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding BudgetAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </Grid>
         <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Left" Content="Details"/>
 
-        <deg:DataEntryGrid x:Name="Grid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Manager="{Binding GridManager}" EnterToTab="False">
+        <deg:DataEntryGrid x:Name="Grid" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Manager="{Binding GridManager}" EnterToTab="False" HorizontalAlignment="Left" Width="675" Height="200">
             <deg:DataEntryGrid.Columns>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.DateColumnId}" Header="Date" DesignText="01/01/1980" Width="100"/>
@@ -63,6 +67,8 @@
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.SourceColumnId}" Header="Source" DesignText="Smith's Home Furnishings" Width="200"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.AmountColumnId}" Header="Amount" DesignText="$123,456,789.00" Width="130" Alignment="Right"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterActualAmountGridManager.BankTextColumnId}" Header="Bank Text" Width="200" Alignment="Left"/>
 
             </deg:DataEntryGrid.Columns>
         </deg:DataEntryGrid>

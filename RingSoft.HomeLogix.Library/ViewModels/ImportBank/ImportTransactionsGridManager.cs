@@ -37,7 +37,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 if (!row.IsNew)
                 {
-                    if (!ValidateTransactionRow(row)) return false;
+                    if (!ValidateTransactionRow(row, false)) return false;
 
                     var bankTransaction = new BankTransaction();
                     if (row != null)
@@ -87,18 +87,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return AppGlobals.DataRepository.SaveBankTransactions(transactions, splits, ViewModel.BankViewModel.Id);
         }
 
-        private bool ValidateTransactionRow(ImportTransactionGridRow row)
+        private bool ValidateTransactionRow(ImportTransactionGridRow row, bool post)
         {
             if (!row.BudgetItemSplits.Any())
             {
-                if (row.BudgetItemAutoFillValue == null || !row.BudgetItemAutoFillValue.IsValid())
+                if (post)
                 {
-                    var message = "You must select a budget item for this transaction.";
-                    var caption = "Invalid Budget Item";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
-                        RsMessageBoxIcons.Exclamation);
-                    Grid.GotoCell(row, ImportTransactionGridRow.BudgetItemColumnId);
-                    return false;
+                    if (row.BudgetItemAutoFillValue == null || !row.BudgetItemAutoFillValue.IsValid())
+                    {
+                        var message = "You must select a budget item for this transaction.";
+                        var caption = "Invalid Budget Item";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
+                            RsMessageBoxIcons.Exclamation);
+                        Grid.GotoCell(row, ImportTransactionGridRow.BudgetItemColumnId);
+                        return false;
+                    }
                 }
             }
 
@@ -112,6 +115,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
             foreach (var gridRow in rows)
             {
+                if (!ValidateTransactionRow(gridRow, true)) return false;
+            }
+
+            foreach (var gridRow in rows)
+            {
                 if (gridRow.BudgetItemSplits.Any())
                 {
                     foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
@@ -119,20 +127,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         var budgetItemId = gridRowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value
                             .ToInt();
                         var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
+                        var amount = ProcessAmount(gridRowBudgetItemSplit.Amount, gridRow, budgetItem);
                         var row = PostBudgetItem(budgetItem, gridRowBudgetItemSplit.Amount, gridRow);
                         if (row != null)
-                            bankBalance = UpdateBankBalance(row, bankBalance, gridRowBudgetItemSplit.Amount);
+                            bankBalance = UpdateBankBalance(row, bankBalance, amount);
                     }
                 }
                 else
                 {
-                    if (!ValidateTransactionRow(gridRow)) return false;
-
                     var budgetItemId = gridRow.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
                         .ToInt();
                     var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
-                    var row = PostBudgetItem(budgetItem, gridRow.Amount, gridRow);
-                    if (row != null) bankBalance = UpdateBankBalance(row, bankBalance, gridRow.Amount);
+                    var amount = ProcessAmount(gridRow.Amount, gridRow, budgetItem);
+                    var row = PostBudgetItem(budgetItem, amount, gridRow);
+                    if (row != null) bankBalance = UpdateBankBalance(row, bankBalance, amount);
                 }
             }
 
@@ -160,25 +168,65 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return false;
         }
 
+        private decimal ProcessAmount(decimal rowAmount, ImportTransactionGridRow gridRow, BudgetItem budgetItem)
+        {
+            var result = rowAmount;
+            if (gridRow != null)
+            {
+                switch (budgetItem.Type)
+                {
+                    case BudgetItemTypes.Income:
+                        switch (gridRow.TransactionTypes)
+                        {
+                            case TransactionTypes.Deposit:
+                                break;
+                            case TransactionTypes.Withdrawal:
+                                result = -rowAmount;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        break;
+                    case BudgetItemTypes.Expense:
+                        switch (gridRow.TransactionTypes)
+                        {
+                            case TransactionTypes.Deposit:
+                                result = -rowAmount;
+                                break;
+                            case TransactionTypes.Withdrawal:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+
+                        break;
+                }
+            }
+            return result;
+        }
+
         private void SaveQifMaps()
         {
             foreach (var gridRow in Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false && p.MapTransaction == true && !p.BankText.IsNullOrEmpty()))
             {
-                
-                var qifMap = AppGlobals.DataRepository.GetQifMap(gridRow.BankText);
-                if (qifMap == null)
+                if (gridRow.BudgetItemAutoFillValue != null && gridRow.BudgetItemAutoFillValue.IsValid())
                 {
-                    qifMap = new QifMap();
-                    qifMap.BankText = gridRow.BankText;
-                    qifMap.BudgetId = AppGlobals.LookupContext.BudgetItems
-                        .GetEntityFromPrimaryKeyValue(gridRow.BudgetItemAutoFillValue.PrimaryKeyValue).Id;
-                    if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
+                    var qifMap = AppGlobals.DataRepository.GetQifMap(gridRow.BankText);
+                    if (qifMap == null)
                     {
-                        qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
-                            .GetEntityFromPrimaryKeyValue(gridRow.SourceAutoFillValue.PrimaryKeyValue).Id;
-                    }
+                        qifMap = new QifMap();
+                        qifMap.BankText = gridRow.BankText;
+                        qifMap.BudgetId = AppGlobals.LookupContext.BudgetItems
+                            .GetEntityFromPrimaryKeyValue(gridRow.BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+                        if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
+                        {
+                            qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
+                                .GetEntityFromPrimaryKeyValue(gridRow.SourceAutoFillValue.PrimaryKeyValue).Id;
+                        }
 
-                    AppGlobals.DataRepository.SaveQifMap(qifMap);
+                        AppGlobals.DataRepository.SaveQifMap(qifMap);
+                    }
                 }
             }
         }
@@ -255,6 +303,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id &&
                                                  (p.ItemDate >= dateMinValue && p.ItemDate <= dateMaxValue));
 
+            if (registerRow == null)
+            {
+                registerRow = registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id);
+            }
+
             
             if (registerRow == null)
             {
@@ -281,13 +334,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         Date = gridRow.Date,
                         SourceId = gridRow.SourceAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
                         RegisterId = registerRow.RegisterId,
-                        DetailId = detailId
+                        DetailId = detailId,
+                        BankText = gridRow.BankText
                     });
-                    if (!UpdateRegisterRow(amount, registerRow, registerItem)) return null;
+                    if (!UpdateRegisterRow(amount, registerRow, registerItem, gridRow)) return null;
                 }
                 else
                 {
-                    if (!UpdateRegisterRow(amount, registerRow, registerItem)) return null;
+                    if (!UpdateRegisterRow(amount, registerRow, registerItem, gridRow)) return null;
                 }
                 return registerRow;
 
@@ -301,7 +355,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         }
 
         private static bool UpdateRegisterRow(decimal amount, BankAccountRegisterGridRow registerRow,  
-            BankAccountRegisterItem registerItem)
+            BankAccountRegisterItem registerItem, ImportTransactionGridRow importTransactionGridRow)
         {
             var actualAmount = (decimal) 0;
             if (registerRow.ActualAmount != null)
@@ -309,8 +363,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 actualAmount = registerRow.ActualAmount.Value;
             }
 
-            registerRow.ActualAmount = actualAmount + Math.Abs(amount);
+            registerRow.ActualAmount = actualAmount + amount;
+            registerRow.BankText = importTransactionGridRow.BankText;
             registerRow.Completed = true;
+            
             registerRow.SaveToEntity(registerItem, 0, registerRow.ActualAmountDetails.ToList());
             if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerRow.ActualAmountDetails))
                 return false;
@@ -337,6 +393,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             bankRegisterItem.Completed = true;
             bankRegisterItem.ProjectedAmount = amount;
             bankRegisterItem.ActualAmount = amount;
+            bankRegisterItem.BankText = gridRow.BankText;
             BankAccountRegisterItem transferToRegisterItem = null;
             switch (budgetItem.Type)
             {
@@ -364,6 +421,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     transferToRegisterItem.ItemDate = gridRow.Date;
                     transferToRegisterItem.Description = $"Transfer From {budgetItem.BankAccount.Description}";
                     transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
+                    transferToRegisterItem.BankText = gridRow.BankText;
                     bankRegisterItem.ProjectedAmount = -amount;
                     bankRegisterItem.TransferRegisterGuid = transferToRegisterItem.RegisterGuid;
                     break;

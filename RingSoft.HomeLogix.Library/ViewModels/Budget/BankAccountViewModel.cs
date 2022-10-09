@@ -892,6 +892,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
                 var registerItem = new BankAccountRegisterItem();
+                registerItem.BankText = completedRow.BankText;
                 completedRow.SaveToEntity(registerItem, 0, amountDetails);
 
                 var monthEndDate = new DateTime(registerItem.ItemDate.Year, registerItem.ItemDate.Month,
@@ -925,6 +926,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             }
                             else
                             {
+                                transferRegisterItem.BankText = completedRow.BankText;
                                 if (completedRow.TransactionType == TransactionTypes.Deposit)
                                 {
                                     transferToBankAccountId = registerItem.BankAccountId;
@@ -1085,7 +1087,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 TransferToBankAccountId = transferToBankAccountId,
                 Description = registerItem.Description,
                 ProjectedAmount = completedRow.ProjectedAmount,
-                ActualAmount = completedRow.ActualAmount.GetValueOrDefault(0)
+                ActualAmount = completedRow.ActualAmount.GetValueOrDefault(0),
+                BankText = registerItem.BankText
             };
             if (!addToBudgetHistory)
             {
@@ -1107,7 +1110,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     DetailId = detailId,
                     SourceId = amountDetail.SourceId,
                     Date = amountDetail.Date,
-                    Amount = amountDetail.Amount
+                    Amount = amountDetail.Amount,
+                    BankText = amountDetail.BankText,
                 });
                 detailId++;
             }

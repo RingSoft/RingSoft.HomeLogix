@@ -25,6 +25,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public decimal Amount { get; set; }
 
+        [MaxLength(250)]
+        public string BankText { get; set; }
+
         public ICollection<BankTransaction> Transactions { get; set; }
 
         public BankAccountRegisterItemAmountDetail()

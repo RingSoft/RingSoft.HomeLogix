@@ -59,6 +59,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private string _bankText;
+
+        public string BankText
+        {
+            get => _bankText;
+            set
+            {
+                if (_bankText == value)
+                {
+                    return;
+                }
+                _bankText = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private TextComboBoxControlSetup _itemTypeComboBoxControlSetup;
 
         public TextComboBoxControlSetup ItemTypeComboBoxControlSetup
@@ -273,6 +290,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 RegisterId = _registerItem.Id;
                 Date = _registerItem.ItemDate;
+                BankText = _registerItem.BankText;
                 if (_registerItem.IsNegative)
                     Amount = -_registerItem.ProjectedAmount;
                 else

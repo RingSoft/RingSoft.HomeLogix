@@ -53,6 +53,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public bool Completed { get; set; }
 
+        [MaxLength(250)]
+        public string BankText { get; set; }
+
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
         public BankAccountRegisterItem()

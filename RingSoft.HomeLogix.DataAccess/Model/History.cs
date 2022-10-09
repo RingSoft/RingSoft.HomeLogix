@@ -37,6 +37,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public decimal ActualAmount { get; set; }
 
+        [MaxLength(250)]
+        public string BankText { get; set; }
+
         public ICollection<SourceHistory> Sources { get; set; }
 
         public History()

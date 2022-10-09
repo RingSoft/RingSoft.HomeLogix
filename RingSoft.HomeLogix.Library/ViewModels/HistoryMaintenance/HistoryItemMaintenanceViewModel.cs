@@ -188,6 +188,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
+        private string _bankText;
+
+        public string BankText
+        {
+            get => _bankText;
+            set
+            {
+                if (_bankText == value)
+                {
+                    return;
+                }
+                _bankText = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private LookupDefinition<SourceHistoryLookup, SourceHistory> _sourceHistoryLookupDefinition;
 
         public LookupDefinition<SourceHistoryLookup, SourceHistory> SourceHistoryLookupDefinition
@@ -262,12 +279,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 AddVisibleColumnDefinition(p => p.Source,
                 p => p.Name);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Amount, p => p.Amount);
+            sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.BankText, p => p.BankText);
             SourceHistoryLookupDefinition = sourceHistoryLookupDefinition;
 
             BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
             BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
-            ReadOnlyMode = true;
-
+            
             BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))
             {
                 AddViewParameter = ViewModelInput,
@@ -355,7 +372,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             Date = entity.Date;
             Description = entity.Description;
             ItemType = entity.ItemType;
-
+            BankText = entity.BankText;
 
 
             ProjectedAmount = entity.ProjectedAmount;

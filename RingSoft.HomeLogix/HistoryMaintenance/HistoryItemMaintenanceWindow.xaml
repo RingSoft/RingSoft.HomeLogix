@@ -28,9 +28,20 @@
     </Window.Resources>
     <DockPanel>
         <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
-        <StackPanel Orientation="Vertical" Margin="5">
-            <Grid>
+        <Grid Margin="5" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -78,10 +89,19 @@
 
                 <Label Grid.Row="4" Grid.Column="0" Content="Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="4" Grid.Column="1" Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+                <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="3" Orientation="Horizontal">
+
+                    <dec:DecimalReadOnlyBox Value="{Binding Difference, UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+
+                    <Label Content="Bank Text"/>
+
+                    <dec:StringReadOnlyBox Text="{Binding BankText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
+
+                </StackPanel>
+
             </Grid>
-            <Label Content="Sources" HorizontalAlignment="Left"/>
-            <lc:LookupControl x:Name="LookupControl" Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
+            <Label Grid.Row="1" Grid.Column="0" Content="Sources" HorizontalAlignment="Left"/>
+            <lc:LookupControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="LookupControl" Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
                 
                 <lc:LookupControl.LookupColumns>
                     <lc:LookupColumn Header="Date" PropertyName="{lc:NameOf Date, Type={x:Type lm:SourceHistoryLookup}}" Width="100" DesignText="01/01/1980"/>
@@ -90,9 +110,11 @@
 
                     <lc:LookupColumn Header="Amount" PropertyName="{lc:NameOf Amount, Type={x:Type lm:SourceHistoryLookup}}" DesignText="$123,456.78" Width="120"/>
 
+                    <lc:LookupColumn Header="Bank Text" PropertyName="{lc:NameOf BankText, Type={x:Type lm:SourceHistoryLookup}}" Width="200"/>
+
                 </lc:LookupControl.LookupColumns>
 
             </lc:LookupControl>
-        </StackPanel>
+        </Grid>
     </DockPanel>
 </ac:DbMaintenanceWindow>

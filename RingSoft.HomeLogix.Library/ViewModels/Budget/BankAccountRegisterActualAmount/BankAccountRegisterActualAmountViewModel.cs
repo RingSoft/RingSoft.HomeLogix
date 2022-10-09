@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 // ReSharper disable once CheckNamespace
@@ -31,20 +32,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private string _description;
+        private AutoFillSetup _budgetAutoFillSetup;
 
-        public string Description
+        public AutoFillSetup BudgetAutoFillSetup
         {
-            get => _description;
+            get => _budgetAutoFillSetup;
             set
             {
-                if (_description == value)
+                if (_budgetAutoFillSetup == value)
+                {
                     return;
-
-                _description = value;
+                }
+                _budgetAutoFillSetup = value;
                 OnPropertyChanged();
             }
         }
+
+        private AutoFillValue _budgetAutoFillValue;
+
+        public AutoFillValue BudgetAutoFillValue
+        {
+            get => _budgetAutoFillValue;
+            set
+            {
+                if (_budgetAutoFillValue == value)
+                {
+                    return;
+                }
+                _budgetAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private BankAccountRegisterActualAmountGridManager _gridManager;
 
@@ -125,7 +144,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             GridManager = new BankAccountRegisterActualAmountGridManager(this);
 
             Date = actualAmountCellProps.RegisterGridRow.ItemDate;
-            Description = actualAmountCellProps.RegisterGridRow.Description;
+            BudgetAutoFillSetup =
+                new AutoFillSetup(
+                    AppGlobals.LookupContext.BankAccountRegisterItems.GetFieldDefinition(p => p.BudgetItemId));
+
+            BudgetAutoFillValue = actualAmountCellProps.RegisterGridRow.BudgetItemValue;
             ProjectedAmount = actualAmountCellProps.RegisterGridRow.ProjectedAmount;
 
             GridManager.LoadGrid(

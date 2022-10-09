@@ -59,6 +59,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
+        public string BankText { get; set; }
+
         private DecimalEditControlSetup _decimalValueSetup;
         private DateEditControlSetup _dateEditControlSetup;
 
@@ -224,6 +226,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     new AutoFillValue(AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),
                         entity.BudgetItem.Description);
 
+            BankText = entity.BankText;
+
             if (entity.TransferRegisterGuid.IsNullOrEmpty())
             {
                 if (entity.BudgetItem != null)
@@ -294,6 +298,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.ItemDate = ItemDate;
             entity.Description = Description;
             entity.ActualAmount = ActualAmount;
+            entity.BankText = BankText;
             switch (TransactionType)
             {
                 case TransactionTypes.Deposit:
@@ -326,7 +331,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             DetailId = detailId,
                             Date = actualAmountDetail.Date,
                             SourceId = actualAmountDetail.SourceId,
-                            Amount = actualAmountDetail.Amount
+                            Amount = actualAmountDetail.Amount,
+                            BankText = actualAmountDetail.BankText
                         });
                     detailId++;
                 }

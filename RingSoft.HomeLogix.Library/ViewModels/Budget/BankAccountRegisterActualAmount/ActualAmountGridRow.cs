@@ -5,6 +5,7 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.HomeLogix.Sqlite.Migrations;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -18,6 +19,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public AutoFillValue Source { get; set; }
 
         public decimal Amount { get; set; }
+
+        public string BankText { get; set; }
 
         public bool IsIncome { get; set; }
 
@@ -64,9 +67,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return new DataEntryGridAutoFillCellProps(this, columnId, _sourceAutoFillSetup, Source);
                 case ActualAmountGridColumns.Amount:
                     return new DataEntryGridDecimalCellProps(this, columnId, _amountSetup, Amount);
+                case ActualAmountGridColumns.BankText:
+                    return new DataEntryGridTextCellProps(this, columnId, BankText);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public override DataEntryGridCellStyle GetCellStyle(int columnId)
+        {
+            var column = (ActualAmountGridColumns) columnId;
+
+            switch (column)
+            {
+                case ActualAmountGridColumns.Date:
+                    break;
+                case ActualAmountGridColumns.Source:
+                    break;
+                case ActualAmountGridColumns.Amount:
+                    break;
+                case ActualAmountGridColumns.BankText:
+                    return new DataEntryGridControlCellStyle() {State = DataEntryGridCellStates.Disabled};
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return base.GetCellStyle(columnId);
         }
 
         public override void SetCellValue(DataEntryGridEditingCellProps value)
@@ -119,6 +144,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Source = new AutoFillValue(AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(amountDetail.Source),
                 amountDetail.Source.Name);
             Amount = amountDetail.Amount;
+            BankText = amountDetail.BankText;
         }
 
         public bool ValidateRow()
@@ -134,6 +160,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var source = AppGlobals.LookupContext.BudgetItemSources.GetEntityFromPrimaryKeyValue(Source.PrimaryKeyValue);
             entity.SourceId = source.Id;
             entity.Amount = Amount;
+            entity.BankText = BankText;
         }
     }
 }

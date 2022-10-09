@@ -58,6 +58,12 @@ namespace RingSoft.HomeLogix.ImportBank
             return window.DialogResult != null && window.DialogResult.Value;
         }
 
+        public void ShowImportQifProcedure(string qifText)
+        {
+            var importProcedure = new ImportQifProcedure(ViewModel, qifText);
+            importProcedure.Start();
+        }
+
         public void CloseWindow(bool dialogResult)
         {
             DialogResult = dialogResult;

@@ -13,8 +13,6 @@ namespace RingSoft.HomeLogix.Budget
         {
             InitializeComponent();
 
-            ViewModel.OnViewLoaded(this, actualAmountCellProps);
-
             ContentRendered += (sender, args) =>
             {
                 Grid.Focus();
@@ -23,6 +21,7 @@ namespace RingSoft.HomeLogix.Budget
             CancelButton.Click += (sender, args) => Close();
             Loaded += (sender, args) =>
             {
+                ViewModel.OnViewLoaded(this, actualAmountCellProps);
                 Grid.PreviewKeyDown += (o, eventArgs) =>
                 {
                     if (eventArgs.Key == Key.Enter)

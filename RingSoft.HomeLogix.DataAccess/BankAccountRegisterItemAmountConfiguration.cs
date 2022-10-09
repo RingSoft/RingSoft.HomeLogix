@@ -12,6 +12,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public void Configure(EntityTypeBuilder<BankAccountRegisterItemAmountDetail> builder)
         {
             builder.Property(p => p.Amount).HasColumnType(DbConstants.DecimalColumnType);
+            builder.Property(p => p.BankText).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.Date).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.DetailId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.RegisterId).HasColumnType(DbConstants.IntegerColumnType);

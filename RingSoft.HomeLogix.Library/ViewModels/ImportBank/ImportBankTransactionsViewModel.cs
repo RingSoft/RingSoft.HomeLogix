@@ -15,6 +15,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     {
         bool ShowImportBankBudgetWindow(ImportTransactionGridRow row);
 
+        void ShowImportQifProcedure(string qifText);
+
         void CloseWindow(bool dialogResult);
 
         string GetQifFile();
@@ -110,9 +112,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 return;
             }
 
+            //ImportQifFile(qifText);
+            View.ShowImportQifProcedure(qifText);
+        }
+
+        public void ImportQifFile(string qifText)
+        {
             var registerStartDate = DateTime.MinValue;
             var startDate = DateTime.MinValue;
-            var incompleteRows = BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(p => !p.Completed);
+            var incompleteRows = BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
+                .Where(p => !p.Completed);
             if (incompleteRows.Any())
             {
                 registerStartDate = incompleteRows.Min(p => p.ItemDate);
@@ -126,7 +135,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 startDate = BankViewModel.LastCompleteDate;
             }
-            
+
             var importRows = new List<ImportTransactionGridRow>();
 
             var columnPos = qifText.IndexOf("C*");
@@ -139,10 +148,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     FinishImport(importRows);
                     return;
                 }
+
                 importRows.Add(row);
                 //columnPos = qifText.IndexOf("^", columnPos);
                 columnPos = qifText.IndexOf("C*", columnPos + 2);
             }
+
             FinishImport(importRows);
         }
 

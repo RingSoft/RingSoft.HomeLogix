@@ -13,7 +13,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         Date = BankAccountRegisterActualAmountGridManager.DateColumnId,
         Source = BankAccountRegisterActualAmountGridManager.SourceColumnId,
-        Amount = BankAccountRegisterActualAmountGridManager.AmountColumnId
+        Amount = BankAccountRegisterActualAmountGridManager.AmountColumnId,
+        BankText = BankAccountRegisterActualAmountGridManager.BankTextColumnId
     }
 
     public class BankAccountRegisterActualAmountGridManager : DataEntryGridManager
@@ -21,6 +22,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public const int DateColumnId = 1;
         public const int SourceColumnId = 2;
         public const int AmountColumnId = 3;
+        public const int BankTextColumnId = 4;
 
         public BankAccountRegisterActualAmountViewModel ViewModel { get; }
 
