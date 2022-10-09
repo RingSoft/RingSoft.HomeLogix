@@ -16,7 +16,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public abstract BankAccountRegisterItemTypes LineType { get; }
 
         public new BankAccountRegisterGridManager Manager { get; }
-
+            
         public int RegisterId { get; set; }
 
         public string RegisterGuid { get; private set; }
@@ -216,6 +216,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override void LoadFromEntity(BankAccountRegisterItem entity)
         {
+            //var count = entity.BankAccount.RegisterItems.Count;
+            //var rowIndex = entity.BankAccount.RegisterItems.ToList().IndexOf(entity) + 1;
+            //Manager.ViewModel.BankAccountView.UpdateStatus($"Loading Grid Row {rowIndex} of {count}");
             RegisterId = entity.Id;
             RegisterGuid = entity.RegisterGuid;
             ItemDate = entity.ItemDate;
@@ -298,7 +301,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.ItemDate = ItemDate;
             entity.Description = Description;
             entity.ActualAmount = ActualAmount;
-            entity.BankText = BankText;
+            if (!ActualAmountDetails.Any())
+            {
+                entity.BankText = BankText;
+            }
+            
             switch (TransactionType)
             {
                 case TransactionTypes.Deposit:

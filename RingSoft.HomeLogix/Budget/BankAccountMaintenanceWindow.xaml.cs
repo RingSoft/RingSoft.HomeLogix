@@ -19,6 +19,8 @@ namespace RingSoft.HomeLogix.Budget
         public override string ItemText => "Bank Account";
         public override DbMaintenanceViewModelBase ViewModel => BankAccountViewModel;
 
+        private BankProcedure _bankProcedure;
+
         public object OwnerWindow => this;
         public bool ImportFromBank(BankAccountViewModel bankAccountViewModel)
         {
@@ -29,25 +31,30 @@ namespace RingSoft.HomeLogix.Budget
 
         public void LoadBank(BankAccount entity)
         {
-            var bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading){BankAccount = entity};
-            bankProcedure.Start();
+            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading){BankAccount = entity};
+            _bankProcedure.Start();
         }
 
         public void GenerateTransactions(DateTime generateToDate)
         {
-            var bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Generating)
+            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Generating)
                 {GenerateToDate = generateToDate};
-            bankProcedure.Start();
+            _bankProcedure.Start();
         }
 
         public void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
         {
-            var bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Posting)
+            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Posting)
             {
                 CompletedRegisterData = completedRegisterData,
                 CompletedRows = completedRows
             };
-            bankProcedure.Start();
+            _bankProcedure.Start();
+        }
+
+        public void UpdateStatus(string status)
+        {
+            _bankProcedure.SplashWindow.SetProgress(status);
         }
 
         public BankAccountMaintenanceWindow()

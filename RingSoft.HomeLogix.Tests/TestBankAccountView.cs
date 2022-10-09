@@ -51,6 +51,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public void UpdateStatus(string status)
+        {
+            throw new NotImplementedException();throw new NotImplementedException();
+        }
+
         public TestBankAccountView(string ownerName) : base(ownerName)
         {
         }

@@ -103,6 +103,7 @@ namespace RingSoft.HomeLogix
                 processor.CheckAddOnFlyAfterLoaded();
             };
             maintenanceWindow.Show();
+            maintenanceWindow.Activate();
             maintenanceWindow.Closed += (sender, args) => ownWindow?.Activate();
         }
     }

@@ -27,6 +27,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         void CloseWindow(bool dialogResult);
 
         string GetQifFile();
+
+        void UpdateStatus(string status);
     }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {
@@ -155,6 +157,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     FinishImport(importRows);
                     return;
+                }
+                else
+                {
+                    View.UpdateStatus($"Processing {row.BankText}");
                 }
 
                 importRows.Add(row);

@@ -54,6 +54,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void GenerateTransactions(DateTime generateToDate);
 
         void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows);
+
+        void UpdateStatus(string status);
     }
 
     public class CompletedRegisterData
@@ -918,12 +920,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void PostTransactions(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
         {
+            var count = completedRows.Count;
+            var rowIndex = 0;
             foreach (var completedRow in completedRows)
             {
+                rowIndex++;
+                BankAccountView.UpdateStatus($"Processing Row {rowIndex} of {count}");
                 var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
                 var registerItem = new BankAccountRegisterItem();
-                registerItem.BankText = completedRow.BankText;
                 completedRow.SaveToEntity(registerItem, 0, amountDetails);
+
+                //if (!amountDetails.Any())
+                //{
+                //    registerItem.BankText = completedRow.BankText;
+                //}
 
                 var monthEndDate = new DateTime(registerItem.ItemDate.Year, registerItem.ItemDate.Month,
                     DateTime.DaysInMonth(registerItem.ItemDate.Year, registerItem.ItemDate.Month));

@@ -638,17 +638,32 @@ namespace RingSoft.HomeLogix.Library
             var result =new BudgetTotals();
             var context = AppGlobals.GetNewDbContext();
 
-            var bankPeriodRecords = 
-                context.BankAccountPeriodHistory
-                    .Include(i => i.BankAccount)
-                    .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
-                                w.PeriodEndingDate == monthEndDate && w.BankAccount.Id == bankAccountId);
+            //var bankPeriodRecords = 
+            //    context.BankAccountPeriodHistory
+            //        .Include(i => i.BankAccount)
+            //        .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
+            //                    w.PeriodEndingDate == monthEndDate && w.BankAccount.Id == bankAccountId);
 
-            foreach (var bankPeriodRecord in bankPeriodRecords)
-            {
-                result.TotalProjectedMonthlyIncome += bankPeriodRecord.TotalDeposits;
-                result.TotalProjectedMonthlyExpenses += bankPeriodRecord.TotalWithdrawals;
-            }
+            var historyExpenseAmount = context.History
+                .Include(i => i.BankAccount)
+                .Include(p => p.BudgetItem)
+                .Where(p => p.BankAccountId == bankAccountId &&
+                            p.Date.Year == monthEndDate.Year &&
+                            p.Date.Month == monthEndDate.Month &&
+                            p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
+                            p.BudgetItem.Type == BudgetItemTypes.Expense).ToList().Sum(p => p.ProjectedAmount);
+
+            var historyIncomeAmount = context.History
+                .Include(i => i.BankAccount)
+                .Include(p => p.BudgetItem)
+                .Where(p => p.BankAccountId == bankAccountId &&
+                            p.Date.Year == monthEndDate.Year &&
+                            p.Date.Month == monthEndDate.Month &&
+                            p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
+                            p.BudgetItem.Type == BudgetItemTypes.Income).ToList().Sum(p => p.ProjectedAmount);
+
+            result.TotalProjectedMonthlyIncome = historyIncomeAmount;
+            result.TotalProjectedMonthlyExpenses = historyExpenseAmount;
 
             return result;
         }

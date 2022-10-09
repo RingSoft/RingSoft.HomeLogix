@@ -16,6 +16,7 @@ namespace RingSoft.HomeLogix.ImportBank
     /// </summary>
     public partial class ImportBankTransactionsWindow : BaseWindow , IImportTransactionView
     {
+        private ImportQifProcedure _importProcedure;
         public ImportBankTransactionsWindow(BankAccountViewModel bankAccountViewModel)
         {
             InitializeComponent();
@@ -60,14 +61,14 @@ namespace RingSoft.HomeLogix.ImportBank
 
         public void ShowImportQifProcedure(string qifText)
         {
-            var importProcedure = new ImportQifProcedure(ViewModel, ImportProcedures.ImportingQif){QifFile = qifText};
-            importProcedure.Start();
+            _importProcedure = new ImportQifProcedure(ViewModel, ImportProcedures.ImportingQif){QifFile = qifText};
+            _importProcedure.Start();
         }
 
         public void ShowPostProcedure()
         {
-            var postProcedure = new ImportQifProcedure(ViewModel, ImportProcedures.PostingQif);
-            postProcedure.Start();
+            _importProcedure = new ImportQifProcedure(ViewModel, ImportProcedures.PostingQif);
+            _importProcedure.Start();
         }
 
         public void CloseWindow(bool dialogResult)
@@ -100,6 +101,11 @@ namespace RingSoft.HomeLogix.ImportBank
             var qifText = OpenTextFile(file);
 
             return qifText;
+        }
+
+        public void UpdateStatus(string status)
+        {
+            _importProcedure.SplashWindow.SetProgress(status);
         }
 
         public static string OpenTextFile(string fileName)

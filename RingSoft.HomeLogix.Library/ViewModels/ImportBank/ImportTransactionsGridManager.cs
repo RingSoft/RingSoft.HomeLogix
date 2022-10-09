@@ -118,8 +118,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (!ValidateTransactionRow(gridRow, true)) return false;
             }
 
+            var count = rows.Count();
+            var rowIndex = 0;
             foreach (var gridRow in rows)
             {
+                rowIndex++;
+                ViewModel.View.UpdateStatus($"Posting Row {rowIndex} of {count}");
                 if (gridRow.BudgetItemSplits.Any())
                 {
                     foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
@@ -483,8 +487,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             Grid?.SetBulkInsertMode(true);
             PreLoadGridFromEntity();
+            var rowIndex = 0;
+            var count = rows.Count;
             foreach (var importTransactionGridRow in rows)
             {
+                rowIndex++;
+                ViewModel.View.UpdateStatus($"Loading Row {rowIndex} of {count}");
                 var query = new SelectQuery(AppGlobals.LookupContext.QifMaps.TableName);
                 var foundMap = false;
                 var spacePos = importTransactionGridRow.BankText.IndexOf(" ");
