@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RingSoft.App.Controls;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -24,6 +25,29 @@ namespace RingSoft.HomeLogix.Budget
             var importTransactionsWindow = new ImportBankTransactionsWindow(bankAccountViewModel);
             importTransactionsWindow.ShowDialog();
             return importTransactionsWindow.DialogResult != null && importTransactionsWindow.DialogResult.Value;
+        }
+
+        public void LoadBank(BankAccount entity)
+        {
+            var bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading){BankAccount = entity};
+            bankProcedure.Start();
+        }
+
+        public void GenerateTransactions(DateTime generateToDate)
+        {
+            var bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Generating)
+                {GenerateToDate = generateToDate};
+            bankProcedure.Start();
+        }
+
+        public void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
+        {
+            var bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Posting)
+            {
+                CompletedRegisterData = completedRegisterData,
+                CompletedRows = completedRows
+            };
+            bankProcedure.Start();
         }
 
         public BankAccountMaintenanceWindow()

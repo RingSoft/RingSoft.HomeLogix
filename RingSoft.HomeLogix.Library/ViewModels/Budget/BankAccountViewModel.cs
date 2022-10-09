@@ -19,7 +19,12 @@ using RingSoft.HomeLogix.Sqlite.Migrations;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-
+    public enum BankProcesses
+    {
+        Loading = 0,
+        Posting = 1,
+        Generating = 2,
+    }
     public enum BankAccountTypes
     {
         [Description("Checking")]
@@ -43,6 +48,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         object OwnerWindow { get; }
 
         bool ImportFromBank(BankAccountViewModel bankAccountViewModel);
+
+        void LoadBank(BankAccount entity);
+
+        void GenerateTransactions(DateTime generateToDate);
+
+        void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows);
     }
 
     public class CompletedRegisterData
@@ -664,11 +675,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
 
-            AccountType = (BankAccountTypes)entity.AccountType;
+            BankAccountView.LoadBank(entity);
+            //LoadFromEntityProcedure(entity);
+        }
+
+        public void LoadFromEntityProcedure(BankAccount entity)
+        {
+            AccountType = (BankAccountTypes) entity.AccountType;
             CurrentBalance = entity.CurrentBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
-            
+
             Notes = entity.Notes;
             LastGenerationDate = entity.LastGenerationDate;
             if (LastGenerationDate == DateTime.MinValue)
@@ -689,6 +706,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 MonthlyBudgetWithdrawals = RegisterGridManager.MonthlyBudgetWithdrawals;
             }
+
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
 
             if (ReadOnlyMode)
@@ -745,9 +763,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             var generateToDate = BankAccountView.GetGenerateToDate(lastGenerationDate.Value.AddMonths(1));
 
+            //GenerateTransactions(generateToDate);
+            if (generateToDate != null) BankAccountView.GenerateTransactions(generateToDate.Value);
+        }
+
+        public void GenerateTransactions(DateTime? generateToDate)
+        {
             if (generateToDate == null)
                 return;
-            
+
             var budgetItems = AppGlobals.DataRepository.GetBudgetItemsForBankAccount(Id);
             if (budgetItems == null)
                 return;
@@ -765,7 +789,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
             if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
-                budgetItems, null, bankAccount))
+                    budgetItems, null, bankAccount))
                 return;
 
             foreach (var registerItem in registerItems)
@@ -888,6 +912,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
         {
+            BankAccountView.PostRegister(completedRegisterData, completedRows);
+            return true;
+        }
+
+        public void PostTransactions(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
+        {
             foreach (var completedRow in completedRows)
             {
                 var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
@@ -939,6 +969,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 }
                             }
                         }
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -949,16 +980,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     ProcessCompletedBudget(completedRegisterData, registerItem, monthEndDate, completedRow,
                         yearEndDate);
                 }
+
                 completedRegisterData.CompletedRegisterItems.Add(registerItem);
 
                 //if (addToHistory)
                 {
-                    AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow, amountDetails, addToBudgetHistory);
+                    AddCompletedToHistory(completedRegisterData, registerItem, transferToBankAccountId, completedRow,
+                        amountDetails, addToBudgetHistory);
                 }
 
                 //RegisterDetails.AddRange(amountDetails);
             }
-            return true;
         }
 
         private static void ProcessCompletedBudget(CompletedRegisterData completedRegisterData,

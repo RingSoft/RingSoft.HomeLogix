@@ -11,11 +11,18 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
+    public enum ImportProcedures
+    {
+        ImportingQif = 0,
+        PostingQif = 1,
+    }
     public interface IImportTransactionView
     {
         bool ShowImportBankBudgetWindow(ImportTransactionGridRow row);
 
         void ShowImportQifProcedure(string qifText);
+
+        void ShowPostProcedure();
 
         void CloseWindow(bool dialogResult);
 
@@ -88,7 +95,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var result = ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
                 if (result == MessageBoxButtonsResult.Yes)
                 {
-                    Manager.PostTransactions();
+                    //Manager.PostTransactions();
+                    View.ShowPostProcedure();
                     return;
                 }
 

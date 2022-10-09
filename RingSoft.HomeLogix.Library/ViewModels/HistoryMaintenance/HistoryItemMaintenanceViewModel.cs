@@ -282,8 +282,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.BankText, p => p.BankText);
             SourceHistoryLookupDefinition = sourceHistoryLookupDefinition;
 
-            BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
-            BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
+            //BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
+            //BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
             
             BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))
             {
