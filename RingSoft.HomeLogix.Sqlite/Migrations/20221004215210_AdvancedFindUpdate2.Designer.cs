@@ -8,7 +8,7 @@ using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
-    [DbContext(typeof(HomeLogixDbContext))]
+    [DbContext(typeof(SqliteHomeLogixDbContext))]
     [Migration("20221004215210_AdvancedFindUpdate2")]
     partial class AdvancedFindUpdate2
     {

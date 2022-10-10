@@ -14,5 +14,11 @@
 
     <dec:ComparisonConverter x:Key="ComparisonConverter"/>
 
+    <Style TargetType="ComboBox" x:Key="DatabaseComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+        <Setter Property="Height" Value="23" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="IsEditable" Value="True" />
+    </Style>
 
 </ResourceDictionary>

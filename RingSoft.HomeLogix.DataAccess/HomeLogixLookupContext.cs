@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
@@ -46,22 +47,44 @@ namespace RingSoft.HomeLogix.DataAccess
         public LookupDefinition<QifMapLookup, QifMap> QifMapLookup { get; set; }
         //----------------------------------------------------------------------
 
-        public override DbDataProcessor DataProcessor => SqliteDataProcessor;
+        public override DbDataProcessor DataProcessor
+        {
+            get
+            {
+                switch (DbPlatform)
+                {
+                    case DbPlatforms.Sqlite:
+                        return SqliteDataProcessor;
+                    case DbPlatforms.SqlServer:
+                        return SqlServerDataProcessor;
+                    //case DbPlatforms.MySql:
+                    //    break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
 
         public SqliteDataProcessor SqliteDataProcessor { get; }
-        
-        protected override DbContext DbContext => _dbContext;
 
-        private DbContext _dbContext;
+        public SqlServerDataProcessor SqlServerDataProcessor { get; }
+
+        public DbPlatforms DbPlatform { get; set; }
+        
+        protected override DbContext DbContext => LocalDbContext;
+
+        public DbContext LocalDbContext { get; set; }
 
         public HomeLogixLookupContext()
         {
             SqliteDataProcessor = new SqliteDataProcessor();
+            SqlServerDataProcessor = new SqlServerDataProcessor();
         }
 
-        public void Initialize(IHomeLogixDbContext dbContext)
+        public void Initialize(IHomeLogixDbContext dbContext, DbPlatforms platform)
         {
-            _dbContext = dbContext.DbContext;
+            DbPlatform = platform;
+            LocalDbContext = dbContext.DbContext;
             SystemGlobals.AdvancedFindLookupContext = this;
             var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
             configuration.InitializeModel();

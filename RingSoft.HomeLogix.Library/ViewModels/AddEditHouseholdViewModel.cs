@@ -3,6 +3,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.MasterData;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using RingSoft.App.Library;
@@ -58,6 +59,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
+        private SqlServerLoginViewModel _sqlServerLoginViewModel;
+
+        public SqlServerLoginViewModel SqlServerLoginViewModel
+        {
+            get => _sqlServerLoginViewModel;
+            set
+            {
+                if (_sqlServerLoginViewModel == value)
+                {
+                    return;
+                }
+                _sqlServerLoginViewModel = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private DbPlatforms _dbPlatform;
 
         public DbPlatforms DbPlatform
@@ -72,6 +90,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 _dbPlatform = value;
                 OnPropertyChanged();
                 View.SetPlatform();
+                SetFileName();
             }
         }
 
@@ -104,14 +123,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (folder.IsNullOrEmpty())
                 folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            var fileName = $"{HouseholdName} HomeLogix.sqlite";
-
-            if (SqliteLoginViewModel != null)
+            switch (DbPlatform)
             {
-                SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
+                case DbPlatforms.Sqlite:
+                    if (SqliteLoginViewModel != null)
+                    {
+                        var fileName = $"{HouseholdName} HomeLogix.sqlite";
+                        SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
+                    }
+                    break;
+                case DbPlatforms.SqlServer:
+                    if (SqlServerLoginViewModel != null)
+                    {
+                        SqlServerLoginViewModel.Database = $"{GetDatabaseName()}HomeLogix";
+                    }
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
+        private string GetDatabaseName()
+        {
+            var result = HouseholdName;
+            result = HouseholdName.Replace(" ", "");
+            return result;
+        }
 
         private void OnOk()
         {
@@ -131,14 +170,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return;
             }
 
-            var fileInfo = new FileInfo(SqliteLoginViewModel.FilenamePath);
-
-            Household = new Household
+            Household = new Household()
             {
                 Name = HouseholdName,
-                FileName = fileInfo.Name,
-                FilePath = fileInfo.DirectoryName
+                Platform = (byte)DbPlatform
             };
+
+            switch (DbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    var fileInfo = new FileInfo(SqliteLoginViewModel.FilenamePath);
+
+                    Household.FileName = fileInfo.Name;
+                    Household.FilePath = fileInfo.DirectoryName;
+                    break;
+                case DbPlatforms.SqlServer:
+                    if (!SqlServerLoginViewModel.TestDatabaseConnection())
+                    {
+                        return;
+                    }
+
+                    Household.Server = SqlServerLoginViewModel.Server;
+                    Household.Database = SqlServerLoginViewModel.Database;
+                    Household.AuthenticationType = (byte) SqlServerLoginViewModel.SecurityType;
+                    Household.Username = SqlServerLoginViewModel.UserName;
+                    Household.Password = SqlServerLoginViewModel.Password;
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
 
             View.CloseWindow();
         }

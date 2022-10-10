@@ -2,11 +2,11 @@
 
 namespace RingSoft.HomeLogix.Sqlite
 {
-    public class ContextDesignTimeFactory : IDesignTimeDbContextFactory<HomeLogixDbContext>
+    public class ContextDesignTimeFactory : IDesignTimeDbContextFactory<SqliteHomeLogixDbContext>
     {
-        HomeLogixDbContext IDesignTimeDbContextFactory<HomeLogixDbContext>.CreateDbContext(string[] args)
+        SqliteHomeLogixDbContext IDesignTimeDbContextFactory<SqliteHomeLogixDbContext>.CreateDbContext(string[] args)
         {
-            return new HomeLogixDbContext{IsDesignTime = true};
+            return new SqliteHomeLogixDbContext{IsDesignTime = true};
         }
     }
 }

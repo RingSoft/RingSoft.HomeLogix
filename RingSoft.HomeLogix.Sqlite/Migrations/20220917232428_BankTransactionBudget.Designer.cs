@@ -8,7 +8,7 @@ using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
-    [DbContext(typeof(HomeLogixDbContext))]
+    [DbContext(typeof(SqliteHomeLogixDbContext))]
     [Migration("20220917232428_BankTransactionBudget")]
     partial class BankTransactionBudget
     {

@@ -2,18 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
-    <ProjectReference Include="..\RingSoft.HomeLogix.MasterData\RingSoft.HomeLogix.MasterData.csproj" />
-    <ProjectReference Include="..\RingSoft.HomeLogix.Sqlite\RingSoft.HomeLogix.Sqlite.csproj" />
-    <ProjectReference Include="..\RingSoft.HomeLogix.SqlServer\RingSoft.HomeLogix.SqlServer.csproj" />
   </ItemGroup>
 
 </Project>

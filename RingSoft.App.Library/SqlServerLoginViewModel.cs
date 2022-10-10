@@ -1,9 +1,21 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.QueryBuilder;
 
 namespace RingSoft.App.Library
 {
+    public interface ISqlServerView
+    {
+        string Password { get; set; }
+    }
+
     public class SqlServerLoginViewModel : INotifyPropertyChanged
     {
         private string _server;
@@ -49,9 +61,27 @@ namespace RingSoft.App.Library
                     return;
                 }
                 _securityTypes = value;
+                SecurityEnabled = value == SecurityTypes.SqlLogin;
                 OnPropertyChanged();
             }
         }
+
+        private bool _securityEnabled;
+
+        public bool SecurityEnabled
+        {
+            get => _securityEnabled;
+            set
+            {
+                if (_securityEnabled == value)
+                {
+                    return;
+                }
+                _securityEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private string _userName;
 
@@ -83,6 +113,83 @@ namespace RingSoft.App.Library
                 _password = value;
                 OnPropertyChanged();
             }
+        }
+
+        public List<string> DatabasesList { get; private set; }
+
+        public RelayCommand TestCommand { get; set; }
+
+        public ISqlServerView View { get; set; }
+
+        public SqlServerLoginViewModel()
+        {
+            TestCommand = new RelayCommand(TestConnection);
+        }
+
+        public void OnViewLoaded(ISqlServerView view)
+        {
+            View = view;
+        }
+
+        public void DatabaseGotFocus()
+        {
+            var dbList = new List<string>();
+            DatabasesList = null;
+            var databaseProcessor = new SqlServerDataProcessor();
+            databaseProcessor.Server = Server;
+            var result = databaseProcessor.GetListOfDatabases();
+            if (result.ResultCode == GetDataResultCodes.Success)
+            {
+                var dataTable = result.DataSet.Tables[0];
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    var text = dataRow.GetRowValue(dataTable.Columns[0].ColumnName);
+                    dbList.Add(text);
+                }
+
+                DatabasesList = dbList.OrderBy(o => o).ToList();
+            }
+
+        }
+
+        private void TestConnection()
+        {
+            if (TestDatabaseConnection())
+            {
+                var message = "Connection Succeeded!";
+                var caption = "Test Connection";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+            }
+            else
+            {
+                var message = "Connection Failed!";
+                var caption = "Test Connection";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Error);
+            }
+        }
+
+        public bool TestDatabaseConnection()
+        {
+            var processor = new SqlServerDataProcessor();
+            processor.Server = Server;
+            processor.Database = "master";
+            processor.SecurityType = SecurityType;
+            switch (SecurityType)
+            {
+                case SecurityTypes.WindowsAuthentication:
+                    break;
+                case SecurityTypes.SqlLogin:
+                    processor.UserName = UserName;
+                    processor.Password = View.Password;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var query = new SelectQuery("spt_monitor");
+            var result = processor.GetData(query);
+
+            return result.ResultCode == GetDataResultCodes.Success;
         }
 
 

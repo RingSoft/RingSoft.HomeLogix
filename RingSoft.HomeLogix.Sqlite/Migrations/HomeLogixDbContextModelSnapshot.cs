@@ -7,7 +7,7 @@ using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
-    [DbContext(typeof(HomeLogixDbContext))]
+    [DbContext(typeof(SqliteHomeLogixDbContext))]
     partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

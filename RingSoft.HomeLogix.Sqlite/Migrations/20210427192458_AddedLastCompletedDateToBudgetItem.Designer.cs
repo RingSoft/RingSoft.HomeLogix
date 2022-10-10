@@ -8,7 +8,7 @@ using RingSoft.HomeLogix.Sqlite;
 
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
-    [DbContext(typeof(HomeLogixDbContext))]
+    [DbContext(typeof(SqliteHomeLogixDbContext))]
     [Migration("20210427192458_AddedLastCompletedDateToBudgetItem")]
     partial class AddedLastCompletedDateToBudgetItem
     {

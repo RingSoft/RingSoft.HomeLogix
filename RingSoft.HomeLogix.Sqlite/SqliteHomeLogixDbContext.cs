@@ -9,7 +9,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Sqlite
 {
-    public class HomeLogixDbContext : DbContext, IHomeLogixDbContext
+    public class SqliteHomeLogixDbContext : DbContext, IHomeLogixDbContext
     {
         //install Microsoft.EntityFrameworkCore.Tools NuGet
 
@@ -45,13 +45,12 @@ namespace RingSoft.HomeLogix.Sqlite
 
         private static HomeLogixLookupContext _lookupContext;
 
-        public HomeLogixDbContext(HomeLogixLookupContext lookupContext)
+        public void SetLookupContext(HomeLogixLookupContext lookupContext)
         {
-            DbConstants.ConstantGenerator = new SqliteDbConstants();
             _lookupContext = lookupContext;
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
         }
-
-        public HomeLogixDbContext()
+        public SqliteHomeLogixDbContext()
         {
             DbConstants.ConstantGenerator = new SqliteDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
@@ -84,7 +83,7 @@ namespace RingSoft.HomeLogix.Sqlite
 
         public IAdvancedFindDbContextEfCore GetNewDbContext()
         {
-            return new HomeLogixDbContext();
+            return new SqliteHomeLogixDbContext();
         }
     }
 }

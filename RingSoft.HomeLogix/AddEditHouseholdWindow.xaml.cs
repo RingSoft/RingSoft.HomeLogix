@@ -17,8 +17,21 @@ namespace RingSoft.HomeLogix
         {
             InitializeComponent();
 
-            Loaded += (sender, args) =>  ViewModel.OnViewLoaded(this);
+            Loaded += (sender, args) => ViewModel.OnViewLoaded(this);
             SqliteLogin.Loaded += SqliteLogin_Loaded;
+            SqlServerLogin.Loaded += SqlServerLogin_Loaded;
+            HouseholdNameTextBox.TextChanged += (sender, args) =>
+            {
+                ViewModel.HouseholdName = HouseholdNameTextBox.Text;
+                ViewModel.SetFileName();
+            };
+        }
+
+        private void SqlServerLogin_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.SqlServerLoginViewModel = SqlServerLogin.ViewModel;
+            ViewModel.SetFileName();
+            SetPlatform();
         }
 
         private void SqliteLogin_Loaded(object sender, RoutedEventArgs e)
@@ -52,12 +65,14 @@ namespace RingSoft.HomeLogix
         public void SetPlatform()
         {
             SqliteLogin.Visibility = Visibility.Collapsed;
+            SqlServerLogin.Visibility = Visibility.Collapsed;
             switch (ViewModel.DbPlatform)
             {
                 case DbPlatforms.Sqlite:
                     SqliteLogin.Visibility = Visibility.Visible;
                     break;
                 case DbPlatforms.SqlServer:
+                    SqlServerLogin.Visibility = Visibility.Visible;
                     break;
                 case DbPlatforms.MySql:
                     break;

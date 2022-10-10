@@ -52,6 +52,8 @@ namespace RingSoft.HomeLogix.Library
 
         public static IMainViewModel MainViewModel { get; set; }
 
+        public static DbPlatforms DbPlatform { get; set; }
+
         public static event EventHandler<AppProgressArgs> AppSplashProgress;
 
         public static void InitSettings()
@@ -65,14 +67,10 @@ namespace RingSoft.HomeLogix.Library
         
         {
             DataRepository ??= new DataRepository();
+            InitializeLookupContext();
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
-            LookupContext = new HomeLogixLookupContext();
-            LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
-            LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
-
-            LookupContext.Initialize(new HomeLogixDbContext(LookupContext));
 
             if (!UnitTesting)
             {
@@ -89,51 +87,97 @@ namespace RingSoft.HomeLogix.Library
             }
         }
 
+        private static void InitializeLookupContext()
+        {
+            LookupContext = new HomeLogixLookupContext();
+            LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
+            LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
+
+        }
+
         public static IHomeLogixDbContext GetNewDbContext()
         {
-            return new HomeLogixDbContext();
+            switch (DbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    return new SqliteHomeLogixDbContext();
+                //case DbPlatforms.SqlServer:
+                //    break;
+                //case DbPlatforms.MySql:
+                //    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public static string LoginToHousehold(Household household)
         {
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
-
-            if (!household.FilePath.EndsWith('\\'))
-                household.FilePath += "\\";
-
-            var newFile = !File.Exists($"{household.FilePath}{household.FileName}");
-
-            LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
-            LookupContext.SqliteDataProcessor.FileName = household.FileName;
-
-            if (newFile == false)
-            {
-                try
-                {
-                    var file = new FileInfo($"{household.FilePath}{household.FileName}");
-                    file.IsReadOnly = false;
-                }
-                catch (Exception e)
-                {
-                    var message = $"Can't access household file path: {household.FilePath} ";
-                    return message;
-                }
-                
-            }
-
+            DbPlatform = (DbPlatforms) household.Platform;
+            LookupContext.DbPlatform = DbPlatform;
             var context = GetNewDbContext();
-            context.DbContext.Database.Migrate();
+            context.SetLookupContext(LookupContext);
+            
+            switch ((DbPlatforms)household.Platform)
+            {
+                case DbPlatforms.Sqlite:
+                    if (!household.FilePath.EndsWith('\\'))
+                        household.FilePath += "\\";
 
-            if (newFile)
-            {
-                var systemMaster = new SystemMaster {HouseholdName = household.Name};
-                context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+                    LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
+                    LookupContext.SqliteDataProcessor.FileName = household.FileName;
+                    LookupContext.Initialize(context, DbPlatform);
+                    
+                    var newFile = !File.Exists($"{household.FilePath}{household.FileName}");
+
+                    if (newFile == false)
+                    {
+                        try
+                        {
+                            var file = new FileInfo($"{household.FilePath}{household.FileName}");
+                            file.IsReadOnly = false;
+                        }
+                        catch (Exception e)
+                        {
+                            var message = $"Can't access household file path: {household.FilePath} ";
+                            return message;
+                        }
+                        context.DbContext.Database.Migrate();
+                        var systemMaster = context.SystemMaster.FirstOrDefault();
+                        household.Name = systemMaster?.HouseholdName;
+                    }
+                    else
+                    {
+                        context.DbContext.Database.Migrate();
+                        var systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+
+                    }
+
+                    break;
+                case DbPlatforms.SqlServer:
+
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            else
+
+            switch (DbPlatform)
             {
-                var systemMaster = context.SystemMaster.FirstOrDefault();
-                household.Name = systemMaster?.HouseholdName;
+                case DbPlatforms.Sqlite:
+
+                    break;
+                case DbPlatforms.SqlServer:
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+            
+
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
 
