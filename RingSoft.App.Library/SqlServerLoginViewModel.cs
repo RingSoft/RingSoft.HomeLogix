@@ -133,23 +133,7 @@ namespace RingSoft.App.Library
 
         public void DatabaseGotFocus()
         {
-            var dbList = new List<string>();
-            DatabasesList = null;
-            var databaseProcessor = new SqlServerDataProcessor();
-            databaseProcessor.Server = Server;
-            var result = databaseProcessor.GetListOfDatabases();
-            if (result.ResultCode == GetDataResultCodes.Success)
-            {
-                var dataTable = result.DataSet.Tables[0];
-                foreach (DataRow dataRow in dataTable.Rows)
-                {
-                    var text = dataRow.GetRowValue(dataTable.Columns[0].ColumnName);
-                    dbList.Add(text);
-                }
-
-                DatabasesList = dbList.OrderBy(o => o).ToList();
-            }
-
+            DatabasesList = RingSoftAppGlobals.GetSqlServerDatabaseList(Server);
         }
 
         private void TestConnection()

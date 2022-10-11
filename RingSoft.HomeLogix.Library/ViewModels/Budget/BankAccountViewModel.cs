@@ -484,9 +484,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private DateTime _lastCompletedDate;
+        private DateTime? _lastCompletedDate;
 
-        public DateTime LastCompleteDate
+        public DateTime? LastCompleteDate
         {
             get => _lastCompletedDate;
             set
@@ -666,7 +666,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             else
             {
-                LastCompleteDate = DateTime.MinValue;
+                LastCompleteDate = new DateTime().MinDate();
             }
 
             CompleteAll = false;

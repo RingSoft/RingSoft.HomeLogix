@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.DataProcessor;
 
 namespace RingSoft.App.Library
 {
@@ -34,6 +39,28 @@ namespace RingSoft.App.Library
         {
             var result = endDate.Subtract(startDate).Days / (365.25 / 12);
             return result;
+        }
+
+        public static List<string> GetSqlServerDatabaseList(string serverName)
+        {
+            var dbList = new List<string>();
+            var databaseProcessor = new SqlServerDataProcessor();
+            databaseProcessor.Server = serverName;
+            var result = databaseProcessor.GetListOfDatabases();
+            if (result.ResultCode == GetDataResultCodes.Success)
+            {
+                var dataTable = result.DataSet.Tables[0];
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    var text = dataRow.GetRowValue(dataTable.Columns[0].ColumnName);
+                    dbList.Add(text);
+                }
+
+                return dbList.OrderBy(o => o).ToList();
+            }
+
+            return new List<string>();
+
         }
     }
 }

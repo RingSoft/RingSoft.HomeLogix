@@ -475,8 +475,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             query.AddSelectFormulaColumn("Actual", GeActualtMonthToDateFormulaSql());
             query.AddSelectFormulaColumn("Difference", GetBudgetMonthlyAmountDifferenceFormulaSql());
 
-            query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or);
-            query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
+            //query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
+            //query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
+
+            outerQuery.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
+            outerQuery.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
+
 
             return sqlGenerator.GenerateSelectStatement(outerQuery);
         }
@@ -518,10 +522,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
             query.AddWhereItemFormula(sql);
 
-            sql =
-                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-            sql += $"'{CurrentMonthEnding.Month:D2}'";
+            switch (AppGlobals.DbPlatform)
+            {
+                case DbPlatforms.SqlServer:
+                    sql =
+                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+                    sql += $"'{CurrentMonthEnding.Month:D2}'";
+                    break;
+                case DbPlatforms.Sqlite:
+                case DbPlatforms.MySql:
+                    sql =
+                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+                    sql += $"'{CurrentMonthEnding.Month:D2}'";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             query.AddWhereItemFormula(sql);
 
             unionSql += sqlGenerator.GenerateSelectStatement(query);
@@ -558,10 +577,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             sql += $"{ sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
             query.AddWhereItemFormula(sql);
 
-            sql =
-                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-            sql += $"'{CurrentMonthEnding.Month:D2}'";
+            switch (AppGlobals.DbPlatform)
+            {
+                case DbPlatforms.SqlServer:
+                    sql =
+                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+                    sql += $"'{CurrentMonthEnding.Month:D2}'";
+                    break;
+                case DbPlatforms.Sqlite:
+                case DbPlatforms.MySql:
+                    sql =
+                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+                    sql += $"'{CurrentMonthEnding.Month:D2}'";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             query.AddWhereItemFormula(sql);
 
             unionSql += sqlGenerator.GenerateSelectStatement(query);

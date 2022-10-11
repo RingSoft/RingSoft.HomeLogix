@@ -8,8 +8,10 @@ using System;
 using System.IO;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.SqlServer;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -101,8 +103,9 @@ namespace RingSoft.HomeLogix.Library
             {
                 case DbPlatforms.Sqlite:
                     return new SqliteHomeLogixDbContext();
-                //case DbPlatforms.SqlServer:
-                //    break;
+                case DbPlatforms.SqlServer:
+                    return new SqlServerHomeLogixDbContext();
+                    break;
                 //case DbPlatforms.MySql:
                 //    break;
                 default:
@@ -156,6 +159,27 @@ namespace RingSoft.HomeLogix.Library
 
                     break;
                 case DbPlatforms.SqlServer:
+                    LookupContext.SqlServerDataProcessor.Server = household.Server;
+                    LookupContext.SqlServerDataProcessor.Database = household.Database;
+                    LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)household.AuthenticationType;
+                    LookupContext.SqlServerDataProcessor.UserName = household.Username;
+                    LookupContext.SqlServerDataProcessor.Password = household.Password;
+
+                    context.DbContext.Database.Migrate();
+                    var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(household.Server);
+
+                    if (databases.IndexOf(household.Database) >= 0)
+                    {
+                        var systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+                    }
+                    else
+                    {
+                        var systemMaster = context.SystemMaster.FirstOrDefault();
+                        household.Name = systemMaster?.HouseholdName;
+
+                    }
+                    LookupContext.Initialize(context, DbPlatform);
 
                     break;
                 case DbPlatforms.MySql:

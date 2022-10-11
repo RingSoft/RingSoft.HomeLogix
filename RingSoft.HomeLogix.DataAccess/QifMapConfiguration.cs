@@ -20,12 +20,12 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.HasOne(p => p.BudgetItem)
                 .WithMany(p => p.Maps)
                 .HasForeignKey(p => p.BudgetId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.Source)
                 .WithMany(p => p.Maps)
                 .HasForeignKey(p => p.SourceId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
     }

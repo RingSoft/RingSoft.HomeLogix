@@ -19,12 +19,12 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.HasOne(p => p.BankTransaction)
                 .WithMany(p => p.BudgetItems)
                 .HasForeignKey(p => new {p.BankId, p.TransactionId})
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.BudgetItem)
                 .WithMany(p => p.TransactionBudgets)
                 .HasForeignKey(p => p.BudgetItemId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

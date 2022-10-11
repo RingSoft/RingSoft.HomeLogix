@@ -137,13 +137,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 registerStartDate = incompleteRows.Min(p => p.ItemDate);
             }
 
-            if (BankViewModel.LastCompleteDate == DateTime.MinValue)
+            if (BankViewModel.LastCompleteDate == null)
             {
                 startDate = registerStartDate;
             }
             else
             {
-                startDate = BankViewModel.LastCompleteDate;
+                startDate = BankViewModel.LastCompleteDate.Value;
             }
 
             var importRows = new List<ImportTransactionGridRow>();

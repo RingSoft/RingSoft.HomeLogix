@@ -26,22 +26,22 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(p => p.BankAccountId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.BudgetItem)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(p => p.BudgetId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.Source)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(p => p.SourceId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(p => p.QifMap)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(p => p.QifMapId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

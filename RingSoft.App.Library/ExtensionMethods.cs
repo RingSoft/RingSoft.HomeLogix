@@ -31,5 +31,10 @@ namespace RingSoft.App.Library
         {
             return Math.Round(value, CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
         }
+
+        public static DateTime MinDate(this DateTime date)
+        {
+            return new DateTime(1980, 01, 01);
+        }
     }
 }
