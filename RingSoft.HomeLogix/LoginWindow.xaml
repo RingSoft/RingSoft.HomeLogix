@@ -38,6 +38,8 @@
 
             <Button Content="_Add New Household" Margin="0,2.5" Command="{Binding AddNewCommand}"/>
 
+            <Button Content="_Edit Household" Margin="0,2.5" Command="{Binding EditCommand}"/>
+
             <Button Content="_Delete Household" Margin="0,2.5" Command="{Binding DeleteCommand}"/>
 
             <Button Content="C_onnect To Data File" Margin="0,2.5" Command="{Binding ConnectToDataFileCommand}"/>

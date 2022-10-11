@@ -14,6 +14,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         Household ShowAddHousehold();
 
+        void EditHousehold(Household household);
+
         string GetHouseholdDataFile();
 
         void CloseWindow();
@@ -94,6 +96,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public bool DialogResult { get; private set; }
 
         public RelayCommand AddNewCommand { get; }
+        public RelayCommand EditCommand { get; }
         public RelayCommand DeleteCommand { get; }
         public RelayCommand ConnectToDataFileCommand { get; }
         public RelayCommand LoginCommand { get; }
@@ -128,6 +131,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 SelectedItem = Items[0];
 
             AddNewCommand = new RelayCommand(AddNewHousehold);
+            EditCommand = new RelayCommand(EditHouseHold);
             DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
             ConnectToDataFileCommand = new RelayCommand(ConnectToDataFile);
             LoginCommand = new RelayCommand(Login){IsEnabled = CanLogin()};
@@ -145,6 +149,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (SelectedItem == null)
                 return false;
 
+            if (SelectedItem.Household.Id == 1)
+                return false;
+
             if (AppGlobals.LoggedInHousehold != null)
                 return AppGlobals.LoggedInHousehold.Id != SelectedItem.Household.Id;
 
@@ -156,6 +163,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             var newHousehold = View.ShowAddHousehold();
             if (newHousehold != null)
                 AddNewHousehold(newHousehold);
+        }
+
+        private void EditHouseHold()
+        {
+            View.EditHousehold(SelectedItem.Household);
         }
 
         private void AddNewHousehold(Household newHousehold)
@@ -287,6 +299,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (_initialized)
             {
                 DeleteCommand.IsEnabled = CanDeleteHousehold();
+                EditCommand.IsEnabled = CanDeleteHousehold();
                 LoginCommand.IsEnabled = CanLogin();
             }
 

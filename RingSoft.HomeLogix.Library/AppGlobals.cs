@@ -170,14 +170,13 @@ namespace RingSoft.HomeLogix.Library
 
                     if (databases.IndexOf(household.Database) >= 0)
                     {
-                        var systemMaster = new SystemMaster { HouseholdName = household.Name };
-                        context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
+                        var systemMaster = context.SystemMaster.FirstOrDefault();
+                        household.Name = systemMaster?.HouseholdName;
                     }
                     else
                     {
-                        var systemMaster = context.SystemMaster.FirstOrDefault();
-                        household.Name = systemMaster?.HouseholdName;
-
+                        var systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
                     }
                     LookupContext.Initialize(context, DbPlatform);
 

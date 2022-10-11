@@ -23,6 +23,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         void SetFocus(SetFocusControls control);
 
         void SetPlatform();
+
+        Household Household { get; set; }
     }
     public class AddEditHouseholdViewModel : INotifyPropertyChanged
     {
@@ -37,7 +39,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     return;
 
                 _householdName = value;
-                SetFileName();
+                //SetFileName();
 
                 OnPropertyChanged();
             }
@@ -98,6 +100,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public Household Household { get; private set; }
 
+        public DbPlatforms? OriginalDbPlatform { get; set; }
+
         public IAddEditHouseholdView View { get; private set; }
 
         public ICommand ShowFileDialogCommand { get; }
@@ -114,6 +118,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         {
             View = addEditHouseholdView;
             DbPlatform = DbPlatforms.Sqlite;
+            if (View.Household != null)
+            {
+                OriginalDbPlatform = (DbPlatforms) View.Household.Platform;
+            }
             SetFileName();
         }
 
@@ -148,7 +156,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         private string GetDatabaseName()
         {
             var result = HouseholdName;
-            result = HouseholdName.Replace(" ", "");
+            if (HouseholdName != null) result = HouseholdName.Replace(" ", "");
             return result;
         }
 
@@ -209,6 +217,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         private void OnCancel()
         {
             View.CloseWindow();
+        }
+
+        public void SetPlatformProperties()
+        {
+            if (SqlServerLoginViewModel == null || SqliteLoginViewModel == null)
+            {
+                return;
+            }
+            if (View.Household != null)
+            {
+                HouseholdName = View.Household.Name;
+                DbPlatform = (DbPlatforms) View.Household.Platform;
+                switch (DbPlatform)
+                {
+                    case DbPlatforms.Sqlite:
+                        if (SqliteLoginViewModel != null) SqliteLoginViewModel.FilenamePath 
+                            = $"{View.Household.FilePath}\\{View.Household.FileName}";
+                        break;
+                    case DbPlatforms.SqlServer:
+                        break;
+                    case DbPlatforms.MySql:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

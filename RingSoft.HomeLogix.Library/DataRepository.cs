@@ -617,7 +617,7 @@ namespace RingSoft.HomeLogix.Library
             if (!result.PreviousMonthHasValues)
             {
                 result.PreviousMonthHasValues = context.BankAccountRegisterItems.Any(a =>
-                    a.ItemDate < nextMonthEnding);
+                    a.ItemDate < previousMonthEnding);
             }
 
 
@@ -627,7 +627,7 @@ namespace RingSoft.HomeLogix.Library
             if (!result.NextMonthHasValues)
             {
                 result.NextMonthHasValues = context.BankAccountRegisterItems.Any(a =>
-                    a.ItemDate > nextMonthEnding);
+                    a.ItemDate > nextMonthEnding.AddMonths(-1).AddDays(1));
             }
 
             return result;

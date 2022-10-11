@@ -184,18 +184,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var table = AppGlobals.LookupContext.History;
-            var sql =
-                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+            var sql = string.Empty;
+            var yearSql = string.Empty;
+            switch (AppGlobals.DbPlatform)
+            {
+                case DbPlatforms.SqlServer:
+                    sql =
+                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+                    //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
+                    yearSql =
+                        $"YEAR({sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    yearSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+                    break;
+                case DbPlatforms.Sqlite:
+                case DbPlatforms.MySql:
+                    sql =
+                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+                    //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
+                    yearSql =
+                        $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                    yearSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             if (_mode == PeriodHistoryTypes.Monthly)
             {
                 HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Month:D2}", sql);
             }
-
-            sql =
-                $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Year:D4}", sql);
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
 
             ViewModelInput.HistoryFilterBankAccountPeriod = bankPeriodHistory;
 

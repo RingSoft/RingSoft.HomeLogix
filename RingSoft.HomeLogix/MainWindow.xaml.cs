@@ -109,7 +109,7 @@ namespace RingSoft.HomeLogix
             var result = false;
             var loginResult = loginWindow.ShowDialog();
 
-            if (loginResult != null)
+            if (loginResult != null && loginResult.Value == true)
                 result = (bool)loginResult;
 
             return result;

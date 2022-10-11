@@ -374,9 +374,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (AppGlobals.LoggedInHousehold == null)
                 loadVm = View.ChangeHousehold();
 
-            BankLookupDefinition = CreateBankLookupDefinition();
             if (loadVm)
             {
+                BankLookupDefinition = CreateBankLookupDefinition();
                 SetStartupView();
             }
         }

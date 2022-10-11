@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Windows;
 using RingSoft.App.Library;
+using SQLitePCL;
 
 namespace RingSoft.HomeLogix
 {
@@ -13,17 +14,21 @@ namespace RingSoft.HomeLogix
     /// </summary>
     public partial class AddEditHouseholdWindow : IAddEditHouseholdView
     {
-        public AddEditHouseholdWindow()
+        public Household Household { get; set; }
+        public AddEditHouseholdWindow(Household household = null)
         {
             InitializeComponent();
-
+            Household = household;
             Loaded += (sender, args) => ViewModel.OnViewLoaded(this);
             SqliteLogin.Loaded += SqliteLogin_Loaded;
             SqlServerLogin.Loaded += SqlServerLogin_Loaded;
             HouseholdNameTextBox.TextChanged += (sender, args) =>
             {
-                ViewModel.HouseholdName = HouseholdNameTextBox.Text;
-                ViewModel.SetFileName();
+                if (Household == null || (ViewModel.OriginalDbPlatform != null && ViewModel.OriginalDbPlatform != ViewModel.DbPlatform))
+                {
+                    ViewModel.HouseholdName = HouseholdNameTextBox.Text;
+                    ViewModel.SetFileName();
+                }
             };
         }
 
@@ -31,14 +36,18 @@ namespace RingSoft.HomeLogix
         {
             ViewModel.SqlServerLoginViewModel = SqlServerLogin.ViewModel;
             ViewModel.SetFileName();
+
             SetPlatform();
+            ViewModel.SetPlatformProperties();
         }
 
         private void SqliteLogin_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.SqliteLoginViewModel = SqliteLogin.ViewModel;
             ViewModel.SetFileName();
+
             SetPlatform();
+            ViewModel.SetPlatformProperties();
         }
 
         public new Household ShowDialog()
@@ -79,6 +88,7 @@ namespace RingSoft.HomeLogix
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            //ViewModel.SetPlatformProperties();
         }
     }
 }

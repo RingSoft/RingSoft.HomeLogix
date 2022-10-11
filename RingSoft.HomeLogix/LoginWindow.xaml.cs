@@ -28,8 +28,15 @@ namespace RingSoft.HomeLogix
 
         public Household ShowAddHousehold()
         {
-            var addEditHouseholdWindow = new AddEditHouseholdWindow {Owner = this};
+            var addEditHouseholdWindow = new AddEditHouseholdWindow() {Owner = this};
             return addEditHouseholdWindow.ShowDialog();
+        }
+
+        public void EditHousehold(Household household)
+        {
+            var addEditHouseholdWindow = new AddEditHouseholdWindow(household) { Owner = this };
+            addEditHouseholdWindow.ShowDialog();
+
         }
 
         public string GetHouseholdDataFile()
@@ -55,6 +62,7 @@ namespace RingSoft.HomeLogix
         }
 
         public void ShutDownApplication()
+        
         {
             Application.Current.Shutdown(0);
         }
