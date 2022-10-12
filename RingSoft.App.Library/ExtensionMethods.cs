@@ -36,5 +36,20 @@ namespace RingSoft.App.Library
         {
             return new DateTime(1980, 01, 01);
         }
+
+        public static string PlatformText(this DbPlatforms platform)
+        {
+            switch (platform)
+            {
+                case DbPlatforms.Sqlite:
+                    return "Sqlite";
+                case DbPlatforms.SqlServer:
+                    return "Microsoft SQL Server";
+                case DbPlatforms.MySql:
+                    return "MySQL";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(platform), platform, null);
+            }
+        }
     }
 }

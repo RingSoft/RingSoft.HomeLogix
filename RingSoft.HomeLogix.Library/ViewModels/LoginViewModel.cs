@@ -23,11 +23,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         void ShutDownApplication();
     }
 
-    public class LoginListBoxItem
+    public class LoginListBoxItem : INotifyPropertyChanged
     {
-        public string Text { get; set; }
+        private string _text;
+
+        public string Text
+        {
+            get => _text;
+            set
+            {
+                if (_text == value)
+                {
+                    return;
+                }
+                _text = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        //public string Text { get; set; }
 
         public Household Household { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
     public class LoginViewModel : INotifyPropertyChanged
@@ -131,7 +154,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 SelectedItem = Items[0];
 
             AddNewCommand = new RelayCommand(AddNewHousehold);
-            EditCommand = new RelayCommand(EditHouseHold);
+            EditCommand = new RelayCommand(EditHouseHold) { IsEnabled = CanDeleteHousehold() };
             DeleteCommand = new RelayCommand(DeleteHousehold){IsEnabled = CanDeleteHousehold()};
             ConnectToDataFileCommand = new RelayCommand(ConnectToDataFile);
             LoginCommand = new RelayCommand(Login){IsEnabled = CanLogin()};
@@ -168,6 +191,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         private void EditHouseHold()
         {
             View.EditHousehold(SelectedItem.Household);
+            MasterDbContext.SaveHousehold(SelectedItem.Household);
+            SelectedItem.Text = SelectedItem.Household.Name;
         }
 
         private void AddNewHousehold(Household newHousehold)

@@ -224,7 +224,9 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void SetupModel()
         {
+            var test = this;
             BankAccounts.HasRecordDescription("Bank Account").HasDescription("Bank Account");
+            BankAccounts.PriorityLevel = 10;
 
             BankAccounts.GetFieldDefinition(p => p.CurrentBalance)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)

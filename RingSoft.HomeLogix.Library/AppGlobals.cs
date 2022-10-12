@@ -187,20 +187,6 @@ namespace RingSoft.HomeLogix.Library
                     throw new ArgumentOutOfRangeException();
             }
 
-            switch (DbPlatform)
-            {
-                case DbPlatforms.Sqlite:
-
-                    break;
-                case DbPlatforms.SqlServer:
-                    break;
-                case DbPlatforms.MySql:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            
-
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
 
@@ -208,6 +194,11 @@ namespace RingSoft.HomeLogix.Library
             LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
             return string.Empty;
+        }
+
+        public bool CopyData(DbPlatforms fromPlatform, DbPlatforms toPlatform)
+        {
+            return true;
         }
     }
 }

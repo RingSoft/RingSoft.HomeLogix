@@ -4,9 +4,13 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.ModelDefinition;
 
 namespace RingSoft.App.Library
 {
@@ -61,6 +65,56 @@ namespace RingSoft.App.Library
 
             return new List<string>();
 
+        }
+
+        public static bool CopyData(LookupContext lookupContext, DbDataProcessor destinationDataProcessor)
+        {
+            
+            var tables = lookupContext.TableDefinitions.OrderBy(p => p.PriorityLevel);
+            var pageSize = 100;
+            foreach (var table in tables)
+            {
+                var chunk = table.GetChunk(pageSize);
+
+                if (chunk.Chunk.Rows.Count >= pageSize)
+                {
+                    while (chunk.Chunk.Rows.Count >= pageSize)
+                    {
+                        ProcessChunk(destinationDataProcessor, chunk, table);
+                    }
+                }
+                else if (chunk.Chunk.Rows.Count > 0)
+                {
+                    ProcessChunk(destinationDataProcessor, chunk, table);
+                }
+            }
+            return true;
+        }
+
+        private static void ProcessChunk(DbDataProcessor destinationDataProcessor, ChunkResult chunk, TableDefinitionBase table)
+        {
+            var sqlList = new List<string>();
+            sqlList.Add($"SET IDENTITY_INSERT {destinationDataProcessor.SqlGenerator.FormatSqlObject(table.TableName)} ON");
+            foreach (DataRow chunkRow in chunk.Chunk.Rows)
+            {
+                var insertFields = string.Empty;
+                var values = string.Empty;
+                foreach (var fieldDefinition in table.FieldDefinitions)
+                {
+                    insertFields +=
+                        $"{destinationDataProcessor.SqlGenerator.FormatSqlObject(fieldDefinition.FieldName)}, ";
+                    values +=
+                        $"{destinationDataProcessor.SqlGenerator.ConvertValueToSqlText(chunkRow.GetRowValue(fieldDefinition.FieldName), fieldDefinition.ValueType)}, ";
+                }
+
+                insertFields = insertFields.LeftStr(insertFields.Length - 2);
+                values = values.LeftStr(values.Length - 2);
+                var sql =
+                    $"INSERT INTO {destinationDataProcessor.SqlGenerator.FormatSqlObject(table.TableName)} ({insertFields}) VALUES ({values})";
+                sqlList.Add(sql);
+            }
+
+            var result = destinationDataProcessor.ExecuteSqls(sqlList, true);
         }
     }
 }

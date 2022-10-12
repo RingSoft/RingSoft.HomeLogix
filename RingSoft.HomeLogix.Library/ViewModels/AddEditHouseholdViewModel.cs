@@ -6,7 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.AdvancedFind;
+using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.EfCore;
+using RingSoft.HomeLogix.Sqlite;
+using RingSoft.HomeLogix.SqlServer;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -92,7 +99,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 _dbPlatform = value;
                 OnPropertyChanged();
                 View.SetPlatform();
-                SetFileName();
+
+                //if (!_settingDbProperties)
+
+                //SetDefaultDatabaseName();
+                //    SetPlatformProperties();
+                //}
             }
         }
 
@@ -108,6 +120,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public ICommand OkCommand { get; }
         public ICommand CancelCommand { get; }
 
+        public bool SettingDbProperties { get; set; }
+
         public AddEditHouseholdViewModel()
         {
             OkCommand = new RelayCommand(OnOk);
@@ -121,35 +135,50 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (View.Household != null)
             {
                 OriginalDbPlatform = (DbPlatforms) View.Household.Platform;
+                DbPlatform = (DbPlatforms) View.Household.Platform;
+                SetPlatformProperties();
             }
-            SetFileName();
+            else
+            {
+                SetDefaultDatabaseName();
+            }
         }
 
-        public void SetFileName()
+        public void SetDefaultDatabaseName()
         {
             var folder = Environment.GetEnvironmentVariable("OneDriveConsumer");
             if (folder.IsNullOrEmpty())
                 folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            switch (DbPlatform)
+            if (SqliteLoginViewModel != null)
             {
-                case DbPlatforms.Sqlite:
-                    if (SqliteLoginViewModel != null)
+                var fileName = $"{HouseholdName} HomeLogix.sqlite";
+                if (View.Household != null)
+                {
+                    if ((DbPlatforms)View.Household.Platform != DbPlatforms.Sqlite)
                     {
-                        var fileName = $"{HouseholdName} HomeLogix.sqlite";
                         SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
                     }
-                    break;
-                case DbPlatforms.SqlServer:
-                    if (SqlServerLoginViewModel != null)
+                }
+                else
+                {
+                    SqliteLoginViewModel.FilenamePath = $"{folder?.Trim()}\\{fileName.Trim()}";
+                }
+            }
+
+            if (SqlServerLoginViewModel != null)
+            {
+                if (View.Household != null)
+                {
+                    if ((DbPlatforms)View.Household.Platform != DbPlatforms.SqlServer)
                     {
                         SqlServerLoginViewModel.Database = $"{GetDatabaseName()}HomeLogix";
                     }
-                    break;
-                case DbPlatforms.MySql:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                }
+                else
+                {
+                    SqlServerLoginViewModel.Database = $"{GetDatabaseName()}HomeLogix";
+                }
             }
         }
 
@@ -178,11 +207,74 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return;
             }
 
-            Household = new Household()
+            if (View.Household == null)
             {
-                Name = HouseholdName,
-                Platform = (byte)DbPlatform
-            };
+                Household = new Household();
+            }
+            else
+            {
+                if (OriginalDbPlatform.HasValue && OriginalDbPlatform != DbPlatform)
+                {
+                    var message =
+                        $"Do you wish to copy your data from {OriginalDbPlatform.Value.PlatformText()} to {DbPlatform.PlatformText()}?";
+                    var caption = "Copy Data?";
+                    if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true) == MessageBoxButtonsResult.Yes)
+                    {
+                        Household = View.Household;
+                        AppGlobals.LoginToHousehold(View.Household);
+                        
+
+                        if (!SetHouseholdProperties())
+                            return;
+
+                        DbDataProcessor destinationProcessor = null;
+                        switch (DbPlatform)
+                        {
+                            case DbPlatforms.Sqlite:
+                                destinationProcessor = AppGlobals.LookupContext.SqliteDataProcessor;
+                                break;
+                            case DbPlatforms.SqlServer:
+                                destinationProcessor = AppGlobals.LookupContext.SqlServerDataProcessor;
+                                break;
+                            case DbPlatforms.MySql:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+
+                        }
+                        //SystemGlobals.AdvancedFindLookupContext = AppGlobals.LookupContext;
+                        //var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
+                        //var context = AppGlobals.GetNewDbContext();
+                        //context.SetLookupContext(AppGlobals.LookupContext);
+                        //configuration.InitializeModel();
+                        //var context = AppGlobals.GetNewDbContext();
+                        //context.SetLookupContext(AppGlobals.LookupContext);
+                        //AppGlobals.LookupContext.Initialize(AppGlobals.GetNewDbContext(), OriginalDbPlatform.Value);
+                        //AppGlobals.LoginToHousehold(View.Household);
+                        if (!RingSoftAppGlobals.CopyData(AppGlobals.LookupContext, destinationProcessor))
+                        {
+                            return;
+                        }
+
+                    }
+                }
+            }
+            Household.Platform = (byte)DbPlatform;
+            if (!SetHouseholdProperties())
+                return;
+
+            if (View.Household != null)
+            {
+                AppGlobals.LookupContext.DbPlatform = DbPlatform;
+                var context = AppGlobals.GetNewDbContext();
+                context.SetLookupContext(AppGlobals.LookupContext);
+            }
+            View.CloseWindow();
+        }
+
+        private bool SetHouseholdProperties()
+        {
+            Household.Name = HouseholdName;
 
             switch (DbPlatform)
             {
@@ -191,11 +283,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
                     Household.FileName = fileInfo.Name;
                     Household.FilePath = fileInfo.DirectoryName;
+                    AppGlobals.LookupContext.SqliteDataProcessor.FilePath = Household.FilePath;
+                    AppGlobals.LookupContext.SqliteDataProcessor.FileName = Household.FileName;
                     break;
                 case DbPlatforms.SqlServer:
                     if (!SqlServerLoginViewModel.TestDatabaseConnection())
                     {
-                        return;
+                        return false;
                     }
 
                     Household.Server = SqlServerLoginViewModel.Server;
@@ -203,6 +297,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     Household.AuthenticationType = (byte) SqlServerLoginViewModel.SecurityType;
                     Household.Username = SqlServerLoginViewModel.UserName;
                     Household.Password = SqlServerLoginViewModel.Password;
+
+                    AppGlobals.LookupContext.SqlServerDataProcessor.Server = SqlServerLoginViewModel.Server;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.Database = SqlServerLoginViewModel.Database;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = SqlServerLoginViewModel.SecurityType;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.UserName = SqlServerLoginViewModel.UserName;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.Password = SqlServerLoginViewModel.Password;
                     break;
                 case DbPlatforms.MySql:
                     break;
@@ -210,8 +310,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-
-            View.CloseWindow();
+            return true;
         }
 
         private void OnCancel()
@@ -225,23 +324,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             {
                 return;
             }
+
             if (View.Household != null)
             {
+                SettingDbProperties = true;
                 HouseholdName = View.Household.Name;
-                DbPlatform = (DbPlatforms) View.Household.Platform;
-                switch (DbPlatform)
-                {
-                    case DbPlatforms.Sqlite:
-                        if (SqliteLoginViewModel != null) SqliteLoginViewModel.FilenamePath 
-                            = $"{View.Household.FilePath}\\{View.Household.FileName}";
-                        break;
-                    case DbPlatforms.SqlServer:
-                        break;
-                    case DbPlatforms.MySql:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                //DbPlatform = (DbPlatforms) View.Household.Platform;
+
+                SqliteLoginViewModel.FilenamePath = $"{View.Household.FilePath}\\{View.Household.FileName}";
+                SqlServerLoginViewModel.Server = View.Household.Server;
+                SqlServerLoginViewModel.Database = View.Household.Database;
+                SqlServerLoginViewModel.SecurityType = (SecurityTypes) View.Household.AuthenticationType;
+                SqlServerLoginViewModel.UserName = View.Household.Username;
+                SqlServerLoginViewModel.Password = View.Household.Password;
+                SettingDbProperties = false;
             }
         }
 

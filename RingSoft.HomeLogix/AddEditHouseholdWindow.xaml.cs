@@ -24,10 +24,9 @@ namespace RingSoft.HomeLogix
             SqlServerLogin.Loaded += SqlServerLogin_Loaded;
             HouseholdNameTextBox.TextChanged += (sender, args) =>
             {
-                if (Household == null || (ViewModel.OriginalDbPlatform != null && ViewModel.OriginalDbPlatform != ViewModel.DbPlatform))
+                if (!ViewModel.SettingDbProperties)
                 {
-                    ViewModel.HouseholdName = HouseholdNameTextBox.Text;
-                    ViewModel.SetFileName();
+                    ViewModel.SetDefaultDatabaseName();
                 }
             };
         }
@@ -35,7 +34,7 @@ namespace RingSoft.HomeLogix
         private void SqlServerLogin_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.SqlServerLoginViewModel = SqlServerLogin.ViewModel;
-            ViewModel.SetFileName();
+            ViewModel.SetDefaultDatabaseName();
 
             SetPlatform();
             ViewModel.SetPlatformProperties();
@@ -44,7 +43,7 @@ namespace RingSoft.HomeLogix
         private void SqliteLogin_Loaded(object sender, RoutedEventArgs e)
         {
             ViewModel.SqliteLoginViewModel = SqliteLogin.ViewModel;
-            ViewModel.SetFileName();
+            ViewModel.SetDefaultDatabaseName();
 
             SetPlatform();
             ViewModel.SetPlatformProperties();
@@ -88,7 +87,15 @@ namespace RingSoft.HomeLogix
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            //ViewModel.SetPlatformProperties();
+
+            //if (Household == null)
+            //{
+            //    ViewModel.SetDefaultDatabaseName();
+            //}
+            //else
+            //{
+            //    ViewModel.SetPlatformProperties();
+            //}
         }
     }
 }
