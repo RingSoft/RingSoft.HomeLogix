@@ -97,9 +97,13 @@ namespace RingSoft.HomeLogix.Library
 
         }
 
-        public static IHomeLogixDbContext GetNewDbContext()
+        public static IHomeLogixDbContext GetNewDbContext(DbPlatforms? platform = null)
         {
-            switch (DbPlatform)
+            if (platform == null)
+            {
+                platform = DbPlatform;
+            }
+            switch (platform)
             {
                 case DbPlatforms.Sqlite:
                     return new SqliteHomeLogixDbContext();

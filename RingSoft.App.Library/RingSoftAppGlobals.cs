@@ -11,6 +11,8 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbLookup.QueryBuilder;
 
 namespace RingSoft.App.Library
 {
@@ -69,7 +71,6 @@ namespace RingSoft.App.Library
 
         public static bool CopyData(LookupContext lookupContext, DbDataProcessor destinationDataProcessor)
         {
-            
             var tables = lookupContext.TableDefinitions.OrderBy(p => p.PriorityLevel);
             var pageSize = 100;
             foreach (var table in tables)
@@ -81,6 +82,11 @@ namespace RingSoft.App.Library
                     while (chunk.Chunk.Rows.Count >= pageSize)
                     {
                         ProcessChunk(destinationDataProcessor, chunk, table);
+                        chunk = table.GetChunk(pageSize, chunk.BottomPrimaryKey);
+                        if (chunk.Chunk.Rows.Count < pageSize)
+                        {
+                            ProcessChunk(destinationDataProcessor, chunk, table);
+                        }
                     }
                 }
                 else if (chunk.Chunk.Rows.Count > 0)
@@ -94,7 +100,11 @@ namespace RingSoft.App.Library
         private static void ProcessChunk(DbDataProcessor destinationDataProcessor, ChunkResult chunk, TableDefinitionBase table)
         {
             var sqlList = new List<string>();
-            sqlList.Add($"SET IDENTITY_INSERT {destinationDataProcessor.SqlGenerator.FormatSqlObject(table.TableName)} ON");
+            if (table.PrimaryKeyFields.Count == 1 && table.PrimaryKeyFields[0].FieldDataType == FieldDataTypes.Integer)
+            {
+                sqlList.Add($"SET IDENTITY_INSERT {destinationDataProcessor.SqlGenerator.FormatSqlObject(table.TableName)} ON");
+            }
+            
             foreach (DataRow chunkRow in chunk.Chunk.Rows)
             {
                 var insertFields = string.Empty;

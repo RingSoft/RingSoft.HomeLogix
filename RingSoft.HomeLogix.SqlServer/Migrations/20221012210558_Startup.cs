@@ -119,7 +119,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     SearchForValue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Formula = table.Column<string>(type: "ntext", nullable: true),
                     FormulaDataType = table.Column<byte>(type: "tinyint", nullable: false),
-                    FormulaDisplayValue = table.Column<string>(type: "nvarchar", nullable: true),
+                    FormulaDisplayValue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     SearchForAdvancedFindId = table.Column<int>(type: "integer", nullable: true),
                     CustomDate = table.Column<bool>(type: "bit", nullable: false),
                     RightParentheses = table.Column<byte>(type: "tinyint", nullable: false),
@@ -214,7 +214,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     ProjectedAmount = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
                     IsNegative = table.Column<bool>(type: "bit", nullable: false),
                     ActualAmount = table.Column<decimal>(type: "numeric", nullable: true),
-                    TransferRegisterGuid = table.Column<string>(type: "nvarchar", nullable: true),
+                    TransferRegisterGuid = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Completed = table.Column<bool>(type: "bit", nullable: false),
                     BankText = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },

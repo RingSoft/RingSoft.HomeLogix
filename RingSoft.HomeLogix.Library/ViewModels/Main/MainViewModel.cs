@@ -383,6 +383,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void SetStartupView()
         {
+            var look = AppGlobals.LookupContext;
             var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
             if (currentBudgetMonth == null)
             {

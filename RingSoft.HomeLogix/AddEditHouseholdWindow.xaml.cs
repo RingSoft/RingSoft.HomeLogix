@@ -15,6 +15,9 @@ namespace RingSoft.HomeLogix
     public partial class AddEditHouseholdWindow : IAddEditHouseholdView
     {
         public Household Household { get; set; }
+        public HouseholdProcesses HouseholdProcess { get; set; }
+        public bool DataCopied { get; set; }
+
         public AddEditHouseholdWindow(Household household = null)
         {
             InitializeComponent();

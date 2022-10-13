@@ -10,7 +10,7 @@ using RingSoft.HomeLogix.SqlServer;
 namespace RingSoft.HomeLogix.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerHomeLogixDbContext))]
-    [Migration("20221011010247_Startup")]
+    [Migration("20221012210558_Startup")]
     partial class Startup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,7 +134,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("FormulaDisplayValue")
-                        .HasColumnType("nvarchar");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("LeftParentheses")
                         .HasColumnType("tinyint");
@@ -287,7 +288,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TransferRegisterGuid")
-                        .HasColumnType("nvarchar");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

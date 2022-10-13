@@ -49,6 +49,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public decimal? ActualAmount { get; set; }
 
+        [MaxLength(50)]
         public string TransferRegisterGuid { get; set; }
 
         public bool Completed { get; set; }

@@ -3,6 +3,7 @@ using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.MasterData;
 using System.ComponentModel;
 using System.Windows;
+using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix
 {
@@ -36,7 +37,13 @@ namespace RingSoft.HomeLogix
         {
             var addEditHouseholdWindow = new AddEditHouseholdWindow(household) { Owner = this };
             addEditHouseholdWindow.ShowDialog();
-
+            if (addEditHouseholdWindow.DataCopied)
+            {
+                var message = "You must restart the application in order to continue.";
+                var caption = "Restart Application";
+                MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+                Application.Current.Shutdown();
+            }
         }
 
         public string GetHouseholdDataFile()

@@ -75,6 +75,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
         public DbContext LocalDbContext { get; set; }
 
+        private bool _initialized;
+
         public HomeLogixLookupContext()
         {
             SqliteDataProcessor = new SqliteDataProcessor();
@@ -85,12 +87,15 @@ namespace RingSoft.HomeLogix.DataAccess
         {
             DbPlatform = platform;
             LocalDbContext = dbContext.DbContext;
+            if (_initialized)
+                return;
             SystemGlobals.AdvancedFindLookupContext = this;
             var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
             configuration.InitializeModel();
             configuration.ConfigureLookups();
 
             Initialize();
+            _initialized = true;
         }
 
         protected override void InitializeLookupDefinitions()
@@ -248,6 +253,7 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItems.GetFieldDefinition(p => p.BankAccountId)
                 .HasDescription("Bank Account");
 
+            BudgetItems.PriorityLevel = 20;
             BudgetItems.GetFieldDefinition(p => (int)p.Type).HasContentTemplateId(BudgetItemTypeContentId);
 
             BudgetItems.GetFieldDefinition(p => p.Amount)
@@ -264,6 +270,8 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItems.GetFieldDefinition(p => (int) p.Type).IsEnum<BudgetItemTypes>();
 
             BudgetItems.GetFieldDefinition(p => (int) p.RecurringType).IsEnum<BudgetItemRecurringTypes>();
+
+            BudgetItemSources.PriorityLevel = 30;
 
             BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
