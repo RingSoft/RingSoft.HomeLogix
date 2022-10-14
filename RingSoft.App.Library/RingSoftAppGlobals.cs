@@ -102,7 +102,11 @@ namespace RingSoft.App.Library
             var sqlList = new List<string>();
             if (table.PrimaryKeyFields.Count == 1 && table.PrimaryKeyFields[0].FieldDataType == FieldDataTypes.Integer)
             {
-                sqlList.Add($"SET IDENTITY_INSERT {destinationDataProcessor.SqlGenerator.FormatSqlObject(table.TableName)} ON");
+                var sql = destinationDataProcessor.GetIdentityInsertSql(table.TableName);
+                if (!sql.IsNullOrEmpty())
+                {
+                    sqlList.Add(sql);
+                }
             }
             
             foreach (DataRow chunkRow in chunk.Chunk.Rows)
@@ -111,10 +115,15 @@ namespace RingSoft.App.Library
                 var values = string.Empty;
                 foreach (var fieldDefinition in table.FieldDefinitions)
                 {
+                    var dateType = DbDateTypes.DateOnly;
+                    if (fieldDefinition is DateFieldDefinition dateFieldDefinition)
+                    {
+                        dateType = dateFieldDefinition.DateType;
+                    }
                     insertFields +=
                         $"{destinationDataProcessor.SqlGenerator.FormatSqlObject(fieldDefinition.FieldName)}, ";
                     values +=
-                        $"{destinationDataProcessor.SqlGenerator.ConvertValueToSqlText(chunkRow.GetRowValue(fieldDefinition.FieldName), fieldDefinition.ValueType)}, ";
+                        $"{destinationDataProcessor.SqlGenerator.ConvertValueToSqlText(chunkRow.GetRowValue(fieldDefinition.FieldName), fieldDefinition.ValueType, dateType)}, ";
                 }
 
                 insertFields = insertFields.LeftStr(insertFields.Length - 2);

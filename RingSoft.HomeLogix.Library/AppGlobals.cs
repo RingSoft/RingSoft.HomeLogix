@@ -62,7 +62,7 @@ namespace RingSoft.HomeLogix.Library
         {
             RingSoftAppGlobals.AppTitle = "HomeLogix";
             RingSoftAppGlobals.AppCopyright = "©2022 by Peter Ringering";
-            RingSoftAppGlobals.AppVersion = "0.91.00";
+            RingSoftAppGlobals.AppVersion = "0.92.00";
         }
 
         public static void Initialize()
@@ -193,16 +193,10 @@ namespace RingSoft.HomeLogix.Library
 
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
-
             var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
             LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
             return string.Empty;
-        }
-
-        public bool CopyData(DbPlatforms fromPlatform, DbPlatforms toPlatform)
-        {
-            return true;
         }
     }
 }

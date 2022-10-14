@@ -531,7 +531,8 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
-                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Income)
+                                w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
+                                w.BudgetItem.Type == BudgetItemTypes.Income)
                     .Sum(s => s.ProjectedAmount);
 
             var registerAmount = context.BankAccountRegisterItems
@@ -545,7 +546,8 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
-                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                                w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
+                                w.BudgetItem.Type == BudgetItemTypes.Expense)
                     .Sum(s => s.ProjectedAmount);
 
              registerAmount = context.BankAccountRegisterItems
@@ -559,7 +561,8 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int) PeriodHistoryTypes.Monthly &&
-                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Income)
+                                w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
+                                w.BudgetItem.Type == BudgetItemTypes.Income)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems
@@ -573,7 +576,8 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
-                                w.PeriodEndingDate == monthEndDate && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                                w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
+                                w.BudgetItem.Type == BudgetItemTypes.Expense)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems
@@ -588,7 +592,8 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Yearly &&
-                                w.PeriodEndingDate == yearEndDate && w.BudgetItem.Type == BudgetItemTypes.Income)
+                                w.PeriodEndingDate.Year == yearEndDate.Year && 
+                                w.BudgetItem.Type == BudgetItemTypes.Income)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems
@@ -602,7 +607,7 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Yearly &&
-                                w.PeriodEndingDate == yearEndDate && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                                w.PeriodEndingDate.Year == yearEndDate.Year && w.BudgetItem.Type == BudgetItemTypes.Expense)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems
@@ -613,7 +618,8 @@ namespace RingSoft.HomeLogix.Library
             result.YearToDateExpenses += Math.Abs(registerAmount);
 
             result.PreviousMonthHasValues = context.BudgetPeriodHistory.Any(a =>
-                a.PeriodType == (int) PeriodHistoryTypes.Monthly && a.PeriodEndingDate == previousMonthEnding);
+                a.PeriodType == (int) PeriodHistoryTypes.Monthly &&
+                a.PeriodEndingDate.Year == monthEndDate.Year && a.PeriodEndingDate.Month == monthEndDate.Month);
 
             if (!result.PreviousMonthHasValues)
             {
@@ -623,7 +629,8 @@ namespace RingSoft.HomeLogix.Library
 
 
             result.NextMonthHasValues = context.BudgetPeriodHistory.Any(a =>
-                a.PeriodType == (int)PeriodHistoryTypes.Monthly && a.PeriodEndingDate == nextMonthEnding);
+                a.PeriodType == (int)PeriodHistoryTypes.Monthly && 
+                a.PeriodEndingDate.Year == nextMonthEnding.Year && a.PeriodEndingDate.Month == nextMonthEnding.Month);
 
             if (!result.NextMonthHasValues)
             {

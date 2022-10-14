@@ -29,13 +29,21 @@ namespace RingSoft.HomeLogix
 
         public Household ShowAddHousehold()
         {
-            var addEditHouseholdWindow = new AddEditHouseholdWindow() {Owner = this};
+            var addEditHouseholdWindow = new AddEditHouseholdWindow()
+            {
+                Owner = this,
+                HouseholdProcess = HouseholdProcesses.Add
+            };
             return addEditHouseholdWindow.ShowDialog();
         }
 
         public void EditHousehold(Household household)
         {
-            var addEditHouseholdWindow = new AddEditHouseholdWindow(household) { Owner = this };
+            var addEditHouseholdWindow = new AddEditHouseholdWindow(household)
+            {
+                Owner = this,
+                HouseholdProcess = HouseholdProcesses.Edit
+            };
             addEditHouseholdWindow.ShowDialog();
             if (addEditHouseholdWindow.DataCopied)
             {

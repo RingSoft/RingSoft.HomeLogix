@@ -482,8 +482,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             outerQuery.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
             outerQuery.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
 
-
-            return sqlGenerator.GenerateSelectStatement(outerQuery);
+            var sql = sqlGenerator.GenerateSelectStatement(outerQuery);
+            return sql;
         }
 
         private string GetBudgetMonthlyAmountDifferenceFormulaSql()
@@ -512,9 +512,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var unionSql = $"{sql}\r\n";
             unionSql += $"\r\nUNION ALL\r\n\r\n";
 
-            sql = $"coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql = $"ROUND(coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
             sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
-            sql += ")),0)";
+            sql += ")),0), 2)";
             query.AddSelectFormulaColumn("Actual", sql);
 
             sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
@@ -567,9 +567,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var unionSql = $"{sql}\r\n";
             unionSql += $"\r\nUNION ALL\r\n\r\n";
 
-            sql = $"coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
+            sql = $"ROUND(coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
             sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
-            sql += ")),0)";
+            sql += ")),0), 2)";
             query.AddSelectFormulaColumn("Projected",sql);
 
             sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
@@ -624,7 +624,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 : "Actual";
 
             query.AddSelectFormulaColumn(sumField,
-                $"(coalesce(SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{field}), 0)) ");
+                $"ROUND((coalesce(SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{field}), 0)), 2) ");
             query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodType).FieldName, Conditions.Equals,
                 (int)PeriodHistoryTypes.Monthly);
             query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,

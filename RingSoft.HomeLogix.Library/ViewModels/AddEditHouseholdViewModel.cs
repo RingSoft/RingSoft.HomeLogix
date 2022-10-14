@@ -211,12 +211,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return;
             }
 
-            if (SqliteLoginViewModel.FilenamePath.IsNullOrEmpty())
+            switch (DbPlatform)
             {
-                var message = "File Name must have a value";
-                ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid File Name", RsMessageBoxIcons.Exclamation);
-                View.SetFocus(SetFocusControls.FileName);
-                return;
+                case DbPlatforms.Sqlite:
+                    if (SqliteLoginViewModel.FilenamePath.IsNullOrEmpty())
+                    {
+                        var message = "File Name must have a value";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid File Name", RsMessageBoxIcons.Exclamation);
+                        View.SetFocus(SetFocusControls.FileName);
+                        return;
+                    }
+                    break;
+                case DbPlatforms.SqlServer:
+                    if (!SqlServerLoginViewModel.TestDatabaseConnection())
+                    {
+                        return;
+                    }
+                    if (SqlServerLoginViewModel.Database.IsNullOrEmpty())
+                    {
+                        var message = "Database must have a value";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, "Invalid File Name", RsMessageBoxIcons.Exclamation);
+                        View.SetFocus(SetFocusControls.FileName);
+                        return;
+                    }
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             Household = new Household();
@@ -264,9 +286,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                                 var sqlServerContext = new SqlServerHomeLogixDbContext();
                                 sqlServerContext.SetLookupContext(AppGlobals.LookupContext);
                                 dbContext = sqlServerContext;
-                                sqlServerProcessor.Database = "master";
-                                destinationProcessor.ExecuteSql($"DROP DATABASE IF EXISTS {destinationProcessor.SqlGenerator.FormatSqlObject(SqlServerLoginViewModel.Database)}");
-                                sqlServerProcessor.Database = SqlServerLoginViewModel.Database;
                                 break;
                             case DbPlatforms.MySql:
                                 break;
@@ -274,6 +293,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                                 throw new ArgumentOutOfRangeException();
 
                         }
+
+                        if (!destinationProcessor.DropDatabase())
+                        {
+                            return;
+                        }
+
                         AppGlobals.GetNewDbContext().SetLookupContext(AppGlobals.LookupContext);
                         AppGlobals.LookupContext.Initialize(AppGlobals.GetNewDbContext(), OriginalDbPlatform.Value);
 
@@ -400,7 +425,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 SqliteLoginViewModel.FilenamePath = $"{path}{View.Household.FileName}";
                 SqlServerLoginViewModel.Server = View.Household.Server;
                 SqlServerLoginViewModel.Database = View.Household.Database;
-                SqlServerLoginViewModel.SecurityType = (SecurityTypes) View.Household.AuthenticationType;
+                if (View.Household.AuthenticationType != null)
+                    SqlServerLoginViewModel.SecurityType = (SecurityTypes) View.Household.AuthenticationType;
                 SqlServerLoginViewModel.UserName = View.Household.Username;
                 SqlServerLoginViewModel.Password = View.Household.Password;
                 SettingDbProperties = false;
