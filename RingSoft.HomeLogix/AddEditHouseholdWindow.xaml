@@ -29,7 +29,7 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="Household Name" HorizontalAlignment="Left"/>
 
-        <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="HouseholdNameTextBox" HorizontalAlignment="Left" Width="200" Text="{Binding HouseholdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="HouseholdNameTextBox" HorizontalAlignment="Left" Width="200" Text="{Binding EntityName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Database Platform">
 

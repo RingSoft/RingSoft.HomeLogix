@@ -3,6 +3,7 @@ using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.MasterData;
 using System.ComponentModel;
 using System.Windows;
+using RingSoft.App.Library;
 using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix
@@ -29,20 +30,19 @@ namespace RingSoft.HomeLogix
 
         public Household ShowAddHousehold()
         {
-            var addEditHouseholdWindow = new AddEditHouseholdWindow()
+            var addEditHouseholdWindow = new AddEditHouseholdWindow(DbLoginProcesses.Add)
             {
-                Owner = this,
-                HouseholdProcess = HouseholdProcesses.Add
+                Owner = this
             };
-            return addEditHouseholdWindow.ShowDialog();
+            addEditHouseholdWindow.ShowDialog();
+            return addEditHouseholdWindow.ViewModel.Object;
         }
 
-        public void EditHousehold(Household household)
+        public bool EditHousehold(ref Household household)
         {
-            var addEditHouseholdWindow = new AddEditHouseholdWindow(household)
+            var addEditHouseholdWindow = new AddEditHouseholdWindow(DbLoginProcesses.Edit, household)
             {
                 Owner = this,
-                HouseholdProcess = HouseholdProcesses.Edit
             };
             addEditHouseholdWindow.ShowDialog();
             if (addEditHouseholdWindow.DataCopied)
@@ -52,6 +52,14 @@ namespace RingSoft.HomeLogix
                 MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
                 Application.Current.Shutdown();
             }
+
+            if (addEditHouseholdWindow.ViewModel.DialogResult)
+            {
+                if (addEditHouseholdWindow.ViewModel.Object != null)
+                    household = addEditHouseholdWindow.ViewModel.Object;
+            }
+
+            return household != null;
         }
 
         public string GetHouseholdDataFile()

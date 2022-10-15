@@ -18,48 +18,57 @@ namespace RingSoft.HomeLogix
         public HouseholdProcesses HouseholdProcess { get; set; }
         public bool DataCopied { get; set; }
 
-        public AddEditHouseholdWindow(Household household = null)
+        public AddEditHouseholdWindow(DbLoginProcesses loginProcess, Household household = null)
         {
             InitializeComponent();
             Household = household;
-            Loaded += (sender, args) => ViewModel.OnViewLoaded(this);
-            SqliteLogin.Loaded += SqliteLogin_Loaded;
-            SqlServerLogin.Loaded += SqlServerLogin_Loaded;
+            
+            SqliteLogin.Loaded += (sender, args) => ViewModel.Initialize(this, loginProcess, SqliteLogin.ViewModel,
+                SqlServerLogin.ViewModel, household);
+            SqlServerLogin.Loaded  += (sender, args) => ViewModel.Initialize(this, loginProcess, SqliteLogin.ViewModel,
+                SqlServerLogin.ViewModel, household);
+
             HouseholdNameTextBox.TextChanged += (sender, args) =>
             {
-                if (!ViewModel.SettingDbProperties)
-                {
-                    ViewModel.SetDefaultDatabaseName();
-                }
+                //if (!ViewModel.SettingDbProperties)
+                //{
+                //    ViewModel.SetDefaultDatabaseName();
+                //}
             };
         }
 
-        private void SqlServerLogin_Loaded(object sender, RoutedEventArgs e)
+        //private void SqlServerLogin_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    ViewModel.SqlServerLoginViewModel = SqlServerLogin.ViewModel;
+        //    ViewModel.SetDefaultDatabaseName();
+
+        //    SetPlatform();
+        //    ViewModel.SetPlatformProperties();
+        //}
+
+        //private void SqliteLogin_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    ViewModel.SqliteLoginViewModel = SqliteLogin.ViewModel;
+        //    ViewModel.SetDefaultDatabaseName();
+
+        //    SetPlatform();
+        //    ViewModel.SetPlatformProperties();
+        //}
+
+        //public new Household ShowDialog()
+        //{
+        //    base.ShowDialog();
+        //    return ViewModel.Household;
+        //}
+
+        //public void CloseWindow() => Close();
+
+
+
+        public void CloseWindow()
         {
-            ViewModel.SqlServerLoginViewModel = SqlServerLogin.ViewModel;
-            ViewModel.SetDefaultDatabaseName();
-
-            SetPlatform();
-            ViewModel.SetPlatformProperties();
+            Close();
         }
-
-        private void SqliteLogin_Loaded(object sender, RoutedEventArgs e)
-        {
-            ViewModel.SqliteLoginViewModel = SqliteLogin.ViewModel;
-            ViewModel.SetDefaultDatabaseName();
-
-            SetPlatform();
-            ViewModel.SetPlatformProperties();
-        }
-
-        public new Household ShowDialog()
-        {
-            base.ShowDialog();
-            return ViewModel.Household;
-        }
-
-        public void CloseWindow() => Close();
-
 
         public void SetFocus(SetFocusControls control)
         {
