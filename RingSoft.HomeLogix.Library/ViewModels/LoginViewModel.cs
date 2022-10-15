@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         Household ShowAddHousehold();
 
-        void EditHousehold(Household household);
+        bool EditHousehold(ref Household household);
 
         string GetHouseholdDataFile();
 
@@ -190,9 +190,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void EditHouseHold()
         {
-            View.EditHousehold(SelectedItem.Household);
-            MasterDbContext.SaveHousehold(SelectedItem.Household);
-            SelectedItem.Text = SelectedItem.Household.Name;
+            var household = SelectedItem.Household;
+            if (View.EditHousehold(ref household))
+            {
+                SelectedItem.Household = household;
+                MasterDbContext.SaveHousehold(SelectedItem.Household);
+                SelectedItem.Text = SelectedItem.Household.Name;
+            }
         }
 
         private void AddNewHousehold(Household newHousehold)

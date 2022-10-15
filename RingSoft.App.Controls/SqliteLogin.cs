@@ -65,7 +65,8 @@ namespace RingSoft.App.Controls
         public string ShowFileDialog()
         {
             var fileName = Path.GetFileName(ViewModel.FilenamePath);
-            var directory = new FileInfo(ViewModel.FilenamePath ?? string.Empty).DirectoryName;
+            var directory = string.Empty;
+            if (ViewModel.FilenamePath != null) directory = new FileInfo(ViewModel.FilenamePath).DirectoryName;
             var saveFileDialog = new SaveFileDialog
             {
                 FileName = fileName ?? string.Empty,

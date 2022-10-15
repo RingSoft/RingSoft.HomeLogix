@@ -47,6 +47,7 @@ namespace RingSoft.App.Library
                 }
                 _database = value;
                 OnPropertyChanged();
+                DatabaseChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         private SecurityTypes _securityTypes;
@@ -120,6 +121,8 @@ namespace RingSoft.App.Library
         public RelayCommand TestCommand { get; set; }
 
         public ISqlServerView View { get; set; }
+
+        public event EventHandler DatabaseChanged;
 
         public SqlServerLoginViewModel()
         {
