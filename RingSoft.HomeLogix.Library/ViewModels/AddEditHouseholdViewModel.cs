@@ -447,7 +447,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     throw new ArgumentOutOfRangeException();
 
             }
-
+            AppGlobals.LoadDataProcessor(Object, OriginalDbPlatform);
             if (!destinationProcessor.DropDatabase())
             {
                 return false;

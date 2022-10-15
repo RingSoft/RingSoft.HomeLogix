@@ -124,15 +124,13 @@ namespace RingSoft.HomeLogix.Library
             LookupContext.DbPlatform = DbPlatform;
             var context = GetNewDbContext();
             context.SetLookupContext(LookupContext);
-            
+            LoadDataProcessor(household);
             switch ((DbPlatforms)household.Platform)
             {
                 case DbPlatforms.Sqlite:
                     if (!household.FilePath.EndsWith('\\'))
                         household.FilePath += "\\";
 
-                    LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
-                    LookupContext.SqliteDataProcessor.FileName = household.FileName;
                     LookupContext.Initialize(context, DbPlatform);
                     
                     var newFile = !File.Exists($"{household.FilePath}{household.FileName}");
@@ -163,12 +161,7 @@ namespace RingSoft.HomeLogix.Library
 
                     break;
                 case DbPlatforms.SqlServer:
-                    LookupContext.SqlServerDataProcessor.Server = household.Server;
-                    LookupContext.SqlServerDataProcessor.Database = household.Database;
-                    LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)household.AuthenticationType;
-                    LookupContext.SqlServerDataProcessor.UserName = household.Username;
-                    LookupContext.SqlServerDataProcessor.Password = household.Password;
-
+                    
                     context.DbContext.Database.Migrate();
                     var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(household.Server);
 
@@ -197,6 +190,31 @@ namespace RingSoft.HomeLogix.Library
             LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
 
             return string.Empty;
+        }
+
+        public static void LoadDataProcessor(Household household, DbPlatforms? platform = null)
+        {
+            if (platform == null)
+            {
+                platform = (DbPlatforms) household.Platform;
+            }
+
+            switch (platform)
+            {
+                case DbPlatforms.Sqlite:
+                    LookupContext.SqliteDataProcessor.FilePath = household.FilePath;
+                    LookupContext.SqliteDataProcessor.FileName = household.FileName;
+                    break;
+                case DbPlatforms.SqlServer:
+                    LookupContext.SqlServerDataProcessor.Server = household.Server;
+                    LookupContext.SqlServerDataProcessor.Database = household.Database;
+                    LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)household.AuthenticationType;
+                    LookupContext.SqlServerDataProcessor.UserName = household.Username;
+                    LookupContext.SqlServerDataProcessor.Password = household.Password;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
