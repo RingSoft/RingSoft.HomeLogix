@@ -22,6 +22,8 @@ namespace RingSoft.App.Library
         void SetPlatform();
 
         bool DataCopied { get; set; }
+
+        bool DoCopyProcedure();
     }
 
     public abstract class DbLoginViewModel<TEntity> : INotifyPropertyChanged where TEntity : new()
@@ -85,6 +87,8 @@ namespace RingSoft.App.Library
         private bool _newSqlServerDatabase;
         private bool _settingSqliteFileName;
         private bool _settingSqlServerDatabase;
+        private LookupContext _lookupContext;
+        private DbDataProcessor _destinationProcessor;
 
         public DbLoginViewModel()
         {
@@ -265,23 +269,32 @@ namespace RingSoft.App.Library
                     MessageBoxButtonsResult.Yes)
                 {
                     View.DataCopied = true;
-                    LookupContext lookupContext = null;
-                    DbDataProcessor destinationProcessor = null;
-                    if (!PreDataCopy(ref lookupContext, ref destinationProcessor))
+                    if (!PreDataCopy(ref _lookupContext, ref _destinationProcessor))
                     {
                         DialogResult = false;
                         return;
                     }
 
-                    if (!RingSoftAppGlobals.CopyData(lookupContext, destinationProcessor))
+                    if (!View.DoCopyProcedure())
                     {
-                        DialogResult = false;
                         return;
                     }
                 }
             }
 
             View.CloseWindow();
+        }
+
+        public bool CopyData(ITwoTierProcedure procedure)
+        {
+            procedure.SetWindowText($"Copying Data from {OriginalDbPlatform.PlatformText()} to {DbPlatform.PlatformText()}");
+            if (!RingSoftAppGlobals.CopyData(_lookupContext, _destinationProcessor, procedure))
+            {
+                DialogResult = false;
+                return false;
+            }
+
+            return true;
         }
 
         protected void LoadDbDataProcessor(DbDataProcessor processor)

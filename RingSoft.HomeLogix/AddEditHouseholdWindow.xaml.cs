@@ -4,6 +4,7 @@ using RingSoft.HomeLogix.MasterData;
 using System;
 using System.IO;
 using System.Windows;
+using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using SQLitePCL;
 
@@ -18,11 +19,20 @@ namespace RingSoft.HomeLogix
         public HouseholdProcesses HouseholdProcess { get; set; }
         public bool DataCopied { get; set; }
 
+        private TwoTierProcedure _procedure;
+        public bool DoCopyProcedure()
+        {
+            _procedure = new TwoTierProcedure();
+            _procedure.DoProcedure += (sender, args) => ViewModel.CopyData(_procedure);
+            var result = _procedure.Start();
+            return result;
+        }
+
         public AddEditHouseholdWindow(DbLoginProcesses loginProcess, Household household = null)
         {
             InitializeComponent();
             Household = household;
-            
+
             SqliteLogin.Loaded += (sender, args) => ViewModel.Initialize(this, loginProcess, SqliteLogin.ViewModel,
                 SqlServerLogin.ViewModel, household);
             SqlServerLogin.Loaded  += (sender, args) => ViewModel.Initialize(this, loginProcess, SqliteLogin.ViewModel,

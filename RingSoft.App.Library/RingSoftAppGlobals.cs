@@ -69,12 +69,16 @@ namespace RingSoft.App.Library
 
         }
 
-        public static bool CopyData(LookupContext lookupContext, DbDataProcessor destinationDataProcessor)
+        public static bool CopyData(LookupContext lookupContext, DbDataProcessor destinationDataProcessor, ITwoTierProcedure procedure)
         {
             var tables = lookupContext.TableDefinitions.OrderBy(p => p.PriorityLevel);
+            var tableCount = tables.Count();
+            var tableItem = 0;
             var pageSize = 100;
             foreach (var table in tables)
             {
+                tableItem++;
+                procedure.UpdateTopTier($"Processing Table {table.Description} {tableItem}/{tableCount}", tableCount, tableItem);
                 var chunk = table.GetChunk(pageSize);
 
                 if (chunk.Chunk.Rows.Count >= pageSize)

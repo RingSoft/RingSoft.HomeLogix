@@ -370,12 +370,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         //}
 
         public override void Initialize(IDbLoginView view, DbLoginProcesses loginProcess, SqliteLoginViewModel sqliteLoginViewModel,
-           SqlServerLoginViewModel sqlServerLoginViewModel, Household entity = null)
+            SqlServerLoginViewModel sqlServerLoginViewModel, Household entity)
         {
             if (view is IAddEditHouseholdView addEditHouseholdView)
             {
                 View = addEditHouseholdView;
             }
+
             base.Initialize(view, loginProcess, sqliteLoginViewModel, sqlServerLoginViewModel, entity);
         }
 

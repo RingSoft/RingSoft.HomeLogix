@@ -9,6 +9,7 @@
         <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/AppStyles.xaml"/>
         <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/SqliteLoginControlTemplate.xaml"/>
         <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/SqlServerLoginTemplate.xaml"/>
+        <ResourceDictionary Source="/RingSoft.App.Controls;component/Themes/TwoTierProgressWindowTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type local:DbMaintenanceWindow}" BasedOn="{StaticResource {x:Type Window}}"/>

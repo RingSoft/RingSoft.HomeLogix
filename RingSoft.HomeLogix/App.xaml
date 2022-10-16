@@ -7,7 +7,8 @@
              xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
              xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
              xmlns:af="clr-namespace:RingSoft.DbLookup.Controls.WPF.AdvancedFind;assembly=RingSoft.DbLookup.Controls.WPF"
-             xmlns:local="clr-namespace:RingSoft.HomeLogix">
+             xmlns:local="clr-namespace:RingSoft.HomeLogix"
+             xmlns:controls="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -51,6 +52,8 @@
             <Style TargetType="af:AdvancedFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <Style TargetType="af:AdvancedFindRefreshRateWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+            <Style TargetType="controls:TwoTierProgressWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 
