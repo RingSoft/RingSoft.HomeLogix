@@ -31,6 +31,11 @@ namespace RingSoft.App.Controls
             _splashWindow.UpdateTopTier(text, maxCount, currentItem);
         }
 
+        public void UpdateBottomTier(string text, int maxCount, int currentItem)
+        {
+            _splashWindow.UpdateBottomTier(text, maxCount, currentItem);
+        }
+
         public void SetWindowText(string text)
         {
             _splashWindow.SetWindowText(text);

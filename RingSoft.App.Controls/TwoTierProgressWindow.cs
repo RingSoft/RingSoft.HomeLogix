@@ -81,8 +81,21 @@ namespace RingSoft.App.Controls
                 ViewModel.TopTierText = text;
                 ViewModel.TopTierMaximum =maxCount;
                 ViewModel.TopTierProgress = currentItem;
+                ViewModel.BottomTierMaximum = 100;
+                ViewModel.BottomTierProgress = 0;
             });
         }
+
+        public void UpdateBottomTier(string text, int maxCount, int currentItem)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                ViewModel.BottomTierText = text;
+                ViewModel.BottomTierMaximum = maxCount;
+                ViewModel.BottomTierProgress = currentItem;
+            });
+        }
+
 
         public void SetWindowText(string text)
         {

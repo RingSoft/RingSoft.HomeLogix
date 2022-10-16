@@ -269,11 +269,6 @@ namespace RingSoft.App.Library
                     MessageBoxButtonsResult.Yes)
                 {
                     View.DataCopied = true;
-                    if (!PreDataCopy(ref _lookupContext, ref _destinationProcessor))
-                    {
-                        DialogResult = false;
-                        return;
-                    }
 
                     if (!View.DoCopyProcedure())
                     {
@@ -288,6 +283,13 @@ namespace RingSoft.App.Library
         public bool CopyData(ITwoTierProcedure procedure)
         {
             procedure.SetWindowText($"Copying Data from {OriginalDbPlatform.PlatformText()} to {DbPlatform.PlatformText()}");
+            procedure.UpdateTopTier($"Creating Destination {DbPlatform.PlatformText()} Database", 100, 0);
+            if (!PreDataCopy(ref _lookupContext, ref _destinationProcessor))
+            {
+                DialogResult = false;
+                return false;
+            }
+            
             if (!RingSoftAppGlobals.CopyData(_lookupContext, _destinationProcessor, procedure))
             {
                 DialogResult = false;

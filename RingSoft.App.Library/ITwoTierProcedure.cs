@@ -10,6 +10,8 @@ namespace RingSoft.App.Library
 
         void UpdateTopTier(string text, int maxCount, int currentItem);
 
+        void UpdateBottomTier(string text, int maxCount, int currentItem);
+
         void SetWindowText(string text);
     }
 }

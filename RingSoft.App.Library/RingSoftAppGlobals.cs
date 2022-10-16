@@ -79,22 +79,36 @@ namespace RingSoft.App.Library
             {
                 tableItem++;
                 procedure.UpdateTopTier($"Processing Table {table.Description} {tableItem}/{tableCount}", tableCount, tableItem);
+                var count = 0;
+                var selectQuery = new SelectQuery(table.TableName);
+                var countQuery = new CountQuery(selectQuery, "Count");
+                var countResult = lookupContext.DataProcessor.GetData(countQuery);
+                if (countResult.ResultCode == GetDataResultCodes.Success)
+                {
+                    count = countResult.DataSet.Tables[0].Rows[0].GetRowValue("Count").ToInt();
+                }
+                var processingRecord = 0;
                 var chunk = table.GetChunk(pageSize);
-
                 if (chunk.Chunk.Rows.Count >= pageSize)
                 {
                     while (chunk.Chunk.Rows.Count >= pageSize)
                     {
+                        processingRecord += chunk.Chunk.Rows.Count;
+                        procedure.UpdateBottomTier($"Processing Record {processingRecord}/{count}", count, processingRecord);
                         ProcessChunk(destinationDataProcessor, chunk, table);
                         chunk = table.GetChunk(pageSize, chunk.BottomPrimaryKey);
                         if (chunk.Chunk.Rows.Count < pageSize)
                         {
+                            processingRecord += chunk.Chunk.Rows.Count;
+                            procedure.UpdateBottomTier($"Processing Record {processingRecord}/{count}", count, processingRecord);
                             ProcessChunk(destinationDataProcessor, chunk, table);
                         }
                     }
                 }
                 else if (chunk.Chunk.Rows.Count > 0)
                 {
+                    processingRecord += chunk.Chunk.Rows.Count;
+                    procedure.UpdateBottomTier($"Processing Record {processingRecord}/{count}", count, processingRecord);
                     ProcessChunk(destinationDataProcessor, chunk, table);
                 }
             }

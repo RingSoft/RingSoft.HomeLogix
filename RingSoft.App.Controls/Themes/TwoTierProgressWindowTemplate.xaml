@@ -28,6 +28,9 @@
 
                             <ProgressBar Grid.Row="1" Height="20" Maximum="{Binding Path=TopTierMaximum}" Minimum="0" Value="{Binding TopTierProgress}" Width="400"/>
 
+                            <dec:StringReadOnlyBox Grid.Row="2" Text="{Binding Path=BottomTierText}" HorizontalAlignment="Center" DesignText="Processing Record 1,000,000 of 1,000,000" Width="400"/>
+
+                            <ProgressBar Grid.Row="3" Height="20" Maximum="{Binding Path=BottomTierMaximum}" Minimum="0" Value="{Binding BottomTierProgress}" Width="400"/>
 
                         </Grid>
                     </Border>
