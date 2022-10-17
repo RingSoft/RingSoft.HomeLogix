@@ -61,7 +61,7 @@ namespace RingSoft.HomeLogix.Library
         public static void InitSettings()
         {
             RingSoftAppGlobals.AppTitle = "HomeLogix";
-            RingSoftAppGlobals.AppCopyright = "©10/16/2022 by Peter Ringering";
+            RingSoftAppGlobals.AppCopyright = "©10/17/2022 by Peter Ringering";
             RingSoftAppGlobals.AppVersion = "0.92.01";
         }
 

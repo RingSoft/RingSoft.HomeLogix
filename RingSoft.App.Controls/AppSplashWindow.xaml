@@ -29,8 +29,9 @@
             <TextBlock VerticalAlignment="Center" Text="RingSoft" FontSize="24" FontWeight="Bold"/>
         </StackPanel>
         <StackPanel Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock x:Name="AppTitleTextBlock" Text="AppTitle" FontSize="18"/>
+            <TextBlock x:Name="AppTitleTextBlock" Text="AppTitle" FontSize="18" HorizontalAlignment="Center"/>
             <TextBlock x:Name="AppVersionTextBlock" Text="Version" HorizontalAlignment="Center" FontSize="14"/>
+            <TextBlock x:Name="AppCopyrightTextBlock" Text="Version" HorizontalAlignment="Center" FontSize="14"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Orientation="Horizontal">
             <dec:WaitSpinner Height="20" Width="20" EllipseSize="4" Margin="5"/>

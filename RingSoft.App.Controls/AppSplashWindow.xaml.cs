@@ -17,6 +17,7 @@ namespace RingSoft.App.Controls
 
             AppTitleTextBlock.Text = RingSoftAppGlobals.AppTitle;
             AppVersionTextBlock.Text = $"Version {RingSoftAppGlobals.AppVersion}";
+            AppCopyrightTextBlock.Text = RingSoftAppGlobals.AppCopyright;
         }
 
         public void SetProgress(string progressText)
