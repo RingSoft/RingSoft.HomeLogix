@@ -1,10 +1,12 @@
-﻿using RingSoft.DataEntryControls.Engine;
+﻿using System;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.MasterData;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -16,7 +18,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         bool EditHousehold(ref Household household);
 
-        string GetHouseholdDataFile();
+        AddEditHouseholdViewModel GetHouseholdConnection();
 
         void CloseWindow();
 
@@ -214,30 +216,79 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void ConnectToDataFile()
         {
-            var fileName = View.GetHouseholdDataFile();
-            if (!fileName.IsNullOrEmpty())
+            var connection = View.GetHouseholdConnection();
+            if (connection.DialogResult)
             {
-                var currentFilePath = AppGlobals.LookupContext.SqliteDataProcessor.FilePath;
-                var currentFileName = AppGlobals.LookupContext.SqliteDataProcessor.FileName;
-
-                var fileInfo = new FileInfo(fileName);
-                AppGlobals.LookupContext.SqliteDataProcessor.FilePath = fileInfo.DirectoryName;
-                AppGlobals.LookupContext.SqliteDataProcessor.FileName = fileInfo.Name;
-
-                var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
-                if (systemMaster != null)
+                var currentPlatform = AppGlobals.DbPlatform;
+                AppGlobals.LookupContext.DbPlatform = connection.DbPlatform;
+                AppGlobals.DbPlatform = connection.DbPlatform;
+                
+                switch (connection.DbPlatform)
                 {
-                    var household = new Household
-                    {
-                        Name = systemMaster.HouseholdName,
-                        FileName = fileInfo.Name,
-                        FilePath = fileInfo.DirectoryName
-                    };
-                    AddNewHousehold(household);
+                    case DbPlatforms.Sqlite:
+                        var currentFilePath = AppGlobals.LookupContext.SqliteDataProcessor.FilePath;
+                        var currentFileName = AppGlobals.LookupContext.SqliteDataProcessor.FileName;
+
+                        AppGlobals.LookupContext.SqliteDataProcessor.FilePath = connection.SqliteLoginViewModel.FilePath;
+                        AppGlobals.LookupContext.SqliteDataProcessor.FileName = connection.SqliteLoginViewModel.FileName;
+
+                        ConnectToHousehold(connection);
+
+                        AppGlobals.LookupContext.SqliteDataProcessor.FilePath = currentFilePath;
+                        AppGlobals.LookupContext.SqliteDataProcessor.FileName = currentFileName;
+                        break;
+                    case DbPlatforms.SqlServer:
+                        var currentServer = AppGlobals.LookupContext.SqlServerDataProcessor.Server;
+                        var currentDatabase = AppGlobals.LookupContext.SqlServerDataProcessor.Database;
+                        var currentSecurityType = AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType;
+                        var currentUserName = AppGlobals.LookupContext.SqlServerDataProcessor.UserName;
+                        var currentPassword = AppGlobals.LookupContext.SqlServerDataProcessor.Password;
+
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Server = connection.SqlServerLoginViewModel.Server;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Database = connection.SqlServerLoginViewModel.Database;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = connection.SqlServerLoginViewModel.SecurityType;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.UserName = connection.SqlServerLoginViewModel.UserName;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Password = connection.SqlServerLoginViewModel.Password;
+
+                        ConnectToHousehold(connection);
+
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Server = currentServer;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Database = currentDatabase;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = currentSecurityType;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.UserName = currentUserName;
+                        AppGlobals.LookupContext.SqlServerDataProcessor.Password = currentPassword;
+
+                        break;
+                    case DbPlatforms.MySql:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                AppGlobals.LookupContext.SqliteDataProcessor.FilePath = currentFilePath;
-                AppGlobals.LookupContext.SqliteDataProcessor.FileName = currentFileName;
+                AppGlobals.LookupContext.DbPlatform = currentPlatform;
+                AppGlobals.DbPlatform = currentPlatform;
+
+            }
+        }
+
+        private void ConnectToHousehold(AddEditHouseholdViewModel connection)
+        {
+            var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+            if (systemMaster != null)
+            {
+                var household = new Household
+                {
+                    Name = systemMaster.HouseholdName,
+                    Platform = (byte)connection.DbPlatform,
+                    FileName = connection.SqliteLoginViewModel.FileName,
+                    FilePath = connection.SqliteLoginViewModel.FilePath,
+                    Server = connection.SqlServerLoginViewModel.Server,
+                    Database = connection.SqlServerLoginViewModel.Database,
+                    AuthenticationType = (byte)connection.SqlServerLoginViewModel.SecurityType,
+                    Username = connection.SqlServerLoginViewModel.UserName,
+                    Password = connection.SqlServerLoginViewModel.Password
+                };
+                AddNewHousehold(household);
             }
         }
 

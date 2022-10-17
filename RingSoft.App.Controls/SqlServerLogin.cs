@@ -66,6 +66,11 @@ namespace RingSoft.App.Controls
             };
         }
 
+        public void SetFocusToControl()
+        {
+            ServerTextBox.Focus();
+        }
+
         private void DatabaseComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
             ViewModel.DatabaseGotFocus();

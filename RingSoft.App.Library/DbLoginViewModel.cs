@@ -80,7 +80,9 @@ namespace RingSoft.App.Library
 
         public RelayCommand CancelCommand { get; }
 
-        public bool DialogResult { get; private set; } = true;
+        public bool DialogResult { get; private set; } = false;
+
+        protected abstract string TestTable { get; }
 
         private bool _loading;
         private bool _newSqliteFile;
@@ -107,6 +109,7 @@ namespace RingSoft.App.Library
             View = view;
             DbLoginProcess = loginProcess;
             SqliteLoginViewModel = sqliteLoginViewModel;
+            SqliteLoginViewModel.LoginProcess = loginProcess;
             SqliteLoginViewModel.FileNameChanged += (sender, args) =>
             {
                 if (!_loading && !_settingSqliteFileName)
@@ -115,6 +118,7 @@ namespace RingSoft.App.Library
                 }
             };
             SqlServerLoginViewModel = sqlServerLoginViewModel;
+            SqlServerLoginViewModel.LoginProcess = loginProcess;
             SqlServerLoginViewModel.DatabaseChanged += (sender, args) =>
             {
                 if (!_loading && !_settingSqlServerDatabase)
@@ -260,6 +264,23 @@ namespace RingSoft.App.Library
                     throw new ArgumentOutOfRangeException();
             }
 
+            switch (DbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    if (!SqliteLoginViewModel.TestConnection(TestTable))
+                        return;
+                    break;
+                case DbPlatforms.SqlServer:
+                    if (!SqlServerLoginViewModel.TestConnection(TestTable))
+                        return;
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+
             if (DbLoginProcess == DbLoginProcesses.Edit && OriginalDbPlatform != DbPlatform)
             {
                 var message =
@@ -277,6 +298,7 @@ namespace RingSoft.App.Library
                 }
             }
 
+            DialogResult = true;
             View.CloseWindow();
         }
 

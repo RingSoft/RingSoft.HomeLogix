@@ -38,13 +38,18 @@ namespace RingSoft.HomeLogix
             SqlServerLogin.Loaded  += (sender, args) => ViewModel.Initialize(this, loginProcess, SqliteLogin.ViewModel,
                 SqlServerLogin.ViewModel, household);
 
-            HouseholdNameTextBox.TextChanged += (sender, args) =>
+            switch (loginProcess)
             {
-                //if (!ViewModel.SettingDbProperties)
-                //{
-                //    ViewModel.SetDefaultDatabaseName();
-                //}
-            };
+                case DbLoginProcesses.Add:
+                case DbLoginProcesses.Edit:
+                    break;
+                case DbLoginProcesses.Connect:
+                    HouseholdNameLabel.Visibility = Visibility.Collapsed;
+                    HouseholdNameTextBox.Visibility = Visibility.Collapsed;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(loginProcess), loginProcess, null);
+            }
         }
 
         //private void SqlServerLogin_Loaded(object sender, RoutedEventArgs e)

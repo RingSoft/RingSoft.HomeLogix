@@ -4,12 +4,16 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.QueryBuilder;
 
 namespace RingSoft.App.Library
 {
     public interface ISqliteLoginView
     { 
         string ShowFileDialog();
+
+        void SetFocusToControl();
     }
     public class SqliteLoginViewModel : INotifyPropertyChanged
     {
@@ -34,6 +38,10 @@ namespace RingSoft.App.Library
         {
             get
             {
+                if (_fileNamePath.IsNullOrEmpty())
+                {
+                    return string.Empty;
+                }
                 try
                 {
                     var fileInfo = new FileInfo(FilenamePath);
@@ -53,6 +61,10 @@ namespace RingSoft.App.Library
         {
             get
             {
+                if (_fileNamePath.IsNullOrEmpty())
+                {
+                    return string.Empty;
+                }
                 try
                 {
                     var fileInfo = new FileInfo(FilenamePath);
@@ -75,6 +87,8 @@ namespace RingSoft.App.Library
 
         public string ModelName { get; set; }
 
+        public DbLoginProcesses LoginProcess { get; set; }
+
         public event EventHandler FileNameChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -94,6 +108,31 @@ namespace RingSoft.App.Library
             var fileName = View.ShowFileDialog();
             if (!fileName.IsNullOrEmpty())
                 FilenamePath = fileName;
+        }
+
+        public bool TestConnection(string tableName)
+        {
+            switch (LoginProcess)
+            {
+                case DbLoginProcesses.Add:
+                case DbLoginProcesses.Edit:
+                    return true;
+                
+                case DbLoginProcesses.Connect:
+                    var processor = new SqliteDataProcessor();
+                    processor.FilePath = FilePath;
+                    processor.FileName = FileName;
+                    var result = processor.GetData(new SelectQuery(tableName) { MaxRecords = 1 }).ResultCode == GetDataResultCodes.Success;
+                    if (!result)
+                    {
+                        var message = "Invalid filename.";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                        View.SetFocusToControl();
+                    }
+                    return result;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
 

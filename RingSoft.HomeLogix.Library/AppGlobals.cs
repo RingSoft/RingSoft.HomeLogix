@@ -106,10 +106,13 @@ namespace RingSoft.HomeLogix.Library
             switch (platform)
             {
                 case DbPlatforms.Sqlite:
-                    return new SqliteHomeLogixDbContext();
+                    var sqliteResult = new SqliteHomeLogixDbContext();
+                    sqliteResult.SetLookupContext(AppGlobals.LookupContext);
+                    return sqliteResult;
                 case DbPlatforms.SqlServer:
-                    return new SqlServerHomeLogixDbContext();
-                    break;
+                    var result = new SqlServerHomeLogixDbContext();
+                    result.SetLookupContext(AppGlobals.LookupContext);
+                    return result;
                 //case DbPlatforms.MySql:
                 //    break;
                 default:

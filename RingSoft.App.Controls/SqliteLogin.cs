@@ -1,8 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.WPF;
 
 namespace RingSoft.App.Controls
 {
@@ -38,6 +40,8 @@ namespace RingSoft.App.Controls
     public class SqliteLogin : Control, ISqliteLoginView
     {
         public Border Border { get; set; }
+        public StringEditControl FileNameTextBox { get; set; }
+
         public SqliteLoginViewModel ViewModel { get; set; }
 
         static SqliteLogin()
@@ -59,6 +63,7 @@ namespace RingSoft.App.Controls
         public override void OnApplyTemplate()
         {
             Border = GetTemplateChild(nameof(Border)) as Border;
+            FileNameTextBox = GetTemplateChild(nameof(FileNameTextBox)) as StringEditControl;
             base.OnApplyTemplate();
         }
 
@@ -67,21 +72,49 @@ namespace RingSoft.App.Controls
             var fileName = Path.GetFileName(ViewModel.FilenamePath);
             var directory = string.Empty;
             if (ViewModel.FilenamePath != null) directory = new FileInfo(ViewModel.FilenamePath).DirectoryName;
-            var saveFileDialog = new SaveFileDialog
+            switch (ViewModel.LoginProcess)
             {
-                FileName = fileName ?? string.Empty,
-                InitialDirectory = directory ?? string.Empty,
-                DefaultExt = "sqlite",
-                Filter = $"{ViewModel.ModelName} SQLite Files(*.sqlite)|*.sqlite"
-            };
+                case DbLoginProcesses.Add:
+                case DbLoginProcesses.Edit:
+                    var saveFileDialog = new SaveFileDialog
+                    {
+                        FileName = fileName ?? string.Empty,
+                        InitialDirectory = directory ?? string.Empty,
+                        DefaultExt = "sqlite",
+                        Filter = $"{ViewModel.ModelName} SQLite Files(*.sqlite)|*.sqlite"
+                    };
 
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                return saveFileDialog.FileName;
+                    if (saveFileDialog.ShowDialog() == true)
+                    {
+                        return saveFileDialog.FileName;
+                    }
+                    break;
+                case DbLoginProcesses.Connect:
+                    var openFileDialog = new OpenFileDialog()
+                    {
+                        FileName = fileName ?? string.Empty,
+                        InitialDirectory = directory ?? string.Empty,
+                        DefaultExt = "sqlite",
+                        Filter = $"{ViewModel.ModelName} SQLite Files(*.sqlite)|*.sqlite"
+                    };
+
+                    if (openFileDialog.ShowDialog() == true)
+                    {
+                        return openFileDialog.FileName;
+                    }
+
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-
             return string.Empty;
 
+        }
+
+        public void SetFocusToControl()
+        {
+            FileNameTextBox.Focus();
         }
     }
 }

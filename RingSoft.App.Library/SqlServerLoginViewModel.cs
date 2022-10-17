@@ -14,6 +14,8 @@ namespace RingSoft.App.Library
     public interface ISqlServerView
     {
         string Password { get; set; }
+
+        void SetFocusToControl();
     }
 
     public class SqlServerLoginViewModel : INotifyPropertyChanged
@@ -122,6 +124,8 @@ namespace RingSoft.App.Library
 
         public ISqlServerView View { get; set; }
 
+        public DbLoginProcesses LoginProcess { get; set; }
+
         public event EventHandler DatabaseChanged;
 
         public SqlServerLoginViewModel()
@@ -177,6 +181,35 @@ namespace RingSoft.App.Library
             var result = processor.GetData(query);
 
             return result.ResultCode == GetDataResultCodes.Success;
+        }
+
+        public bool TestConnection(string tableName)
+        {
+            var database = string.Empty;
+            switch (LoginProcess)
+            {
+                case DbLoginProcesses.Add:
+                case DbLoginProcesses.Edit:
+                    return TestDatabaseConnection();
+                case DbLoginProcesses.Connect:
+                    database = Database;
+                    var processor = new SqlServerDataProcessor();
+                    processor.Server = Server;
+                    processor.Database = database;
+                    processor.SecurityType = SecurityType;
+                    processor.UserName = UserName;
+                    processor.Password = View.Password;
+                    var result = processor.GetData(new SelectQuery(tableName) { MaxRecords = 1 }).ResultCode == GetDataResultCodes.Success;
+                    if (!result)
+                    {
+                        var message = "Invalid connection data.";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, message, RsMessageBoxIcons.Exclamation);
+                        View.SetFocusToControl();
+                    }
+                    return result;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
 

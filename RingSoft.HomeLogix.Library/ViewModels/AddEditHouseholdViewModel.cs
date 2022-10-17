@@ -44,6 +44,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
     public class AddEditHouseholdViewModel : DbLoginViewModel<Household>
     {
         public new IAddEditHouseholdView View { get; private set; }
+        protected override string TestTable => "SystemMaster";
         public AddEditHouseholdViewModel()
         {
             DbName = "HomeLogix";
@@ -368,7 +369,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         //{
         //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         //}
-
         public override void Initialize(IDbLoginView view, DbLoginProcesses loginProcess, SqliteLoginViewModel sqliteLoginViewModel,
             SqlServerLoginViewModel sqlServerLoginViewModel, Household entity)
         {

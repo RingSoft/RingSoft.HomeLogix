@@ -62,6 +62,16 @@ namespace RingSoft.HomeLogix
             return household != null;
         }
 
+        public AddEditHouseholdViewModel GetHouseholdConnection()
+        {
+            var addEditHouseholdWindow = new AddEditHouseholdWindow(DbLoginProcesses.Connect)
+            {
+                Owner = this
+            };
+            addEditHouseholdWindow.ShowDialog();
+            return addEditHouseholdWindow.ViewModel;
+        }
+
         public string GetHouseholdDataFile()
         {
             var openFileDialog = new OpenFileDialog()

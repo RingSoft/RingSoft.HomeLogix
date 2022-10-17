@@ -27,7 +27,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="Household Name" HorizontalAlignment="Left"/>
+        <Label Grid.Row="0" Grid.Column="0" x:Name="HouseholdNameLabel" Content="Household Name" HorizontalAlignment="Left"/>
 
         <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="HouseholdNameTextBox" HorizontalAlignment="Left" Width="200" Text="{Binding EntityName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -50,7 +50,7 @@
             
             <Button Content="_OK" Command="{Binding OkCommand}" Width="100" Margin="2.5,0" IsDefault="True"/>
 
-            <Button Content="_Cancel" Command="{Binding CancelCommand}" Width="100" Margin="2.5,0"/>
+            <Button Content="_Cancel" Command="{Binding CancelCommand}" IsCancel="True" Width="100" Margin="2.5,0"/>
         </StackPanel>
     </Grid>
 </dec:BaseWindow>
