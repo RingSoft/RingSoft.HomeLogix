@@ -479,8 +479,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             //query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
             //query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
 
-            outerQuery.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
-            outerQuery.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
+            outerQuery.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or)
+                .SetLeftParenthesesCount(1);
+            outerQuery.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0).SetRightParenthesesCount(1);
+            outerQuery.AddWhereItem("Type", Conditions.NotEquals, (int) BudgetItemTypes.Transfer);
 
             var sql = sqlGenerator.GenerateSelectStatement(outerQuery);
             return sql;
