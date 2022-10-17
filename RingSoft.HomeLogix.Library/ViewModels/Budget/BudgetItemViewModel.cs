@@ -1030,17 +1030,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                     else
                     {
-                        _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                            .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
+                        if (StartingDate == null)
+                        {
+                            _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
+                                .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType == BankAccountRegisterItemTypes.BudgetItem).ToList();
+                        }
+                        else
+                        {
+                            _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
+                                .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
+                        }
                     }
 
                     if (DbTransferToBankId != null)
                     {
                         var existingDbTransferBankAccount =
-                            AppGlobals.DataRepository.GetBankAccount(DbTransferToBankId.Value);
+                        AppGlobals.DataRepository.GetBankAccount(DbTransferToBankId.Value);
 
-                        _bankAccountRegisterItemsToDelete.AddRange(existingDbTransferBankAccount.RegisterItems
-                            .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate));
+                        if (StartingDate == null)
+                        {
+                            _bankAccountRegisterItemsToDelete.AddRange(existingDbTransferBankAccount.RegisterItems
+                                .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType == BankAccountRegisterItemTypes.BudgetItem));
+
+                        }
+                        else
+                        {
+                            _bankAccountRegisterItemsToDelete.AddRange(existingDbTransferBankAccount.RegisterItems
+                                .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate));
+                        }
                     }
                     foreach (var registerItem in _bankAccountRegisterItemsToDelete)
                     {

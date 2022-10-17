@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <BaseOutputPath>C:\Users\petem\source\repos\RingSoft\Nuget</BaseOutputPath>
-    <Version>1.1</Version>
+    <Version>1.2</Version>
     <Authors>Peter Ringering</Authors>
     <Company>RingSoft</Company>
     <Description>Base Foundation of all RingSoft Libraries</Description>
