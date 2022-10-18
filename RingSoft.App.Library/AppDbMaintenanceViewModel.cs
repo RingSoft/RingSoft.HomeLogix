@@ -4,6 +4,11 @@ using RingSoft.DbMaintenance;
 
 namespace RingSoft.App.Library
 {
+    public interface IAppDbMaintenanceProcessor : IDbMaintenanceDataProcessor
+    {
+        bool WindowReadOnlyMode { get; set; }
+    }
+
     public abstract class AppDbMaintenanceViewModel<TEntity> : DbMaintenanceViewModel<TEntity>
         where TEntity : new()
     {

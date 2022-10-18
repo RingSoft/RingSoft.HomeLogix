@@ -56,6 +56,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows);
 
         void UpdateStatus(string status);
+
+        void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
     }
 
     public class CompletedRegisterData
@@ -712,7 +714,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
 
             if (ReadOnlyMode)
-                ControlsGlobals.UserInterface.ShowMessageBox(
+                BankAccountView.ShowMessageBox(
                     "This Bank Account is being modified in another window.  Editing not allowed.", "Editing not allowed",
                     RsMessageBoxIcons.Exclamation);
         }

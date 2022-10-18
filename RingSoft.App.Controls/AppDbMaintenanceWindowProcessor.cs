@@ -9,7 +9,7 @@ using RingSoft.DbMaintenance;
 
 namespace RingSoft.App.Controls
 {
-    public class AppDbMaintenanceWindowProcessor : DbMaintenanceWindowProcessor, IDbMaintenanceProcessor
+    public class AppDbMaintenanceWindowProcessor : DbMaintenanceWindowProcessor, IAppDbMaintenanceProcessor
     {
         public AppDbMaintenanceWindowProcessor()
         {
@@ -27,6 +27,8 @@ namespace RingSoft.App.Controls
         public override BaseWindow MaintenanceWindow { get; set; }
         public override Control MaintenanceButtonsControl { get; set; }
 
+        public bool WindowReadOnlyMode { get; set; }
+
         private bool _setReadOnlyMode;
 
         public override void Initialize(BaseWindow window, Control buttonsControl,
@@ -35,6 +37,7 @@ namespace RingSoft.App.Controls
             MaintenanceWindow = window;
             ViewModel = viewModel;
             MaintenanceButtonsControl = buttonsControl;
+            ViewModel.Processor = this;
             //if (NewButton == null)
             {
                 //MaintenanceButtonsControl.Loaded += (sender, args) =>
@@ -75,7 +78,7 @@ namespace RingSoft.App.Controls
                 ViewModel.OnViewLoaded(view);
                 base.SetupControl(view);
                 CheckAddOnFlyMode();
-                if (ViewModel.ReadOnlyMode)
+                if (WindowReadOnlyMode)
                 {
                     dbMaintenanceButtons.SetWindowReadOnlyMode();
                 }

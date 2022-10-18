@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RingSoft.App.Controls;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.ImportBank;
@@ -55,6 +56,18 @@ namespace RingSoft.HomeLogix.Budget
         public void UpdateStatus(string status)
         {
             _bankProcedure.SplashWindow.SetProgress(status);
+        }
+
+        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
+        {
+            if (_bankProcedure != null)
+            {
+                _bankProcedure.ShowMessageBox(message, caption, icon);
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, icon);
+            }
         }
 
         public BankAccountMaintenanceWindow()

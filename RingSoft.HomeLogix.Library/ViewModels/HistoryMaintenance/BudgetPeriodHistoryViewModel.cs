@@ -155,7 +155,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 _mode = PeriodHistoryTypes.Monthly;
             }
 
-            ReadOnlyMode = true;
+            if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
+            {
+                appDbMaintenanceProcessor.WindowReadOnlyMode = true;
+            }
 
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 

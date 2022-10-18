@@ -271,7 +271,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             //ViewModelInput.HistoryFilterBankAccount = null;
             //ViewModelInput.HistoryFilterBankAccountPeriod = null;
 
-            ReadOnlyMode = true;
+            if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
+            {
+                appDbMaintenanceProcessor.WindowReadOnlyMode = true;
+            }
+
 
             var sourceHistoryLookupDefinition = new LookupDefinition<SourceHistoryLookup, SourceHistory>(AppGlobals.LookupContext.SourceHistory);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Date,

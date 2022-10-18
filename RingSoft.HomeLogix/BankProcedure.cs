@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
@@ -22,6 +23,8 @@ namespace RingSoft.HomeLogix
         public CompletedRegisterData CompletedRegisterData { get; set; }
 
         public List<BankAccountRegisterGridRow> CompletedRows { get; set; }
+
+        public bool IsRunning { get; private set; }
 
         private ProcessingSplashWindow _splashWindow;
         
@@ -52,6 +55,7 @@ namespace RingSoft.HomeLogix
 
         protected override bool DoProcess()
         {
+            IsRunning = true;
             switch (Process)
             {
                 case BankProcesses.Loading:
@@ -67,7 +71,23 @@ namespace RingSoft.HomeLogix
                     throw new ArgumentOutOfRangeException();
             }
             _splashWindow.CloseSplash();
+            IsRunning = false;
             return true;
+        }
+
+        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
+        {
+            if (IsRunning)
+            {
+                _splashWindow.Dispatcher.Invoke(() =>
+                {
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, icon);
+                });
+            }
+            else
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, icon);
+            }
         }
     }
 }

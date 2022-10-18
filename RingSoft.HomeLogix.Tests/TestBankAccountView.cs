@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels;
@@ -54,6 +55,11 @@ namespace RingSoft.HomeLogix.Tests
         public void UpdateStatus(string status)
         {
             throw new NotImplementedException();throw new NotImplementedException();
+        }
+
+        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
+        {
+            throw new NotImplementedException();
         }
 
         public TestBankAccountView(string ownerName) : base(ownerName)
