@@ -75,6 +75,10 @@ namespace RingSoft.App.Controls
                 ViewModel.OnViewLoaded(view);
                 base.SetupControl(view);
                 CheckAddOnFlyMode();
+                if (ViewModel.ReadOnlyMode)
+                {
+                    dbMaintenanceButtons.SetWindowReadOnlyMode();
+                }
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -147,6 +148,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 _mode = PeriodHistoryTypes.Monthly;
             }
 
+            ReadOnlyMode = true;
+
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
@@ -254,6 +257,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         protected override bool DeleteEntity()
         {
             throw new System.NotImplementedException();
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            ViewModelInput.HistoryFilterBankAccountPeriod = null;
+            base.OnWindowClosing(e);
         }
 
         public override TableDefinition<BankAccountPeriodHistory> TableDefinition =>

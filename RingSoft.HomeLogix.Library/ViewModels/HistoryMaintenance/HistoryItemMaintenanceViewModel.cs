@@ -3,6 +3,7 @@ using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -259,16 +260,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             {
                 ViewModelInput = new ViewModelInput();
             }
-
+            
             _budgetItemFilter = ViewModelInput.HistoryFilterBudgetItem;
             _budgetPeriodHistoryFilter = ViewModelInput.HistoryFilterBudgetPeriodItem;
             _bankAccountFilter = ViewModelInput.HistoryFilterBankAccount;
             _bankAccountPeriodHistoryFilter = ViewModelInput.HistoryFilterBankAccountPeriod;
 
-            ViewModelInput.HistoryFilterBudgetItem = null;
-            ViewModelInput.HistoryFilterBudgetPeriodItem = null;
-            ViewModelInput.HistoryFilterBankAccount = null;
-            ViewModelInput.HistoryFilterBankAccountPeriod = null;
+            //ViewModelInput.HistoryFilterBudgetItem = null;
+            //ViewModelInput.HistoryFilterBudgetPeriodItem = null;
+            //ViewModelInput.HistoryFilterBankAccount = null;
+            //ViewModelInput.HistoryFilterBankAccountPeriod = null;
 
             ReadOnlyMode = true;
 
@@ -319,19 +320,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var table = AppGlobals.LookupContext.History;
-            var formula = $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+            var formula = string.Empty;
+            formula = $"{GetDateFormula(true)} {sqlGenerator.FormatSqlObject(table.TableName)}.";
 
 
             if (_budgetPeriodHistoryFilter != null)
             {
                 filterDate = _budgetPeriodHistoryFilter.PeriodEndingDate;
 
-                formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)}";
+                formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
                 //formula += $"'{filterDate.Month:D2}'";
 
                 ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month", 
                     Conditions.Equals, $"{filterDate.Month:D2}", formula);
 
+                //formula =
+                //    $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                formula = $"{GetDateFormula(false)} {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+                //formula += $"'{filterDate.Year:D4}'";
+
+                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
+                    Conditions.Equals, $"{filterDate.Year:D4}", formula);
             }
 
             if (_bankAccountPeriodHistoryFilter != null)
@@ -341,15 +351,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
                 ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month",
                     Conditions.Equals, $"{filterDate.Month:D2}", formula);
+
+                //formula =
+                //    $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                formula = $"{GetDateFormula(false)} {sqlGenerator.FormatSqlObject(table.TableName)}.";
+                formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
+                //formula += $"'{filterDate.Year:D4}'";
+
+                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
+                    Conditions.Equals, $"{filterDate.Year:D4}", formula);
             }
-
-            formula =
-                $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-            formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-            //formula += $"'{filterDate.Year:D4}'";
-
-            ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
-                Conditions.Equals, $"{filterDate.Year:D4}", formula);
 
 
             if (_bankAccountFilter != null)
@@ -365,6 +376,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             return historyItem;
+        }
+
+        private static string GetDateFormula(bool month)
+        {
+            string formula;
+            switch (AppGlobals.DbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    if (month)
+                    {
+                        formula = $"strftime('%m', ";
+                    }
+                    else
+                    {
+                        formula = $"strftime('%Y', ";
+                    }
+
+                    break;
+                case DbPlatforms.SqlServer:
+                    if (month)
+                    {
+                        formula = $"MONTH(";
+                    }
+                    else
+                    {
+                        formula = $"YEAR(";
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return formula;
         }
 
         protected override void LoadFromEntity(History entity)

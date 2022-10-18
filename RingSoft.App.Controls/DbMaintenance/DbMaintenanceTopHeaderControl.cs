@@ -102,6 +102,8 @@ namespace RingSoft.App.Controls
         public DockPanel CustomDockPanel { get; set; }
         public DbMaintenanceButton NextButton { get; set; }
 
+        public Grid BottomGrid { get; set; }
+
         static DbMaintenanceTopHeaderControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceTopHeaderControl), new FrameworkPropertyMetadata(typeof(DbMaintenanceTopHeaderControl)));
@@ -122,6 +124,8 @@ namespace RingSoft.App.Controls
 
             NextButton = GetTemplateChild(nameof(NextButton)) as DbMaintenanceButton;
 
+            BottomGrid = GetTemplateChild(nameof(BottomGrid)) as Grid;
+
             SetCustomPanel();
 
             base.OnApplyTemplate();
@@ -135,6 +139,15 @@ namespace RingSoft.App.Controls
                 CustomDockPanel.Children.Add(CustomPanel);
                 UpdateLayout();
             }
+        }
+
+        public void SetWindowReadOnlyMode()
+        {
+            SaveButton.Visibility = Visibility.Collapsed;
+            DeleteButton.Visibility = Visibility.Collapsed;
+            NewButton.Visibility = Visibility.Collapsed;
+            Grid.SetRow(BottomGrid, 0);
+            Grid.SetRowSpan(BottomGrid, 2);
         }
 
         public void SetReadOnlyMode(bool readOnlyValue)

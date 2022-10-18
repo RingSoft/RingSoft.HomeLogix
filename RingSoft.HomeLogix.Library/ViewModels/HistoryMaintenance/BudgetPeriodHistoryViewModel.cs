@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
@@ -133,6 +134,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             AppGlobals.LookupContext.BudgetPeriodHistory;
 
         private PeriodHistoryTypes _mode;
+        private BudgetPeriodHistory _budgetPeriodHistory;
 
         protected override void Initialize()
         {
@@ -153,6 +155,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 _mode = PeriodHistoryTypes.Monthly;
             }
 
+            ReadOnlyMode = true;
 
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
@@ -222,8 +225,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
             
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{budgetPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
-            ViewModelInput.HistoryFilterBudgetPeriodItem = budgetPeriodHistory;
 
+            _budgetPeriodHistory = budgetPeriodHistory;
+            ViewModelInput.HistoryFilterBudgetPeriodItem = budgetPeriodHistory;
+                
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             return budgetPeriodHistory;
@@ -267,6 +272,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         protected override bool DeleteEntity()
         {
             throw new NotImplementedException();
+        }
+
+        public override void OnWindowClosing(CancelEventArgs e)
+        {
+            ViewModelInput.HistoryFilterBudgetPeriodItem = null;
+            base.OnWindowClosing(e);
         }
     }
 }

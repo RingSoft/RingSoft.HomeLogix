@@ -7,6 +7,7 @@ using RingSoft.HomeLogix.Library;
 using System.Windows;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.HomeLogix.HistoryMaintenance;
+using RingSoft.HomeLogix.Library.ViewModels;
 using PathReferenceAttribute = RingSoft.DataEntryControls.WPF.PathReferenceAttribute;
 
 namespace RingSoft.HomeLogix
