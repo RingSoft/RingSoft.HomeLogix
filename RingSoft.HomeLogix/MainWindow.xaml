@@ -128,9 +128,9 @@
 
             <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
 
-                <ac:RSChart Width="400" Height="200" Items="{Binding BudgetChartData}"/>
+                <ac:RSChart x:Name="BudgetChart" Width="400" Height="200" Items="{Binding BudgetChartData}"/>
 
-                <ac:RSChart Width="400" Height="200" Items="{Binding ActualChartData}" Margin="5,0,0,0"/>
+                <ac:RSChart x:Name="ActualChart" Width="400" Height="200" Items="{Binding ActualChartData}" Margin="5,0,0,0"/>
 
             </StackPanel>
 

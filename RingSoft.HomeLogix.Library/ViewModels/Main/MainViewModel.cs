@@ -1,6 +1,7 @@
 ﻿using System;
 using RingSoft.DataEntryControls.Engine;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.App.Library;
 using RingSoft.DbLookup.DataProcessor;
@@ -24,6 +25,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void LaunchAdvancedFind();
 
         void CloseApp();
+
+        void ShowChart(bool show = true);
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -372,7 +375,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             var loadVm = true;
             if (AppGlobals.LoggedInHousehold == null)
+            {
+                View.ShowChart(false);
                 loadVm = View.ChangeHousehold();
+            }
 
             if (loadVm)
             {
@@ -647,9 +653,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void ChangeHousehold()
         {
+            View.ShowChart(false);
             if (View.ChangeHousehold())
             {
                 SetStartupView();
+            }
+            else
+            {
+                if (_activeChartData.Items.Any())
+                {
+                    View.ShowChart(true);
+                }
             }
         }
 
@@ -684,6 +698,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             MakeBudgetChartData();
             MakeActualChartData();
+
+            if (_activeChartData.Items.Any())
+            {
+                View.ShowChart();
+            }
         }
 
         private void MakeBudgetChartData()

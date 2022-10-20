@@ -6,7 +6,10 @@ using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;
 using System.Windows.Media;
 using RingSoft.App.Library;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.HomeLogix.Library;
 using ScottPlot;
 using Color = System.Drawing.Color;
 
@@ -21,11 +24,19 @@ namespace RingSoft.HomeLogix
         {
             InitializeComponent();
 
-            ContentRendered += (sender, args) => ViewModel.OnViewLoaded(this);
+            ContentRendered += (sender, args) =>
+            {
+                ViewModel.OnViewLoaded(this);
+            };
 
             PreviewKeyDown += MainWindow_PreviewKeyDown;
 
-            Loaded += (sender, args) => { BudgetLookupControl.Focus(); };
+            Loaded += (sender, args) =>
+            {
+                BudgetLookupControl.Focus();
+                ShowChart(false);
+                //ViewModel.OnViewLoaded(this);
+            };
 
             ChangeHouseholdButton.ToolTip.HeaderText = "Change Household (Alt + T)";
             ChangeHouseholdButton.ToolTip.DescriptionText = "Login to a different household.";
@@ -108,7 +119,7 @@ namespace RingSoft.HomeLogix
 
             var result = false;
             var loginResult = loginWindow.ShowDialog();
-
+            
             if (loginResult != null && loginResult.Value == true)
                 result = (bool)loginResult;
 
@@ -141,6 +152,17 @@ namespace RingSoft.HomeLogix
         public void CloseApp()
         {
             Close();
+        }
+
+        public void ShowChart(bool show = true)
+        {
+            var visibleSetting = Visibility.Collapsed;
+            if (show)
+            {
+                visibleSetting = Visibility.Visible;
+            }
+
+            BudgetChart.Visibility = ActualChart.Visibility = visibleSetting;
         }
     }
 }
