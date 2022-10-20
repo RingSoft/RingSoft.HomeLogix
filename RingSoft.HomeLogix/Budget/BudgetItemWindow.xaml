@@ -95,7 +95,7 @@
 
                         </StackPanel>
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="Next Transaction Date"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Next Generated&#10;Transaction Date"/>
 
                         <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="StartingDateControl" Value="{Binding Path=StartingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" DesignText="01/01/2020" Width="100"/>
 
