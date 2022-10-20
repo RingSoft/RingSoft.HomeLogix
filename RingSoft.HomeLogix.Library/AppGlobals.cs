@@ -128,6 +128,7 @@ namespace RingSoft.HomeLogix.Library
             var context = GetNewDbContext();
             context.SetLookupContext(LookupContext);
             LoadDataProcessor(household);
+            SystemMaster systemMaster = null;
             switch ((DbPlatforms)household.Platform)
             {
                 case DbPlatforms.Sqlite:
@@ -147,17 +148,17 @@ namespace RingSoft.HomeLogix.Library
                         }
                         catch (Exception e)
                         {
-                            var message = $"Can't access household file path: {household.FilePath} ";
+                            var message = $"Can't access household file path: {household.FilePath}.  You must run this program as administrator.";
                             return message;
                         }
                         context.DbContext.Database.Migrate();
-                        var systemMaster = context.SystemMaster.FirstOrDefault();
-                        household.Name = systemMaster?.HouseholdName;
+                        systemMaster = context.SystemMaster.FirstOrDefault();
+                        if (systemMaster != null) household.Name = systemMaster.HouseholdName;
                     }
                     else
                     {
                         context.DbContext.Database.Migrate();
-                        var systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        systemMaster = new SystemMaster { HouseholdName = household.Name };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
 
                     }
@@ -170,12 +171,13 @@ namespace RingSoft.HomeLogix.Library
 
                     if (databases.IndexOf(household.Database) >= 0)
                     {
-                        var systemMaster = context.SystemMaster.FirstOrDefault();
-                        household.Name = systemMaster?.HouseholdName;
+                        systemMaster = context.SystemMaster.FirstOrDefault();
+                        if (systemMaster != null) household.Name = systemMaster.HouseholdName;
                     }
-                    else
+
+                    if (systemMaster == null)
                     {
-                        var systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        systemMaster = new SystemMaster { HouseholdName = household.Name };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
                     }
                     LookupContext.Initialize(context, DbPlatform);
@@ -190,7 +192,7 @@ namespace RingSoft.HomeLogix.Library
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
             var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
-            LookupContext.SqliteDataProcessor.GetData(selectQuery, false);
+            LookupContext.DataProcessor.GetData(selectQuery, false);
 
             return string.Empty;
         }

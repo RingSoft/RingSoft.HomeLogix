@@ -273,18 +273,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         private void ConnectToHousehold(AddEditHouseholdViewModel connection)
         {
+            var householdName = connection.EntityName;
             var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
             if (systemMaster != null)
             {
+                householdName = systemMaster.HouseholdName;
                 var household = new Household
                 {
-                    Name = systemMaster.HouseholdName,
-                    Platform = (byte)connection.DbPlatform,
+                    Name = householdName,
+                    Platform = (byte) connection.DbPlatform,
                     FileName = connection.SqliteLoginViewModel.FileName,
                     FilePath = connection.SqliteLoginViewModel.FilePath,
                     Server = connection.SqlServerLoginViewModel.Server,
                     Database = connection.SqlServerLoginViewModel.Database,
-                    AuthenticationType = (byte)connection.SqlServerLoginViewModel.SecurityType,
+                    AuthenticationType = (byte) connection.SqlServerLoginViewModel.SecurityType,
                     Username = connection.SqlServerLoginViewModel.UserName,
                     Password = connection.SqlServerLoginViewModel.Password
                 };

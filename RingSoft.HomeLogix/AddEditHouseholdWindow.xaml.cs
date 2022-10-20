@@ -52,34 +52,6 @@ namespace RingSoft.HomeLogix
             }
         }
 
-        //private void SqlServerLogin_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    ViewModel.SqlServerLoginViewModel = SqlServerLogin.ViewModel;
-        //    ViewModel.SetDefaultDatabaseName();
-
-        //    SetPlatform();
-        //    ViewModel.SetPlatformProperties();
-        //}
-
-        //private void SqliteLogin_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    ViewModel.SqliteLoginViewModel = SqliteLogin.ViewModel;
-        //    ViewModel.SetDefaultDatabaseName();
-
-        //    SetPlatform();
-        //    ViewModel.SetPlatformProperties();
-        //}
-
-        //public new Household ShowDialog()
-        //{
-        //    base.ShowDialog();
-        //    return ViewModel.Household;
-        //}
-
-        //public void CloseWindow() => Close();
-
-
-
         public void CloseWindow()
         {
             Close();
@@ -114,15 +86,6 @@ namespace RingSoft.HomeLogix
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            //if (Household == null)
-            //{
-            //    ViewModel.SetDefaultDatabaseName();
-            //}
-            //else
-            //{
-            //    ViewModel.SetPlatformProperties();
-            //}
         }
     }
 }
