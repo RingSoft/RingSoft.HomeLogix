@@ -29,7 +29,7 @@ namespace RingSoft.App.Library
             {
                 if (!DoProcess())
                 {
-                    CloseSplash();
+                    //CloseSplash();
                     return false;
                 }
             }
@@ -39,6 +39,7 @@ namespace RingSoft.App.Library
                 if (e.InnerException != null)
                     message = e.InnerException.Message;
 
+                
                 SplashWindow.ShowError(message, "Error!");
                 CloseSplash();
                 return false;

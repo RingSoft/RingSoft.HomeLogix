@@ -79,7 +79,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             if (entity.AuthenticationType != null)
                 SqlServerLoginViewModel.SecurityType = (SecurityTypes) entity.AuthenticationType.Value;
             SqlServerLoginViewModel.UserName = entity.Username;
-            SqlServerLoginViewModel.Password = entity.Password;
+            SqlServerLoginViewModel.Password = entity.Password.Decrypt();
         }
 
         protected override void ShowEntityNameFailure()
@@ -103,10 +103,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             entity.Database = SqlServerLoginViewModel.Database;
             entity.AuthenticationType = (byte) SqlServerLoginViewModel.SecurityType;
             entity.Username = SqlServerLoginViewModel.UserName;
-            entity.Password = SqlServerLoginViewModel.Password;
+            entity.Password = SqlServerLoginViewModel.Password.Encrypt();
         }
 
-        protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor)
+        protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor, ITwoTierProcedure procedure)
         {
             DbContext dbContext = null;
             context = AppGlobals.LookupContext;
@@ -132,17 +132,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
             }
             AppGlobals.LoadDataProcessor(Object, OriginalDbPlatform);
-            if (!destinationProcessor.DropDatabase())
+            var dropResult = destinationProcessor.DropDatabase();
+            if (dropResult.ResultCode != GetDataResultCodes.Success)
             {
+                procedure.ShowError(dropResult.Message, "Error Dropping Destination Database");
                 return false;
             }
 
             AppGlobals.GetNewDbContext().SetLookupContext(AppGlobals.LookupContext);
             AppGlobals.LookupContext.Initialize(AppGlobals.GetNewDbContext(), OriginalDbPlatform);
 
-            AppGlobals.GetNewDbContext().DbContext.Database.Migrate();
-
-            dbContext.Database.Migrate();
+            var result = AppGlobals.MigrateContext(AppGlobals.GetNewDbContext().DbContext);
+            if (!result.IsNullOrEmpty())
+            {
+                procedure.ShowError(result, "File Access Error");
+                return false;
+            }
+            
+            result = AppGlobals.MigrateContext(dbContext);
+            if (!result.IsNullOrEmpty())
+            {
+                procedure.ShowError(result, "File Access Error");
+                return false;
+            }
+            //dbContext.Database.Migrate();
             return true;
         }
     }

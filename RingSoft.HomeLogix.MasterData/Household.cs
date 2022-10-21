@@ -36,7 +36,7 @@ namespace RingSoft.HomeLogix.MasterData
         [MaxLength(50)]
         public string Username { get; set; }
 
-        [MaxLength(50)]
+        [MaxLength(256)]
         public string Password { get; set; }
     }
 }

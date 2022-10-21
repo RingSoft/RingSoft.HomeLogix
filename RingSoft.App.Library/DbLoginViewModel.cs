@@ -239,7 +239,7 @@ namespace RingSoft.App.Library
 
         protected abstract void SaveEntity(TEntity entity);
 
-        protected abstract bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor);
+        protected abstract bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor, ITwoTierProcedure procedure);
 
         private void OnOk()
         {
@@ -289,12 +289,11 @@ namespace RingSoft.App.Library
                 if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true) ==
                     MessageBoxButtonsResult.Yes)
                 {
-                    View.DataCopied = true;
-
                     if (!View.DoCopyProcedure())
                     {
                         return;
                     }
+                    View.DataCopied = true;
                 }
             }
 
@@ -306,7 +305,7 @@ namespace RingSoft.App.Library
         {
             procedure.SetWindowText($"Copying Data from {OriginalDbPlatform.PlatformText()} to {DbPlatform.PlatformText()}");
             procedure.UpdateTopTier($"Creating Destination {DbPlatform.PlatformText()} Database", 100, 0);
-            if (!PreDataCopy(ref _lookupContext, ref _destinationProcessor))
+            if (!PreDataCopy(ref _lookupContext, ref _destinationProcessor, procedure))
             {
                 DialogResult = false;
                 return false;

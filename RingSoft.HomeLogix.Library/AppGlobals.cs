@@ -129,6 +129,8 @@ namespace RingSoft.HomeLogix.Library
             context.SetLookupContext(LookupContext);
             LoadDataProcessor(household);
             SystemMaster systemMaster = null;
+            DbContext migrateContext = context.DbContext;
+            var migrateResult = string.Empty;
             switch ((DbPlatforms)household.Platform)
             {
                 case DbPlatforms.Sqlite:
@@ -151,13 +153,23 @@ namespace RingSoft.HomeLogix.Library
                             var message = $"Can't access household file path: {household.FilePath}.  You must run this program as administrator.";
                             return message;
                         }
-                        context.DbContext.Database.Migrate();
+
+                        migrateResult = MigrateContext(migrateContext);
+                        if (!migrateResult.IsNullOrEmpty())
+                        {
+                            return migrateResult;
+                        }
+
                         systemMaster = context.SystemMaster.FirstOrDefault();
                         if (systemMaster != null) household.Name = systemMaster.HouseholdName;
                     }
                     else
                     {
-                        context.DbContext.Database.Migrate();
+                        migrateResult = MigrateContext(migrateContext);
+                        if (!migrateResult.IsNullOrEmpty())
+                        {
+                            return migrateResult;
+                        }
                         systemMaster = new SystemMaster { HouseholdName = household.Name };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
 
@@ -165,8 +177,12 @@ namespace RingSoft.HomeLogix.Library
 
                     break;
                 case DbPlatforms.SqlServer:
-                    
-                    context.DbContext.Database.Migrate();
+
+                    migrateResult = MigrateContext(migrateContext);
+                    if (!migrateResult.IsNullOrEmpty())
+                    {
+                        return migrateResult;
+                    }
                     var databases = RingSoftAppGlobals.GetSqlServerDatabaseList(household.Server);
 
                     if (databases.IndexOf(household.Database) >= 0)
@@ -197,6 +213,20 @@ namespace RingSoft.HomeLogix.Library
             return string.Empty;
         }
 
+        public static string MigrateContext(DbContext migrateContext)
+        {
+            try
+            {
+                migrateContext.Database.Migrate();
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+
+            return string.Empty;
+        }
+
         public static void LoadDataProcessor(Household household, DbPlatforms? platform = null)
         {
             if (platform == null)
@@ -215,7 +245,7 @@ namespace RingSoft.HomeLogix.Library
                     LookupContext.SqlServerDataProcessor.Database = household.Database;
                     LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)household.AuthenticationType;
                     LookupContext.SqlServerDataProcessor.UserName = household.Username;
-                    LookupContext.SqlServerDataProcessor.Password = household.Password;
+                    LookupContext.SqlServerDataProcessor.Password = household.Password.Decrypt();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -32,7 +32,8 @@ namespace RingSoft.HomeLogix
         {
             var addEditHouseholdWindow = new AddEditHouseholdWindow(DbLoginProcesses.Add)
             {
-                Owner = this
+                Owner = this,
+                ShowInTaskbar = false
             };
             addEditHouseholdWindow.ShowDialog();
             return addEditHouseholdWindow.ViewModel.Object;
@@ -43,6 +44,7 @@ namespace RingSoft.HomeLogix
             var addEditHouseholdWindow = new AddEditHouseholdWindow(DbLoginProcesses.Edit, household)
             {
                 Owner = this,
+                ShowInTaskbar = false
             };
             addEditHouseholdWindow.ShowDialog();
             if (addEditHouseholdWindow.DataCopied)
@@ -66,7 +68,8 @@ namespace RingSoft.HomeLogix
         {
             var addEditHouseholdWindow = new AddEditHouseholdWindow(DbLoginProcesses.Connect)
             {
-                Owner = this
+                Owner = this,
+                ShowInTaskbar = false
             };
             addEditHouseholdWindow.ShowDialog();
             return addEditHouseholdWindow.ViewModel;

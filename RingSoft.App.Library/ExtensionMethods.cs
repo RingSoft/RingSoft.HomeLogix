@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Text;
+using RingSoft.DataEntryControls.Engine;
 
 namespace RingSoft.App.Library
 {
     public static class ExtensionMethods
     {
+        private const string AuthKey = "028e17f2-9045-402a-87ee-d5a9a013";
         public static string GetArticle(this string text)
         {
             var result = "a";
@@ -51,5 +54,40 @@ namespace RingSoft.App.Library
                     throw new ArgumentOutOfRangeException(nameof(platform), platform, null);
             }
         }
+
+        public static string Encrypt(this string text)
+        {
+            if (text.IsNullOrEmpty())
+            {
+                return text;
+            }
+            byte[] key256 = new byte[32];
+            for (int i = 0; i < 32; i++)
+                key256[i] = Convert.ToByte(i % 256);
+            
+            byte[] nonSecretOrg = Encoding.UTF8.GetBytes(AuthKey);
+
+            var result = AuthenticatedEncryption.Encryption.Encrypt(text, key256, nonSecretOrg);
+            return result;
+        }
+
+        public static string Decrypt(this string text)
+        {
+            if (text.IsNullOrEmpty())
+            {
+                return text;
+            }
+
+            byte[] key256 = new byte[32];
+            for (int i = 0; i < 32; i++)
+                key256[i] = Convert.ToByte(i % 256);
+            
+            byte[] nonSecretOrg = Encoding.UTF8.GetBytes(AuthKey);
+
+            var result = AuthenticatedEncryption.Encryption.Decrypt(text, key256, nonSecretOrg);
+
+            return result;
+        }
+
     }
 }

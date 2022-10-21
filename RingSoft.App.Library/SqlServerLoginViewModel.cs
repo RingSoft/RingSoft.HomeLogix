@@ -102,19 +102,18 @@ namespace RingSoft.App.Library
             }
         }
 
-        private string _password;
-
+        private string _newPassword;
         public string Password
         {
-            get => _password;
+            get => View.Password;
             set
             {
-                if (_password == value)
+                if (View == null)
                 {
+                    _newPassword = value;
                     return;
                 }
-                _password = value;
-                OnPropertyChanged();
+                View.Password = value;
             }
         }
 
@@ -136,6 +135,11 @@ namespace RingSoft.App.Library
         public void OnViewLoaded(ISqlServerView view)
         {
             View = view;
+            if (!_newPassword.IsNullOrEmpty())
+            {
+                Password = _newPassword;
+                _newPassword = string.Empty;
+            }
         }
 
         public void DatabaseGotFocus()

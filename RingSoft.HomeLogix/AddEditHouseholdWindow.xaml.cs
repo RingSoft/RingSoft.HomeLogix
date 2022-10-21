@@ -23,7 +23,10 @@ namespace RingSoft.HomeLogix
         public bool DoCopyProcedure()
         {
             _procedure = new TwoTierProcedure();
-            _procedure.DoProcedure += (sender, args) => ViewModel.CopyData(_procedure);
+            _procedure.DoProcedure += (sender, args) =>
+            {
+                args.Result = ViewModel.CopyData(_procedure);
+            };
             var result = _procedure.Start();
             return result;
         }

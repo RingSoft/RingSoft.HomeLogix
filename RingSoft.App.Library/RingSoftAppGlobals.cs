@@ -82,10 +82,15 @@ namespace RingSoft.App.Library
                 var count = 0;
                 var selectQuery = new SelectQuery(table.TableName);
                 var countQuery = new CountQuery(selectQuery, "Count");
-                var countResult = lookupContext.DataProcessor.GetData(countQuery);
+                var countResult = lookupContext.DataProcessor.GetData(countQuery, true, false);
                 if (countResult.ResultCode == GetDataResultCodes.Success)
                 {
                     count = countResult.DataSet.Tables[0].Rows[0].GetRowValue("Count").ToInt();
+                }
+                else
+                {
+                    procedure.ShowError(countResult.Message, "Database Connection Error");
+                    return false;
                 }
                 var processingRecord = 0;
                 var chunk = table.GetChunk(pageSize);

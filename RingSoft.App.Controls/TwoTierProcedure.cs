@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 
 namespace RingSoft.App.Controls
 {
@@ -9,7 +10,7 @@ namespace RingSoft.App.Controls
     {
         public override ISplashWindow SplashWindow => _splashWindow;
 
-        public event EventHandler DoProcedure;
+        public event EventHandler<DoProcedureResult> DoProcedure;
 
         private TwoTierProgressWindow _splashWindow;
 
@@ -21,9 +22,10 @@ namespace RingSoft.App.Controls
 
         protected override bool DoProcess()
         {
-            DoProcedure?.Invoke(this, EventArgs.Empty);
+            var result = new DoProcedureResult();
+            DoProcedure?.Invoke(this, result);
             _splashWindow.CloseSplash();
-            return true;
+            return result.Result;
         }
 
         public void UpdateTopTier(string text, int maxCount, int currentItem)
@@ -41,5 +43,9 @@ namespace RingSoft.App.Controls
             _splashWindow.SetWindowText(text);
         }
 
+        public void ShowError(string message, string title)
+        {
+            _splashWindow.ShowError(message, title);
+        }
     }
 }
