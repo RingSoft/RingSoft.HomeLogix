@@ -750,16 +750,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void AddNewRegisterItem()
         {
+            var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
             var registerItem = new BankAccountRegisterItem{BankAccountId = Id};
             if (BankAccountView.ShowBankAccountMiscWindow(registerItem, ViewModelInput))
             {
                 RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> {registerItem});
                 CalculateTotals();
             }
+
+            if (!keyDown)
+            {
+                View.ResetViewForNewRecord();
+            }
         }
 
         private void GenerateRegisterItemsFromBudget()
         {
+            var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
             var lastGenerationDate = LastGenerationDate;
             if (lastGenerationDate == null)
             {
@@ -769,6 +776,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             //GenerateTransactions(generateToDate);
             if (generateToDate != null) BankAccountView.GenerateTransactions(generateToDate.Value);
+            if (!keyDown)
+            {
+                View.ResetViewForNewRecord();
+            }
         }
 
         public void GenerateTransactions(DateTime? generateToDate)
@@ -1220,9 +1231,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void ImportTransactions()
         {
+            var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
             if (BankAccountView.ImportFromBank(this))
             {
                 
+            }
+
+            if (!keyDown)
+            {
+                View.ResetViewForNewRecord();
             }
         }
 

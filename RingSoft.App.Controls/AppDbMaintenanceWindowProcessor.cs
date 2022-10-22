@@ -87,7 +87,14 @@ namespace RingSoft.App.Controls
 
         public void CheckAddOnFlyMode()
         {
-            MaintenanceButtonsControl.Loaded += (sender, args) => { CheckAddOnFlyAfterLoaded(); };
+            if (MaintenanceButtonsControl != null)
+            {
+                CheckAddOnFlyAfterLoaded();
+            }
+            else
+            {
+                MaintenanceButtonsControl.Loaded += (sender, args) => { CheckAddOnFlyAfterLoaded(); };
+            }
         }
 
         public void CheckAddOnFlyAfterLoaded()

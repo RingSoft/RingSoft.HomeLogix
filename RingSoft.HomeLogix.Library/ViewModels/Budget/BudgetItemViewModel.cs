@@ -816,6 +816,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void AddAdjustment()
         {
+            var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
             if (RecordDirty)
                 if (DoSave() != DbMaintenanceResults.Success)
                     return;
@@ -833,6 +834,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 if (AppGlobals.MainViewModel != null)
                     AppGlobals.MainViewModel.RefreshView();
+            }
+
+            if (!keyDown)
+            {
+                View.ResetViewForNewRecord();
             }
         }
 

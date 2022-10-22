@@ -126,10 +126,10 @@ namespace RingSoft.App.Controls
 
             }
 
-            if (Processor is AppDbMaintenanceWindowProcessor processor)
-            {
-                processor.CheckAddOnFlyAfterLoaded();
-            }
+            //if (Processor is AppDbMaintenanceWindowProcessor processor)
+            //{
+            //    processor.CheckAddOnFlyAfterLoaded();
+            //}
 
             Closing += (sender, args) =>
             {
