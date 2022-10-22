@@ -125,6 +125,12 @@ namespace RingSoft.App.Controls
                 ViewModel.OnViewLoaded(this);
 
             }
+
+            if (Processor is AppDbMaintenanceWindowProcessor processor)
+            {
+                processor.CheckAddOnFlyAfterLoaded();
+            }
+
             Closing += (sender, args) =>
             {
                 //if (ViewModel.RecordDirty)
