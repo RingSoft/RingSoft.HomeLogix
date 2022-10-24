@@ -44,7 +44,7 @@ namespace RingSoft.App.Controls
     ///     <MyNamespace:AdvancedFindAdditionalButtons/>
     ///
     /// </summary>
-    public class AdvancedFindAdditionalButtons : Control
+    public class AdvancedFindAdditionalButtons : DbMaintenanceCustomPanel
     {
         public DbMaintenanceButton ImportDefaultLookupButton { get; set; }
 

@@ -92,6 +92,15 @@ namespace RingSoft.App.Controls
                 topHeaderControl.SaveSelectButton.ImageSource = topHeaderControl.SaveSelectImage;
         }
 
+        public static readonly DependencyProperty TextBrushProperty =
+            DependencyProperty.RegisterAttached(nameof(TextBrush), typeof(Brush), typeof(DbMaintenanceTopHeaderControl));
+
+        public Brush TextBrush
+        {
+            get => (Brush)GetValue(TextBrushProperty);
+            set => SetValue(TextBrushProperty, value);
+        }
+
         public DbMaintenanceButton PreviousButton { get; set; }
         public DbMaintenanceButton SaveButton { get; set; }
         public DbMaintenanceButton SaveSelectButton { get; set; }
@@ -125,6 +134,18 @@ namespace RingSoft.App.Controls
             NextButton = GetTemplateChild(nameof(NextButton)) as DbMaintenanceButton;
 
             BottomGrid = GetTemplateChild(nameof(BottomGrid)) as Grid;
+
+            if (TextBrush != null)
+            {
+                PreviousButton.Foreground = TextBrush;
+                SaveButton.Foreground = TextBrush;
+                SaveSelectButton.Foreground = TextBrush;
+                DeleteButton.Foreground = TextBrush;
+                FindButton.Foreground = TextBrush;
+                NewButton.Foreground = TextBrush;
+                CloseButton.Foreground = TextBrush;
+                NextButton.Foreground = TextBrush;
+            }
 
             SetCustomPanel();
 

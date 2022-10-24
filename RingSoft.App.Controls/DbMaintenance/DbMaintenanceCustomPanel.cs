@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using RingSoft.DataEntryControls.WPF;
 
 // ReSharper disable once CheckNamespace
 namespace RingSoft.App.Controls
@@ -40,6 +41,20 @@ namespace RingSoft.App.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DbMaintenanceCustomPanel), new FrameworkPropertyMetadata(typeof(DbMaintenanceCustomPanel)));
 
             IsTabStopProperty.OverrideMetadata(typeof(DbMaintenanceCustomPanel), new FrameworkPropertyMetadata(false));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            var topHeaderControl = this.GetParentOfType<DbMaintenanceTopHeaderControl>();
+            if (topHeaderControl.TextBrush != null)
+            {
+                var buttons = this.GetChildrenOfType<DbMaintenanceButton>();
+                foreach (var dbMaintenanceButton in buttons)
+                {
+                    dbMaintenanceButton.Foreground = topHeaderControl.TextBrush;
+                }
+            }
+            base.OnApplyTemplate();
         }
     }
 }
