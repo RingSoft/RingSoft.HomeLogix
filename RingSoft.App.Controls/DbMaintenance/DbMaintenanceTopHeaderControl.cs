@@ -146,8 +146,12 @@ namespace RingSoft.App.Controls
             SaveButton.Visibility = Visibility.Collapsed;
             DeleteButton.Visibility = Visibility.Collapsed;
             NewButton.Visibility = Visibility.Collapsed;
-            Grid.SetRow(BottomGrid, 0);
-            Grid.SetRowSpan(BottomGrid, 2);
+
+            if (SaveSelectButton.Visibility == Visibility.Collapsed)
+            {
+                Grid.SetRow(BottomGrid, 0);
+                Grid.SetRowSpan(BottomGrid, 2);
+            }
         }
 
         public void SetReadOnlyMode(bool readOnlyValue)
