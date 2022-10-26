@@ -9,10 +9,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\RingSoft.App.Library\RingSoft.App.Library.csproj" />
+    <PackageReference Include="RingSoft.App.Library" Version="1.2.13" />
   </ItemGroup>
 
 </Project>
