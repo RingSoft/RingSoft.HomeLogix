@@ -61,8 +61,8 @@ namespace RingSoft.HomeLogix.Library
         public static void InitSettings()
         {
             RingSoftAppGlobals.AppTitle = "HomeLogix";
-            RingSoftAppGlobals.AppCopyright = "©10/21/2022 by Peter Ringering";
-            RingSoftAppGlobals.AppVersion = "0.92.04";
+            RingSoftAppGlobals.AppCopyright = "©10/26/2022 by Peter Ringering";
+            RingSoftAppGlobals.AppVersion = "0.93.00";
         }
 
         public static void Initialize()
@@ -245,7 +245,7 @@ namespace RingSoft.HomeLogix.Library
                     LookupContext.SqlServerDataProcessor.Database = household.Database;
                     LookupContext.SqlServerDataProcessor.SecurityType = (SecurityTypes)household.AuthenticationType;
                     LookupContext.SqlServerDataProcessor.UserName = household.Username;
-                    LookupContext.SqlServerDataProcessor.Password = household.Password.Decrypt();
+                    LookupContext.SqlServerDataProcessor.Password = household.Password.DecryptDatabasePassword();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -253,16 +253,15 @@ namespace RingSoft.App.Library
                         DialogResult = false;
                         return;
                     }
-
-                    var entity = new TEntity();
-                    SaveEntity(entity);
-                    Object = entity;
                     break;
                 case DbLoginProcesses.Connect:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            var entity = new TEntity();
+            SaveEntity(entity);
+            Object = entity;
 
             switch (DbPlatform)
             {

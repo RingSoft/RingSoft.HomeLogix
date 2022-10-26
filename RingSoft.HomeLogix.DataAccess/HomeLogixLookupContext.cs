@@ -9,6 +9,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbLookup.RecordLocking;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -32,10 +33,12 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<BankTransaction> BankTransactions { get; set; }
         public TableDefinition<QifMap> QifMaps { get; set; }
         public LookupContextBase Context => this;
+        public TableDefinition<RecordLock> RecordLocks { get; set; }
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
+        public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
         public LookupDefinition<SourceLookup, BudgetItemSource> BudgetItemSourceLookup { get; set; }

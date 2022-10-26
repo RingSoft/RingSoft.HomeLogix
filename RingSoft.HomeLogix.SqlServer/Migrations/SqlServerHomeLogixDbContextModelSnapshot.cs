@@ -170,6 +170,28 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.ToTable("AdvancedFindFilters");
                 });
 
+            modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
+                {
+                    b.Property<string>("Table")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("PrimaryKey")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("LockDateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("User")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Table", "PrimaryKey");
+
+                    b.ToTable("RecordLocks");
+                });
+
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccount", b =>
                 {
                     b.Property<int>("Id")

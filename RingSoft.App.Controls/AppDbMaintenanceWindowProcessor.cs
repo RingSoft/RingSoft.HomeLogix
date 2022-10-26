@@ -210,5 +210,13 @@ namespace RingSoft.App.Controls
                 base.OnReadOnlyModeSet(readOnlyValue);
             }
         }
+
+        public override void SetWindowReadOnlyMode()
+        {
+            var dbMaintenanceButtons = (DbMaintenanceTopHeaderControl)MaintenanceButtonsControl;
+            dbMaintenanceButtons.SaveSelectButton.Visibility = Visibility.Collapsed;
+            dbMaintenanceButtons.SetWindowReadOnlyMode();
+            base.SetWindowReadOnlyMode();
+        }
     }
 }

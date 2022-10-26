@@ -3,6 +3,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.RecordLocking;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -73,6 +74,8 @@ namespace RingSoft.HomeLogix.SqlServer
         {
             return new SqlServerHomeLogixDbContext();
         }
+
+        public DbSet<RecordLock> RecordLocks { get; set; }
 
         public void SetLookupContext(HomeLogixLookupContext lookupContext)
         {

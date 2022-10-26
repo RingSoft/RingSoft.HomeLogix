@@ -43,6 +43,8 @@
 
             <Style TargetType="lc:LookupWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:RecordLockingWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
             <Style TargetType="af:AdvancedFindWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <Style TargetType="af:AdvancedFindFormulaColumnWindow" BasedOn="{StaticResource BaseWindowStyle}"/>

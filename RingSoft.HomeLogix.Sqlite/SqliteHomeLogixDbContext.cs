@@ -4,6 +4,7 @@ using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.DbLookup.RecordLocking;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -85,5 +86,7 @@ namespace RingSoft.HomeLogix.Sqlite
         {
             return new SqliteHomeLogixDbContext();
         }
+
+        public DbSet<RecordLock> RecordLocks { get; set; }
     }
 }

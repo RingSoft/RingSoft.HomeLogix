@@ -29,5 +29,10 @@ namespace RingSoft.App.Controls
             };
             return result;
         }
+
+        public override Control GetRecordLockingButtonsControl(RecordLockingViewModel viewModel)
+        {
+            return new DbMaintenanceTopHeaderControl();
+        }
     }
 }

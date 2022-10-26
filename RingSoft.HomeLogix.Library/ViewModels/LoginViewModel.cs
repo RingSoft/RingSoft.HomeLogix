@@ -288,7 +288,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     Database = connection.SqlServerLoginViewModel.Database,
                     AuthenticationType = (byte) connection.SqlServerLoginViewModel.SecurityType,
                     Username = connection.SqlServerLoginViewModel.UserName,
-                    Password = connection.SqlServerLoginViewModel.Password
+                    Password = connection.SqlServerLoginViewModel.Password.EncryptDatabasePassword()
                 };
                 AddNewHousehold(household);
             }
