@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             EntityName = entity.Name;
             DbPlatform = (DbPlatforms) entity.Platform;
             var directory = entity.FilePath;
-            if (!directory.EndsWith("\\"))
+            if (!directory.IsNullOrEmpty() && !directory.EndsWith("\\"))
             {
                 directory += "\\";
             }

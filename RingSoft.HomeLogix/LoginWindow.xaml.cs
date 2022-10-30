@@ -47,13 +47,13 @@ namespace RingSoft.HomeLogix
                 ShowInTaskbar = false
             };
             addEditHouseholdWindow.ShowDialog();
-            if (addEditHouseholdWindow.DataCopied)
-            {
-                var message = "You must restart the application in order to continue.";
-                var caption = "Restart Application";
-                MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
-                Application.Current.Shutdown();
-            }
+            //if (addEditHouseholdWindow.DataCopied)
+            //{
+            //    var message = "You must restart the application in order to continue.";
+            //    var caption = "Restart Application";
+            //    MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
+            //    Application.Current.Shutdown();
+            //}
 
             if (addEditHouseholdWindow.ViewModel.DialogResult)
             {

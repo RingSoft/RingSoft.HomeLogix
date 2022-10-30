@@ -53,7 +53,7 @@ namespace RingSoft.HomeLogix.Sqlite
         }
         public SqliteHomeLogixDbContext()
         {
-            DbConstants.ConstantGenerator = new SqliteDbConstants();
+            //DbConstants.ConstantGenerator = new SqliteDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
             SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
 
@@ -72,6 +72,7 @@ namespace RingSoft.HomeLogix.Sqlite
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            DbConstants.ConstantGenerator = new SqliteDbConstants();
             HomeLogixModelBuilder.BuildModel(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
