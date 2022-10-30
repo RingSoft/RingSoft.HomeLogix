@@ -485,6 +485,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public void ImportFromQif(List<ImportTransactionGridRow> rows)
         {
+            var existingRows = Rows.OfType<ImportTransactionGridRow>().Where(p => !p.IsNew).ToList();
+            rows.AddRange(existingRows);
+            rows = rows.OrderBy(p => p.Date).ToList();
             Grid?.SetBulkInsertMode(true);
             PreLoadGridFromEntity();
             var rowIndex = 0;
@@ -493,73 +496,79 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 rowIndex++;
                 ViewModel.View.UpdateStatus($"Loading Row {rowIndex} of {count}");
-                var query = new SelectQuery(AppGlobals.LookupContext.QifMaps.TableName);
-                var foundMap = false;
-                var spacePos = importTransactionGridRow.BankText.IndexOf(" ");
-                var text = importTransactionGridRow.BankText;
-                if (spacePos > 0)
-                    text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
-                while (foundMap == false)
+                if (!importTransactionGridRow.BankText.IsNullOrEmpty())
                 {
-                    if (query.WhereItems.Any())
+                    var query = new SelectQuery(AppGlobals.LookupContext.QifMaps.TableName);
+                    var foundMap = false;
+                    var spacePos = importTransactionGridRow.BankText.IndexOf(" ");
+                    var text = importTransactionGridRow.BankText;
+                    if (spacePos > 0)
+                        text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
+                    while (foundMap == false)
                     {
-                        query.RemoveWhereItem(query.WhereItems[0]);
-                    }
-
-                    query.AddWhereItem(
-                        AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.BankText).FieldName,
-                        Conditions.Contains, text);
-
-                    var result = AppGlobals.LookupContext.DataProcessor.GetData(query);
-                    if (result.ResultCode == GetDataResultCodes.Success)
-                    {
-                        var table = result.DataSet.Tables[0];
-                        if (table.Rows.Count == 1)
+                        if (query.WhereItems.Any())
                         {
-                            foundMap = true;
-                            var qifMapId =
-                                table.Rows[0].GetRowValue(AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.Id).FieldName).ToInt();
-
-                            var qifMap = AppGlobals.DataRepository.GetQifMap(qifMapId);
-
-                            importTransactionGridRow.QifMap = qifMap;
-                            if (qifMap.BudgetItem != null)
-                            {
-                                importTransactionGridRow.BudgetItemAutoFillValue =
-                                    AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.BudgetItems,
-                                        qifMap.BudgetId.ToString());
-                            }
-
-                            if (qifMap.Source != null)
-                            {
-                                importTransactionGridRow.SourceAutoFillValue =
-                                    AppGlobals.LookupContext.OnAutoFillTextRequest(
-                                        AppGlobals.LookupContext.BudgetItemSources,
-                                        qifMap.SourceId.ToString());
-                            }
-
+                            query.RemoveWhereItem(query.WhereItems[0]);
                         }
-                        else if (table.Rows.Count == 0)
+
+                        query.AddWhereItem(
+                            AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.BankText).FieldName,
+                            Conditions.Contains, text);
+
+                        var result = AppGlobals.LookupContext.DataProcessor.GetData(query);
+                        if (result.ResultCode == GetDataResultCodes.Success)
+                        {
+                            var table = result.DataSet.Tables[0];
+                            if (table.Rows.Count == 1)
+                            {
+                                foundMap = true;
+                                var qifMapId =
+                                    table.Rows[0].GetRowValue(AppGlobals.LookupContext.QifMaps
+                                        .GetFieldDefinition(p => p.Id).FieldName).ToInt();
+
+                                var qifMap = AppGlobals.DataRepository.GetQifMap(qifMapId);
+
+                                importTransactionGridRow.QifMap = qifMap;
+                                if (qifMap.BudgetItem != null)
+                                {
+                                    importTransactionGridRow.BudgetItemAutoFillValue =
+                                        AppGlobals.LookupContext.OnAutoFillTextRequest(
+                                            AppGlobals.LookupContext.BudgetItems,
+                                            qifMap.BudgetId.ToString());
+                                }
+
+                                if (qifMap.Source != null)
+                                {
+                                    importTransactionGridRow.SourceAutoFillValue =
+                                        AppGlobals.LookupContext.OnAutoFillTextRequest(
+                                            AppGlobals.LookupContext.BudgetItemSources,
+                                            qifMap.SourceId.ToString());
+                                }
+
+                            }
+                            else if (table.Rows.Count == 0)
+                            {
+                                break;
+                            }
+                        }
+                        else
                         {
                             break;
                         }
-                    }
-                    else
-                    {
-                        break;
-                    }
 
-                    spacePos = importTransactionGridRow.BankText.IndexOf(" ", spacePos + 1);
-                    if (spacePos == -1)
-                    {
-                        foundMap = true;
-                    }
-                    else
-                    {
-                        text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
-                    }
+                        spacePos = importTransactionGridRow.BankText.IndexOf(" ", spacePos + 1);
+                        if (spacePos == -1)
+                        {
+                            foundMap = true;
+                        }
+                        else
+                        {
+                            text = importTransactionGridRow.BankText.MidStr(0, spacePos).Trim();
+                        }
 
+                    }
                 }
+
                 AddRow(importTransactionGridRow);
             }
             PostLoadGridFromEntity();

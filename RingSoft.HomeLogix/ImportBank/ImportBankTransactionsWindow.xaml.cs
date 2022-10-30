@@ -108,6 +108,11 @@ namespace RingSoft.HomeLogix.ImportBank
             _importProcedure.SplashWindow.SetProgress(status);
         }
 
+        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
+        {
+            _importProcedure.SplashWindow.ShowMessageBox(message, caption, icon);
+        }
+
         public static string OpenTextFile(string fileName)
         {
             var result = string.Empty;

@@ -29,6 +29,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         string GetQifFile();
 
         void UpdateStatus(string status);
+
+        void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
     }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {
@@ -144,6 +146,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             else
             {
                 startDate = BankViewModel.LastCompleteDate.Value;
+                var existingRows = Manager.Rows
+                    .OfType<ImportTransactionGridRow>().Where(p => !p.IsNew && !p.BankText.IsNullOrEmpty());
+                if (existingRows.Any())
+                {
+                    var existingDate = existingRows.Max(p => p.Date);
+                    if (startDate < existingDate)
+                    {
+                        startDate = existingDate;
+                    }
+                }
             }
 
             var importRows = new List<ImportTransactionGridRow>();
@@ -174,22 +186,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         private void FinishImport(List<ImportTransactionGridRow> importRows)
         {
             importRows = importRows.OrderBy(p => p.Date).ToList();
-            Manager.ImportFromQif(importRows);
             if (importRows.Any())
             {
-                Manager.Grid?.GotoCell(importRows[0], ImportTransactionGridRow.BudgetItemColumnId);
+                Manager.ImportFromQif(importRows);
             }
             else
             {
                 ShowNothingToDo();
+
+            }
+
+            var newRows = Manager.Rows.OfType<ImportTransactionGridRow>().OrderBy(p => p.Date).ToList();
+            if (newRows.Any())
+            {
+                Manager.Grid?.GotoCell(newRows[0], ImportTransactionGridRow.BudgetItemColumnId);
             }
         }
 
-        private static void ShowNothingToDo()
+        private void ShowNothingToDo()
         {
             var message = "Nothing was found to import.";
             var caption = "Nothing To Do";
-            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+            
+            View.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
         }
 
         private ImportTransactionGridRow GetRowValue(string qifText, int columnPos, DateTime startDate)
