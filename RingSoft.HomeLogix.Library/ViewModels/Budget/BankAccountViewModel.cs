@@ -554,7 +554,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ViewModelInput = new ViewModelInput();
             }
             _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
-            ViewModelInput.BankAccountViewModels.Add(this);
+            AppGlobals.MainViewModel.BankAccountViewModels.Add(this);
 
             TypeSetup = new TextComboBoxControlSetup();
             TypeSetup.LoadFromEnum<BankAccountTypes>();
@@ -658,7 +658,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             CalculateTotals();
 
-            ReadOnlyMode = ViewModelInput.BankAccountViewModels.Any(a => a != this && a.Id == Id);
+            ReadOnlyMode = AppGlobals.MainViewModel.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled  =
                 ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
 
@@ -913,7 +913,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
-                foreach (var budgetItemViewModel in ViewModelInput.BudgetItemViewModels)
+                foreach (var budgetItemViewModel in AppGlobals.MainViewModel.BudgetItemViewModels)
                 {
                     budgetItemViewModel.RecalculateBudgetItem();
                 }
@@ -1187,14 +1187,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             base.OnWindowClosing(e);
             if (!e.Cancel)
-                ViewModelInput.BankAccountViewModels.Remove(this);
+                AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
         }
 
         public bool IsBeingReconciled(int budgetItemId)
         {
-            if (RegisterGridManager.Rows
-                .OfType<BankAccountRegisterGridRow>().Any(a => a.Completed
-                || a.ActualAmount != null))
+            var registerRows = RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridRow>().Where(p => p.BudgetItemId == budgetItemId);
+            if (registerRows.Any(a => a.Completed || a.ActualAmount != null))
                 return true;
 
             return false;

@@ -594,7 +594,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
             
-            ViewModelInput.BudgetItemViewModels.Add(this);
+            AppGlobals.MainViewModel.BudgetItemViewModels.Add(this);
             _lockBudgetItemType = ViewModelInput.LockBudgetItemType;
             ViewModelInput.LockBudgetItemType = null;
 
@@ -775,7 +775,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _budgetItemHistoryFilter = budgetItem;
             ViewModelInput.HistoryFilterBudgetItem = budgetItem;
 
-            ReadOnlyMode = ViewModelInput.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
+            ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
             StartingDate = budgetItem.StartingDate;
             if (StartingDate != null)
@@ -1184,7 +1184,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return false;
             }
 
-            foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
+            foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
             {
                 if (!reconciledMessageShown && bankAccountViewModel.IsBeingReconciled(Id))
                 {
@@ -1207,7 +1207,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (result && RecalcRegister(entity.BankAccount))
             {
-                foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
+                foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
                 {
                     bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems, StartingDate);
                 }
@@ -1309,7 +1309,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (result)
             {
-                foreach (var bankAccountViewModel in ViewModelInput.BankAccountViewModels)
+                foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
                 {
                     bankAccountViewModel.DeleteBudgetItem(Id);
                 }
@@ -1323,7 +1323,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             base.OnWindowClosing(e);
             if (!e.Cancel)
-                ViewModelInput.BudgetItemViewModels.Remove(this);
+                AppGlobals.MainViewModel.BudgetItemViewModels.Remove(this);
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)

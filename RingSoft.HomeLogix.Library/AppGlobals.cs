@@ -11,6 +11,7 @@ using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels.Main;
 using RingSoft.HomeLogix.SqlServer;
 
 namespace RingSoft.HomeLogix.Library
@@ -52,7 +53,7 @@ namespace RingSoft.HomeLogix.Library
 
         public static bool UnitTesting { get; set; }
 
-        public static IMainViewModel MainViewModel { get; set; }
+        public static MainViewModel MainViewModel { get; set; }
 
         public static DbPlatforms DbPlatform { get; set; }
 

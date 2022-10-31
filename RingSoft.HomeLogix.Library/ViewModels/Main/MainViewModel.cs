@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RingSoft.DataEntryControls.Engine;
 using System.ComponentModel;
 using System.Linq;
@@ -11,6 +12,7 @@ using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.TableProcessing;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
@@ -346,6 +348,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public int PageSize { get; } = 50;
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
         public string SearchText { get; set; } = string.Empty;
+
+        public List<BudgetItemViewModel> BudgetItemViewModels { get; } = new List<BudgetItemViewModel>();
+
+        public List<BankAccountViewModel> BankAccountViewModels { get; } = new List<BankAccountViewModel>();
+
 
         private LookupFormulaColumnDefinition _projectedMonthToDateColumnDefinition;
         private LookupFormulaColumnDefinition _actualMonthToDateColumnDefinition;
