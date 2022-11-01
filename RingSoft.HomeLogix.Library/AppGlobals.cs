@@ -5,8 +5,11 @@ using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.MasterData;
 using RingSoft.HomeLogix.Sqlite;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
@@ -66,7 +69,7 @@ namespace RingSoft.HomeLogix.Library
             RingSoftAppGlobals.AppVersion = "0.93.01";
         }
 
-        public static void Initialize()
+        public static async void Initialize()
         
         {
             DataRepository ??= new DataRepository();
@@ -87,6 +90,80 @@ namespace RingSoft.HomeLogix.Library
                     if (LoginToHousehold(defaultHousehold).IsNullOrEmpty())
                         LoggedInHousehold = defaultHousehold;
                 }
+
+                //var url = "ftp://gator3282.hostgator.com";
+                //using (var client = new WebClient())
+                //{
+                //    client.Credentials = new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
+                //    //var request = (FtpWebRequest) WebRequest.Create("/public_html/apps/Test/");
+
+                //    FtpWebRequest requestDir = (FtpWebRequest)FtpWebRequest.Create(new Uri(url + "/public_html/apps/Test/"));
+                //    requestDir.Credentials = new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
+
+                //    //requestDir.Method = WebRequestMethods.Ftp.RemoveDirectory;
+
+                //    var dirExists = false;
+                //    requestDir.Method = WebRequestMethods.Ftp.ListDirectory;
+
+                //    try
+                //    {
+                //        using (var listResponse = (FtpWebResponse) requestDir.GetResponse())
+                //        {
+                //            dirExists = true;
+                //            using (var stream = listResponse.GetResponseStream())
+                //            {
+                //                using (var reader = new StreamReader(stream, true))
+                //                {
+                //                    var streamText = reader.ReadToEnd();
+                //                    var crlfPos = streamText.IndexOf("\r\n");
+                //                    while (crlfPos != -1)
+                //                    {
+                //                        var text = streamText.LeftStr(crlfPos);
+
+                //                        if (text != "." && text != "..")
+                //                        {
+                //                            requestDir =
+                //                                (FtpWebRequest) FtpWebRequest.Create(
+                //                                    new Uri(url + "/public_html/apps/Test/" + text));
+                //                            requestDir.Credentials =
+                //                                new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
+                //                            requestDir.Method = WebRequestMethods.Ftp.DeleteFile;
+                //                            FtpWebResponse deleteResponse = (FtpWebResponse) requestDir.GetResponse();
+                //                        }
+
+                //                        streamText = streamText.RightStr(streamText.Length - crlfPos - 2);
+                //                        crlfPos = streamText.IndexOf("\r\n");
+                //                    }
+                //                }
+                //            }
+                //        }
+                //    }
+                //    catch (Exception e)
+                //    {
+                //    }
+
+                //    if (!dirExists)
+                //    {
+
+                //        requestDir = (FtpWebRequest) FtpWebRequest.Create(new Uri(url + "/public_html/apps/Test"));
+                //        requestDir.Credentials = new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
+                //        requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+
+                //        requestDir.UsePassive = true;
+                //        requestDir.UseBinary = true;
+                //        requestDir.KeepAlive = false;
+                //        FtpWebResponse response = (FtpWebResponse) requestDir.GetResponse();
+
+                //        response.Close();
+                //    }
+
+                //    client.UploadFile(url + "/public_html/apps/Test/test.txt", WebRequestMethods.Ftp.UploadFile, "Test.txt");
+
+                    
+                //    //client.DownloadFile(url + "/public_html/apps/test.txt", "C:\\Temp\\Test123.txt");
+                //}
+
+
             }
         }
 
