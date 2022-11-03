@@ -2,25 +2,31 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RingSoft.HomeLogix.Sqlite;
+using RingSoft.HomeLogix.SqlServer;
 
-namespace RingSoft.HomeLogix.Sqlite.Migrations
+namespace RingSoft.HomeLogix.SqlServer.Migrations
 {
-    [DbContext(typeof(SqliteHomeLogixDbContext))]
-    partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqlServerHomeLogixDbContext))]
+    [Migration("20221102063436_Mobile")]
+    partial class Mobile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.17");
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.17")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFind", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool?>("Disabled")
                         .HasColumnType("bit");
@@ -31,16 +37,16 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("RedAlert")
                         .HasColumnType("integer");
 
                     b.Property<byte?>("RefreshCondition")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte?>("RefreshRate")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("RefreshValue")
                         .HasColumnType("integer");
@@ -48,7 +54,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("Table")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("YellowAlert")
                         .HasColumnType("integer");
@@ -68,35 +74,35 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("Caption")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<byte>("DecimalFormatType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("FieldDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
-                    b.Property<double>("PercentWidth")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("PercentWidth")
+                        .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrimaryTableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
@@ -115,49 +121,49 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasColumnType("bit");
 
                     b.Property<byte>("EndLogic")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
                     b.Property<byte>("FormulaDataType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("FormulaDisplayValue")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("LeftParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<byte>("Operand")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrimaryTableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<byte>("RightParentheses")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<int?>("SearchForAdvancedFindId")
                         .HasColumnType("integer");
 
                     b.Property<string>("SearchForValue")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TableName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("AdvancedFindId", "FilterId");
 
@@ -170,18 +176,18 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<string>("Table")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrimaryKey")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("LockDateTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("User")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Table", "PrimaryKey");
 
@@ -192,10 +198,11 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<byte>("AccountType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<decimal>("CurrentBalance")
                         .HasColumnType("numeric");
@@ -203,7 +210,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("LastCompletedDate")
                         .HasColumnType("datetime");
@@ -243,7 +250,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte>("PeriodType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("PeriodEndingDate")
                         .HasColumnType("datetime");
@@ -263,7 +270,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal?>("ActualAmount")
                         .HasColumnType("numeric");
@@ -273,7 +281,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("BankText")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int?>("BudgetItemId")
                         .HasColumnType("integer");
@@ -283,7 +291,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsNegative")
                         .HasColumnType("bit");
@@ -294,16 +302,16 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ProjectedAmount")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("ProjectedAmount")
+                        .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("RegisterGuid")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("TransferRegisterGuid")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -327,7 +335,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("BankText")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
@@ -378,7 +386,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasColumnType("datetime");
 
                     b.Property<byte>("TransactionType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.HasKey("BankAccountId", "TransactionId");
 
@@ -421,10 +429,11 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric(38,17)");
 
                     b.Property<int>("BankAccountId")
                         .HasColumnType("integer");
@@ -438,7 +447,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("EndingDate")
                         .HasColumnType("datetime");
@@ -446,8 +455,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<DateTime?>("LastCompletedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("MonthlyAmount")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("MonthlyAmount")
+                        .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
@@ -455,8 +464,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("RecurringPeriod")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RecurringType")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("RecurringType")
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime?>("StartingDate")
                         .HasColumnType("datetime");
@@ -464,8 +473,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("TransferToBankAccountId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("smallint");
+                    b.Property<byte>("Type")
+                        .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
@@ -480,7 +489,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("IsIncome")
                         .HasColumnType("bit");
@@ -488,7 +498,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -501,16 +511,16 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasColumnType("integer");
 
                     b.Property<byte>("PeriodType")
-                        .HasColumnType("smallint");
+                        .HasColumnType("tinyint");
 
                     b.Property<DateTime>("PeriodEndingDate")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("ActualAmount")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("ActualAmount")
+                        .HasColumnType("numeric(38,17)");
 
-                    b.Property<double>("ProjectedAmount")
-                        .HasColumnType("numeric");
+                    b.Property<decimal>("ProjectedAmount")
+                        .HasColumnType("numeric(38,17)");
 
                     b.HasKey("BudgetItemId", "PeriodType", "PeriodEndingDate");
 
@@ -521,7 +531,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<decimal>("ActualAmount")
                         .HasColumnType("numeric");
@@ -531,7 +542,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("BankText")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<int?>("BudgetItemId")
                         .HasColumnType("integer");
@@ -541,7 +552,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("Description")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
@@ -567,11 +578,12 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+                        .HasColumnType("integer")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BankText")
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("BudgetId")
                         .HasColumnType("integer");
@@ -601,7 +613,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("BankText")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime");
@@ -620,15 +632,15 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     b.Property<string>("HouseholdName")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhoneLogin")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhonePassword")
                         .HasMaxLength(250)
-                        .HasColumnType("nvarchar");
+                        .HasColumnType("nvarchar(250)");
 
                     b.HasKey("HouseholdName");
 

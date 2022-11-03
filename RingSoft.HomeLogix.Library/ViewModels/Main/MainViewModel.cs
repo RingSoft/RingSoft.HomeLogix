@@ -12,6 +12,7 @@ using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.TableProcessing;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
@@ -29,6 +30,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void CloseApp();
 
         void ShowChart(bool show = true);
+
+        Login ShowPhoneSync(Login input);
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -41,7 +44,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             set
             {
                 _currentMonthEnding = value;
-                CurrentMonthEndingText = CurrentMonthEnding.ToString("MMMM yyyy");
+                if (_setCurrentDateText)
+                {
+                    CurrentMonthEndingText = CurrentMonthEnding.ToString("MMMM yyyy");
+                }
             }
         }
 
@@ -343,9 +349,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand ChangeHouseholdCommand { get; }
         public RelayCommand ManageBudgetCommand { get; }
         public RelayCommand ManageBankAccountsCommand { get; }
+        public RelayCommand SyncPhoneCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
 
-        public int PageSize { get; } = 50;
+        public int PageSize { get; } = 20;
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
         public string SearchText { get; set; } = string.Empty;
 
@@ -360,6 +367,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private ChartData _initialBudgetChartData;
         private ChartData _initialActualChartData;
         private ChartData _activeChartData;
+        private List<int> _budgetItems = new List<int>();
+        private DateTime _currentMonth;
+        private bool _setCurrentDateText = true;
 
         public MainViewModel()
         {
@@ -373,6 +383,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             ManageBankAccountsCommand = new RelayCommand(ManageBankAccounts);
             AdvancedFindCommand = new RelayCommand(LaunchAdvancedFind);
             CloseAppCommand = new RelayCommand(CloseApp);
+            SyncPhoneCommand = new RelayCommand(SyncPhone);
         }
 
         public void OnViewLoaded(IMainView view)
@@ -400,14 +411,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
             if (currentBudgetMonth == null)
             {
-                CreateBudgetLookupDefinition(true);
+                var date = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
+                    DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+
+                SetCurrentMonthEnding(date, false);
+                _currentMonth = date;
+                BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
             else
             {
                 SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate, false);
+                _currentMonth = currentBudgetMonth.PeriodEndingDate;
                 //BankLookupDefinition = CreateBankLookupDefinition();
-                CreateBudgetLookupDefinition(true);
+                BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
         }
@@ -428,7 +445,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             return bankLookupDefinition;
         }
 
-        private void CreateBudgetLookupDefinition(bool createColumns)
+        private LookupDefinition<MainBudgetLookup, BudgetItem> CreateBudgetLookupDefinition(bool createColumns)
         {
             var budgetLookupDefinition = BudgetLookupDefinition;
             
@@ -438,6 +455,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     budgetLookupDefinition =
                         new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
 
+                budgetLookupDefinition.AddHiddenColumn(p => p.BudgetId, p => p.Id);
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description","");
                 budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
 
@@ -456,10 +474,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     .DoShowNegativeValuesInRed()
                     .DoShowPositiveValuesInGreen();
 
-                BudgetLookupDefinition = budgetLookupDefinition;
+                //BudgetLookupDefinition = budgetLookupDefinition;
             }
 
             budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+            return budgetLookupDefinition;
         }
 
 
@@ -747,7 +766,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void MakeChartData(LookupDefinition<MainBudgetLookup, BudgetItem> lookupDefinition)
         {
-            
+            _budgetItems.Clear();
             lookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             var lookupData = new LookupData<MainBudgetLookup, BudgetItem>(lookupDefinition, this);
@@ -780,21 +799,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             {
                 if (mainLookup.ItemType == "Expense")
                 {
-                    if (_activeChartData == _initialBudgetChartData)
+                    if (!_budgetItems.Contains(mainLookup.BudgetId))
                     {
-                        _activeChartData.Items.Add(new ChartDataItem
+                        _budgetItems.Add(mainLookup.BudgetId);
+                        if (_activeChartData == _initialBudgetChartData)
                         {
-                            Name = mainLookup.Description,
-                            Value = (double)mainLookup.ProjectedMonthlyAmount
-                        });
-                    }
-                    else if (_activeChartData == _initialActualChartData)
-                    {
-                        _activeChartData.Items.Add(new ChartDataItem
+                            _activeChartData.Items.Add(new ChartDataItem
+                            {
+                                Name = mainLookup.Description,
+                                Value = (double) mainLookup.ProjectedMonthlyAmount
+                            });
+                        }
+                        else if (_activeChartData == _initialActualChartData)
                         {
-                            Name = mainLookup.Description,
-                            Value = (double)mainLookup.ActualMonthlyAmount
-                        });
+                            _activeChartData.Items.Add(new ChartDataItem
+                            {
+                                Name = mainLookup.Description,
+                                Value = (double) mainLookup.ActualMonthlyAmount
+                            });
+                        }
                     }
                 }
             }
@@ -840,9 +863,86 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             View.CloseApp();
         }
 
+        private void SyncPhone()
+        {
+            var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+            var loginInput = new Login
+            {
+                UserName = systemMaster.PhoneLogin,
+                Password = systemMaster.PhonePassword,
+                Guid = Guid.NewGuid().ToString()
+            };
+            var phoneLogin = View.ShowPhoneSync(loginInput);
+            if (phoneLogin != null)
+            {
+                systemMaster.PhoneLogin = phoneLogin.UserName;
+                systemMaster.PhonePassword = phoneLogin.Password;
+                AppGlobals.DataRepository.SaveSystemMaster(systemMaster);
+            }
+        }
+
+        //private List<BudgetData> GetPhoneBudgetData()
+        //{
+
+        //}
+
         private static DateTime GetPeriodEndDate(DateTime value)
         {
             return new DateTime(value.Year, value.Month, DateTime.DaysInMonth(value.Year, value.Month));
+        }
+
+        public List<BudgetData> GetBudgetData()
+        {
+            var result = new List<BudgetData>();
+            var currentMonthEnding = CurrentMonthEnding;
+            _setCurrentDateText = false;
+            CurrentMonthEnding = GetPeriodEndDate(_currentMonth);
+            var budgetItems = new List<int>();
+
+            var budgetLookupDefinition = CreateBudgetLookupDefinition(true);
+            var lookupData = new LookupData<MainBudgetLookup, BudgetItem>(budgetLookupDefinition, this);
+            lookupData.LookupDataChanged += (sender, args) =>
+            {
+                foreach (var mainBudgetLookup in args.LookupData.LookupResultsList)
+                {
+                    if (!budgetItems.Contains(mainBudgetLookup.BudgetId))
+                    {
+                        budgetItems.Add(mainBudgetLookup.BudgetId);
+                        result.Add(new BudgetData
+                        {
+                            BudgetItemId = mainBudgetLookup.BudgetId,
+                            Description = mainBudgetLookup.Description,
+                            BudgetAmount = mainBudgetLookup.ProjectedMonthlyAmount,
+                            ActualAmount = mainBudgetLookup.ActualMonthlyAmount,
+                            Difference = mainBudgetLookup.MonthlyAmountDifference
+                        });
+                    }
+                }
+            };
+
+            if (lookupData.GetInitData().ResultCode == GetDataResultCodes.Success)
+            {
+                var stop = false;
+
+                while (!stop)
+                {
+                    switch (lookupData.ScrollPosition)
+                    {
+                        case LookupScrollPositions.Bottom:
+                        case LookupScrollPositions.Disabled:
+                            stop = true;
+                            break;
+                        default:
+                            lookupData.GotoNextPage();
+                            break;
+                    }
+                }
+
+            }
+
+            CurrentMonthEnding = GetPeriodEndDate(currentMonthEnding);
+            _setCurrentDateText = true;
+            return result;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

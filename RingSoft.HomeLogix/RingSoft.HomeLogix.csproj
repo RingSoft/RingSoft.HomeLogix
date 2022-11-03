@@ -13,6 +13,7 @@
     <None Remove="Resources\bank.png" />
     <None Remove="Resources\bank_check.png" />
     <None Remove="Resources\card_visa.png" />
+    <None Remove="Resources\CellPhone.png" />
     <None Remove="Resources\change_household.png" />
     <None Remove="Resources\gears.png" />
     <None Remove="Resources\homeRed.ico" />
@@ -32,7 +33,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RingSoft.App.Controls" Version="1.2.21.1" />
+    <PackageReference Include="RingSoft.App.Controls" Version="1.2.23" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
   </ItemGroup>
 
@@ -46,6 +47,7 @@
     <Resource Include="Resources\bank.png" />
     <Resource Include="Resources\bank_check.png" />
     <Resource Include="Resources\card_visa.png" />
+    <Resource Include="Resources\CellPhone.png" />
     <Resource Include="Resources\change_household.png" />
     <Resource Include="Resources\gears.png" />
     <Resource Include="Resources\homeRed.ico" />

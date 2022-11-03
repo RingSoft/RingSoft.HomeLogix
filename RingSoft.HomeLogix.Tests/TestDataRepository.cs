@@ -24,6 +24,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new System.NotImplementedException();
         }
 
+        public bool SaveSystemMaster(SystemMaster systemMaster)
+        {
+            throw new NotImplementedException();
+        }
+
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
             var bankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);

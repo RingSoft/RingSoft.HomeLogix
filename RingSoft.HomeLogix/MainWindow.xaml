@@ -53,6 +53,7 @@
         <BitmapImage x:Key="ManageBankImage" UriSource="/RingSoft.HomeLogix;component/Resources/manage_bank.png" />
         <BitmapImage x:Key="ManageBudgetImage" UriSource="/RingSoft.HomeLogix;component/Resources/manage_budget.png" />
         <BitmapImage x:Key="FindImage" UriSource="/RingSoft.App.Controls;component/Resources/Search32.png" />
+        <BitmapImage x:Key="PhoneImage" UriSource="/RingSoft.HomeLogix;component/Resources/CellPhone.png" />
     </Window.Resources>
     <DockPanel>
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
@@ -74,6 +75,8 @@
 
             <ac:DbMaintenanceButton x:Name="ManageBankButton" Content="Manage _Bank Accounts" ImageSource="{StaticResource ManageBankImage}"
                                     Command="{Binding ManageBankAccountsCommand}"/>
+
+		<ac:DbMaintenanceButton x:Name="SyncPhoneButton" Content="_Sync With Mobile Device" ImageSource="{StaticResource PhoneImage}" Command="{Binding SyncPhoneCommand}"/>
 
             <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
         </StackPanel>

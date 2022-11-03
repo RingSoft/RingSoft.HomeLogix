@@ -6,6 +6,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
     public class MainBudgetLookup
     {
+        public int BudgetId { get; set; }
+
         public string Description { get; set; }
 
         public string ItemType { get; set; }

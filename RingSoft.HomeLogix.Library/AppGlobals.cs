@@ -91,79 +91,18 @@ namespace RingSoft.HomeLogix.Library
                         LoggedInHousehold = defaultHousehold;
                 }
 
-                //var url = "ftp://gator3282.hostgator.com";
-                //using (var client = new WebClient())
+                //var response = RingSoftAppGlobals.GetWebResponse("/HomeLogixData/", WebRequestMethods.Ftp.ListDirectory);
+                //using (var stream = response.GetResponseStream())
                 //{
-                //    client.Credentials = new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
-                //    //var request = (FtpWebRequest) WebRequest.Create("/public_html/apps/Test/");
-
-                //    FtpWebRequest requestDir = (FtpWebRequest)FtpWebRequest.Create(new Uri(url + "/public_html/apps/Test/"));
-                //    requestDir.Credentials = new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
-
-                //    //requestDir.Method = WebRequestMethods.Ftp.RemoveDirectory;
-
-                //    var dirExists = false;
-                //    requestDir.Method = WebRequestMethods.Ftp.ListDirectory;
-
-                //    try
+                //    using (var reader = new StreamReader(stream, true))
                 //    {
-                //        using (var listResponse = (FtpWebResponse) requestDir.GetResponse())
-                //        {
-                //            dirExists = true;
-                //            using (var stream = listResponse.GetResponseStream())
-                //            {
-                //                using (var reader = new StreamReader(stream, true))
-                //                {
-                //                    var streamText = reader.ReadToEnd();
-                //                    var crlfPos = streamText.IndexOf("\r\n");
-                //                    while (crlfPos != -1)
-                //                    {
-                //                        var text = streamText.LeftStr(crlfPos);
-
-                //                        if (text != "." && text != "..")
-                //                        {
-                //                            requestDir =
-                //                                (FtpWebRequest) FtpWebRequest.Create(
-                //                                    new Uri(url + "/public_html/apps/Test/" + text));
-                //                            requestDir.Credentials =
-                //                                new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
-                //                            requestDir.Method = WebRequestMethods.Ftp.DeleteFile;
-                //                            FtpWebResponse deleteResponse = (FtpWebResponse) requestDir.GetResponse();
-                //                        }
-
-                //                        streamText = streamText.RightStr(streamText.Length - crlfPos - 2);
-                //                        crlfPos = streamText.IndexOf("\r\n");
-                //                    }
-                //                }
-                //            }
-                //        }
+                //        var text = reader.ReadToEnd();
                 //    }
-                //    catch (Exception e)
-                //    {
-                //    }
-
-                //    if (!dirExists)
-                //    {
-
-                //        requestDir = (FtpWebRequest) FtpWebRequest.Create(new Uri(url + "/public_html/apps/Test"));
-                //        requestDir.Credentials = new NetworkCredential("peteman316", "vEnY60ZqgxLZ5w0E");
-                //        requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
-
-                //        requestDir.UsePassive = true;
-                //        requestDir.UseBinary = true;
-                //        requestDir.KeepAlive = false;
-                //        FtpWebResponse response = (FtpWebResponse) requestDir.GetResponse();
-
-                //        response.Close();
-                //    }
-
-                //    client.UploadFile(url + "/public_html/apps/Test/test.txt", WebRequestMethods.Ftp.UploadFile, "Test.txt");
-
-                    
-                //    //client.DownloadFile(url + "/public_html/apps/test.txt", "C:\\Temp\\Test123.txt");
                 //}
 
+                //RingSoftAppGlobals.UploadFile("/HomeLogixData/test.txt", "C:\\Temp\\Test.txt");
 
+                //RingSoftAppGlobals.DownloadFile("/HomeLogixData/test.txt", "C:\\Temp\\Test123.txt");
             }
         }
 
@@ -328,6 +267,98 @@ namespace RingSoft.HomeLogix.Library
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public static string OpenTextFile(string fileName, string folder = "")
+        {
+            var result = string.Empty;
+            var path = $"{MasterDbContext.ProgramDataFolder}\\";
+            if (!folder.IsNullOrEmpty())
+            {
+                if (!folder.EndsWith("\\"))
+                {
+                    folder += "\\";
+                }
+
+                path = folder;
+            }
+            var fileNamePath = $"{path}{fileName}";
+
+            try
+            {
+                var openFile = new StreamReader(fileNamePath);
+                result = openFile.ReadToEnd();
+                openFile.Close();
+                openFile.Dispose();
+                GC.Collect();
+            }
+            catch (Exception e)
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(e.Message, "Error Opening Text File", RsMessageBoxIcons.Error);
+            }
+
+            return result;
+        }
+
+        public static void WriteTextFile(string fileName, string text, string folder = "")
+        {
+            var path = $"{MasterDbContext.ProgramDataFolder}\\";
+            if (!folder.IsNullOrEmpty())
+            {
+                if (!folder.EndsWith("\\"))
+                {
+                    folder += "\\";
+                }
+
+                path = folder;
+            }
+            var fileNamePath = $"{path}{fileName}";
+            try
+            {
+                var directory = Path.GetDirectoryName(fileNamePath);
+                if (!Directory.Exists(directory))
+                    if (directory != null)
+                        Directory.CreateDirectory(directory);
+
+                File.WriteAllText(fileNamePath, text);
+            }
+            catch (Exception e)
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox(e.Message, "Error Writing Text File", RsMessageBoxIcons.Error);
+            }
+        }
+
+        public static void UploadFile(string fileName, string guid = "")
+        {
+            var folder = "/HomeLogixData/";
+            if (!guid.IsNullOrEmpty())
+            {
+                folder += guid + "/";
+            }
+            RingSoftAppGlobals.UploadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
+        }
+
+        public static void DownloadFile(string fileName, string guid = "")
+        {
+            var folder = "/HomeLogixData/";
+            if (!guid.IsNullOrEmpty())
+            {
+                folder += guid + "/";
+            }
+            RingSoftAppGlobals.DownloadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
+        }
+
+        public static WebResponse GetWebResponse(string method, string url = "")
+        {
+            if (url.IsNullOrEmpty())
+            {
+                url = "/HomeLogixData/";
+            }
+            else
+            {
+                url = $"/HomeLogixData/{url}";
+            }
+            return RingSoftAppGlobals.GetWebResponse($"{url}", method);
         }
     }
 }

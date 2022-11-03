@@ -10,6 +10,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.Library;
+using RingSoft.HomeLogix.Library.PhoneModel;
 using ScottPlot;
 using Color = System.Drawing.Color;
 
@@ -163,6 +164,13 @@ namespace RingSoft.HomeLogix
             }
 
             BudgetChart.Visibility = ActualChart.Visibility = visibleSetting;
+        }
+
+        public Login ShowPhoneSync(Login input)
+        {
+            var phoneSyncWindow = new PhoneSyncWindow(input) { Owner = this };
+            phoneSyncWindow.ShowDialog();
+            return phoneSyncWindow.ViewModel.DialogResult;
         }
     }
 }

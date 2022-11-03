@@ -9,9 +9,7 @@ namespace RingSoft.HomeLogix.DataAccess
     {
         public static void BuildModel(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SystemMaster>().Property(p => p.HouseholdName)
-                .HasColumnType(DbConstants.StringColumnType);
-
+            modelBuilder.ApplyConfiguration(new SystemMasterConfiguration());
             modelBuilder.ApplyConfiguration(new BudgetItemConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountConfiguration());
             modelBuilder.ApplyConfiguration(new BankAccountRegisterItemConfiguration());

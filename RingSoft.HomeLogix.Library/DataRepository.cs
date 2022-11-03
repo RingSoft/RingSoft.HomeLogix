@@ -17,6 +17,8 @@ namespace RingSoft.HomeLogix.Library
     {
         [CanBeNull] SystemMaster GetSystemMaster();
 
+        bool SaveSystemMaster(SystemMaster systemMaster);
+
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
         IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId);
@@ -101,6 +103,12 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.SystemMaster.FirstOrDefault();
+        }
+
+        public bool SaveSystemMaster(SystemMaster systemMaster)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.DbContext.SaveEntity(context.SystemMaster, systemMaster, "Saving System Master");
         }
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
