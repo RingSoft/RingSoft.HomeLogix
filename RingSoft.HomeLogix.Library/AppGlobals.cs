@@ -320,7 +320,7 @@ namespace RingSoft.HomeLogix.Library
                     if (directory != null)
                         Directory.CreateDirectory(directory);
 
-                File.WriteAllText(fileNamePath, text);
+                WriteTextFile(fileNamePath, text);
             }
             catch (Exception e)
             {
@@ -328,9 +328,14 @@ namespace RingSoft.HomeLogix.Library
             }
         }
 
+        public static void WriteTextFile(string fileName, string text)
+        {
+            File.WriteAllText(fileName, text);
+        }
+
         public static void UploadFile(string fileName, string guid = "")
         {
-            var folder = "/HomeLogixData/";
+            var folder = "/public_html/HomeLogixData/";
             if (!guid.IsNullOrEmpty())
             {
                 folder += guid + "/";
@@ -340,7 +345,7 @@ namespace RingSoft.HomeLogix.Library
 
         public static void DownloadFile(string fileName, string guid = "")
         {
-            var folder = "/HomeLogixData/";
+            var folder = "/public_html/HomeLogixData/";
             if (!guid.IsNullOrEmpty())
             {
                 folder += guid + "/";
@@ -352,13 +357,27 @@ namespace RingSoft.HomeLogix.Library
         {
             if (url.IsNullOrEmpty())
             {
-                url = "/HomeLogixData/";
+                url = "/public_html/HomeLogixData/";
             }
             else
             {
-                url = $"/HomeLogixData/{url}";
+                url = $"/public_html/HomeLogixData/{url}";
             }
             return RingSoftAppGlobals.GetWebResponse($"{url}", method);
+        }
+
+        public static string GetWebText(string fileName, string guid = "")
+        {
+            var url = "https://ringsoft.site/HomeLogixData/";
+            if (!guid.IsNullOrEmpty())
+            {
+                url += guid + "/";
+            }
+
+            url += fileName;
+            var client = new HttpClient();
+            var text = client.GetStringAsync(url);
+            return text.Result;
         }
     }
 }
