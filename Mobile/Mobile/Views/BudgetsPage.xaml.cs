@@ -10,13 +10,13 @@ using Xamarin.Forms.Xaml;
 namespace Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : ContentPage, IMainPageView
+    public partial class BudgetsPage : IBudgetsPageView
     {
-        public MainPage()
+        public BudgetsPage()
         {
             InitializeComponent();
-            
-            ViewModel.Initialize(this);
+            ViewModel.Initialize(this, true);
+            ListView.ItemsSource = ViewModel.BudgetData;
         }
 
         public void ShowMessage(string message, string caption)
@@ -24,10 +24,5 @@ namespace Mobile.Views
             DisplayAlert(caption, message, "OK");
         }
 
-        public async void ShowCurrentBudgetsPage()
-        {
-            var page = new NavigationPage(new BudgetsPage());
-            await Navigation.PushAsync(page);
-        }
     }
 }

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Mobile.ViewModels;assembly=Mobile"
+             x:Class="Mobile.Views.BudgetsPage">
+
+    <ContentPage.BindingContext>
+        <vm:BudgetsViewModel x:Name="ViewModel"/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <StackLayout>
+
+            <ListView x:Name="ListView" ItemsSource="{Binding BudgetData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical" HorizontalOptions="Fill">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Row="0" Grid.Column="0"  Text="Budget Item"/>
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}"/>
+                                    <Label Grid.Row="1" Grid.Column="0" Text="Budget Amount"/>
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding BudgetAmount, StringFormat='{0:C2}'}"/>
+
+                                </Grid>
+                                <BoxView Color="Blue" HeightRequest="5" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

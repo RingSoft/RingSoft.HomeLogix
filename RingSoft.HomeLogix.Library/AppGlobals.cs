@@ -375,9 +375,10 @@ namespace RingSoft.HomeLogix.Library
             }
 
             url += fileName;
+
             var client = new HttpClient();
-            var text = client.GetStringAsync(url);
-            return text.Result;
+            var text = client.GetStringAsync(url).Result;
+            return text;
         }
     }
 }

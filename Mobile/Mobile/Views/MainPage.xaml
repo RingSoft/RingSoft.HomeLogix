@@ -5,13 +5,15 @@
              x:Class="Mobile.Views.MainPage">
 
     <ContentPage.BindingContext>
-        <vm:MainViewModel/>
+        <vm:MainViewModel x:Name="ViewModel"/>
     </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center">
+        <StackLayout VerticalOptions="Center" Spacing="20">
     
             <Button Text="Sync Computer" Command="{Binding SyncCommand}"/>
+
+            <Button Text="View Current Budget" Command="{Binding ShowCurrentBudgetsCommand}"/>
 
         </StackLayout>
     </ContentPage.Content>
