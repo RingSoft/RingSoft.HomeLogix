@@ -945,6 +945,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             return result;
         }
 
+        public List<BudgetStatistics> GetBudgetStatistics()
+        {
+            var result = new List<BudgetStatistics>();
+            var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(_currentMonth,
+                GetPeriodEndDate(_currentMonth.AddMonths(-1)), GetPeriodEndDate(_currentMonth.AddMonths(1)));
+
+            var currentStats = PopulateBudgetStats(budgetTotals, StatisticsType.Current, GetPeriodEndDate(_currentMonth));
+            result.Add(currentStats);
+
+            budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(GetPeriodEndDate(_currentMonth.AddMonths(-1)),
+                GetPeriodEndDate(_currentMonth.AddMonths(-1)), GetPeriodEndDate(_currentMonth.AddMonths(1)));
+
+            var pastStats = PopulateBudgetStats(budgetTotals, StatisticsType.Previous,
+                GetPeriodEndDate(_currentMonth.AddMonths(-1)));
+            result.Add(pastStats);
+
+            return result;
+        }
+
+        private static BudgetStatistics PopulateBudgetStats(BudgetTotals budgetTotals, StatisticsType type, DateTime budgetMonth)
+        {
+            var budgetStats = new BudgetStatistics();
+            budgetStats.Type = type;
+            budgetStats.MonthEnding = budgetMonth;
+            budgetStats.BudgetIncome = budgetTotals.TotalProjectedMonthlyIncome;
+            budgetStats.BudgetExpenses = budgetTotals.TotalProjectedMonthlyExpenses;
+            budgetStats.ActualIncome = budgetTotals.TotalActualMonthlyIncome;
+            budgetStats.ActualExpenses = budgetTotals.TotalActualMonthlyExpenses;
+            budgetStats.YtdIncome = budgetTotals.YearToDateIncome;
+            budgetStats.YtdExpenses = budgetTotals.YearToDateExpenses;
+            return budgetStats;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

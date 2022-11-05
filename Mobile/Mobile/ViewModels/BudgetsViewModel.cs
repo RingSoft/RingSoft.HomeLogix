@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Mobile.ViewModels;
 using Newtonsoft.Json;
@@ -32,6 +33,23 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
+        private DateTime _monthEndDate;
+
+        public DateTime MonthEndDate
+        {
+            get => _monthEndDate;
+            set
+            {
+                if (_monthEndDate == value)
+                {
+                    return;
+                }
+                _monthEndDate = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public IBudgetsPageView View { get; set; }
 
         public void Initialize(IBudgetsPageView view, bool current)
@@ -47,22 +65,23 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             if (MainViewModel.DownloadWebText(ref jsonText, file, true))
             {
                 var budgetData = new List<BudgetData>();
-                try
-                {
-                    budgetData = JsonConvert.DeserializeObject<List<BudgetData>>(jsonText);
-                    BudgetData = new ObservableCollection<BudgetData>(budgetData);
-                    //BudgetData.Add(budgetData.FirstOrDefault());
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                budgetData = JsonConvert.DeserializeObject<List<BudgetData>>(jsonText);
+                BudgetData = new ObservableCollection<BudgetData>(budgetData);
             }
-            else
+
+            file = "BudgetStats.json";
+            jsonText = string.Empty;
+            if (MainViewModel.DownloadWebText(ref jsonText, file, true))
             {
-                View.ShowMessage("Error loading from Internet", "File load failure");
+                var budgetStats = new List<BudgetStatistics>();
+                budgetStats = JsonConvert.DeserializeObject<List<BudgetStatistics>>(jsonText);
+                if (current)
+                {
+                    var itemStats = budgetStats.FirstOrDefault(p => p.Type == StatisticsType.Current);
+                    MonthEndDate = itemStats.MonthEnding;
+                }
             }
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

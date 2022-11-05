@@ -74,9 +74,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private void OnOk()
         {
             var caption = "Validation Fail";
+            var message = string.Empty;
             if (PhoneLogin.IsNullOrEmpty())
             {
-                var message = "You must enter in a username.";
+                message = "You must enter in a username.";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 View.OnValFail(PhoneValFailControls.UserName);
                 return;
@@ -84,7 +85,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             if (View.Password.IsNullOrEmpty())
             {
-                var message = "You must enter in a password.";
+                message = "You must enter in a password.";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 View.OnValFail(PhoneValFailControls.Password);
                 return;
@@ -92,7 +93,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             if (View.Password != View.ConfirmPassword)
             {
-                var message = "Password and confirm password do not match.";
+                message = "Password and confirm password do not match.";
                 ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                 View.OnValFail(PhoneValFailControls.ConfirmPassword);
                 return;
@@ -171,6 +172,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var content = JsonConvert.SerializeObject(currentMonthBudgetData);
             AppGlobals.WriteTextFile("CurrentMonthBudget.json", content);
             AppGlobals.UploadFile("CurrentMonthBudget.json", DialogResult.Guid);
+
+            var budgetStatistics = AppGlobals.MainViewModel.GetBudgetStatistics();
+            content = JsonConvert.SerializeObject(budgetStatistics);
+            AppGlobals.WriteTextFile("BudgetStats.json", content);
+            AppGlobals.UploadFile("BudgetStats.json", DialogResult.Guid);
+
+            message = "Mobile device sync complete";
+            caption = "Operation Complete";
+            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
 
             View.CloseWindow(true);
         }

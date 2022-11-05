@@ -12,7 +12,10 @@
 
     <ContentPage.Content>
         <StackLayout>
-
+            <StackLayout HorizontalOptions="Fill" >
+                <Label Text="{Binding MonthEndDate, StringFormat='{0:MMMM yyyy}'}" FontAttributes="Bold" HorizontalOptions="Center"/>
+                <BoxView Color="Blue" HeightRequest="5" />
+            </StackLayout>
             <ListView x:Name="ListView" ItemsSource="{Binding BudgetData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -23,17 +26,25 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Row="0" Grid.Column="0"  Text="Budget Item"/>
                                     <Label Grid.Row="0" Grid.Column="1" Text="{Binding Description}"/>
-                                    <Label Grid.Row="1" Grid.Column="0" Text="Budget Amount"/>
-                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding BudgetAmount, StringFormat='{0:C2}'}"/>
+                                    <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+                                        <Label Text="Budget Amount"/>
+                                        <Label Text="{Binding BudgetAmount, StringFormat='{0:C2}'}"/>
+                                        <Label Text="Actual Amount"/>
+                                        <Label Text="{Binding ActualAmount, StringFormat='{0:C2}'}"/>
+                                    </StackLayout>
+                                    <Label Grid.Row="2" Grid.Column="0" Text="Difference"/>
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding Difference, StringFormat='{0:C2}'}"/>
 
                                 </Grid>
                                 <BoxView Color="Blue" HeightRequest="5" />
@@ -41,8 +52,10 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>
-
+            </ListView>        
+            <StackLayout HorizontalOptions="CenterAndExpand">
+                <Label Text="Statistics"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

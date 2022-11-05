@@ -27,6 +27,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public MainViewModel()
         {
+            MobileGlobals.MainViewModel = this;
             SyncCommand = new RelayCommand(OnSync);
             ShowCurrentBudgetsCommand = new RelayCommand(ShowCurrentBudgetsPage);
 
@@ -53,9 +54,6 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
             else
             {
-                var errorMessage = "Error downloading file from Internet";
-                var errorCcaption = "Error";
-                View.ShowMessage(errorMessage, errorCcaption);
                 return;
             }
 
@@ -85,6 +83,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
             catch (Exception e)
             {
+                var errorMessage = "Error downloading file from Internet";
+                var errorCaption = "Error";
+                MobileGlobals.MainViewModel.View.ShowMessage(errorMessage, errorCaption);
                 return false;
             }
 
