@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.HomeLogix.Library;
-using RingSoft.HomeLogix.Library.PhoneModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
+using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.Library;
+using RingSoft.HomeLogix.Library.PhoneModel;
 using Xamarin.Forms;
 
-namespace Mobile.ViewModels
+namespace RingSoft.HomeLogix.Mobile.ViewModels
 {
     public interface IMainPageView
     {

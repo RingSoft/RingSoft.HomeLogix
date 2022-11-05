@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix.Tests", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix.SqlServer", "RingSoft.HomeLogix.SqlServer\RingSoft.HomeLogix.SqlServer.csproj", "{93762122-23A4-4E90-A8C0-AABEE228AD35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mobile.Android", "Mobile\Mobile.Android\Mobile.Android.csproj", "{7402AA28-345C-4101-AA75-C2F2EB329F9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.HomeLogix.Mobile.Android", "Mobile\Mobile.Android\RingSoft.HomeLogix.Mobile.Android.csproj", "{7402AA28-345C-4101-AA75-C2F2EB329F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mobile.iOS", "Mobile\Mobile.iOS\Mobile.iOS.csproj", "{7DD9ADD5-33D9-4FA4-BA97-41312F273D61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RingSoft.HomeLogix.Mobile.iOS", "Mobile\Mobile.iOS\RingSoft.HomeLogix.Mobile.iOS.csproj", "{7DD9ADD5-33D9-4FA4-BA97-41312F273D61}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mobile", "Mobile\Mobile\Mobile.csproj", "{2D160152-438F-495D-825A-AF48F6C35498}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix.Mobile", "Mobile\Mobile\RingSoft.HomeLogix.Mobile.csproj", "{2D160152-438F-495D-825A-AF48F6C35498}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

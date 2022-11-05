@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
+using Mobile.ViewModels;
 using Newtonsoft.Json;
 using RingSoft.HomeLogix.Library.PhoneModel;
-using Xamarin.Forms;
 
-namespace Mobile.ViewModels
+namespace RingSoft.HomeLogix.Mobile.ViewModels
 {
     public interface IBudgetsPageView
     {

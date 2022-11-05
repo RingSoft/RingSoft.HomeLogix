@@ -1,10 +1,8 @@
 ﻿using Mobile.Services;
-using Mobile.Views;
-using System;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using MainPage = RingSoft.HomeLogix.Mobile.Views.MainPage;
 
-namespace Mobile
+namespace RingSoft.HomeLogix.Mobile
 {
     public partial class App : Application
     {

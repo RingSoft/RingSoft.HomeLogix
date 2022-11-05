@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Mobile.ViewModels;
+﻿using RingSoft.HomeLogix.Mobile.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace Mobile.Views
+namespace RingSoft.HomeLogix.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage, IMainPageView
@@ -26,7 +21,7 @@ namespace Mobile.Views
 
         public async void ShowCurrentBudgetsPage()
         {
-            var page = new NavigationPage(new BudgetsPage());
+            var page = new NavigationPage(new RingSoft.HomeLogix.Mobile.Views.BudgetsPage());
             await Navigation.PushAsync(page);
         }
     }
