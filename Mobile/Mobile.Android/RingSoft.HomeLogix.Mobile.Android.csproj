@@ -38,6 +38,11 @@
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
     <BundleAssemblies>false</BundleAssemblies>
     <AndroidTlsProvider>btls</AndroidTlsProvider>
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>C:\Users\petem\AppData\Local\Xamarin\Mono for Android\Keystore\HomeLogix\HomeLogix.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>ring203301971</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>HomeLogix</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>ring203301971</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

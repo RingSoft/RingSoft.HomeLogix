@@ -6,18 +6,13 @@ using Xamarin.Forms.Xaml;
 namespace RingSoft.HomeLogix.Mobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class BudgetsPage : IBudgetsPageView
+    public partial class BudgetsPage
     {
-        public BudgetsPage()
+        public BudgetsPage(bool current)
         {
             InitializeComponent();
-            ViewModel.Initialize(this, false);
+            ViewModel.Initialize(current);
             ListView.ItemsSource = ViewModel.BudgetData;
-        }
-
-        public void ShowMessage(string message, string caption)
-        {
-            DisplayAlert(caption, message, "OK");
         }
 
     }

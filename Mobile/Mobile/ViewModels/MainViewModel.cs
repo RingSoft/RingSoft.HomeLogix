@@ -17,6 +17,8 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         void ShowCurrentBudgetsPage();
 
+        void ShowPreviousBudgetsPage();
+
         void SyncComputer();
     }
     public class MainViewModel : INotifyPropertyChanged
@@ -25,6 +27,8 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public RelayCommand ShowCurrentBudgetsCommand { get; set; }
 
+        public RelayCommand ShowPreviousBudgetsCommand { get; set; }
+
         public IMainPageView View { get; private set; }
 
         public MainViewModel()
@@ -32,6 +36,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             MobileGlobals.MainViewModel = this;
             SyncCommand = new RelayCommand(OnSync);
             ShowCurrentBudgetsCommand = new RelayCommand(ShowCurrentBudgetsPage);
+            ShowPreviousBudgetsCommand = new RelayCommand(ShowPreviousBudgetsPage);
         }
 
         public void Initialize(IMainPageView view)
@@ -41,14 +46,8 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public void OnAppearing()
         {
-            if (!Application.Current.Properties.ContainsKey("Guid"))
-            {
-                ShowCurrentBudgetsCommand.IsEnabled = false;
-            }
-            else
-            {
-                ShowCurrentBudgetsCommand.IsEnabled = true;
-            }
+            ShowCurrentBudgetsCommand.IsEnabled = Application.Current.Properties.ContainsKey("Guid");
+            ShowPreviousBudgetsCommand.IsEnabled = Application.Current.Properties.ContainsKey("Guid");
         }
 
         private async void OnSync()
@@ -106,6 +105,11 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
         private void ShowCurrentBudgetsPage()
         {
             View.ShowCurrentBudgetsPage();
+        }
+
+        private void ShowPreviousBudgetsPage()
+        {
+            View.ShowPreviousBudgetsPage();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

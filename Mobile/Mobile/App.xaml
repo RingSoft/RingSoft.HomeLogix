@@ -32,7 +32,7 @@
                 </Setter>
             </Style>
             <Style TargetType="Label" x:Key="DecimalLabel">
-                <Setter Property="TextColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+                <Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
             </Style>
 
         </ResourceDictionary>        

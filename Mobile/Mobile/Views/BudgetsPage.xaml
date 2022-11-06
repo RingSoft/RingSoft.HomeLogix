@@ -51,9 +51,52 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
-            </ListView>        
+            </ListView>
+            <BoxView Color="Red" HeightRequest="5" HorizontalOptions="Fill" />
             <StackLayout HorizontalOptions="CenterAndExpand">
-                <Label Text="Statistics123"/>
+                <Label Text="Statistics" HorizontalOptions="Center"/>
+                <Grid HorizontalOptions="Fill">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="1" Text="Income"/>
+                    <Label Grid.Row="0" Grid.Column="2" Text="Expenses"/>
+                    <Label Grid.Row="0" Grid.Column="3" Text="Difference"/>
+
+                    <Label Grid.Row="1" Grid.Column="0" Text="Budget"/>
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding BudgetIncome, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Row="1" Grid.Column="2" Text="{Binding BudgetExpenses, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Row="1" Grid.Column="3" Style="{StaticResource DecimalLabel}" Text="{Binding BudgetDifference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Text="Actual"/>
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding ActualIncome, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Row="2" Grid.Column="2" Text="{Binding ActualExpenses, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Row="2" Grid.Column="3" Style="{StaticResource DecimalLabel}" Text="{Binding ActualDifference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                    <Label Grid.Row="3" Grid.Column="0" Text="Difference"/>
+                    <Label Grid.Row="3" Grid.Column="1" Text="{Binding IncomeDifference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End" Style="{StaticResource DecimalLabel}"/>
+                    <Label Grid.Row="3" Grid.Column="2" Text="{Binding ExpenseDifference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End" Style="{StaticResource DecimalLabel}"/>
+                    <Label Grid.Row="3" Grid.Column="3" Style="{StaticResource DecimalLabel}" Text="{Binding Difference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                    <Label Grid.Row="4" Grid.Column="0" Text="Year To Date"/>
+                    <Label Grid.Row="4" Grid.Column="1" Text="{Binding YtdIncome, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Row="4" Grid.Column="2" Text="{Binding YtdExpenses, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Row="4" Grid.Column="3" Style="{StaticResource DecimalLabel}" Text="{Binding YtdDifference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                </Grid>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

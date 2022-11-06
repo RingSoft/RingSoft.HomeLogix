@@ -21,7 +21,13 @@ namespace RingSoft.HomeLogix.Mobile.Views
 
         public async void ShowCurrentBudgetsPage()
         {
-            var page = new NavigationPage(new RingSoft.HomeLogix.Mobile.Views.BudgetsPage());
+            var page = new NavigationPage(new BudgetsPage(true));
+            await Navigation.PushAsync(page);
+        }
+
+        public async void ShowPreviousBudgetsPage()
+        {
+            var page = new NavigationPage(new BudgetsPage(false));
             await Navigation.PushAsync(page);
         }
 

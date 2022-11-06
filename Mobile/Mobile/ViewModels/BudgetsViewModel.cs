@@ -10,11 +10,6 @@ using RingSoft.HomeLogix.Library.PhoneModel;
 
 namespace RingSoft.HomeLogix.Mobile.ViewModels
 {
-    public interface IBudgetsPageView
-    {
-        void ShowMessage(string message, string caption);
-    }
-
     public class BudgetsViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<BudgetData> _budgetData;
@@ -49,12 +44,202 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
+        private decimal _budgetIncome;
 
-        public IBudgetsPageView View { get; set; }
-
-        public void Initialize(IBudgetsPageView view, bool current)
+        public decimal BudgetIncome
         {
-            View = view;
+            get => _budgetIncome;
+            set
+            {
+                if (_budgetIncome == value)
+                {
+                    return;
+                }
+                _budgetIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _budgetExpenses;
+
+        public decimal BudgetExpenses
+        {
+            get => _budgetExpenses;
+            set
+            {
+                if (_budgetExpenses == value)
+                {
+                    return;
+                }
+                _budgetExpenses = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _budgetDifference;
+
+        public decimal BudgetDifference
+        {
+            get => _budgetDifference;
+            set
+            {
+                if (_budgetDifference == value)
+                {
+                    return;
+                }
+                _budgetDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _actualIncome;
+
+        public decimal ActualIncome
+        {
+            get => _actualIncome;
+            set
+            {
+                if (_actualIncome == value)
+                {
+                    return;
+                }
+                _actualIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _actualExpenses;
+
+        public decimal ActualExpenses
+        {
+            get => _actualExpenses;
+            set
+            {
+                if (_actualExpenses == value)
+                {
+                    return;
+                }
+                _actualExpenses = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _actualDifference;
+
+        public decimal ActualDifference
+        {
+            get => _actualDifference;
+            set
+            {
+                if (_actualDifference == value)
+                {
+                    return;
+                }
+                _actualDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _incomeDifference;
+
+        public decimal IncomeDifference
+        {
+            get => _incomeDifference;
+            set
+            {
+                if (_incomeDifference == value)
+                {
+                    return;
+                }
+                _incomeDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _expenseDifference;
+
+        public decimal ExpenseDifference
+        {
+            get => _expenseDifference;
+            set
+            {
+                if (_expenseDifference == value)
+                {
+                    return;
+                }
+                _expenseDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private decimal _difference;
+
+        public decimal Difference
+        {
+            get => _difference;
+            set
+            {
+                if (_difference == value)
+                {
+                    return;
+                }
+                _difference = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _ytdIncome;
+
+        public decimal YtdIncome
+        {
+            get => _ytdIncome;
+            set
+            {
+                if (_ytdIncome == value)
+                {
+                    return;
+                }
+                _ytdIncome = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _ytdExpenses;
+
+        public decimal YtdExpenses
+        {
+            get => _ytdExpenses;
+            set
+            {
+                if (_ytdExpenses == value)
+                {
+                    return;
+                }
+                _ytdExpenses = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private decimal _ytdDifference;
+
+        public decimal YtdDifference
+        {
+            get => _ytdDifference;
+            set
+            {
+                if (_ytdDifference == value)
+                {
+                    return;
+                }
+                _ytdDifference = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public void Initialize(bool current)
+        {
             var file = "CurrentMonthBudget.json";
             if (!current)
             {
@@ -82,6 +267,21 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
                 }
                 MonthEndDate = itemStats.MonthEnding;
 
+                BudgetIncome = itemStats.BudgetIncome;
+                BudgetExpenses = itemStats.BudgetExpenses;
+                BudgetDifference = BudgetIncome - BudgetExpenses;
+
+                ActualIncome = itemStats.ActualIncome;
+                ActualExpenses = itemStats.ActualExpenses;
+                ActualDifference = ActualIncome - ActualExpenses;
+
+                IncomeDifference = BudgetIncome - ActualIncome;
+                ExpenseDifference = BudgetExpenses - ActualExpenses;
+                Difference = ExpenseDifference - IncomeDifference;
+
+                YtdIncome = itemStats.YtdIncome;
+                YtdExpenses = itemStats.YtdExpenses;
+                YtdDifference = YtdIncome - YtdExpenses;
             }
 
         }
