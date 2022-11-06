@@ -73,8 +73,20 @@ namespace RingSoft.HomeLogix
                 ViewModel.StartSync(_procedure);
             };
             _procedure.Start();
-            
-            CloseWindow(true);
+
+            if (!ViewModel.ValidationFail)
+            {
+                CloseWindow(true);
+            }
+        }
+
+        public void SetViewMode()
+        {
+            if (ViewModel.ExistingUser)
+            {
+                UserNameLabel.IsEnabled = false;
+                UserNameControl.IsEnabled = false;
+            }
         }
     }
 }

@@ -16,6 +16,8 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
         void ShowMessage(string message, string caption);
 
         void ShowCurrentBudgetsPage();
+
+        void SyncComputer();
     }
     public class MainViewModel : INotifyPropertyChanged
     {
@@ -30,11 +32,6 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             MobileGlobals.MainViewModel = this;
             SyncCommand = new RelayCommand(OnSync);
             ShowCurrentBudgetsCommand = new RelayCommand(ShowCurrentBudgetsPage);
-
-            if (!Application.Current.Properties.ContainsKey("Guid"))
-            {
-                ShowCurrentBudgetsCommand.IsEnabled = false;
-            }
         }
 
         public void Initialize(IMainPageView view)
@@ -42,8 +39,22 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             View = view;
         }
 
+        public void OnAppearing()
+        {
+            if (!Application.Current.Properties.ContainsKey("Guid"))
+            {
+                ShowCurrentBudgetsCommand.IsEnabled = false;
+            }
+            else
+            {
+                ShowCurrentBudgetsCommand.IsEnabled = true;
+            }
+        }
+
         private async void OnSync()
         {
+            View.SyncComputer();
+            return;
             var loginsText = string.Empty;
             var guid = string.Empty;
             if (DownloadWebText(ref loginsText, "Logins.json"))

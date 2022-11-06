@@ -26,6 +26,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void CloseWindow(bool dialogResult);
         void OnValFail(PhoneValFailControls control);
         void StartProcedure();
+        void SetViewMode();
     }
     public class PhoneSyncViewModel : INotifyPropertyChanged
     {
@@ -53,6 +54,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public RelayCommand CancelCommand { get; set; }
 
+        public bool ExistingUser { get; set; }
+
+        public bool ValidationFail { get; set; }
+
         private List<Login> _logins;
 
         public PhoneSyncViewModel()
@@ -63,13 +68,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public void Initialize(IPhoneSyncView view, Login input)
         {
             View = view;
-            if (input != null)
+            if (!input.UserName.IsNullOrEmpty())
             {
                 PhoneLogin = input.UserName;
                 view.Password = input.Password.Decrypt();
                 view.ConfirmPassword = view.Password;
+                ExistingUser = true;
             }
-
+            View.SetViewMode();
         }
 
         private void OnOk()
@@ -101,10 +107,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
 
             View.StartProcedure();
+
         }
 
         public void StartSync(ITwoTierProcedure procedure)
         {
+            ValidationFail = false;
             var maxSteps = 4;
             procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
             string message;
@@ -125,6 +133,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
             
             var login = _logins.FirstOrDefault(p => p.UserName == PhoneLogin);
+            if (ExistingUser == false)
+            {
+                if (login != null)
+                {
+                    message = "You must create a new username. Your username has already been taken.";
+                    caption = "Invalid Username";
+                    procedure.ShowMessage(message, caption, RsMessageBoxIcons.Exclamation);
+                    ValidationFail = true;
+                    return;
+                }
+            }
+
             if (login == null)
             {
                 DialogResult = new Login
@@ -133,17 +153,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     Password = View.Password.Encrypt(),
                     Guid = Guid.NewGuid().ToString()
                 };
-
-                var logins = new List<Login> {DialogResult};
-                var loginsContent = JsonConvert.SerializeObject(logins);
-                AppGlobals.WriteTextFile("Logins.json", loginsContent);
-
-                AppGlobals.UploadFile("Logins.json");
+                _logins.Add(DialogResult);
             }
             else
             {
                 DialogResult = login;
+                login.UserName = PhoneLogin;
+                login.Password = View.Password.Encrypt();
             }
+            var loginsContent = JsonConvert.SerializeObject(_logins);
+            AppGlobals.WriteTextFile("Logins.json", loginsContent);
+
+            AppGlobals.UploadFile("Logins.json");
 
             try
             {
