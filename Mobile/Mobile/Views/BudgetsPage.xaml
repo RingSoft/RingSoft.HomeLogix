@@ -53,7 +53,7 @@
                 </ListView.ItemTemplate>
             </ListView>        
             <StackLayout HorizontalOptions="CenterAndExpand">
-                <Label Text="Statistics"/>
+                <Label Text="Statistics123"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>
