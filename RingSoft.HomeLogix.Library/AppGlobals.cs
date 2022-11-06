@@ -343,15 +343,15 @@ namespace RingSoft.HomeLogix.Library
             RingSoftAppGlobals.UploadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
         }
 
-        public static void DownloadFile(string fileName, string guid = "")
-        {
-            var folder = "/public_html/HomeLogixData/";
-            if (!guid.IsNullOrEmpty())
-            {
-                folder += guid + "/";
-            }
-            RingSoftAppGlobals.DownloadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
-        }
+        //public static void DownloadFile(string fileName, string guid = "")
+        //{
+        //    var folder = "/public_html/HomeLogixData/";
+        //    if (!guid.IsNullOrEmpty())
+        //    {
+        //        folder += guid + "/";
+        //    }
+        //    RingSoftAppGlobals.DownloadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
+        //}
 
         public static WebResponse GetWebResponse(string method, string url = "")
         {

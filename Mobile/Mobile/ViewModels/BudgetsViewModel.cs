@@ -58,7 +58,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             var file = "CurrentMonthBudget.json";
             if (!current)
             {
-                
+                file = "PreviousMonthBudget.json";
             }
 
             var jsonText = string.Empty;
@@ -75,11 +75,13 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             {
                 var budgetStats = new List<BudgetStatistics>();
                 budgetStats = JsonConvert.DeserializeObject<List<BudgetStatistics>>(jsonText);
-                if (current)
+                var itemStats = budgetStats.FirstOrDefault(p => p.Type == StatisticsType.Current);
+                if (!current)
                 {
-                    var itemStats = budgetStats.FirstOrDefault(p => p.Type == StatisticsType.Current);
-                    MonthEndDate = itemStats.MonthEnding;
+                    itemStats = budgetStats.FirstOrDefault(p => p.Type == StatisticsType.Previous);
                 }
+                MonthEndDate = itemStats.MonthEnding;
+
             }
 
         }

@@ -25,6 +25,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         string ConfirmPassword { get; set; }
         void CloseWindow(bool dialogResult);
         void OnValFail(PhoneValFailControls control);
+        void StartProcedure();
     }
     public class PhoneSyncViewModel : INotifyPropertyChanged
     {
@@ -99,22 +100,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
 
+            View.StartProcedure();
+        }
+
+        public void StartSync(ITwoTierProcedure procedure)
+        {
+            var maxSteps = 4;
+            procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
+            string message;
+            string caption;
+            var loginsText = string.Empty;
             try
             {
-                AppGlobals.DownloadFile("Logins.json");
-
+                loginsText = AppGlobals.GetWebText("Logins.json");
             }
             catch (Exception e)
             {
                 _logins = new List<Login>();
             }
-
             if (_logins == null)
             {
-                var logins = AppGlobals.OpenTextFile("Logins.json");
-                _logins = JsonConvert.DeserializeObject<List<Login>>(logins);
+                //var logins = AppGlobals.OpenTextFile("Logins.json");
+                _logins = JsonConvert.DeserializeObject<List<Login>>(loginsText);
             }
-
+            
             var login = _logins.FirstOrDefault(p => p.UserName == PhoneLogin);
             if (login == null)
             {
@@ -125,7 +134,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     Guid = Guid.NewGuid().ToString()
                 };
 
-                var logins = new List<Login> { DialogResult };
+                var logins = new List<Login> {DialogResult};
                 var loginsContent = JsonConvert.SerializeObject(logins);
                 AppGlobals.WriteTextFile("Logins.json", loginsContent);
 
@@ -153,6 +162,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                             {
                                 AppGlobals.GetWebResponse(WebRequestMethods.Ftp.DeleteFile, DialogResult.Guid + $"/{file}");
                             }
+
                             text = text.RightStr(text.Length - crLfPos - 2);
                             crLfPos = text.IndexOf("\r\n");
                         }
@@ -163,16 +173,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
             catch (Exception e)
             {
-                
             }
 
             AppGlobals.GetWebResponse(WebRequestMethods.Ftp.MakeDirectory, DialogResult.Guid + "/");
 
-            var currentMonthBudgetData = AppGlobals.MainViewModel.GetBudgetData();
-            var content = JsonConvert.SerializeObject(currentMonthBudgetData);
+            procedure.UpdateTopTier("Processing Current Month Budget", maxSteps, 2);
+            var monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Current, procedure);
+            var content = JsonConvert.SerializeObject(monthBudgetData);
             AppGlobals.WriteTextFile("CurrentMonthBudget.json", content);
             AppGlobals.UploadFile("CurrentMonthBudget.json", DialogResult.Guid);
 
+            procedure.UpdateTopTier("Processing Past Month Budget", maxSteps, 3);
+            monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Previous, procedure);
+            content = JsonConvert.SerializeObject(monthBudgetData);
+            AppGlobals.WriteTextFile("PreviousMonthBudget.json", content);
+            AppGlobals.UploadFile("PreviousMonthBudget.json", DialogResult.Guid);
+
+            procedure.UpdateTopTier("Processing Budget Statistics", maxSteps, 4);
             var budgetStatistics = AppGlobals.MainViewModel.GetBudgetStatistics();
             content = JsonConvert.SerializeObject(budgetStatistics);
             AppGlobals.WriteTextFile("BudgetStats.json", content);
@@ -180,14 +197,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             message = "Mobile device sync complete";
             caption = "Operation Complete";
-            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+            procedure.ShowMessage(message, caption, RsMessageBoxIcons.Information);
+            //ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
 
-            View.CloseWindow(true);
+            //View.CloseWindow(true);
         }
 
         private void OnCancel()
         {
-
+            View.CloseWindow(false);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

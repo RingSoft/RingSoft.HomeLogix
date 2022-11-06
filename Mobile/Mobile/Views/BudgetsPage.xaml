@@ -22,7 +22,7 @@
 
                         <ViewCell>
                             <StackLayout Orientation="Vertical" HorizontalOptions="Fill">
-                                <Grid>
+                                <Grid Margin="5">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
@@ -44,7 +44,7 @@
                                         <Label Text="{Binding ActualAmount, StringFormat='{0:C2}'}"/>
                                     </StackLayout>
                                     <Label Grid.Row="2" Grid.Column="0" Text="Difference"/>
-                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding Difference, StringFormat='{0:C2}'}"/>
+                                    <Label Grid.Row="2" Grid.Column="1" Style="{StaticResource DecimalLabel}" Text="{Binding Difference, StringFormat='{0:C2}'}"/>
 
                                 </Grid>
                                 <BoxView Color="Blue" HeightRequest="5" />

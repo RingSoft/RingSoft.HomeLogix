@@ -1,12 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mobile="clr-namespace:RingSoft.HomeLogix.Mobile;assembly=RingSoft.HomeLogix.Mobile"
              x:Class="RingSoft.HomeLogix.Mobile.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
     -->
     <Application.Resources>
         <ResourceDictionary>
+            <mobile:ValueToForegroundConverter x:Key="ValueToForeground" />
+            <mobile:ValueToForegroundParameter ShowNegativeValuesInRed="True" x:Key="ShowNegativeValuesInRed" />
+            <mobile:ValueToForegroundParameter ShowPositiveValuesInGreen="True" ShowNegativeValuesInRed="True" x:Key="NegativeRedPositiveGreen"/>
             <Color x:Key="Primary">#2196F3</Color>
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="White"></Setter>
@@ -27,6 +31,10 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
+            <Style TargetType="Label" x:Key="DecimalLabel">
+                <Setter Property="TextColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+            </Style>
+
         </ResourceDictionary>        
     </Application.Resources>
 </Application>

@@ -891,18 +891,35 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             return new DateTime(value.Year, value.Month, DateTime.DaysInMonth(value.Year, value.Month));
         }
 
-        public List<BudgetData> GetBudgetData()
+        public List<BudgetData> GetBudgetData(StatisticsType type, ITwoTierProcedure procedure)
         {
             var result = new List<BudgetData>();
             var currentMonthEnding = CurrentMonthEnding;
+            var month = _currentMonth;
+            switch (type)
+            {
+                case StatisticsType.Current:
+                    break;
+                case StatisticsType.Previous:
+                    month = _currentMonth.AddMonths(-1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
             _setCurrentDateText = false;
-            CurrentMonthEnding = GetPeriodEndDate(_currentMonth);
+            CurrentMonthEnding = GetPeriodEndDate(month);
             var budgetItems = new List<int>();
 
             var budgetLookupDefinition = CreateBudgetLookupDefinition(true);
             var lookupData = new LookupData<MainBudgetLookup, BudgetItem>(budgetLookupDefinition, this);
+            var total = lookupData.GetRecordCountWait();
+            procedure.UpdateBottomTier("Processing Budgets", total, 1);
+            var procedureTotal = total;
+            total = 0;
             lookupData.LookupDataChanged += (sender, args) =>
             {
+                total += PageSize;
+                procedure.UpdateBottomTier("Processing Budgets", procedureTotal, total);
                 foreach (var mainBudgetLookup in args.LookupData.LookupResultsList)
                 {
                     if (!budgetItems.Contains(mainBudgetLookup.BudgetId))

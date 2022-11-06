@@ -11,7 +11,7 @@ namespace RingSoft.HomeLogix.Mobile.Views
         public BudgetsPage()
         {
             InitializeComponent();
-            ViewModel.Initialize(this, true);
+            ViewModel.Initialize(this, false);
             ListView.ItemsSource = ViewModel.BudgetData;
         }
 

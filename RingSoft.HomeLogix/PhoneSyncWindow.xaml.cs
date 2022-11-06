@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using RingSoft.App.Controls;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 
@@ -32,6 +33,8 @@ namespace RingSoft.HomeLogix
             get => ConfirmPasswordBox.Password;
             set => ConfirmPasswordBox.Password = value;
         }
+
+        private TwoTierProcedure _procedure;
         public PhoneSyncWindow(Login input)
         {
             InitializeComponent();
@@ -60,6 +63,18 @@ namespace RingSoft.HomeLogix
                 default:
                     throw new ArgumentOutOfRangeException(nameof(control), control, null);
             }
+        }
+
+        public void StartProcedure()
+        {
+            _procedure = new TwoTierProcedure();
+            _procedure.DoProcedure += (sender, result) =>
+            {
+                ViewModel.StartSync(_procedure);
+            };
+            _procedure.Start();
+            
+            CloseWindow(true);
         }
     }
 }
