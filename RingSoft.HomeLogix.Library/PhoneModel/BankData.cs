@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace RingSoft.HomeLogix.Library.ViewModels.Main
+namespace RingSoft.HomeLogix.Library.PhoneModel
 {
-    public class MainBankLookup
+    public class BankData
     {
         public int BankId { get; set; }
-
+        
         public string Description { get; set; }
 
         public decimal CurrentBalance { get; set; }
 
-        public  decimal ProjectedLowestBalance { get; set; }
+        public decimal ProjectedLowestBalance { get; set; }
 
         public DateTime ProjectedLowestBalanceDate { get; set; }
+
     }
 }

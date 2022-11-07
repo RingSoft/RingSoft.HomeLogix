@@ -113,8 +113,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public void StartSync(ITwoTierProcedure procedure)
         {
             ValidationFail = false;
-            var maxSteps = 4;
+            var maxSteps = 5;
+            var loginSteps = 3;
             procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
+            procedure.UpdateBottomTier("Getting Logins from web", loginSteps, 1);
             string message;
             string caption;
             var loginsText = string.Empty;
@@ -164,6 +166,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var loginsContent = JsonConvert.SerializeObject(_logins);
             AppGlobals.WriteTextFile("Logins.json", loginsContent);
 
+            procedure.UpdateBottomTier("Updating web logins", loginSteps, 2);
             AppGlobals.UploadFile("Logins.json");
 
             try
@@ -189,7 +192,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                         }
                     }
                 }
-
+                procedure.UpdateBottomTier("Processing mobile user folder", loginSteps, 3);
                 AppGlobals.GetWebResponse(WebRequestMethods.Ftp.RemoveDirectory, DialogResult.Guid + "/");
             }
             catch (Exception e)
@@ -216,7 +219,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             AppGlobals.WriteTextFile("BudgetStats.json", content);
             AppGlobals.UploadFile("BudgetStats.json", DialogResult.Guid);
 
-            message = "Mobile device sync complete";
+            procedure.UpdateTopTier("Processing Banks", maxSteps, 5);
+            var bankData = AppGlobals.MainViewModel.GetBankData(procedure);
+            content = JsonConvert.SerializeObject(bankData);
+            AppGlobals.WriteTextFile("BankData.json", content);
+            AppGlobals.UploadFile("BankData.json", DialogResult.Guid);
+
+            message = "Mobile device sync complete. The mobile Google play app is currently in testing mode. To get the mobile Google play app, please email me at peteman316@gmail.com.";
             caption = "Operation Complete";
             procedure.ShowMessage(message, caption, RsMessageBoxIcons.Information);
             //ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);

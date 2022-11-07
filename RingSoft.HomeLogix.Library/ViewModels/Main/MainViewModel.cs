@@ -434,6 +434,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var bankLookupDefinition =
                 new LookupDefinition<MainBankLookup, BankAccount>(AppGlobals.LookupContext.BankAccounts);
 
+            bankLookupDefinition.AddHiddenColumn(p => p.BankId, p => p.Id);
+
             bankLookupDefinition.AddVisibleColumnDefinition(p => p.Description, 
                 p => p.Description);
             bankLookupDefinition.AddVisibleColumnDefinition(p => p.CurrentBalance, 
@@ -959,6 +961,60 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             CurrentMonthEnding = GetPeriodEndDate(currentMonthEnding);
             _setCurrentDateText = true;
+            return result;
+        }
+
+        public List<BankData> GetBankData(ITwoTierProcedure procedure)
+        {
+            var result = new List<BankData>();
+
+            var bankLookupDefinition = CreateBankLookupDefinition();
+            var lookupData = new LookupData<MainBankLookup, BankAccount>(bankLookupDefinition, this);
+            var total = lookupData.GetRecordCountWait();
+            procedure.UpdateBottomTier("Processing Banks", total, 1);
+            var procedureTotal = total;
+            total = 0;
+            lookupData.LookupDataChanged += (sender, args) =>
+            {
+                total += PageSize;
+                procedure.UpdateBottomTier("Processing Banks", procedureTotal, total);
+                foreach (var mainBankLookup in args.LookupData.LookupResultsList)
+                {
+                    var bankData = result.FirstOrDefault(p => p.BankId == mainBankLookup.BankId);
+                    if (bankData == null)
+                    {
+                        result.Add(new BankData
+                        {
+                            BankId = mainBankLookup.BankId,
+                            CurrentBalance = mainBankLookup.CurrentBalance,
+                            Description = mainBankLookup.Description,
+                            ProjectedLowestBalance = mainBankLookup.ProjectedLowestBalance,
+                            ProjectedLowestBalanceDate = mainBankLookup.ProjectedLowestBalanceDate
+                        });
+                    }
+                }
+            };
+
+            if (lookupData.GetInitData().ResultCode == GetDataResultCodes.Success)
+            {
+                var stop = false;
+
+                while (!stop)
+                {
+                    switch (lookupData.ScrollPosition)
+                    {
+                        case LookupScrollPositions.Bottom:
+                        case LookupScrollPositions.Disabled:
+                            stop = true;
+                            break;
+                        default:
+                            lookupData.GotoNextPage();
+                            break;
+                    }
+                }
+
+            }
+
             return result;
         }
 
