@@ -12,7 +12,7 @@ namespace RingSoft.HomeLogix.Mobile.Views
         {
             InitializeComponent();
             ViewModel.Initialize(current);
-            ListView.ItemsSource = ViewModel.BudgetData;
+            //ListView.ItemsSource = ViewModel.BudgetData;
         }
 
     }

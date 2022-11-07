@@ -24,7 +24,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
                     return;
                 }
                 _budgetData = value;
-                //OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 

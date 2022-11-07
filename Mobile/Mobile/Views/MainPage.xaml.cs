@@ -37,6 +37,12 @@ namespace RingSoft.HomeLogix.Mobile.Views
             await Navigation.PushModalAsync(page);
         }
 
+        public async void ShowBankAccounts()
+        {
+            var page = new NavigationPage(new BankPage());
+            await Navigation.PushAsync(page);
+        }
+
         protected override void OnAppearing()
         {
             ViewModel.OnAppearing();

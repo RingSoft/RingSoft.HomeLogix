@@ -35,6 +35,10 @@
                 <Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
             </Style>
 
+            <Style TargetType="Label" x:Key="NegativeLabel">
+                <Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+            </Style>
+
         </ResourceDictionary>        
     </Application.Resources>
 </Application>
