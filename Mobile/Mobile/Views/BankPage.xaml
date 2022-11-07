@@ -10,7 +10,7 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:Name="ListView" ItemsSource="{Binding BankData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue">
+            <ListView x:Name="ListView" ItemsSource="{Binding BankData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue" ItemSelected="ListView_OnItemSelected">
                 <ListView.ItemTemplate>
                     <DataTemplate>
 

@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:RingSoft.HomeLogix.Mobile.ViewModels;assembly=RingSoft.HomeLogix.Mobile"
+             x:Class="RingSoft.HomeLogix.Mobile.Views.BankDetailsPage">
+
+    <ContentPage.BindingContext>
+        <vm:BankDetailsViewModel x:Name="ViewModel"/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <StackLayout Margin="5">
+            <StackLayout HorizontalOptions="Fill" >
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Current Balance"/>
+                    <Label Text="{Binding CurrentBalance, StringFormat='{0:C2}'}" />
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Account Type"/>
+                    <Label Text="{Binding AccountType}" />
+                </StackLayout>
+                <BoxView Color="Blue" HeightRequest="5" />
+            </StackLayout>
+
+            <ListView x:Name="ListView" ItemsSource="{Binding RegisterData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical" HorizontalOptions="Fill">
+                                <Grid Margin="5">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label Grid.Row="0" Grid.Column="0" HorizontalTextAlignment="End" Text="Date"/>
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding ItemDate, StringFormat='{0:dddd, MMMM dd, yyyy}'}"/>
+                                    <Label Grid.Row="1" Grid.Column="0" HorizontalTextAlignment="End" Text="Register Item"/>
+                                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding Description}"/>
+                                    <Label Grid.Row="2" Grid.Column="0" HorizontalTextAlignment="End" Text="Transaction Type"/>
+                                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding TransactionTypeText}"/>
+                                    <Label Grid.Row="3" Grid.Column="0" Text="Budget Amount"/>
+                                    <Label Grid.Row="3" Grid.Column="1" Style="{StaticResource DecimalLabel}" Text="{Binding ProjectedAmount, StringFormat='{0:C2}'}" HorizontalOptions="Start"/>
+                                    <StackLayout Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="End" Orientation="Horizontal">
+                                        <Label Text="Balance"/>
+                                        <Label Style="{StaticResource NegativeLabel}" Text="{Binding EndingBalance, StringFormat='{0:C2}'}"/>
+                                    </StackLayout>
+                                </Grid>
+                                <BoxView Color="Blue" HeightRequest="5" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackLayout HorizontalOptions="Fill" Orientation="Vertical" >
+                <BoxView Color="Red" HeightRequest="5" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                
+                
+                    <Label Grid.Row="0" Grid.Column="0" Text="Ending Balance"/>
+                    <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource NegativeLabel}"  Text="{Binding EndingBalance, StringFormat='{0:C2}'}" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Text="Projected Lowest Balance Date"/>
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding ProjectedLowestBalanceDate, StringFormat='{0:dddd, MMMM dd, yyyy}'}" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Text="Projected Lowest Balance"/>
+                    <Label Grid.Row="2" Grid.Column="1" Style="{StaticResource NegativeLabel}"  Text="{Binding ProjectedLowestBalance, StringFormat='{0:C2}'}" />
+
+                </Grid>
+                
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

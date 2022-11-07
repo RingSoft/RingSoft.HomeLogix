@@ -15,5 +15,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public  decimal ProjectedLowestBalance { get; set; }
 
         public DateTime ProjectedLowestBalanceDate { get; set; }
+
+        public byte AccountType { get; set; }
     }
 }

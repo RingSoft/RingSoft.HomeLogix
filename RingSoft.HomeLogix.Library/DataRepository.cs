@@ -55,6 +55,8 @@ namespace RingSoft.HomeLogix.Library
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null);
 
+        BankAccountRegisterItem GetBankAccountRegisterItem(int registerId);
+
         BudgetItemSource GetBudgetItemSource(int storeId);
 
         decimal GetSourceTotal(int storeId);
@@ -454,6 +456,13 @@ namespace RingSoft.HomeLogix.Library
             var result = context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
             
             return result;
+        }
+
+        public BankAccountRegisterItem GetBankAccountRegisterItem(int registerId)
+        {
+            var context = AppGlobals.GetNewDbContext();
+            return context.BankAccountRegisterItems.Include(p => p.BudgetItem)
+                .FirstOrDefault(p => p.Id == registerId);
         }
 
         public BudgetItemSource GetBudgetItemSource(int sourceId)

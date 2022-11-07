@@ -1,4 +1,5 @@
 ﻿using System;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.PhoneModel
 {
@@ -13,6 +14,8 @@ namespace RingSoft.HomeLogix.Library.PhoneModel
         public decimal ProjectedLowestBalance { get; set; }
 
         public DateTime ProjectedLowestBalanceDate { get; set; }
+
+        public BankAccountTypes AccountType { get; set; }
 
     }
 }

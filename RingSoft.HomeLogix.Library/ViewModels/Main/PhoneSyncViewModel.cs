@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,7 +9,12 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.HomeLogix.DataAccess.LookupModel;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.PhoneModel;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.MasterData;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
@@ -113,7 +119,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public void StartSync(ITwoTierProcedure procedure)
         {
             ValidationFail = false;
-            var maxSteps = 5;
+            var maxSteps = 6;
             var loginSteps = 3;
             procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
             procedure.UpdateBottomTier("Getting Logins from web", loginSteps, 1);
@@ -225,12 +231,100 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             AppGlobals.WriteTextFile("BankData.json", content);
             AppGlobals.UploadFile("BankData.json", DialogResult.Guid);
 
+            procedure.UpdateTopTier("Processing Register", maxSteps, 6);
+            var registerData = GetRegister(procedure);
+            content = JsonConvert.SerializeObject(registerData);
+            AppGlobals.WriteTextFile("RegisterData.json", content);
+            AppGlobals.UploadFile("RegisterData.json", DialogResult.Guid);
+
             message = "Mobile device sync complete. The mobile Google play app is currently in testing mode. To get the mobile Google play app, please email me at peteman316@gmail.com.";
             caption = "Operation Complete";
             procedure.ShowMessage(message, caption, RsMessageBoxIcons.Information);
             //ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
 
             //View.CloseWindow(true);
+        }
+
+        private List<RegisterData> GetRegister(ITwoTierProcedure procedure)
+        {
+            var result = new List<RegisterData>();
+
+            var lookupDefinition =
+                new LookupDefinition<RegisterLookup, BankAccountRegisterItem>(AppGlobals.LookupContext
+                    .BankAccountRegisterItems);
+            var lookupData = new LookupData<RegisterLookup, BankAccountRegisterItem>(lookupDefinition, AppGlobals.MainViewModel);
+            var total = lookupData.GetRecordCountWait();
+            var progress = 0;
+
+            var chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20);
+            if (chunk.Chunk.Rows.Count < 20)
+            {
+                LoadRegisterChunk(result, chunk.Chunk);
+            }
+            else
+            {
+                while (chunk.Chunk.Rows.Count >= 20)
+                {
+                    progress += chunk.Chunk.Rows.Count;
+                    procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
+                    LoadRegisterChunk(result, chunk.Chunk);
+                    chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20, chunk.BottomPrimaryKey);
+                }
+
+                if (chunk.Chunk.Rows.Count < 20)
+                {
+                    progress += chunk.Chunk.Rows.Count;
+                    procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
+                    LoadRegisterChunk(result, chunk.Chunk);
+                }
+            }
+            return result;
+        }
+
+        private void LoadRegisterChunk(List<RegisterData> list, DataTable chunk)
+        {
+            foreach (DataRow row in chunk.Rows)
+            {
+                var registerData = new RegisterData();
+                var primaryKey = new PrimaryKeyValue(AppGlobals.LookupContext.BankAccountRegisterItems);
+                primaryKey.PopulateFromDataRow(row);
+                var register =
+                    AppGlobals.LookupContext.BankAccountRegisterItems.GetEntityFromPrimaryKeyValue(primaryKey);
+                register = AppGlobals.DataRepository.GetBankAccountRegisterItem(register.Id);
+                registerData.BankAccountId = register.BankAccountId;
+                registerData.Description = register.Description;
+                registerData.Completed = register.Completed;
+                registerData.ProjectedAmount = register.ProjectedAmount;
+                registerData.ItemDate = register.ItemDate;
+                registerData.IsNegative = register.IsNegative;
+                if (register.BudgetItem != null)
+                {
+                    switch (register.BudgetItem.Type)
+                    {
+                        case BudgetItemTypes.Income:
+                            registerData.TransactionType = TransactionTypes.Deposit;
+                            break;
+                        case BudgetItemTypes.Expense:
+                            registerData.TransactionType = TransactionTypes.Withdrawal;
+                            break;
+                        case BudgetItemTypes.Transfer:
+                            if (register.IsNegative)
+                            {
+                                registerData.TransactionType = TransactionTypes.Withdrawal;
+                            }
+                            else
+                            {
+                                registerData.TransactionType = TransactionTypes.Deposit;
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+
+                registerData.RegisterItemType = (BankAccountRegisterItemTypes)register.ItemType;
+                list.Add(registerData);
+            }
         }
 
         private void OnCancel()

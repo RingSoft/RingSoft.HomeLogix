@@ -35,6 +35,8 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public IMainPageView View { get; private set; }
 
+        public List<RegisterData> RegisterData { get; private set; }
+
         public MainViewModel()
         {
             MobileGlobals.MainViewModel = this;
@@ -47,6 +49,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
         public void Initialize(IMainPageView view)
         {
             View = view;
+            RegisterData = new List<RegisterData>();
         }
 
         public void OnAppearing()
@@ -54,6 +57,13 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             ShowCurrentBudgetsCommand.IsEnabled = Application.Current.Properties.ContainsKey("Guid");
             ShowPreviousBudgetsCommand.IsEnabled = Application.Current.Properties.ContainsKey("Guid");
             ShowBanksCommand.IsEnabled = Application.Current.Properties.ContainsKey("Guid");
+
+            if (Application.Current.Properties.ContainsKey("Guid"))
+            {
+                var jsonContent = string.Empty;
+                DownloadWebText(ref jsonContent, "RegisterData.json", true);
+                RegisterData = JsonConvert.DeserializeObject<List<RegisterData>>(jsonContent);
+            }
         }
 
         private async void OnSync()

@@ -436,6 +436,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             bankLookupDefinition.AddHiddenColumn(p => p.BankId, p => p.Id);
 
+            bankLookupDefinition.AddHiddenColumn(p => p.AccountType, p => p.AccountType);
+
             bankLookupDefinition.AddVisibleColumnDefinition(p => p.Description, 
                 p => p.Description);
             bankLookupDefinition.AddVisibleColumnDefinition(p => p.CurrentBalance, 
@@ -989,7 +991,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                             CurrentBalance = mainBankLookup.CurrentBalance,
                             Description = mainBankLookup.Description,
                             ProjectedLowestBalance = mainBankLookup.ProjectedLowestBalance,
-                            ProjectedLowestBalanceDate = mainBankLookup.ProjectedLowestBalanceDate
+                            ProjectedLowestBalanceDate = mainBankLookup.ProjectedLowestBalanceDate,
+                            AccountType = (BankAccountTypes)mainBankLookup.AccountType,
                         });
                     }
                 }

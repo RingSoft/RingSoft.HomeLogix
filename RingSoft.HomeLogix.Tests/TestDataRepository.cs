@@ -206,6 +206,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new System.NotImplementedException();
         }
 
+        public BankAccountRegisterItem GetBankAccountRegisterItem(int registerId)
+        {
+            throw new NotImplementedException();
+        }
+
         public BudgetItemSource GetBudgetItemSource(int sourceId)
         {
             throw new System.NotImplementedException();
