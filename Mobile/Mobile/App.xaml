@@ -11,6 +11,7 @@
             <mobile:ValueToForegroundConverter x:Key="ValueToForeground" />
             <mobile:ValueToForegroundParameter ShowNegativeValuesInRed="True" x:Key="ShowNegativeValuesInRed" />
             <mobile:ValueToForegroundParameter ShowPositiveValuesInGreen="True" ShowNegativeValuesInRed="True" x:Key="NegativeRedPositiveGreen"/>
+            <mobile:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
             <Color x:Key="Primary">#2196F3</Color>
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="White"></Setter>

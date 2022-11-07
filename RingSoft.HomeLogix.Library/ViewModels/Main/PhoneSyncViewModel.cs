@@ -308,7 +308,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                             registerData.TransactionType = TransactionTypes.Withdrawal;
                             break;
                         case BudgetItemTypes.Transfer:
-                            if (register.IsNegative)
+                            if (register.ProjectedAmount < 0)
                             {
                                 registerData.TransactionType = TransactionTypes.Withdrawal;
                             }

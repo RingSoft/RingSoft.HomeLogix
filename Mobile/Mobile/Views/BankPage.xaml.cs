@@ -18,13 +18,17 @@ namespace RingSoft.HomeLogix.Mobile.Views
 			ViewModel.Initialize();
 		}
 
-        private async void ListView_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private async void ViewRegister_OnClicked(object sender, EventArgs e)
         {
-            if (e.SelectedItem != null)
+            var button = sender as Button;
+
+            if (button != null)
             {
-                var bankData = e.SelectedItem as BankData;
-                await Navigation.PushAsync(new BankDetailsPage(bankData));
-                ListView.SelectedItem = null;
+                var bankData = button.CommandParameter as BankData;
+                if (bankData != null)
+                {
+                    await Navigation.PushAsync(new BankDetailsPage(bankData));
+                }
             }
         }
     }

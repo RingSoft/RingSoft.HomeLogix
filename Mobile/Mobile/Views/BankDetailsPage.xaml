@@ -51,7 +51,11 @@
                                     <Label Grid.Row="2" Grid.Column="1" Text="{Binding TransactionTypeText}"/>
                                     <Label Grid.Row="3" Grid.Column="0" Text="Budget Amount"/>
                                     <Label Grid.Row="3" Grid.Column="1" Style="{StaticResource DecimalLabel}" Text="{Binding ProjectedAmount, StringFormat='{0:C2}'}" HorizontalOptions="Start"/>
-                                    <StackLayout Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="End" Orientation="Horizontal">
+                                    <StackLayout Grid.Row="4" Grid.Column="0" Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding Completed}" IsEnabled="False"/>
+                                        <Label Text="Completed" VerticalTextAlignment="Center"/>
+                                    </StackLayout>
+                                    <StackLayout Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalOptions="End" Orientation="Horizontal" IsVisible="{Binding Path=Completed, Converter={StaticResource InverseBooleanConverter}}">
                                         <Label Text="Balance"/>
                                         <Label Style="{StaticResource NegativeLabel}" Text="{Binding EndingBalance, StringFormat='{0:C2}'}"/>
                                     </StackLayout>
@@ -78,13 +82,13 @@
                 
                 
                     <Label Grid.Row="0" Grid.Column="0" Text="Ending Balance"/>
-                    <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource NegativeLabel}"  Text="{Binding EndingBalance, StringFormat='{0:C2}'}" />
+                    <Label Grid.Row="0" Grid.Column="1" Style="{StaticResource NegativeLabel}"  Text="{Binding EndingBalance, StringFormat='{0:C2}'}" HorizontalOptions="Start"/>
 
                     <Label Grid.Row="1" Grid.Column="0" Text="Projected Lowest Balance Date"/>
                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding ProjectedLowestBalanceDate, StringFormat='{0:dddd, MMMM dd, yyyy}'}" />
 
                     <Label Grid.Row="2" Grid.Column="0" Text="Projected Lowest Balance"/>
-                    <Label Grid.Row="2" Grid.Column="1" Style="{StaticResource NegativeLabel}"  Text="{Binding ProjectedLowestBalance, StringFormat='{0:C2}'}" />
+                    <Label Grid.Row="2" Grid.Column="1" Style="{StaticResource NegativeLabel}"  Text="{Binding ProjectedLowestBalance, StringFormat='{0:C2}'}" HorizontalOptions="Start"/>
 
                 </Grid>
                 

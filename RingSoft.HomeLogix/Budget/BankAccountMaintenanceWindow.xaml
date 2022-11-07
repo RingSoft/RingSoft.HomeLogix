@@ -244,11 +244,11 @@
 
                 <Label Grid.Row="0" Grid.Column="0" Content="Current Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
 
                 <Label Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
 
                 <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
 
@@ -260,7 +260,7 @@
 
                 <Label Grid.Row="1" Grid.Column="2" Content="Projected Lowest Balance Amount"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=ProjectedLowestBalanceAmount}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=ProjectedLowestBalanceAmount}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
 
                 <Label Grid.Row="2" Grid.Column="0" Content="Monthly Budget Deposits"/>
 

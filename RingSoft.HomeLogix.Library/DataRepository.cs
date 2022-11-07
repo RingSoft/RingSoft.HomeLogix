@@ -462,6 +462,7 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BankAccountRegisterItems.Include(p => p.BudgetItem)
+                .Include(p => p.BankAccount)
                 .FirstOrDefault(p => p.Id == registerId);
         }
 

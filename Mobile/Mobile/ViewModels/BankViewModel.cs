@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.Library.PhoneModel;
 
 namespace RingSoft.HomeLogix.Mobile.ViewModels
@@ -26,6 +27,13 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
+        public RelayCommand<BankData> RegisterCommand { get; set; }
+
+        public BankViewModel()
+        {
+            RegisterCommand = new RelayCommand<BankData>(OnRegisterClicked);
+        }
+
         public void Initialize()
         {
             var file = "BankData.json";
@@ -38,6 +46,12 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
 
         }
+
+        private void OnRegisterClicked(BankData bankData)
+        {
+
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

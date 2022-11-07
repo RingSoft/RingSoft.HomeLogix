@@ -10,7 +10,7 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:Name="ListView" ItemsSource="{Binding BankData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue" ItemSelected="ListView_OnItemSelected">
+            <ListView x:Name="ListView" ItemsSource="{Binding BankData}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue" >
                 <ListView.ItemTemplate>
                     <DataTemplate>
 
@@ -18,6 +18,7 @@
                             <StackLayout Orientation="Vertical" HorizontalOptions="Fill">
                                 <Grid Margin="5">
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
@@ -42,6 +43,10 @@
 
                                     <Label Grid.Row="3" Grid.Column="0" Text="Projected Lowest Balance" HorizontalTextAlignment="End"/>
                                     <Label Grid.Row="3" Grid.Column="1" Style="{StaticResource NegativeLabel}" Text="{Binding ProjectedLowestBalance, StringFormat='{0:C2}'}" HorizontalOptions="Start"/>
+
+                                    <StackLayout Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                        <Button x:Name="ViewRegister" Text="View Register" CommandParameter="{Binding .}" Clicked="ViewRegister_OnClicked"/>
+                                    </StackLayout>
                                 </Grid>
                                 <BoxView Color="Blue" HeightRequest="5" />
                             </StackLayout>

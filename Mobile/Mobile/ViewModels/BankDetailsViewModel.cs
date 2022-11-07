@@ -114,63 +114,37 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             var registerItems = MobileGlobals.MainViewModel.RegisterData
                 .Where(p => p.BankAccountId == bankAccount.BankId)
                 .OrderBy(p => p.ItemDate)
-                .OrderBy(p => p.IsNegative)
+                .ThenByDescending(p => p.ProjectedAmount)
                 .ToList();
 
             var balance = bankAccount.CurrentBalance;
             foreach (var registerItem in registerItems)
             {
                 var amount = Math.Abs(registerItem.ProjectedAmount);
-                switch (registerItem.RegisterItemType)
+                if (!registerItem.Completed)
                 {
-                    case BankAccountRegisterItemTypes.BudgetItem:
-                        switch (bankAccount.AccountType)
-                        {
-                            case BankAccountTypes.Checking:
-                            case BankAccountTypes.Savings:
-                                switch (registerItem.TransactionType)
-                                {
-                                    case TransactionTypes.Deposit:
-                                        balance += amount;
-                                        break;
-                                    case TransactionTypes.Withdrawal:
-                                        balance -= amount;
-                                        break;
-                                    default:
-                                        throw new ArgumentOutOfRangeException();
-                                }
-                                break;
-                            case BankAccountTypes.CreditCard:
-                                switch (registerItem.TransactionType)
-                                {
-                                    case TransactionTypes.Deposit:
-                                        balance -= amount;
-                                        break;
-                                    case TransactionTypes.Withdrawal:
-                                        balance += amount;
-                                        break;
-                                    default:
-                                        throw new ArgumentOutOfRangeException();
-                                }
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                        break;
-                    case BankAccountRegisterItemTypes.Miscellaneous:
-                        if (registerItem.IsNegative)
-                        {
-                            balance -= amount;
-                        }
-                        else
-                        {
-                            balance += amount;
-                        }
-                        break;
-                    case BankAccountRegisterItemTypes.TransferToBankAccount:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (registerItem.RegisterItemType)
+                    {
+                        case BankAccountRegisterItemTypes.BudgetItem:
+                            balance = SetBalance(bankAccount, registerItem, balance, amount);
+                            break;
+                        case BankAccountRegisterItemTypes.Miscellaneous:
+                            if (registerItem.IsNegative)
+                            {
+                                balance -= amount;
+                            }
+                            else
+                            {
+                                balance += amount;
+                            }
+
+                            break;
+                        case BankAccountRegisterItemTypes.TransferToBankAccount:
+                            balance = SetBalance(bankAccount, registerItem, balance, amount);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
 
                 switch (registerItem.TransactionType)
@@ -206,6 +180,46 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             EndingBalance = balance;
             ProjectedLowestBalance = bankAccount.ProjectedLowestBalance;
             ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate;
+        }
+
+        private decimal SetBalance(BankData bankAccount, RegisterData registerItem, decimal balance, decimal amount)
+        {
+            switch (bankAccount.AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    switch (registerItem.TransactionType)
+                    {
+                        case TransactionTypes.Deposit:
+                            balance += amount;
+                            break;
+                        case TransactionTypes.Withdrawal:
+                            balance -= amount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
+                case BankAccountTypes.CreditCard:
+                    switch (registerItem.TransactionType)
+                    {
+                        case TransactionTypes.Deposit:
+                            balance -= amount;
+                            break;
+                        case TransactionTypes.Withdrawal:
+                            balance += amount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return balance;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
