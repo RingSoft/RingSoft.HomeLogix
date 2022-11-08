@@ -148,14 +148,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
             }
 
+            var importMaxDate = rows.Max(p => p.Date);
+            var registerIncompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridRow>().Where(p => p.ItemDate < importMaxDate && !p.Completed);
+
+            foreach (var registerGridRow in registerIncompleteRows)
+            {
+                registerGridRow.ActualAmount = 0;
+                registerGridRow.Completed = true;
+                var registerItem = new BankAccountRegisterItem();
+                registerGridRow.SaveToEntity(registerItem, 0, registerGridRow.ActualAmountDetails.ToList());
+                if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerGridRow.ActualAmountDetails))
+                    return false;
+            }
+
             if (AppGlobals.DataRepository.DeleteTransactions(ViewModel.BankViewModel.Id))
             {
                 if (rows.Any())
                 {
                     SaveQifMaps();
+                    if (ViewModel.BankViewModel.LastCompleteDate.Value.Year != 1980)
+                    {
+                        ViewModel.BankViewModel.CurrentBalance = bankBalance;
+                    }
+
                     var lastCompletedDate = rows.Max(p => p.Date);
                     ViewModel.BankViewModel.LastCompleteDate = lastCompletedDate;
-                    ViewModel.BankViewModel.CurrentBalance = bankBalance;
                     ViewModel.BankViewModel.RegisterGridManager.CalculateProjectedBalanceData();
                     ViewModel.BankViewModel.RegisterGridManager.Grid?.RefreshGridView();
                     ViewModel.View.CloseWindow(true);
@@ -278,6 +296,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     dateMinValue = budgetDate;
                 }
+                if (gridRow.Date > dateMinValue)
+                {
+                    dateMinValue = budgetDate;
+                }
             }
 
             var dateMaxValue = gridRow.Date;
@@ -370,7 +392,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             registerRow.ActualAmount = actualAmount + amount;
             registerRow.BankText = importTransactionGridRow.BankText;
             registerRow.Completed = true;
-            
+
             registerRow.SaveToEntity(registerItem, 0, registerRow.ActualAmountDetails.ToList());
             if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerRow.ActualAmountDetails))
                 return false;

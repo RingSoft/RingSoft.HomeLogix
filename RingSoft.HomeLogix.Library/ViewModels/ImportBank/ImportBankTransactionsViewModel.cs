@@ -139,7 +139,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 registerStartDate = incompleteRows.Min(p => p.ItemDate);
             }
 
-            if (BankViewModel.LastCompleteDate == null)
+            if (BankViewModel.LastCompleteDate == new DateTime(1980,1,1))
             {
                 startDate = registerStartDate;
             }
@@ -221,8 +221,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             if (!DateTime.TryParse(date, out rowDate))
                 return null;
 
-            if (rowDate > startDate)
+            var processRow = true;
+            if (BankViewModel.LastCompleteDate.Value.Year == 1980)
             {
+                processRow = rowDate >= startDate;
+            }
+            else
+            {
+                processRow = rowDate > startDate;
+            }
+
+            if (processRow)
+            {
+                if (rowDate.Month == 9 && rowDate.Day < 6)
+                {
+                    
+                }
                 var text = GetQifValue(qifText, columnPos, "P");
                 var amountText = GetQifValue(qifText, columnPos, "T");
 

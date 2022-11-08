@@ -17,5 +17,7 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
         public decimal ActualAmount { get; set; }
 
         public decimal Difference { get; set; }
+
+        public string BankText { get; set; }
     }
 }

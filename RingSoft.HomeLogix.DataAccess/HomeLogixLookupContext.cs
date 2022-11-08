@@ -137,8 +137,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             HistoryLookup.AddVisibleColumnDefinition(p => p.Date, "Date",
                 p => p.Date, 12);
-            HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
-                p => p.Description, 25);
+            HistoryLookup.AddVisibleColumnDefinition(p => p.BankText, "Bank Text",
+                p => p.BankText, 25);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
                 p => p.ItemType, 20);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",

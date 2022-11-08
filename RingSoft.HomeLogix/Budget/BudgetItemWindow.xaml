@@ -154,7 +154,7 @@
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>
 
-                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="160"/>
+                                <lc:LookupColumn PropertyName="{lc:NameOf BankText, Type={x:Type lm:HistoryLookup}}" Header="Bank Text" DesignText="A Very Long Description" Width="160"/>
 
                                 <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:HistoryLookup}}"
                                                               ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="3" Width="110"/>
