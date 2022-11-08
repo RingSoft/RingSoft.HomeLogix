@@ -96,6 +96,10 @@ namespace RingSoft.HomeLogix.Library
         QifMap GetQifMap(string bankText);
 
         bool SaveQifMap(QifMap qifMap);
+
+        IEnumerable<History> GetPhoneHistoryList(DateTime currentDate);
+
+        IEnumerable<SourceHistory> GetPhoneSourceHistory(DateTime currentDate);
     }
 
     public class DataRepository : IDataRepository
@@ -780,6 +784,40 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             context.QifMaps.Add(qifMap);
             return context.DbContext.SaveEfChanges("Saving QifMap");
+        }
+
+        public IEnumerable<History> GetPhoneHistoryList(DateTime currentDate)
+        {
+            currentDate = new DateTime(currentDate.Year, currentDate.Month, 1);
+            currentDate = currentDate.AddMonths(-1);
+            
+            var context = AppGlobals.GetNewDbContext();
+            var result = context.History
+                .Include(p => p.BudgetItem)
+                .Include(p => p.BankAccount)
+                .Include(p => p.Sources)
+                .OrderBy(p => p.Date)
+                .Where(p => p.Date >= currentDate);
+
+            return result;
+        }
+
+        public IEnumerable<SourceHistory> GetPhoneSourceHistory(DateTime currentDate)
+        {
+            currentDate = new DateTime(currentDate.Year, currentDate.Month, 1);
+            currentDate = currentDate.AddMonths(-1);
+
+            var context = AppGlobals.GetNewDbContext();
+            var result = context.SourceHistory
+                .Include(p => p.Source)
+                .Include(p => p.HistoryItem)
+                .ThenInclude(p => p.BankAccount)
+                .Include(p => p.HistoryItem)
+                .ThenInclude(p => p.BudgetItem)
+                .OrderBy(p => p.Date)
+                .Where(p => p.Date >= currentDate);
+
+            return result;
         }
     }
 }
