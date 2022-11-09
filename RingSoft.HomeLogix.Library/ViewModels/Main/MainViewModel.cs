@@ -364,7 +364,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public List<BankAccountViewModel> BankAccountViewModels { get; } = new List<BankAccountViewModel>();
 
-
         private LookupFormulaColumnDefinition _projectedMonthToDateColumnDefinition;
         private LookupFormulaColumnDefinition _actualMonthToDateColumnDefinition;
         private LookupFormulaColumnDefinition _monthlyAmountDifferrenceColumnDefinition;
