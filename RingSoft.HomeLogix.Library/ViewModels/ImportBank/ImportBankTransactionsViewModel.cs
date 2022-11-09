@@ -147,7 +147,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 startDate = BankViewModel.LastCompleteDate.Value;
                 var existingRows = Manager.Rows
-                    .OfType<ImportTransactionGridRow>().Where(p => !p.IsNew && !p.BankText.IsNullOrEmpty());
+                    .OfType<ImportTransactionGridRow>().Where(p => !p.IsNew && !p.Description.IsNullOrEmpty());
                 if (existingRows.Any())
                 {
                     var existingDate = existingRows.Max(p => p.Date);
@@ -172,9 +172,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
                 else
                 {
-                    View.UpdateStatus($"Processing {row.BankText}");
+                    View.UpdateStatus($"Processing {row.Description}");
                 }
-
+                row.FromBank = true;
                 importRows.Add(row);
                 //columnPos = qifText.IndexOf("^", columnPos);
                 columnPos = qifText.IndexOf("C*", columnPos + 2);
@@ -256,7 +256,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 amount = Math.Abs(amount);
                 row.Amount = amount;
                 row.Date = rowDate;
-                row.BankText = text;
+                row.Description = text;
                 row.MapTransaction = true;
                 return row;
             }

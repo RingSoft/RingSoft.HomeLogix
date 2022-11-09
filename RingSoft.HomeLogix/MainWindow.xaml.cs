@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using RingSoft.HomeLogix.Budget;
@@ -6,6 +7,7 @@ using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;
 using System.Windows.Media;
 using RingSoft.App.Library;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
@@ -171,6 +173,14 @@ namespace RingSoft.HomeLogix
             var phoneSyncWindow = new PhoneSyncWindow(input) { Owner = this };
             phoneSyncWindow.ShowDialog();
             return phoneSyncWindow.ViewModel.DialogResult;
+        }
+
+        public void ShowRichMessageBox(string message, string caption, RsMessageBoxIcons icon, List<HyperlinkData> hyperLinks = null)
+        {
+            var richMessageBox = new RichMessageBox(message, caption, icon, hyperLinks);
+            richMessageBox.Owner = this;
+            richMessageBox.ShowInTaskbar = false;
+            richMessageBox.ShowDialog();
         }
     }
 }

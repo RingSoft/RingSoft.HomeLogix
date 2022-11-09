@@ -113,13 +113,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
 
             View.StartProcedure();
+            message = "Mobile device sync complete. The mobile Google Play App is currently in testing mode. To get the mobile Google Play app, please [Email].  There is no iOS App because I don't own a Macintosh computer.  My mobile app is written in Xamarin Forms.  If you would like to join my team and compile the Xamarin Forms iOS app, please [Email1].";
+            caption = "Operation Complete";
+            var hyperLinks = new List<HyperlinkData>();
+            hyperLinks.Add(new HyperlinkData
+            {
+                UrlLink = "mailto:peteman316@gmail.com?subject=Request%20HomeLogix%20Google%20Play%20App",
+                UserText = "Email Me",
+                TextToReplace = "Email"
+            });
+            hyperLinks.Add(new HyperlinkData
+            {
+                UrlLink = "mailto:peteman316@gmail.com?subject=Help%20Make%20HomeLogix%20iOS%20App",
+                UserText = "Email Me",
+                TextToReplace = "Email1"
+            });
+
+            AppGlobals.MainViewModel.View.ShowRichMessageBox(message, caption, RsMessageBoxIcons.Information, hyperLinks);
+            //ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
 
         }
 
         public void StartSync(ITwoTierProcedure procedure)
         {
             ValidationFail = false;
-            var maxSteps = 6;
+            var maxSteps = 8;
             var loginSteps = 3;
             procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
             procedure.UpdateBottomTier("Getting Logins from web", loginSteps, 1);
@@ -237,12 +255,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             AppGlobals.WriteTextFile("RegisterData.json", content);
             AppGlobals.UploadFile("RegisterData.json", DialogResult.Guid);
 
-            message = "Mobile device sync complete. The mobile Google play app is currently in testing mode. To get the mobile Google play app, please email me at peteman316@gmail.com.";
-            caption = "Operation Complete";
-            procedure.ShowMessage(message, caption, RsMessageBoxIcons.Information);
-            //ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+            procedure.UpdateTopTier("Processing History", maxSteps, 7);
+            var phoneHistory = GetPhoneHistoryData(procedure);
+            content = JsonConvert.SerializeObject(phoneHistory);
+            AppGlobals.WriteTextFile("HistoryData.json", content);
+            AppGlobals.UploadFile("HistoryData.json", DialogResult.Guid);
 
-            //View.CloseWindow(true);
+            procedure.UpdateTopTier("Processing Source History", maxSteps, 8);
+            var phoneSourceHistory = GetPhoneSourceHistoryData(procedure);
+            content = JsonConvert.SerializeObject(phoneSourceHistory);
+            AppGlobals.WriteTextFile("SourceHistoryData.json", content);
+            AppGlobals.UploadFile("SourceHistoryData.json", DialogResult.Guid);
         }
 
         private List<RegisterData> GetRegister(ITwoTierProcedure procedure)
@@ -325,6 +348,64 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 registerData.RegisterItemType = (BankAccountRegisterItemTypes)register.ItemType;
                 list.Add(registerData);
             }
+        }
+
+        private List<HistoryData> GetPhoneHistoryData(ITwoTierProcedure procedure)
+        {
+            var result = new List<HistoryData>();
+
+            var history = AppGlobals.DataRepository.GetPhoneHistoryList(AppGlobals.MainViewModel.CurrentMonth);
+            var total = history.Count();
+            var index = 0;
+            foreach (var historyItem in history)
+            {
+                index++;
+                procedure.UpdateBottomTier($"Processing History Record {index}/{total}", total, index);
+                var historyData = new HistoryData
+                {
+                    BankAccountId = historyItem.BankAccountId,
+                    BankName = historyItem.BankAccount.Description,
+                    BudgetItemId = historyItem.BudgetItemId,
+                    Date = historyItem.Date,
+                    Description = historyItem.Description,
+                    ProjectedAmount = historyItem.ProjectedAmount,
+                    ActualAmount = historyItem.ActualAmount,
+                    Difference = historyItem.ProjectedAmount - historyItem.ActualAmount,
+                    BankText = historyItem.BankText,
+                    HasSourceHistory = historyItem.Sources.Any()
+                };
+                if (historyItem.BudgetItem != null)
+                {
+                    historyData.BudgetName = historyItem.BudgetItem.Description;
+                }
+                result.Add(historyData);
+            }
+            return result;
+        }
+
+        private List<SourceHistoryData> GetPhoneSourceHistoryData(ITwoTierProcedure procedure)
+        {
+            var result = new List<SourceHistoryData>();
+
+            var history = AppGlobals.DataRepository.GetPhoneSourceHistory(AppGlobals.MainViewModel.CurrentMonth);
+            var total = history.Count();
+            var index = 0;
+
+            foreach (var sourceHistory in history)
+            {
+                index++;
+                procedure.UpdateBottomTier($"Processing History Record {index}/{total}", total, index);
+                var sourceHistoryData = new SourceHistoryData
+                {
+                    HistoryId = sourceHistory.HistoryId,
+                    Source = sourceHistory.Source.Name,
+                    Date = sourceHistory.Date,
+                    Amount = sourceHistory.Amount,
+                    BankText = sourceHistory.BankText,
+                };
+                result.Add(sourceHistoryData);
+            }
+            return result;
         }
 
         private void OnCancel()

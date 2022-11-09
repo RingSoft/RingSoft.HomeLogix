@@ -21,6 +21,7 @@
     <None Remove="Resources\homeYellow.ico" />
     <None Remove="Resources\homeYellow.png" />
     <None Remove="Resources\Import.png" />
+    <None Remove="Resources\Information.png" />
     <None Remove="Resources\manage_bank.png" />
     <None Remove="Resources\manage_budget.png" />
     <None Remove="Resources\stock_index_down.png" />
@@ -55,6 +56,7 @@
     <Resource Include="Resources\homeYellow.ico" />
     <Resource Include="Resources\homeYellow.png" />
     <Resource Include="Resources\Import.png" />
+    <Resource Include="Resources\Information.png" />
     <Resource Include="Resources\manage_bank.png" />
     <Resource Include="Resources\manage_budget.png" />
     <Resource Include="Resources\stock_index_down.png" />

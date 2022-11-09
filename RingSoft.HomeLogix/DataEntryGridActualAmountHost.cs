@@ -82,7 +82,7 @@ namespace RingSoft.HomeLogix
 
             if (ActualAmountCellProps.ImportTransactionGridRow != null)
             {
-                if (!ActualAmountCellProps.ImportTransactionGridRow.BankText.IsNullOrEmpty())
+                if (ActualAmountCellProps.ImportTransactionGridRow.BudgetItemSplits.Any())
                 {
                     Control.AmountMode = ActualAmountMode.Details;
                 }

@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     public enum ImportColumns
     {
         Date = 0,
-        BankText = 1,
+        Description = 1,
         TransactionType = 2,
         BudgetItem = 3,
         Source = 4,
@@ -31,7 +31,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     public class ImportTransactionGridRow : DataEntryGridRow
     {
         public const int DateColumnId = (int) ImportColumns.Date;
-        public const int BankTextColumnId = (int) ImportColumns.BankText;
+        public const int DescriptionColumnId = (int) ImportColumns.Description;
         public const int TransactionTypeColumnId = (int) ImportColumns.TransactionType;
         public const int BudgetItemColumnId = (int) ImportColumns.BudgetItem;
         public const int SourceColumnId = (int) ImportColumns.Source;
@@ -39,7 +39,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public const int MapColumnId = (int) ImportColumns.Map;
 
         public DateTime Date { get; set; } = DateTime.Today;
-        public string BankText { get; set; }
+        public string Description { get; set; }
 
         public TransactionTypes TransactionTypes
         {
@@ -59,6 +59,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public new ImportTransactionsGridManager Manager { get; set; }
 
         public QifMap QifMap { get; set; }
+
+        public bool FromBank { get; set; }
 
         public ImportTransactionGridRow(ImportTransactionsGridManager manager) : base(manager)
         {
@@ -82,8 +84,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 case ImportColumns.Date:
                     return new DataEntryGridDateCellProps(this, columnId,
                         new DateEditControlSetup() {DateFormatType = DateFormatTypes.DateOnly}, Date);
-                case ImportColumns.BankText:
-                    return new DataEntryGridTextCellProps(this, columnId, BankText);
+                case ImportColumns.Description:
+                    return new DataEntryGridTextCellProps(this, columnId, Description);
                 case ImportColumns.TransactionType:
                     return new DataEntryGridCustomControlCellProps(this, columnId, (int)TransactionTypes);
                 case ImportColumns.BudgetItem:
@@ -133,17 +135,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
                     return new DataEntryGridControlCellStyle();
-                case ImportColumns.BankText:
-                    return new DataEntryGridControlCellStyle() {State = DataEntryGridCellStates.Disabled};
+                case ImportColumns.Description:
+                    var state = DataEntryGridCellStates.Enabled;
+                    if (FromBank)
+                    {
+                        state |= DataEntryGridCellStates.Disabled;
+                    }
+                    return new DataEntryGridControlCellStyle() {State = state};
                 case ImportColumns.Map:
-                    if (BankText.IsNullOrEmpty())
+                    if (!FromBank)
                     {
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                     }
                     return new DataEntryGridControlCellStyle();
                 case ImportColumns.Date:
                 case ImportColumns.TransactionType:
-                    if (!BankText.IsNullOrEmpty())
+                    if (FromBank)
                     {
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                     }
@@ -168,7 +175,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                             Date = dateProps.Value.Value;
                     }
                     break;
-                case ImportColumns.BankText:
+                case ImportColumns.Description:
+                    var textProps = value as DataEntryGridTextCellProps;
+                    if (textProps != null) Description = textProps.Text;
                     break;
                 case ImportColumns.TransactionType:
                     var comboProps = value as DataEntryGridCustomControlCellProps;

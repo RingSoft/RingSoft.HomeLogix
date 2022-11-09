@@ -1145,10 +1145,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ActualAmount = completedRow.ActualAmount.GetValueOrDefault(0),
                 BankText = registerItem.BankText
             };
-            if (registerItem.BankText.IsNullOrEmpty())
-            {
-                historyItem.BankText = registerItem.Description;
-            }
             if (!addToBudgetHistory)
             {
                 historyItem.BudgetItemId = null;

@@ -61,7 +61,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
                 if (importBankTransactionsBudgetsGridRow.BudgetAutoFillValue == null || !importBankTransactionsBudgetsGridRow.BudgetAutoFillValue.IsValid())
                 {
-                    if (importBankTransactionsBudgetsGridRow.BudgetAmount != 0)
+                    if (importBankTransactionsBudgetsGridRow.BudgetAmount != 0 && !importBankTransactionsBudgetsGridRow.IsNew)
                     {
                         var message = "Row budget item cannot be empty.";
                         var caption = "Invalid Row Budget Item";
@@ -72,7 +72,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 total += importBankTransactionsBudgetsGridRow.BudgetAmount;
             }
 
-            if (total != ViewModel.TransactionAmount)
+            if (total != ViewModel.TransactionAmount && rows.Any(p => !p.IsNew))
             {
                 var message = "Total grid amount must equal the transaction amount.";
                 var caption = "Invalid Amount";

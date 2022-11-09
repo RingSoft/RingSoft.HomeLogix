@@ -18,7 +18,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public DateTime TransactionDate { get; set; }
 
-        public string BankTransactionText { get; set; }
+        public string Description { get; set; }
 
         public int? BudgetId { get; set; }
 
@@ -39,6 +39,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public bool MapTransaction { get; set; }
 
         public byte TransactionType { get; set; }
+
+        public bool FromBank { get; set; }
 
         public virtual ICollection<BankTransactionBudget> BudgetItems { get; set; }
 

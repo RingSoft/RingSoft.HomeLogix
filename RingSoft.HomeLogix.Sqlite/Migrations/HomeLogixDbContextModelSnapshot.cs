@@ -359,11 +359,14 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("BankAccountRegisterItemAmountDetailRegisterId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("BankTransactionText")
-                        .HasColumnType("nvarchar");
-
                     b.Property<int?>("BudgetId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar");
+
+                    b.Property<bool>("FromBank")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("MapTransaction")
                         .HasColumnType("bit");

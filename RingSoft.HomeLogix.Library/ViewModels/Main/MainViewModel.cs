@@ -32,6 +32,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ShowChart(bool show = true);
 
         Login ShowPhoneSync(Login input);
+
+        void ShowRichMessageBox(string message, string caption, RsMessageBoxIcons icon, List<HyperlinkData> hyperLinks = null);
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -356,6 +358,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
         public string SearchText { get; set; } = string.Empty;
 
+        public DateTime CurrentMonth { get; private set; }
+
         public List<BudgetItemViewModel> BudgetItemViewModels { get; } = new List<BudgetItemViewModel>();
 
         public List<BankAccountViewModel> BankAccountViewModels { get; } = new List<BankAccountViewModel>();
@@ -368,7 +372,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private ChartData _initialActualChartData;
         private ChartData _activeChartData;
         private List<int> _budgetItems = new List<int>();
-        private DateTime _currentMonth;
         private bool _setCurrentDateText = true;
 
         public MainViewModel()
@@ -415,14 +418,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
 
                 SetCurrentMonthEnding(date, false);
-                _currentMonth = date;
+                CurrentMonth = date;
                 BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
             else
             {
                 SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate, false);
-                _currentMonth = currentBudgetMonth.PeriodEndingDate;
+                CurrentMonth = currentBudgetMonth.PeriodEndingDate;
                 //BankLookupDefinition = CreateBankLookupDefinition();
                 BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
@@ -899,13 +902,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         {
             var result = new List<BudgetData>();
             var currentMonthEnding = CurrentMonthEnding;
-            var month = _currentMonth;
+            var month = CurrentMonth;
             switch (type)
             {
                 case StatisticsType.Current:
                     break;
                 case StatisticsType.Previous:
-                    month = _currentMonth.AddMonths(-1);
+                    month = CurrentMonth.AddMonths(-1);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
@@ -1024,17 +1027,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public List<BudgetStatistics> GetBudgetStatistics()
         {
             var result = new List<BudgetStatistics>();
-            var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(_currentMonth,
-                GetPeriodEndDate(_currentMonth.AddMonths(-1)), GetPeriodEndDate(_currentMonth.AddMonths(1)));
+            var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(CurrentMonth,
+                GetPeriodEndDate(CurrentMonth.AddMonths(-1)), GetPeriodEndDate(CurrentMonth.AddMonths(1)));
 
-            var currentStats = PopulateBudgetStats(budgetTotals, StatisticsType.Current, GetPeriodEndDate(_currentMonth));
+            var currentStats = PopulateBudgetStats(budgetTotals, StatisticsType.Current, GetPeriodEndDate(CurrentMonth));
             result.Add(currentStats);
 
-            budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(GetPeriodEndDate(_currentMonth.AddMonths(-1)),
-                GetPeriodEndDate(_currentMonth.AddMonths(-1)), GetPeriodEndDate(_currentMonth.AddMonths(1)));
+            budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(GetPeriodEndDate(CurrentMonth.AddMonths(-1)),
+                GetPeriodEndDate(CurrentMonth.AddMonths(-1)), GetPeriodEndDate(CurrentMonth.AddMonths(1)));
 
             var pastStats = PopulateBudgetStats(budgetTotals, StatisticsType.Previous,
-                GetPeriodEndDate(_currentMonth.AddMonths(-1)));
+                GetPeriodEndDate(CurrentMonth.AddMonths(-1)));
             result.Add(pastStats);
 
             return result;

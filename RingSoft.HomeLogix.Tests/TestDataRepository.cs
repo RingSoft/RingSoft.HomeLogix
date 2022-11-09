@@ -308,6 +308,16 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public IEnumerable<History> GetPhoneHistoryList(DateTime currentDate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<SourceHistory> GetPhoneSourceHistory(DateTime currentDate)
+        {
+            throw new NotImplementedException();
+        }
+
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)
         {
             throw new NotImplementedException();
