@@ -31,5 +31,20 @@ namespace RingSoft.HomeLogix.Mobile.Views
                 }
             }
         }
+
+        private async void ViewHistory_OnClicked(object sender, EventArgs e)
+        {
+            var button = sender as Button;
+
+            if (button != null)
+            {
+                var bankData = button.CommandParameter as BankData;
+                if (bankData != null)
+                {
+                    await Navigation.PushAsync(new BankDetailsPage(bankData));
+                }
+            }
+
+        }
     }
 }

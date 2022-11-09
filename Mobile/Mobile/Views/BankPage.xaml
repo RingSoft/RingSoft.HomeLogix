@@ -46,6 +46,9 @@
 
                                     <StackLayout Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                                         <Button x:Name="ViewRegister" Text="View Register" CommandParameter="{Binding .}" Clicked="ViewRegister_OnClicked"/>
+
+                                        <Button x:Name="ViewHistory" Text="View History" CommandParameter="{Binding .}" Clicked="ViewHistory_OnClicked"/>
+
                                     </StackLayout>
                                 </Grid>
                                 <BoxView Color="Blue" HeightRequest="5" />
