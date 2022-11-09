@@ -27,11 +27,11 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" x:Name="UserNameLabel" Content="User Name"/>
+        <Label Grid.Row="0" Grid.Column="0" x:Name="UserNameLabel" Content="Create User Name"/>
 
         <dec:StringEditControl Grid.Row="0" Grid.Column="1" x:Name="UserNameControl" Text="{Binding PhoneLogin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Password"/>
+        <Label Grid.Row="1" Grid.Column="0" Content="Create/Edit Password"/>
 
         <PasswordBox Grid.Row="1" Grid.Column="1" x:Name="PasswordBox" Width="200" Height="20"/>
 

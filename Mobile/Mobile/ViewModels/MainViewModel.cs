@@ -37,6 +37,10 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public List<RegisterData> RegisterData { get; private set; }
 
+        public List<HistoryData> HistoryData { get; private set; }
+
+        public List<SourceHistoryData> SourceHistoryData { get; private set; }
+
         public MainViewModel()
         {
             MobileGlobals.MainViewModel = this;
@@ -63,6 +67,12 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
                 var jsonContent = string.Empty;
                 DownloadWebText(ref jsonContent, "RegisterData.json", true);
                 RegisterData = JsonConvert.DeserializeObject<List<RegisterData>>(jsonContent);
+
+                DownloadWebText(ref jsonContent, "HistoryData.json", true);
+                HistoryData = JsonConvert.DeserializeObject<List<HistoryData>>(jsonContent);
+
+                DownloadWebText(ref jsonContent, "SourceHistoryData.json", true);
+                SourceHistoryData = JsonConvert.DeserializeObject<List<SourceHistoryData>>(jsonContent);
             }
         }
 
