@@ -53,6 +53,8 @@ namespace RingSoft.HomeLogix
 
             TextBlock.Inlines.Add(message);
             ViewModel.Caption = caption;
+
+            ContentRendered += (sender, args) => OkButton.Focus();
         }
 
         public void CloseWindow()

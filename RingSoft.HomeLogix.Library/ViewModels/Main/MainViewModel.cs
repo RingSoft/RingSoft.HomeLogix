@@ -34,6 +34,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         Login ShowPhoneSync(Login input);
 
         void ShowRichMessageBox(string message, string caption, RsMessageBoxIcons icon, List<HyperlinkData> hyperLinks = null);
+
+        string GetWriteablePath();
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl

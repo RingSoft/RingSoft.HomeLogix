@@ -328,9 +328,25 @@ namespace RingSoft.HomeLogix.Library
             }
         }
 
-        public static void WriteTextFile(string fileName, string text)
+        public static string WriteTextFile(string fileName, string text)
         {
-            File.WriteAllText(fileName, text);
+            var filePath = $"{MasterDbContext.ProgramDataFolder}\\{fileName}";
+            try
+            {
+                File.WriteAllText(filePath, text);
+            }
+            catch (Exception e)
+            {
+                return e.Message;
+            }
+            return string.Empty;
+        }
+
+        public static void DeleteFile(string fileName)
+        {
+            //var filePath = $"{MainViewModel.View.GetWriteablePath()}\\{fileName}";
+            var filePath = $"{MasterDbContext.ProgramDataFolder}\\{fileName}";
+            File.Delete(filePath);
         }
 
         public static void UploadFile(string fileName, string guid = "")

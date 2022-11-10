@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -184,6 +185,11 @@ namespace RingSoft.HomeLogix
             richMessageBox.Owner = this;
             richMessageBox.ShowInTaskbar = false;
             richMessageBox.ShowDialog();
+        }
+
+        public string GetWriteablePath()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         }
     }
 }

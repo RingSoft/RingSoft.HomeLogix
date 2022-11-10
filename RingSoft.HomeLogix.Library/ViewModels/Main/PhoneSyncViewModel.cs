@@ -113,6 +113,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
 
             View.StartProcedure();
+
+            if (ValidationFail)
+            {
+                return;
+            }
+            
             message = "Mobile device sync complete. The mobile Google Play App is currently in testing mode. To get the mobile Google Play app, please [Email].  There is no iOS App because I don't own a Macintosh computer.  My mobile app is written in Xamarin Forms.  If you would like to join my team and compile the Xamarin Forms iOS app, please [Email1].";
             caption = "Operation Complete";
             var hyperLinks = new List<HyperlinkData>();
@@ -137,8 +143,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public void StartSync(ITwoTierProcedure procedure)
         {
             ValidationFail = false;
-            var maxSteps = 8;
-            var loginSteps = 3;
+            var maxSteps = 9;
+            var loginSteps = 8;
             procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
             procedure.UpdateBottomTier("Getting Logins from web", loginSteps, 1);
             string message;
@@ -188,10 +194,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 login.Password = View.Password.Encrypt();
             }
             var loginsContent = JsonConvert.SerializeObject(_logins);
-            AppGlobals.WriteTextFile("Logins.json", loginsContent);
+            var result = AppGlobals.WriteTextFile("Logins.json", loginsContent);
+            if (!result.IsNullOrEmpty())
+            {
+                procedure.ShowError(result, "Error Writing File!");
+                ValidationFail = true;
+                return;
+            }
 
-            procedure.UpdateBottomTier("Updating web logins", loginSteps, 2);
-            AppGlobals.UploadFile("Logins.json");
+            procedure.UpdateTopTier("Updating web logins", maxSteps, 2);
+
+            var loginStep = 1;
+            procedure.UpdateBottomTier($"Processing File Logins", loginSteps, loginStep);
+
+            try
+            {
+                AppGlobals.UploadFile("Logins.json");
+                AppGlobals.DeleteFile("Logins.json");
+            }
+            catch (Exception e)
+            {
+                ProcessException(procedure, e);
+                return;
+            }
 
             try
             {
@@ -206,6 +231,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                         while (crLfPos >= 0)
                         {
                             var file = text.LeftStr(crLfPos);
+                            loginStep++;
+                            procedure.UpdateBottomTier($"Processing File {file}", loginSteps, loginStep);
                             if (file != "." && file != "..")
                             {
                                 AppGlobals.GetWebResponse(WebRequestMethods.Ftp.DeleteFile, DialogResult.Guid + $"/{file}");
@@ -222,50 +249,65 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             catch (Exception e)
             {
             }
+            
 
-            AppGlobals.GetWebResponse(WebRequestMethods.Ftp.MakeDirectory, DialogResult.Guid + "/");
+            try
+            {
+                AppGlobals.GetWebResponse(WebRequestMethods.Ftp.MakeDirectory, DialogResult.Guid + "/");
 
-            procedure.UpdateTopTier("Processing Current Month Budget", maxSteps, 2);
-            var monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Current, procedure);
-            var content = JsonConvert.SerializeObject(monthBudgetData);
-            AppGlobals.WriteTextFile("CurrentMonthBudget.json", content);
-            AppGlobals.UploadFile("CurrentMonthBudget.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing Current Month Budget", maxSteps, 2);
+                var monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Current, procedure);
+                var content = JsonConvert.SerializeObject(monthBudgetData);
+                ProcessFile("CurrentMonthBudget.json", content);
 
-            procedure.UpdateTopTier("Processing Past Month Budget", maxSteps, 3);
-            monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Previous, procedure);
-            content = JsonConvert.SerializeObject(monthBudgetData);
-            AppGlobals.WriteTextFile("PreviousMonthBudget.json", content);
-            AppGlobals.UploadFile("PreviousMonthBudget.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing Past Month Budget", maxSteps, 3);
+                monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Previous, procedure);
+                content = JsonConvert.SerializeObject(monthBudgetData);
+                ProcessFile("PreviousMonthBudget.json", content);
 
-            procedure.UpdateTopTier("Processing Budget Statistics", maxSteps, 4);
-            var budgetStatistics = AppGlobals.MainViewModel.GetBudgetStatistics();
-            content = JsonConvert.SerializeObject(budgetStatistics);
-            AppGlobals.WriteTextFile("BudgetStats.json", content);
-            AppGlobals.UploadFile("BudgetStats.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing Budget Statistics", maxSteps, 4);
+                var budgetStatistics = AppGlobals.MainViewModel.GetBudgetStatistics();
+                content = JsonConvert.SerializeObject(budgetStatistics);
+                ProcessFile("BudgetStats.json", content);
 
-            procedure.UpdateTopTier("Processing Banks", maxSteps, 5);
-            var bankData = AppGlobals.MainViewModel.GetBankData(procedure);
-            content = JsonConvert.SerializeObject(bankData);
-            AppGlobals.WriteTextFile("BankData.json", content);
-            AppGlobals.UploadFile("BankData.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing Banks", maxSteps, 5);
+                var bankData = AppGlobals.MainViewModel.GetBankData(procedure);
+                content = JsonConvert.SerializeObject(bankData);
+                ProcessFile("BankData.json", content);
 
-            procedure.UpdateTopTier("Processing Register", maxSteps, 6);
-            var registerData = GetRegister(procedure);
-            content = JsonConvert.SerializeObject(registerData);
-            AppGlobals.WriteTextFile("RegisterData.json", content);
-            AppGlobals.UploadFile("RegisterData.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing Register", maxSteps, 6);
+                var registerData = GetRegister(procedure);
+                content = JsonConvert.SerializeObject(registerData);
+                ProcessFile("RegisterData.json", content);
 
-            procedure.UpdateTopTier("Processing History", maxSteps, 7);
-            var phoneHistory = GetPhoneHistoryData(procedure);
-            content = JsonConvert.SerializeObject(phoneHistory);
-            AppGlobals.WriteTextFile("HistoryData.json", content);
-            AppGlobals.UploadFile("HistoryData.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing History", maxSteps, 7);
+                var phoneHistory = GetPhoneHistoryData(procedure);
+                content = JsonConvert.SerializeObject(phoneHistory);
+                ProcessFile("HistoryData.json", content);
 
-            procedure.UpdateTopTier("Processing Source History", maxSteps, 8);
-            var phoneSourceHistory = GetPhoneSourceHistoryData(procedure);
-            content = JsonConvert.SerializeObject(phoneSourceHistory);
-            AppGlobals.WriteTextFile("SourceHistoryData.json", content);
-            AppGlobals.UploadFile("SourceHistoryData.json", DialogResult.Guid);
+                procedure.UpdateTopTier("Processing Source History", maxSteps, 8);
+                var phoneSourceHistory = GetPhoneSourceHistoryData(procedure);
+                content = JsonConvert.SerializeObject(phoneSourceHistory);
+                ProcessFile("SourceHistoryData.json", content);
+            }
+            catch (Exception e)
+            {
+                ProcessException(procedure, e);
+                return;
+            }
+        }
+
+        private void ProcessFile(string file, string content)
+        {
+            AppGlobals.WriteTextFile(file, content);
+            AppGlobals.UploadFile(file, DialogResult.Guid);
+            AppGlobals.DeleteFile(file);
+        }
+
+        private void ProcessException(ITwoTierProcedure procedure, Exception e)
+        {
+            procedure.ShowError(e.Message, "Error Uploading File!");
+            ValidationFail = true;
         }
 
         private List<RegisterData> GetRegister(ITwoTierProcedure procedure)
