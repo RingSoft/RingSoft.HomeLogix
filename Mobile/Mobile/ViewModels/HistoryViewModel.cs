@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -27,8 +28,10 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public void Initialize(BudgetData budgetData)
         {
+            var startDate = new DateTime(budgetData.CurrentDate.Year, budgetData.CurrentDate.Month, 1);
+            var endDate = new DateTime(budgetData.CurrentDate.Year, budgetData.CurrentDate.Month,  startDate.AddMonths(1).AddDays(-1).Day);
             var historyData = MobileGlobals.MainViewModel.HistoryData
-                .Where(p => p.BudgetItemId == budgetData.BudgetItemId)
+                .Where(p => p.BudgetItemId == budgetData.BudgetItemId && p.Date >= startDate && p.Date <= endDate)
                 .OrderByDescending(p => p.Date);
             HistoryDataList = new ObservableCollection<HistoryData>(historyData);
         }

@@ -144,7 +144,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         {
             ValidationFail = false;
             var maxSteps = 9;
-            var loginSteps = 8;
+            var loginSteps = 10;
             procedure.UpdateTopTier("Processing User Login", maxSteps, 1);
             procedure.UpdateBottomTier("Getting Logins from web", loginSteps, 1);
             string message;

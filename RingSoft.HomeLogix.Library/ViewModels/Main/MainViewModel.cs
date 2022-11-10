@@ -939,7 +939,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                             Description = mainBudgetLookup.Description,
                             BudgetAmount = mainBudgetLookup.ProjectedMonthlyAmount,
                             ActualAmount = mainBudgetLookup.ActualMonthlyAmount,
-                            Difference = mainBudgetLookup.MonthlyAmountDifference
+                            Difference = mainBudgetLookup.MonthlyAmountDifference,
+                            HistoryExists = AppGlobals.DataRepository.HistoryExists(mainBudgetLookup.BudgetId, CurrentMonth),
+                            CurrentDate = CurrentMonth
                         });
                     }
                 }

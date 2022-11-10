@@ -101,6 +101,8 @@ namespace RingSoft.HomeLogix.Library
 
         IEnumerable<SourceHistory> GetPhoneSourceHistory(DateTime currentDate);
 
+        bool HistoryExists(int budgetId, DateTime date);
+
     }
 
     public class DataRepository : IDataRepository
@@ -818,6 +820,18 @@ namespace RingSoft.HomeLogix.Library
                 .OrderBy(p => p.Date)
                 .Where(p => p.Date >= currentDate);
 
+            return result;
+        }
+
+        public bool HistoryExists(int budgetId, DateTime date)
+        {
+            var startDate = new DateTime(date.Year, date.Month, 1);
+            var endDate = new DateTime(date.Year, date.Month, startDate.AddMonths(1).AddDays(-1).Day);
+
+            var context = AppGlobals.GetNewDbContext();
+
+            var result =
+                context.History.Any(p => p.BudgetItemId == budgetId && p.Date >= startDate && p.Date <= endDate);
             return result;
         }
     }
