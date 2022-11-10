@@ -37,7 +37,7 @@
 
                                     <StackLayout Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                                         <Label Text="Projected Lowest Balance Date"/>
-                                        <Label Text="{Binding ProjectedLowestBalanceDate, StringFormat='{0:dddd, MMMM dd, yyyy}'}" HorizontalOptions="Start"/>
+                                        <Label Text="{Binding ProjectedLowestBalanceDate, StringFormat='{0:dddd, MMMM d, yyyy}'}" HorizontalOptions="Start"/>
 
                                     </StackLayout>
 

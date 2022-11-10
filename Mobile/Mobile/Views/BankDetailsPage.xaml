@@ -44,7 +44,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Label Grid.Row="0" Grid.Column="0" HorizontalTextAlignment="End" Text="Date"/>
-                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding ItemDate, StringFormat='{0:dddd, MMMM dd, yyyy}'}"/>
+                                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding ItemDate, StringFormat='{0:dddd, MMMM d, yyyy}'}"/>
                                     <Label Grid.Row="1" Grid.Column="0" HorizontalTextAlignment="End" Text="Register Item"/>
                                     <Label Grid.Row="1" Grid.Column="1" Text="{Binding Description}"/>
                                     <Label Grid.Row="2" Grid.Column="0" HorizontalTextAlignment="End" Text="Transaction Type"/>

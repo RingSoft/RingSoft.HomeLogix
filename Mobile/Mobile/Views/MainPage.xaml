@@ -17,7 +17,7 @@
 
             <Button Text="View Previous Budget Month" Command="{Binding ShowPreviousBudgetsCommand}"/>
 
-            <Button Text="View Banks" Command="{Binding ShowBanksCommand}"/>
+            <Button Text="View Bank Accounts" Command="{Binding ShowBanksCommand}"/>
 
         </StackLayout>
     </ContentPage.Content>

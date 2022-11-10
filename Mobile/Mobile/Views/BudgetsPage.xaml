@@ -25,6 +25,7 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <Grid.ColumnDefinitions>
@@ -43,6 +44,11 @@
                                     </StackLayout>
                                     <Label Grid.Row="2" Grid.Column="0" Text="Difference"/>
                                     <Label Grid.Row="2" Grid.Column="1" Style="{StaticResource DecimalLabel}" Text="{Binding Difference, StringFormat='{0:C2}'}" HorizontalOptions="Start"/>
+
+                                    <StackLayout Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+                                        <Button x:Name="ViewHistory" Text="View History" CommandParameter="{Binding .}" Clicked="ViewHistory_OnClicked"/>
+
+                                    </StackLayout>
 
                                 </Grid>
                                 <BoxView Color="Blue" HeightRequest="5" />

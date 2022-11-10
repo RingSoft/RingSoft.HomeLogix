@@ -405,6 +405,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 procedure.UpdateBottomTier($"Processing History Record {index}/{total}", total, index);
                 var historyData = new HistoryData
                 {
+                    HistoryId = historyItem.Id,
                     BankAccountId = historyItem.BankAccountId,
                     BankName = historyItem.BankAccount.Description,
                     BudgetItemId = historyItem.BudgetItemId,
@@ -418,6 +419,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 };
                 if (historyItem.BudgetItem != null)
                 {
+                    switch (historyItem.BudgetItem.Type)
+                    {
+                        case BudgetItemTypes.Income:
+                            historyData.Difference = historyItem.ActualAmount - historyItem.ProjectedAmount;
+                            break;
+                        case BudgetItemTypes.Expense:
+                            break;
+                        case BudgetItemTypes.Transfer:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                     historyData.BudgetName = historyItem.BudgetItem.Description;
                 }
                 result.Add(historyData);

@@ -4,6 +4,8 @@ namespace RingSoft.HomeLogix.Library.PhoneModel
 {
     public class HistoryData
     {
+        public int HistoryId { get; set; }
+
         public int? BankAccountId { get; set; }
 
         public string BankName { get; set; }

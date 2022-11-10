@@ -41,7 +41,7 @@ namespace RingSoft.HomeLogix.Mobile.Views
                 var bankData = button.CommandParameter as BankData;
                 if (bankData != null)
                 {
-                    await Navigation.PushAsync(new BankDetailsPage(bankData));
+                    await Navigation.PushAsync(new HistoryPage(bankData));
                 }
             }
 
