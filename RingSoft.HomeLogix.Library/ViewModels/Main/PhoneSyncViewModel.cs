@@ -119,14 +119,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
             
-            message = "Mobile device sync complete. The mobile Google Play App is currently in testing mode. To get the mobile Google Play app, please [Email].  There is no iOS App because I don't own a Macintosh computer.  My mobile app is written in Xamarin Forms.  If you would like to join my team and compile the Xamarin Forms iOS app, please [Email1].";
+            message = "Mobile device sync complete. To get the mobile Google Play app, [GPlay].  There is no iOS App because I don't own a Macintosh computer.  My mobile app is written in Xamarin Forms.  If you would like to join my team and compile the Xamarin Forms iOS app, please [Email1].";
             caption = "Operation Complete";
             var hyperLinks = new List<HyperlinkData>();
             hyperLinks.Add(new HyperlinkData
             {
-                UrlLink = "mailto:peteman316@gmail.com?subject=Request%20HomeLogix%20Google%20Play%20App",
-                UserText = "Email Me",
-                TextToReplace = "Email"
+                UrlLink = "https://play.google.com/store/apps/details?id=com.ringsoft.homelogix",
+                UserText = "Click Here",
+                TextToReplace = "GPlay"
             });
             hyperLinks.Add(new HyperlinkData
             {

@@ -275,7 +275,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
                 ActualExpenses = itemStats.ActualExpenses;
                 ActualDifference = ActualIncome - ActualExpenses;
 
-                IncomeDifference = BudgetIncome - ActualIncome;
+                IncomeDifference = ActualIncome - BudgetIncome;
                 ExpenseDifference = BudgetExpenses - ActualExpenses;
                 Difference = ExpenseDifference - IncomeDifference;
 
