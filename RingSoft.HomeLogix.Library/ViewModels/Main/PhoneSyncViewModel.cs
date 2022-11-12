@@ -112,6 +112,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
 
+            if (AppGlobals.LoggedInHousehold.Id == 1)
+            {
+                message = "The password for the John and Jane Doe Household is 'doe' (without the quotes).";
+                caption = "Password Reveal";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+            }
             View.StartProcedure();
 
             if (ValidationFail)

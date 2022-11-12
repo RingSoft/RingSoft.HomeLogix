@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RingSoft.App.Controls;
+using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 
@@ -84,8 +85,13 @@ namespace RingSoft.HomeLogix
         {
             if (ViewModel.ExistingUser)
             {
-                UserNameLabel.IsEnabled = false;
+                //UserNameLabel.IsEnabled = false;
                 UserNameControl.IsEnabled = false;
+            }
+
+            if (AppGlobals.LoggedInHousehold.Id == 1)
+            {
+                PasswordBox.IsEnabled = ConfirmPasswordBox.IsEnabled = false;
             }
         }
     }
