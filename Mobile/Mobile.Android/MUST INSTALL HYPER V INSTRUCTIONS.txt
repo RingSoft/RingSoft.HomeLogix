@@ -1,0 +1,8 @@
+How to get android emulator to work
+
+1)  install hyper V go to Control Panel.  show all Control Panel items  by clicking onthe view byhyperlink on the top right corner of the window. click on large icons.
+2) Click programs and features
+3) click on the left side turn on Windows features on and off
+4)  check the checkbox next to hyper V
+ 5)  reboot your computer
+ 6)  your good to go  
