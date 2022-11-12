@@ -6,3 +6,13 @@ How to get android emulator to work
 4)  check the checkbox next to hyper V
  5)  reboot your computer
  6)  your good to go  
+
+ 1) Go to Control Panel
+ 2) go to network and sharing
+3) click on ethernet
+4) go to properties
+5) IP V protocol 4
+6) click on properties
+7) change the preferred DNS server to 8.8.8.8
+8) change the alternate DNS server to 8.8.4.4
+9) you're good to go
