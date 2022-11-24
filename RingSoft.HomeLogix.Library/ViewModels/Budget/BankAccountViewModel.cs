@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.HomeLogix.Sqlite.Migrations;
 
@@ -616,7 +617,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override BankAccount PopulatePrimaryKeyControls(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-            var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
+            //var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
+
+            IQueryable<BankAccount> query = AppGlobals.DataRepository.GetTable<BankAccount>();
+            query = query.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
+                    .ThenByDescending(t => t.ProjectedAmount))
+                .Include(i => i.RegisterItems)
+                .ThenInclude(ti => ti.AmountDetails)
+                .Include(i => i.RegisterItems)
+                .ThenInclude(ti => ti.BudgetItem)
+                .ThenInclude(ti => ti.TransferToBankAccount);
+            //var bankAccount = AppGlobals.DataRepository.GetEntity(query, p => p.Id == Id);
+            var bankAccount = query.FirstOrDefault(p => p.Id == Id);
+
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, bankAccount.Description);
 
             ViewModelInput.HistoryFilterBankAccount = bankAccount;

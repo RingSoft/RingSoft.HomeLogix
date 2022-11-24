@@ -1,22 +1,70 @@
 ﻿using System;
+using System.Collections;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Tests
 {
+    public class DataRepositoryRegistryItemBase
+    {
+        public Type Entity { get; internal set; }
+    }
+    public class DataRepositoryRegistryItem<TEntity> : DataRepositoryRegistryItemBase where TEntity : class
+    {
+        public List<TEntity> Table { get; private set; }
+
+        public DataRepositoryRegistryItem(TEntity entity)
+        {
+            Table = new List<TEntity>();
+            Entity = typeof(TEntity);
+        }
+    }
+    public class DataRepositoryRegistry
+    {
+        public List<DataRepositoryRegistryItemBase> Entities { get; private set; } = new List<DataRepositoryRegistryItemBase>();
+
+        public void AddEntity(DataRepositoryRegistryItemBase entity)
+        {
+            Entities.Add(entity);
+        }
+
+        public List<TEntity> GetList<TEntity>() where TEntity : class
+        {
+            var result = new List<TEntity>();
+            var entity = Entities.FirstOrDefault(p => p.Entity == typeof(TEntity));
+            if (entity != null)
+            {
+                var existingEntity = entity as DataRepositoryRegistryItem<TEntity>;
+                return existingEntity.Table;
+            }
+            return result;
+        }
+
+        public IQueryable<TEntity> GetEntity<TEntity>() where TEntity : class
+        {
+            var entity = Entities.FirstOrDefault(p => p.Entity == typeof(TEntity));
+            if (entity != null)
+            {
+                var existingEntity = entity as DataRepositoryRegistryItem<TEntity>;
+                return existingEntity.Table.AsQueryable();
+            }
+
+            return null;
+        }
+    }
     public class TestDataRepository : IDataRepository
     {
-        public List<BankAccount> BankAccounts { get; }
-
-        public List<BudgetItem> BudgetItems { get; }
-
+        public DataRepositoryRegistry DbContext { get; private set; }
         public TestDataRepository()
         {
-            BankAccounts = new List<BankAccount>();
-            BudgetItems = new List<BudgetItem>();
+            DbContext = new DataRepositoryRegistry();
+            DbContext.AddEntity(new DataRepositoryRegistryItem<BankAccount>(new BankAccount()));
+            DbContext.AddEntity(new DataRepositoryRegistryItem<BudgetItem>(new BudgetItem()));
         }
 
         public SystemMaster GetSystemMaster()
@@ -31,7 +79,7 @@ namespace RingSoft.HomeLogix.Tests
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
-            var bankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+            var bankAccount = DbContext.GetEntity<BankAccount>().FirstOrDefault(f => f.Id == bankAccountId);
             if (bankAccount != null)
             {
                 var result = new BankAccount
@@ -66,23 +114,25 @@ namespace RingSoft.HomeLogix.Tests
         public bool SaveBankAccount(BankAccount bankAccount,
             CompletedRegisterData clearedRegisterData = null)
         {
+            var table = DbContext.GetList<BankAccount>();
             if (bankAccount.Id == 0)
-                bankAccount.Id = BankAccounts.Count + 1;
+                bankAccount.Id = table.Count + 1;
 
-            var existingBankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccount.Id);
+            var existingBankAccount = table.FirstOrDefault(f => f.Id == bankAccount.Id);
             if (existingBankAccount != null)
-                BankAccounts.Remove(existingBankAccount);
+                table.Remove(existingBankAccount);
 
-            BankAccounts.Add(bankAccount);
+            table.Add(bankAccount);
 
             return true;
         }
 
         public bool DeleteBankAccount(int bankAccountId)
         {
-            var bankAccount = BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+            var table = DbContext.GetList<BankAccount>();
+            var bankAccount = table.FirstOrDefault(f => f.Id == bankAccountId);
             if (bankAccount != null)
-                BankAccounts.Remove(bankAccount);
+                table.Remove(bankAccount);
 
             return true;
         }
@@ -114,7 +164,8 @@ namespace RingSoft.HomeLogix.Tests
 
         public BudgetItem GetBudgetItem(int? budgetItemId)
         {
-            var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
+            var table = DbContext.GetList<BudgetItem>();
+            var budgetItem = table.FirstOrDefault(f => f.Id == budgetItemId);
 
             if (budgetItem != null)
             {
@@ -150,17 +201,18 @@ namespace RingSoft.HomeLogix.Tests
             BankAccount dbTransferToBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
+            var table = DbContext.GetList<BudgetItem>();
             if (budgetItem.Id == 0)
             {
-                budgetItem.Id = BudgetItems.Count + 1;
+                budgetItem.Id = table.Count + 1;
             }
 
-            var existingBudgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItem.Id);
+            var existingBudgetItem = table.FirstOrDefault(f => f.Id == budgetItem.Id);
             if (existingBudgetItem != null) 
-                BudgetItems.Remove(existingBudgetItem);
+                table.Remove(existingBudgetItem);
 
             var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
-            BudgetItems.Add(budgetItem);
+            table.Add(budgetItem);
 
             if (budgetItem.BankAccount != null)
                 SaveBankAccount(budgetItem.BankAccount);
@@ -192,9 +244,10 @@ namespace RingSoft.HomeLogix.Tests
             if (dbTransferToBankAccount != null)
                 SaveBankAccount(dbTransferToBankAccount);
 
-            var budgetItem = BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
+            var table = DbContext.GetList<BudgetItem>();
+            var budgetItem = table.FirstOrDefault(f => f.Id == budgetItemId);
             if (budgetItem != null)
-                BudgetItems.Remove(budgetItem);
+                table.Remove(budgetItem);
 
             return true;
         }
@@ -321,6 +374,17 @@ namespace RingSoft.HomeLogix.Tests
         public bool HistoryExists(int budgetId, DateTime date)
         {
             throw new NotImplementedException();
+        }
+
+        public TEntity GetEntity<TEntity>(IEnumerable<TEntity> items, Func<TEntity, bool> predicate) where TEntity : class
+        {
+            return items.FirstOrDefault(predicate);
+        }
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            var entity = DbContext.GetEntity<TEntity>();
+            return entity;
         }
 
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)

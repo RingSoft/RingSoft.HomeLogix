@@ -7,6 +7,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System.Linq;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using System.Linq.Expressions;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -103,6 +104,7 @@ namespace RingSoft.HomeLogix.Library
 
         bool HistoryExists(int budgetId, DateTime date);
 
+        IQueryable<TEntity> GetTable<TEntity>() where TEntity : class;
     }
 
     public class DataRepository : IDataRepository
@@ -833,6 +835,13 @@ namespace RingSoft.HomeLogix.Library
             var result =
                 context.History.Any(p => p.BudgetItemId == budgetId && p.Date >= startDate && p.Date <= endDate);
             return result;
+        }
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            var context = AppGlobals.GetNewDbContext();
+            var dbSet = context.DbContext.Set<TEntity>();
+            return dbSet;
         }
     }
 }

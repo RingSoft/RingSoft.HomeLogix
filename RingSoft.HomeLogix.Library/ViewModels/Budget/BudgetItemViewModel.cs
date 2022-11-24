@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.EfCore;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -764,7 +765,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
             Id = newEntity.Id;
-            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(Id);
+            IQueryable<BudgetItem> query = AppGlobals.DataRepository.GetTable<BudgetItem>();
+
+            query = query.Include(i => i.BankAccount)
+                .Include(i => i.TransferToBankAccount);
+
+            var budgetItem = query.FirstOrDefault(p => p.Id == Id);
             KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
 
             Amount = budgetItem.Amount;

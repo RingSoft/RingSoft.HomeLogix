@@ -703,6 +703,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public void RefreshView()
         {
+            if (AppGlobals.UnitTesting)
+            {
+                return;
+            }
             BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             BudgetLookupCommand = new LookupCommand(LookupCommands.Refresh);
             BankLookupCommand = new LookupCommand(LookupCommands.Refresh);

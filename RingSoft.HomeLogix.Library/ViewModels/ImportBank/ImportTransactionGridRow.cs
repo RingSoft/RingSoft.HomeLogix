@@ -94,17 +94,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
                             .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int) p.Type),
-                                Conditions.Equals, (int) BudgetItemTypes.Expense).SetEndLogic(EndLogics.Or);
+                                Conditions.Equals, (int) BudgetItemTypes.Expense).SetEndLogic(EndLogics.Or)
+                            .SetLeftParenthesesCount(1);
                     }
                     if (TransactionTypes == TransactionTypes.Deposit)
                     {
                         BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
                             .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int)p.Type),
-                                Conditions.Equals, (int)BudgetItemTypes.Income).SetEndLogic(EndLogics.Or);
+                                Conditions.Equals, (int)BudgetItemTypes.Income).SetEndLogic(EndLogics.Or).SetLeftParenthesesCount(1);
                     }
                     BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
                         .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int)p.Type),
-                            Conditions.Equals, (int)BudgetItemTypes.Transfer);
+                            Conditions.Equals, (int)BudgetItemTypes.Transfer).SetRightParenthesesCount(1);
 
                     return new DataEntryGridAutoFillCellProps(this, columnId, BudgetItemAutoFillSetup,
                         BudgetItemAutoFillValue);

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
+using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -53,7 +54,6 @@ namespace RingSoft.HomeLogix.Tests
         public static void Setup(TestContext testContext)
         {
             AppGlobals.UnitTesting = true;
-
             AppGlobals.Initialize();
         }
 
@@ -606,6 +606,7 @@ namespace RingSoft.HomeLogix.Tests
         {
             var bankAccountViewModel = new BankAccountViewModel();
             bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
+            bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();
 
             bankAccountViewModel.Id = JaneSavingsBankAccountId;
             bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Savings Account");

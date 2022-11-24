@@ -101,6 +101,11 @@ namespace RingSoft.HomeLogix.DataAccess
             _initialized = true;
         }
 
+        public void TestInitialize()
+        {
+            InitializeLookupDefinitions();
+        }
+
         protected override void InitializeLookupDefinitions()
         {
             BudgetItemsLookup = new LookupDefinition<BudgetItemLookup, BudgetItem>(BudgetItems);

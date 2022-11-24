@@ -78,7 +78,15 @@ namespace RingSoft.HomeLogix.Library
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
 
-            if (!UnitTesting)
+            if (UnitTesting)
+            {
+                var sqliteContext = new SqliteHomeLogixDbContext();
+                sqliteContext.IsDesignTime = true;
+                LookupContext.LocalDbContext = sqliteContext;
+                LookupContext.TestInitialize();
+                MainViewModel = new MainViewModel();
+            }
+            else
             {
                 AppSplashProgress?.Invoke(null, new AppProgressArgs("Connecting to the Master Database."));
 
