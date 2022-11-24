@@ -413,7 +413,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 {
                     HistoryId = historyItem.Id,
                     BankAccountId = historyItem.BankAccountId,
-                    BankName = historyItem.BankAccount.Description,
                     BudgetItemId = historyItem.BudgetItemId,
                     Date = historyItem.Date,
                     Description = historyItem.Description,
@@ -423,6 +422,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     BankText = historyItem.BankText,
                     HasSourceHistory = historyItem.Sources.Any()
                 };
+                if (historyItem.BankAccount != null)
+                {
+                    historyData.BankName = historyItem.BankAccount.Description;
+                }
                 if (historyItem.BudgetItem != null)
                 {
                     switch (historyItem.BudgetItem.Type)
