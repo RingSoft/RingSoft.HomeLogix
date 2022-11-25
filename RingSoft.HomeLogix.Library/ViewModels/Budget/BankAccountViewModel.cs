@@ -16,7 +16,10 @@ using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.Sqlite.Migrations;
+using System.Globalization;
+using RingSoft.HomeLogix.DataAccess;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -894,7 +897,94 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //    entity.LastCompletedDate = LastCompleteDate;
             //}
 
-            if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context != null)
+            {
+                if (!context.SaveNoCommitEntity<BankAccount>(entity, $"Saving Bank Account '{entity.Description}'"))
+                    return false;
+                if (completedRegisterData != null)
+                {
+                    foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
+                    {
+                        var bankAccountPeriodHistory = AppGlobals.DataRepository.GetTable<BankAccountPeriodHistory>();
+                        if (bankAccountPeriodHistory.Any(a =>
+                                a.PeriodType == bankAccountPeriodHistoryRecord.PeriodType &&
+                                a.BankAccountId == bankAccountPeriodHistoryRecord.BankAccountId &&
+                                a.PeriodEndingDate == bankAccountPeriodHistoryRecord.PeriodEndingDate))
+                        {
+                            if (!context.SaveNoCommitEntity<BankAccountPeriodHistory>(bankAccountPeriodHistoryRecord,
+                                    $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
+                               )
+                                return false;
+                        }
+                        else
+                        {
+                            if (!context.AddNewNoCommitEntity<BankAccountPeriodHistory>(bankAccountPeriodHistoryRecord,
+                                    $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
+                               )
+                                return false;
+                        }
+                    }
+
+
+                    foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
+                    {
+                        //bankAccountRegisterItem.BudgetItemId = 0;
+                        bankAccountRegisterItem.BudgetItem = null;
+                        //bankAccountRegisterItem.BankAccountId = 0;
+                        bankAccountRegisterItem.BankAccount = null;
+                    }
+
+                    if (completedRegisterData != null)
+                    {
+                        foreach (var budgetItem in completedRegisterData.BudgetItems)
+                        {
+                            budgetItem.BankAccount = null;
+                            budgetItem.TransferToBankAccount = null;
+                            if (!context.SaveNoCommitEntity<BudgetItem>(budgetItem,
+                                    $"Saving Budget Item '{budgetItem.Description}'"))
+                                return false;
+                        }
+
+
+                        foreach (var budgetPeriodHistoryRecord in completedRegisterData.BudgetPeriodHistoryRecords)
+                        {
+                            if (!AppGlobals.DataRepository.SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord)) return false;
+                        }
+
+                        context.RemoveRange<BankAccountRegisterItem>(completedRegisterData.CompletedRegisterItems);
+
+                        context.AddRange<History>(completedRegisterData.NewHistoryRecords);
+
+                        foreach (var newSourceHistoryRecord in completedRegisterData.NewSourceHistoryRecords)
+                        {
+                            newSourceHistoryRecord.HistoryId = newSourceHistoryRecord.HistoryItem.Id;
+                            //newSourceHistoryRecord.HistoryItem.BankAccount = null;
+                            //newSourceHistoryRecord.HistoryItem = null;
+                        }
+
+                        //foreach (var newHistoryRecord in completedRegisterData.NewHistoryRecords)
+                        //{
+                        //    if (checkDate == null)
+                        //    {
+                        //        checkDate = newHistoryRecord.Date;
+                        //    }
+                        //    else
+                        //    {
+                        //        if (newHistoryRecord.Date < checkDate)
+                        //            checkDate = newHistoryRecord.Date;
+                        //    }
+                        //}
+
+                        context.AddRange<SourceHistory>(completedRegisterData.NewSourceHistoryRecords);
+                    }
+                }
+
+            }
+            var result = context.Commit($"Saving Bank Account '{entity.Description}");
+
+
+            //if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {
                 if (processCompletedRows)
                 {
@@ -935,7 +1025,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return true;
             }
 
-            return false;
+            return result;
         }
 
         private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)

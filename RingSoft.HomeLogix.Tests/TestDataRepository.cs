@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Tests
@@ -67,12 +68,22 @@ namespace RingSoft.HomeLogix.Tests
             DbContext.AddEntity(new DataRepositoryRegistryItem<BudgetItem>(new BudgetItem()));
         }
 
+        public IDbContext GetDataContext()
+        {
+            throw new NotImplementedException();
+        }
+
         public SystemMaster GetSystemMaster()
         {
             throw new System.NotImplementedException();
         }
 
         public bool SaveSystemMaster(SystemMaster systemMaster)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool SaveBudgetPeriodRecord(IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
         {
             throw new NotImplementedException();
         }
@@ -372,6 +383,11 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public bool HistoryExists(int budgetId, DateTime date)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IQueryable<TEntity> GetQueryable<TEntity>() where TEntity : class
         {
             throw new NotImplementedException();
         }

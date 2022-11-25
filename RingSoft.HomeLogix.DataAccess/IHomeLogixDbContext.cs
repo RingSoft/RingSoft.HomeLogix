@@ -4,7 +4,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.DataAccess
 {
-    public interface IHomeLogixDbContext : IAdvancedFindDbContextEfCore
+    public interface IHomeLogixDbContext : IAdvancedFindDbContextEfCore, IDbContext
     {
         DbContext DbContext { get; }
 

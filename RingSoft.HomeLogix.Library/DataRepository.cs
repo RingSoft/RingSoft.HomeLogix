@@ -16,9 +16,12 @@ namespace RingSoft.HomeLogix.Library
 
     public interface IDataRepository
     {
+        IDbContext GetDataContext();
         [CanBeNull] SystemMaster GetSystemMaster();
 
         bool SaveSystemMaster(SystemMaster systemMaster);
+
+        bool SaveBudgetPeriodRecord(IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord);
 
         BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true);
 
@@ -109,6 +112,11 @@ namespace RingSoft.HomeLogix.Library
 
     public class DataRepository : IDataRepository
     {
+        public IDbContext GetDataContext()
+        {
+            return AppGlobals.GetNewDbContext();
+        }
+
         [CanBeNull]
         public SystemMaster GetSystemMaster()
         {
@@ -167,84 +175,6 @@ namespace RingSoft.HomeLogix.Library
                 return false;
 
             //DateTime? checkDate = null;
-            if (completedRegisterData != null)
-            {
-                foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
-                {
-                    if (context.BankAccountPeriodHistory.Any(a =>
-                            a.PeriodType == bankAccountPeriodHistoryRecord.PeriodType &&
-                            a.BankAccountId == bankAccountPeriodHistoryRecord.BankAccountId &&
-                            a.PeriodEndingDate == bankAccountPeriodHistoryRecord.PeriodEndingDate))
-                    {
-                        if (!context.DbContext.SaveNoCommitEntity(context.BankAccountPeriodHistory,
-                                bankAccountPeriodHistoryRecord,
-                                $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
-                           )
-                            return false;
-                    }
-                    else
-                    {
-                        if (!context.DbContext.AddNewNoCommitEntity(context.BankAccountPeriodHistory,
-                                bankAccountPeriodHistoryRecord,
-                                $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
-                           )
-                            return false;
-                    }
-                }
-
-
-                foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
-                {
-                    //bankAccountRegisterItem.BudgetItemId = 0;
-                    bankAccountRegisterItem.BudgetItem = null;
-                    //bankAccountRegisterItem.BankAccountId = 0;
-                    bankAccountRegisterItem.BankAccount = null;
-                }
-
-                if (completedRegisterData != null)
-                {
-                    foreach (var budgetItem in completedRegisterData.BudgetItems)
-                    {
-                        budgetItem.BankAccount = null;
-                        budgetItem.TransferToBankAccount = null;
-                        if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem,
-                                $"Saving Budget Item '{budgetItem.Description}'"))
-                            return false;
-                    }
-
-
-                    foreach (var budgetPeriodHistoryRecord in completedRegisterData.BudgetPeriodHistoryRecords)
-                    {
-                        if (!SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord)) return false;
-                    }
-
-                    context.BankAccountRegisterItems.RemoveRange(completedRegisterData.CompletedRegisterItems);
-
-                    context.History.AddRange(completedRegisterData.NewHistoryRecords);
-
-                    foreach (var newSourceHistoryRecord in completedRegisterData.NewSourceHistoryRecords)
-                    {
-                        newSourceHistoryRecord.HistoryId = newSourceHistoryRecord.HistoryItem.Id;
-                        //newSourceHistoryRecord.HistoryItem.BankAccount = null;
-                        //newSourceHistoryRecord.HistoryItem = null;
-                    }
-
-                    //foreach (var newHistoryRecord in completedRegisterData.NewHistoryRecords)
-                    //{
-                    //    if (checkDate == null)
-                    //    {
-                    //        checkDate = newHistoryRecord.Date;
-                    //    }
-                    //    else
-                    //    {
-                    //        if (newHistoryRecord.Date < checkDate)
-                    //            checkDate = newHistoryRecord.Date;
-                    //    }
-                    //}
-
-                    context.SourceHistory.AddRange(completedRegisterData.NewSourceHistoryRecords);
-                }
-            }
 
             var result = context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}' Source History");
 
@@ -253,22 +183,21 @@ namespace RingSoft.HomeLogix.Library
             return result;
         }
 
-        private static bool SaveBudgetPeriodRecord(IHomeLogixDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
+        public bool SaveBudgetPeriodRecord(IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
         {
-            if (context.BudgetPeriodHistory.Any(a => a.PeriodType == budgetPeriodHistoryRecord.PeriodType &&
+            var budgetPeriodHistory = GetTable<BudgetPeriodHistory>();
+            if (budgetPeriodHistory.Any(a => a.PeriodType == budgetPeriodHistoryRecord.PeriodType &&
                                                      a.BudgetItemId == budgetPeriodHistoryRecord.BudgetItemId &&
                                                      a.PeriodEndingDate == budgetPeriodHistoryRecord.PeriodEndingDate))
             {
-                if (!context.DbContext.SaveNoCommitEntity(context.BudgetPeriodHistory,
-                    budgetPeriodHistoryRecord,
+                if (!context.SaveNoCommitEntity<BudgetPeriodHistory>(budgetPeriodHistoryRecord,
                     $"Saving Budget Period Ending '{budgetPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
                 )
                     return false;
             }
             else
             {
-                if (!context.DbContext.AddNewNoCommitEntity(context.BudgetPeriodHistory,
-                    budgetPeriodHistoryRecord,
+                if (!context.AddNewNoCommitEntity(budgetPeriodHistoryRecord,
                     $"Saving Budget Period Ending '{budgetPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
                 )
                     return false;

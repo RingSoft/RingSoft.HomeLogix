@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
@@ -89,5 +90,48 @@ namespace RingSoft.HomeLogix.Sqlite
         }
 
         public DbSet<RecordLock> RecordLocks { get; set; }
+        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            if (!DbContext.SaveNoCommitEntity(Set<TEntity>(), entity, message))
+                return false;
+
+            return true;
+        }
+
+        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DbContext.AddNewNoCommitEntity(Set<TEntity>(), entity, message);
+        }
+
+        public bool Commit(string message)
+        {
+            var result = DbContext.SaveEfChanges(message);
+
+            return result;
+        }
+
+        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        {
+            var dbSet = Set<TEntity>();
+            
+            dbSet.RemoveRange(listToRemove);
+        }
+
+        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
+        {
+            var dbSet = Set<TEntity>();
+
+            dbSet.AddRange(listToAdd);
+        }
     }
 }

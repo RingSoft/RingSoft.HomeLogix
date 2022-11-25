@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
@@ -84,6 +85,41 @@ namespace RingSoft.HomeLogix.SqlServer
             _lookupContext.LocalDbContext = this;
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
 
+        }
+
+        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool Commit(string message)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
