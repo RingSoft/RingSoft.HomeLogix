@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
@@ -57,8 +58,7 @@ namespace RingSoft.HomeLogix.Sqlite
             //DbConstants.ConstantGenerator = new SqliteDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
             SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
-
-            
+            HomeLogixModelBuilder.DbContext = this;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -92,46 +92,37 @@ namespace RingSoft.HomeLogix.Sqlite
         public DbSet<RecordLock> RecordLocks { get; set; }
         public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            if (!DbContext.SaveNoCommitEntity(Set<TEntity>(), entity, message))
-                return false;
-
-            return true;
+            return HomeLogixModelBuilder.SaveNoCommitEntity(entity, message);
         }
 
         public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            throw new NotImplementedException();
+            return HomeLogixModelBuilder.SaveEntity(entity, message);
         }
 
         public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            throw new NotImplementedException();
+            return HomeLogixModelBuilder.DeleteEntity(entity, message);
         }
 
         public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            return DbContext.AddNewNoCommitEntity(Set<TEntity>(), entity, message);
+            return HomeLogixModelBuilder.AddNewNoCommitEntity(entity, message);
         }
 
         public bool Commit(string message)
         {
-            var result = DbContext.SaveEfChanges(message);
-
-            return result;
+            return HomeLogixModelBuilder.Commit(message);
         }
 
         public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
         {
-            var dbSet = Set<TEntity>();
-            
-            dbSet.RemoveRange(listToRemove);
+            HomeLogixModelBuilder.RemoveRange(listToRemove);
         }
 
         public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
         {
-            var dbSet = Set<TEntity>();
-
-            dbSet.AddRange(listToAdd);
+            HomeLogixModelBuilder.AddRange(listToAdd);
         }
     }
 }

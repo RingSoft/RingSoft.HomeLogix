@@ -39,7 +39,7 @@ namespace RingSoft.HomeLogix.SqlServer
             //DbConstants.ConstantGenerator = new SqlServerDbConstants();
             EfCoreGlobals.DbAdvancedFindContextCore = this;
             SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
-
+            HomeLogixModelBuilder.DbContext = this;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -89,37 +89,37 @@ namespace RingSoft.HomeLogix.SqlServer
 
         public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            return HomeLogixModelBuilder.SaveNoCommitEntity(entity, message);
         }
 
         public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            return HomeLogixModelBuilder.SaveEntity(entity, message);
         }
 
         public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            return HomeLogixModelBuilder.DeleteEntity(entity, message);
         }
 
         public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            return HomeLogixModelBuilder.AddNewNoCommitEntity(entity, message);
         }
 
         public bool Commit(string message)
         {
-            throw new System.NotImplementedException();
+            return HomeLogixModelBuilder.Commit(message);
         }
 
         public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            HomeLogixModelBuilder.RemoveRange(listToRemove);
         }
 
         public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            HomeLogixModelBuilder.AddRange(listToAdd);
         }
     }
 }

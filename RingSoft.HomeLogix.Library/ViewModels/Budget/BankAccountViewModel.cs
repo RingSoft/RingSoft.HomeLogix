@@ -900,7 +900,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var context = AppGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
-                if (!context.SaveNoCommitEntity<BankAccount>(entity, $"Saving Bank Account '{entity.Description}'"))
+                if (!context.SaveNoCommitEntity(entity, $"Saving Bank Account '{entity.Description}'"))
                     return false;
                 if (completedRegisterData != null)
                 {
@@ -912,7 +912,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 a.BankAccountId == bankAccountPeriodHistoryRecord.BankAccountId &&
                                 a.PeriodEndingDate == bankAccountPeriodHistoryRecord.PeriodEndingDate))
                         {
-                            if (!context.SaveNoCommitEntity<BankAccountPeriodHistory>(bankAccountPeriodHistoryRecord,
+                            if (!context.SaveNoCommitEntity(bankAccountPeriodHistoryRecord,
                                     $"Saving Bank Account Period Ending '{bankAccountPeriodHistoryRecord.PeriodEndingDate.ToString(CultureInfo.InvariantCulture)}'")
                                )
                                 return false;
@@ -941,7 +941,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             budgetItem.BankAccount = null;
                             budgetItem.TransferToBankAccount = null;
-                            if (!context.SaveNoCommitEntity<BudgetItem>(budgetItem,
+                            if (!context.SaveNoCommitEntity(budgetItem,
                                     $"Saving Budget Item '{budgetItem.Description}'"))
                                 return false;
                         }
@@ -1024,7 +1024,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     AppGlobals.MainViewModel.RefreshView();
                 return true;
             }
-
             return result;
         }
 
@@ -1277,7 +1276,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool DeleteEntity()
         {
-            return AppGlobals.DataRepository.DeleteBankAccount(Id);
+            var query = AppGlobals.DataRepository.GetTable<BankAccount>();
+            var bankAccount = query.FirstOrDefault(p => p.Id == Id);
+
+            return bankAccount != null && AppGlobals.DataRepository.GetDataContext()
+                .DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
         }
 
         public void OnAddModifyBudgetItems()
