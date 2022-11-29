@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
@@ -54,6 +55,23 @@ namespace RingSoft.HomeLogix
             
             _splashWindow.CloseSplash();
             return true;
+        }
+
+        public bool ShowYesNoMessageBox(string message, string caption)
+        {
+            var result = false;
+            var window = _splashWindow as Window;
+            if (window != null)
+            {
+                window.Dispatcher.Invoke(() =>
+                {
+                    if (MessageBox.Show(message, caption, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        result = true;
+                    }
+                });
+            }
+            return result;
         }
     }
 }

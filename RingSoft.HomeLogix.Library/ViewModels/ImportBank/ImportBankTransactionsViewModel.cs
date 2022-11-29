@@ -31,6 +31,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         void UpdateStatus(string status);
 
         void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
+
+        bool ShowYesNoMessage(string message, string caption);
     }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {

@@ -113,6 +113,11 @@ namespace RingSoft.HomeLogix.ImportBank
             _importProcedure.SplashWindow.ShowMessageBox(message, caption, icon);
         }
 
+        public bool ShowYesNoMessage(string message, string caption)
+        {
+            return _importProcedure.ShowYesNoMessageBox(message, caption);
+        }
+
         public static string OpenTextFile(string fileName)
         {
             var result = string.Empty;

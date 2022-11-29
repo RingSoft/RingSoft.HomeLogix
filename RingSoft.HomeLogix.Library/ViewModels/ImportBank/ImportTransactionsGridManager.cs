@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MySqlX.XDevAPI.Relational;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
@@ -108,18 +110,75 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return true;
         }
 
+        private bool BudgetItemFoundInRegister(AutoFillValue budgetAutoFillValue, 
+            IEnumerable<BankAccountRegisterGridRow> registerGridRows)
+        {
+            var budgetItem =
+                AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(budgetAutoFillValue.PrimaryKeyValue);
+
+            IQueryable<BudgetItem> budgetTable = AppGlobals.DataRepository.GetTable<BudgetItem>();
+            budgetItem = budgetTable.FirstOrDefault(p => p.Id == budgetItem.Id);
+            if (budgetItem.BankAccountId != ViewModel.BankViewModel.Id)
+            {
+                return false;
+            }
+
+            if (!registerGridRows.Any(p => p.BudgetItemId == budgetItem.Id))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public bool PostTransactions()
         {
             var bankBalance = ViewModel.BankViewModel.CurrentBalance;
             var rows = Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false);
 
-            foreach (var gridRow in rows)
-            {
-                if (!ValidateTransactionRow(gridRow, true)) return false;
-            }
-
             var count = rows.Count();
             var rowIndex = 0;
+            
+            var budgetItemsFound = true;
+            var registerRows = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>();
+
+            foreach (var gridRow in rows)
+            {
+                rowIndex++;
+                ViewModel.View.UpdateStatus($"Validating Row {rowIndex} of {count}");
+                if (!ValidateTransactionRow(gridRow, true)) return false;
+
+                if (gridRow.BudgetItemSplits.Any())
+                {
+                    foreach (var budgetSplit in gridRow.BudgetItemSplits)
+                    {
+                        if (registerRows != null && !BudgetItemFoundInRegister(budgetSplit.BudgetItem, registerRows))
+                        {
+                            budgetItemsFound = false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (registerRows != null && !BudgetItemFoundInRegister(gridRow.BudgetItemAutoFillValue, registerRows))
+                    {
+                        budgetItemsFound = false;
+                    }
+                }
+            }
+
+            if (!budgetItemsFound)
+            {
+                var message =
+                    "Some Budget Items in these transactions were not found in the Registered Grid of this Bank Account. Are you sure you are importing these transactions into the right Bank Account?";
+                var caption = "Bank Account Validation";
+                if (!ViewModel.View.ShowYesNoMessage(message, caption))
+                {
+                    return false;
+                }
+            }
+
+            rowIndex = 0;
             foreach (var gridRow in rows)
             {
                 rowIndex++;
