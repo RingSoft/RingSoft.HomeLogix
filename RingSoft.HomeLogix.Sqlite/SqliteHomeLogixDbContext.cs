@@ -105,6 +105,11 @@ namespace RingSoft.HomeLogix.Sqlite
             return HomeLogixModelBuilder.DeleteEntity(entity, message);
         }
 
+        public bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return HomeLogixModelBuilder.DeleteNoCommitEntity(entity, message);
+        }
+
         public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
         {
             return HomeLogixModelBuilder.AddNewNoCommitEntity(entity, message);
@@ -115,7 +120,7 @@ namespace RingSoft.HomeLogix.Sqlite
             return HomeLogixModelBuilder.Commit(message);
         }
 
-        public void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
         {
             HomeLogixModelBuilder.RemoveRange(listToRemove);
         }

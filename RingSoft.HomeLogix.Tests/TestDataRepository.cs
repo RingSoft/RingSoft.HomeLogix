@@ -397,6 +397,11 @@ namespace RingSoft.HomeLogix.Tests
             return items.FirstOrDefault(predicate);
         }
 
+        DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
+        {
+            return GetDataContext();
+        }
+
         public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
         {
             var entity = DbContext.GetEntity<TEntity>();

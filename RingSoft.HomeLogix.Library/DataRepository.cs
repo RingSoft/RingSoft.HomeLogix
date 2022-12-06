@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.Library
     public enum Relationship
     { LessThan = -1, Equals = 0, GreaterThan = 1 }
 
-    public interface IDataRepository
+    public interface IDataRepository : DbLookup.IDataRepository
     {
         IDbContext GetDataContext();
         [CanBeNull] SystemMaster GetSystemMaster();
@@ -511,8 +511,7 @@ namespace RingSoft.HomeLogix.Library
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
                             w.BudgetItem.Type == BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
-
-            result.TotalProjectedMonthlyExpenses += Math.Abs(registerAmount);
+             result.TotalProjectedMonthlyExpenses += Math.Abs(registerAmount);
 
             result.TotalActualMonthlyIncome = 
                 context.BudgetPeriodHistory
@@ -578,7 +577,7 @@ namespace RingSoft.HomeLogix.Library
 
             result.PreviousMonthHasValues = context.BudgetPeriodHistory.Any(a =>
                 a.PeriodType == (int) PeriodHistoryTypes.Monthly &&
-                a.PeriodEndingDate.Year == monthEndDate.Year && a.PeriodEndingDate.Month == monthEndDate.Month);
+                a.PeriodEndingDate < monthEndDate);
 
             if (!result.PreviousMonthHasValues)
             {
@@ -589,7 +588,7 @@ namespace RingSoft.HomeLogix.Library
 
             result.NextMonthHasValues = context.BudgetPeriodHistory.Any(a =>
                 a.PeriodType == (int)PeriodHistoryTypes.Monthly && 
-                a.PeriodEndingDate.Year == nextMonthEnding.Year && a.PeriodEndingDate.Month == nextMonthEnding.Month);
+                a.PeriodEndingDate > monthEndDate);
 
             if (!result.NextMonthHasValues)
             {
@@ -764,6 +763,11 @@ namespace RingSoft.HomeLogix.Library
             var result =
                 context.History.Any(p => p.BudgetItemId == budgetId && p.Date >= startDate && p.Date <= endDate);
             return result;
+        }
+
+        DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
+        {
+            return GetDataContext();
         }
 
         public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class

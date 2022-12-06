@@ -87,6 +87,10 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<string>("Formula")
                         .HasColumnType("ntext");
 
+                    b.Property<string>("Path")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
                     b.Property<decimal>("PercentWidth")
                         .HasColumnType("numeric(38,17)");
 
@@ -140,6 +144,10 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.Property<byte>("Operand")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("PrimaryFieldName")
                         .HasMaxLength(50)
@@ -653,7 +661,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.HasOne("RingSoft.DbLookup.AdvancedFind.AdvancedFind", "AdvancedFind")
                         .WithMany("Columns")
                         .HasForeignKey("AdvancedFindId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AdvancedFind");

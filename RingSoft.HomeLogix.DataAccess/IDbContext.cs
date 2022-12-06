@@ -2,7 +2,7 @@
 
 namespace RingSoft.HomeLogix.DataAccess
 {
-    public interface IDbContext
+    public interface IDbContext : DbLookup.IDbContext
     {
         bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class;
 
@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.DataAccess
 
         bool Commit(string message);
 
-        void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class;
+        void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class;
 
         void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class;
     }

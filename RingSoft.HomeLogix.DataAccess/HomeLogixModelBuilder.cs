@@ -65,7 +65,7 @@ namespace RingSoft.HomeLogix.DataAccess
             return result;
         }
 
-        public static void RemoveRange<TEntity>(List<TEntity> listToRemove) where TEntity : class
+        public static void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
         {
             var dbSet = DbContext.Set<TEntity>();
 
@@ -77,6 +77,11 @@ namespace RingSoft.HomeLogix.DataAccess
             var dbSet = DbContext.Set<TEntity>();
 
             dbSet.AddRange(listToAdd);
+        }
+
+        public static bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
+        {
+            return DbContext.DeleteNoCommitEntity(DbContext.Set<TEntity>(), entity, message);
         }
 
     }

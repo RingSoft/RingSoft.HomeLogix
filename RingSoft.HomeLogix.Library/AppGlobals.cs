@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -65,14 +66,15 @@ namespace RingSoft.HomeLogix.Library
         public static void InitSettings()
         {
             RingSoftAppGlobals.AppTitle = "HomeLogix";
-            RingSoftAppGlobals.AppCopyright = "©11/26/2022 by Peter Ringering";
-            RingSoftAppGlobals.AppVersion = "0.94.02";
+            RingSoftAppGlobals.AppCopyright = "©12/5/2022 by Peter Ringering";
+            RingSoftAppGlobals.AppVersion = "0.94.03";
         }
 
         public static async void Initialize()
         
         {
             DataRepository ??= new DataRepository();
+            SystemGlobals.DataRepository = DataRepository;
             InitializeLookupContext();
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
