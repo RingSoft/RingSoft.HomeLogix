@@ -765,7 +765,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
             Id = newEntity.Id;
-            IQueryable<BudgetItem> query = AppGlobals.DataRepository.GetTable<BudgetItem>();
+            IQueryable<BudgetItem> query = AppGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
 
             query = query.Include(i => i.BankAccount)
                 .Include(i => i.TransferToBankAccount);

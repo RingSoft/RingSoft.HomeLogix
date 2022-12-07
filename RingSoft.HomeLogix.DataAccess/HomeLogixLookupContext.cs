@@ -241,6 +241,7 @@ namespace RingSoft.HomeLogix.DataAccess
             BankAccounts.HasRecordDescription("Bank Account").HasDescription("Bank Account");
             BankAccounts.PriorityLevel = 10;
 
+            BankAccounts.GetFieldDefinition(p => p.AccountType).IsEnum<BankAccountTypes>();
             BankAccounts.GetFieldDefinition(p => p.CurrentBalance)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
                 .HasDescription("Current Balance");

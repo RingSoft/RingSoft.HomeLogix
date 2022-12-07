@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace RingSoft.HomeLogix.DataAccess
 {
@@ -17,5 +18,7 @@ namespace RingSoft.HomeLogix.DataAccess
         void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class;
 
         void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class;
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class;
     }
 }

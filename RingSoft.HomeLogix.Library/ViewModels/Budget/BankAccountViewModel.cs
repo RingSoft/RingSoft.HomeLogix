@@ -29,15 +29,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         Posting = 1,
         Generating = 2,
     }
-    public enum BankAccountTypes
-    {
-        [Description("Checking")]
-        Checking = 0,
-        [Description("Savings")]
-        Savings = 1,
-        [Description("Credit Card")]
-        CreditCard = 2
-    }
 
     public interface IBankAccountView : IDbMaintenanceView
     {
@@ -622,7 +613,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Id = newEntity.Id;
             //var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
 
-            IQueryable<BankAccount> query = AppGlobals.DataRepository.GetTable<BankAccount>();
+            IQueryable<BankAccount> query = AppGlobals.DataRepository.GetDataContext().GetTable<BankAccount>();
             query = query.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
                     .ThenByDescending(t => t.ProjectedAmount))
                 .Include(i => i.RegisterItems)
@@ -660,9 +651,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             
             BudgetItemsLookupDefinition.FilterDefinition.ClearFixedFilters();
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
-                Id).SetEndLogic(EndLogics.Or);
+                Id).SetEndLogic(EndLogics.Or).SetLeftParenthesesCount(1);
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
-                Conditions.Equals, Id);
+                Conditions.Equals, Id).SetRightParenthesesCount(1);
 
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
             CurrentProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
@@ -906,7 +897,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
                     {
-                        var bankAccountPeriodHistory = AppGlobals.DataRepository.GetTable<BankAccountPeriodHistory>();
+                        var bankAccountPeriodHistory = context.GetTable<BankAccountPeriodHistory>();
                         if (bankAccountPeriodHistory.Any(a =>
                                 a.PeriodType == bankAccountPeriodHistoryRecord.PeriodType &&
                                 a.BankAccountId == bankAccountPeriodHistoryRecord.BankAccountId &&
@@ -1276,11 +1267,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool DeleteEntity()
         {
-            var query = AppGlobals.DataRepository.GetTable<BankAccount>();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var query = context.GetTable<BankAccount>();
             var bankAccount = query.FirstOrDefault(p => p.Id == Id);
 
-            return bankAccount != null && AppGlobals.DataRepository.GetDataContext()
-                .DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
+            return bankAccount != null && context.DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
         }
 
         public void OnAddModifyBudgetItems()

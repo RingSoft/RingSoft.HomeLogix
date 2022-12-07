@@ -12,6 +12,7 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using BankAccountTypes = RingSoft.HomeLogix.DataAccess.Model.BankAccountTypes;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
@@ -51,6 +52,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         bankTransaction.Description = row.Description;
                         bankTransaction.Amount = row.Amount;
                         bankTransaction.MapTransaction = row.MapTransaction;
+                        bankTransaction.FromBank = row.FromBank;
                         bankTransaction.TransactionType = (byte) row.TransactionTypes;
                         if (row.BudgetItemAutoFillValue != null && row.BudgetItemAutoFillValue.IsValid())
                         {
@@ -116,7 +118,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var budgetItem =
                 AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(budgetAutoFillValue.PrimaryKeyValue);
 
-            IQueryable<BudgetItem> budgetTable = AppGlobals.DataRepository.GetTable<BudgetItem>();
+            IQueryable<BudgetItem> budgetTable = AppGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
             budgetItem = budgetTable.FirstOrDefault(p => p.Id == budgetItem.Id);
             if (budgetItem.BankAccountId != ViewModel.BankViewModel.Id)
             {
@@ -532,6 +534,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             foreach (var bankTransaction in transactions)
             {
                 var bankRow = GetNewRow() as ImportTransactionGridRow;
+                bankRow.FromBank = bankTransaction.FromBank;
                 bankRow.QifMap = bankTransaction.QifMap;
                 bankRow.Date = bankTransaction.TransactionDate;
                 bankRow.Description = bankTransaction.Description;

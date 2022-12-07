@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
@@ -125,6 +126,12 @@ namespace RingSoft.HomeLogix.SqlServer
         public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
         {
             HomeLogixModelBuilder.AddRange(listToAdd);
+        }
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            var dbSet = DbContext.Set<TEntity>();
+            return dbSet;
         }
     }
 }

@@ -8,6 +8,16 @@ using RingSoft.DataEntryControls.Engine;
 
 namespace RingSoft.HomeLogix.DataAccess.Model
 {
+    public enum BankAccountTypes
+    {
+        [Description("Checking")]
+        Checking = 0,
+        [Description("Savings")]
+        Savings = 1,
+        [Description("Credit Card")]
+        CreditCard = 2
+    }
+
     public class BankAccount
     {
         [Required]

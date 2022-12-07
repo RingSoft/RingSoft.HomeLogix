@@ -277,7 +277,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
                 IncomeDifference = ActualIncome - BudgetIncome;
                 ExpenseDifference = BudgetExpenses - ActualExpenses;
-                Difference = Math.Abs(IncomeDifference) - Math.Abs(ExpenseDifference);
+                Difference = ActualDifference - BudgetDifference;
 
                 YtdIncome = itemStats.YtdIncome;
                 YtdExpenses = itemStats.YtdExpenses;

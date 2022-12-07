@@ -129,5 +129,11 @@ namespace RingSoft.HomeLogix.Sqlite
         {
             HomeLogixModelBuilder.AddRange(listToAdd);
         }
+
+        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
+        {
+            var dbSet = DbContext.Set<TEntity>();
+            return dbSet;
+        }
     }
 }

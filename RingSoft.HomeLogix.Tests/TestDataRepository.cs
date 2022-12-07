@@ -408,6 +408,11 @@ namespace RingSoft.HomeLogix.Tests
             return entity;
         }
 
+        public IQueryable<TEntity> GetTable<TEntity>(IDbContext context) where TEntity : class
+        {
+            return GetTable<TEntity>();
+        }
+
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, byte periodType, DateTime periodEndDate)
         {
             throw new NotImplementedException();

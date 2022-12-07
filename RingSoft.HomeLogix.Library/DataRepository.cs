@@ -106,8 +106,6 @@ namespace RingSoft.HomeLogix.Library
         IEnumerable<SourceHistory> GetPhoneSourceHistory(DateTime currentDate);
 
         bool HistoryExists(int budgetId, DateTime date);
-
-        IQueryable<TEntity> GetTable<TEntity>() where TEntity : class;
     }
 
     public class DataRepository : IDataRepository
@@ -185,7 +183,7 @@ namespace RingSoft.HomeLogix.Library
 
         public bool SaveBudgetPeriodRecord(IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
         {
-            var budgetPeriodHistory = GetTable<BudgetPeriodHistory>();
+            var budgetPeriodHistory = context.GetTable<BudgetPeriodHistory>();
             if (budgetPeriodHistory.Any(a => a.PeriodType == budgetPeriodHistoryRecord.PeriodType &&
                                                      a.BudgetItemId == budgetPeriodHistoryRecord.BudgetItemId &&
                                                      a.PeriodEndingDate == budgetPeriodHistoryRecord.PeriodEndingDate))
@@ -768,13 +766,6 @@ namespace RingSoft.HomeLogix.Library
         DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
         {
             return GetDataContext();
-        }
-
-        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
-        {
-            var context = AppGlobals.GetNewDbContext();
-            var dbSet = context.DbContext.Set<TEntity>();
-            return dbSet;
         }
     }
 }

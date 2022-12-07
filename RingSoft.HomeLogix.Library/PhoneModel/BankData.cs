@@ -1,4 +1,5 @@
 ﻿using System;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.PhoneModel
