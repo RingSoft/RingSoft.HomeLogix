@@ -971,7 +971,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             }
 
-            CurrentMonthEnding = GetPeriodEndDate(currentMonthEnding);
+            SetCurrentMonthEnding(GetPeriodEndDate(currentMonthEnding), type == StatisticsType.Previous);
             _setCurrentDateText = true;
             return result;
         }
