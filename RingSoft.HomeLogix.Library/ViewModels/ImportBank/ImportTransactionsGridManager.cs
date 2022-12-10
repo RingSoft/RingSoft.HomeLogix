@@ -211,16 +211,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
             var importMaxDate = rows.Max(p => p.Date);
             var registerIncompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows
-                .OfType<BankAccountRegisterGridRow>().Where(p => p.ItemDate < importMaxDate && !p.Completed);
+                .OfType<BankAccountRegisterGridRow>().Where(p => p.ItemDate < importMaxDate && !p.Completed)
+                .ToList();
 
-            foreach (var registerGridRow in registerIncompleteRows)
+            if (registerIncompleteRows.Any())
             {
-                registerGridRow.ActualAmount = 0;
-                registerGridRow.Completed = true;
-                var registerItem = new BankAccountRegisterItem();
-                registerGridRow.SaveToEntity(registerItem, 0, registerGridRow.ActualAmountDetails.ToList());
-                if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerGridRow.ActualAmountDetails))
-                    return false;
+                var message = "There are expired budget items in the register grid. Do you wish to delete them?";
+                var caption = "Delete Expired Register Items";
+                if (ViewModel.View.ShowYesNoMessage(message, caption))
+                {
+                    foreach (var registerGridRow in registerIncompleteRows)
+                    {
+                        ViewModel.BankViewModel.RegisterGridManager.RemoveRow(registerGridRow);
+                        //registerGridRow.ActualAmount = 0;
+                        //registerGridRow.Completed = true;
+                        //var registerItem = new BankAccountRegisterItem();
+                        //registerGridRow.SaveToEntity(registerItem, 0, registerGridRow.ActualAmountDetails.ToList());
+                        //if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerGridRow.ActualAmountDetails))
+                        //    return false;
+                    }
+                }
             }
 
             if (AppGlobals.DataRepository.DeleteTransactions(ViewModel.BankViewModel.Id))
