@@ -1306,7 +1306,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (!e.Cancel)
             {
                 AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
-                if (_recordSaved)
+                var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+                if (_recordSaved && !systemMaster.PhoneLogin.IsNullOrEmpty())
                 {
                     AppGlobals.MainViewModel.SyncPhoneCommand.Execute(null);
                 }

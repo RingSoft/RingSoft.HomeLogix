@@ -10,12 +10,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public enum ImportExpiredColumns
         {
             RemoveItem = 0,
-            Date = 1,
-            Description = 2,
-            Amount = 3,
+            ClearItem = 1,
+            Date = 2,
+            Description = 3,
+            Amount = 4,
         }
 
         public const int RemoveItemColumnId = (int)ImportExpiredColumns.RemoveItem;
+        public const int ClearColumnId = (int)ImportExpiredColumns.ClearItem;
         public const int DateColumnId = (int)ImportExpiredColumns.Date;
         public const int DescriptionColumnId = (int)ImportExpiredColumns.Description;
         public const int AmountColumnId = (int)ImportExpiredColumns.Amount;
@@ -25,6 +27,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public BankAccountRegisterGridRow ExpiredRow { get; private set; }
 
         public bool RemoveRow { get; private set; } = true;
+
+        public bool ClearRow { get; private set; }
 
         public DateTime Date { get; private set; }
 
@@ -44,6 +48,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 case ImportExpiredColumns.RemoveItem:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, RemoveRow);
+                case ImportExpiredColumns.ClearItem:
+                    return new DataEntryGridCheckBoxCellProps(this, columnId, ClearRow);
                 case ImportExpiredColumns.Date:
                     return new DataEntryGridDateCellProps(this, columnId,
                         new DateEditControlSetup() { DateFormatType = DateFormatTypes.DateOnly }, Date);
@@ -68,6 +74,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 case ImportExpiredColumns.RemoveItem:
                     return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Enabled };
+                case ImportExpiredColumns.ClearItem:
+                    if (RemoveRow)
+                    {
+                        return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
+                    }
+                    else
+                    {
+                        return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Enabled };
+                    }
                 case ImportExpiredColumns.Date:
                     break;
                 case ImportExpiredColumns.Description:
@@ -91,6 +106,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     if (value is DataEntryGridCheckBoxCellProps checkBoxCellProps)
                     {
                         RemoveRow = checkBoxCellProps.Value;
+                        if (RemoveRow)
+                        {
+                            ClearRow = false;
+                        }
+                    }
+                    break;
+                case ImportExpiredColumns.ClearItem:
+                    if (value is DataEntryGridCheckBoxCellProps clearRowCheckBoxCellProps)
+                    {
+                        ClearRow = clearRowCheckBoxCellProps.Value;
                     }
                     break;
                 case ImportExpiredColumns.Date:

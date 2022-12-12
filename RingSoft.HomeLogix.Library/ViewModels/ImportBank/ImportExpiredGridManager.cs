@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
@@ -40,6 +41,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (importExpiredGridRow.RemoveRow)
                 {
                     ExpiredRows.Add(importExpiredGridRow.ExpiredRow);
+                }
+                else if (importExpiredGridRow.ClearRow)
+                {
+                    importExpiredGridRow.ExpiredRow.ActualAmount = 0;
+                    importExpiredGridRow.ExpiredRow.Completed = true;
+                    var registerItem = new BankAccountRegisterItem();
+                    importExpiredGridRow.ExpiredRow.SaveToEntity(registerItem, 0,
+                        importExpiredGridRow.ExpiredRow.ActualAmountDetails.ToList());
+                    AppGlobals.DataRepository.SaveRegisterItem(registerItem,
+                        importExpiredGridRow.ExpiredRow.ActualAmountDetails);
                 }
             }
         }

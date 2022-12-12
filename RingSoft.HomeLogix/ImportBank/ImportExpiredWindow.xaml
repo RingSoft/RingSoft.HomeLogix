@@ -22,13 +22,15 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Text="The following transactions are expired will be removed from the bank register." HorizontalAlignment="Left" Width="500" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="0" Text="The following transactions are expired and will be removed from the bank register." HorizontalAlignment="Left" Width="550" TextWrapping="Wrap"/>
 
-        <deg:DataEntryGrid Grid.Row="1" x:Name="DataEntryGrid" Width="500" Height="250" DataEntryCanUserAddRows="False" Manager="{Binding GridManager}">
+        <deg:DataEntryGrid Grid.Row="1" x:Name="DataEntryGrid" Width="550" Height="250" DataEntryCanUserAddRows="False" Manager="{Binding GridManager}">
 
             <deg:DataEntryGrid.Columns>
 
-                <deg:DataEntryGridCheckBoxColumn Header="Remove Row" ColumnId="{x:Static vm:ImportExpiredGridRow.RemoveItemColumnId}"/>
+                <deg:DataEntryGridCheckBoxColumn Header="Remove&#10;Row" ColumnId="{x:Static vm:ImportExpiredGridRow.RemoveItemColumnId}"/>
+
+                <deg:DataEntryGridCheckBoxColumn Header="Complete&#10;Row" ColumnId="{x:Static vm:ImportExpiredGridRow.ClearColumnId}"/>
 
                 <deg:DataEntryGridTextColumn Header="Date" ColumnId="{x:Static vm:ImportExpiredGridRow.DateColumnId}" Width="100"/>
 
