@@ -862,7 +862,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             View.LaunchAdvancedFind();
         }
 
-        private void SetCurrentMonthEnding(DateTime value, bool refreshView = true)
+        public void SetCurrentMonthEnding(DateTime value, bool refreshView = true)
         {
             CurrentMonthEnding = GetPeriodEndDate(value);
 

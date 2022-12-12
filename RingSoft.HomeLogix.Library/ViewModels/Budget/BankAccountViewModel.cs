@@ -517,6 +517,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _processCompletedRows = true;
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
         private bool _recordSaved;
+        private DateTime _firstRegisterDate = DateTime.Now;
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
@@ -704,6 +705,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastGenerationDate = null;
 
             RegisterGridManager.LoadGrid(entity.RegisterItems);
+            if (RegisterGridManager.Rows.Any())
+            {
+                var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);
+                _firstRegisterDate = rows.FirstOrDefault().ItemDate;
+            }
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
             _loading = false;
@@ -1017,7 +1023,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 if (AppGlobals.MainViewModel != null)
                     AppGlobals.MainViewModel.RefreshView();
-                return true;
+                result = true;
+            }
+            if (RegisterGridManager.Rows.Any())
+            {
+                var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);
+                var newFirstDate = rows.FirstOrDefault().ItemDate;
+                if (newFirstDate.Month != _firstRegisterDate.Month)
+                {
+                    GenerateRegisterItemsFromBudgetCommand.Execute(null);
+                    AppGlobals.MainViewModel.SetCurrentMonthEnding(newFirstDate);
+                }
             }
             return result;
         }
