@@ -33,6 +33,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
 
         bool ShowYesNoMessage(string message, string caption);
+
+        void ShowExpiredWindow(List<BankAccountRegisterGridRow> expiredItems);
     }
     public class ImportBankTransactionsViewModel :INotifyPropertyChanged
     {

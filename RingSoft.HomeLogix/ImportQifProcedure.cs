@@ -35,6 +35,8 @@ namespace RingSoft.HomeLogix
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            _splashWindow.ShowInTaskbar = false;
             _splashWindow.ShowDialog();
 
         }

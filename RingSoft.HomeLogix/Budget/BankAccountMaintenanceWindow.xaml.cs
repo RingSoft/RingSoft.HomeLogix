@@ -26,6 +26,8 @@ namespace RingSoft.HomeLogix.Budget
         public bool ImportFromBank(BankAccountViewModel bankAccountViewModel)
         {
             var importTransactionsWindow = new ImportBankTransactionsWindow(bankAccountViewModel);
+            importTransactionsWindow.Owner = this;
+            importTransactionsWindow.ShowInTaskbar = false;
             importTransactionsWindow.ShowDialog();
             return importTransactionsWindow.DialogResult != null && importTransactionsWindow.DialogResult.Value;
         }

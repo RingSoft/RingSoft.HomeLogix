@@ -516,6 +516,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _completeGrid = true;
         private bool _processCompletedRows = true;
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
+        private bool _recordSaved;
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
@@ -973,7 +974,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             }
             var result = context.Commit($"Saving Bank Account '{entity.Description}");
-
+            if (result)
+            {
+                _recordSaved = true;
+            }
 
             //if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {
@@ -1284,7 +1288,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             base.OnWindowClosing(e);
             if (!e.Cancel)
+            {
                 AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
+                if (_recordSaved)
+                {
+                    AppGlobals.MainViewModel.SyncPhoneCommand.Execute(null);
+                }
+            }
         }
 
         public bool IsBeingReconciled(int budgetItemId)

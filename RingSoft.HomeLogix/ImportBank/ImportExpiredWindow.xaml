@@ -1,0 +1,45 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.ImportBank.ImportExpiredWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.ImportBank;assembly=RingSoft.HomeLogix.Library"
+        xmlns:local="clr-namespace:RingSoft.HomeLogix.ImportBank"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="ImportExpiredWindow" SizeToContent="WidthAndHeight">
+
+    <Window.DataContext>
+        <vm:ImportExpiredViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="The following transactions are expired will be removed from the bank register." HorizontalAlignment="Left" Width="500" TextWrapping="Wrap"/>
+
+        <deg:DataEntryGrid Grid.Row="1" x:Name="DataEntryGrid" Width="500" Height="250" DataEntryCanUserAddRows="False" Manager="{Binding GridManager}">
+
+            <deg:DataEntryGrid.Columns>
+
+                <deg:DataEntryGridCheckBoxColumn Header="Remove Row" ColumnId="{x:Static vm:ImportExpiredGridRow.RemoveItemColumnId}"/>
+
+                <deg:DataEntryGridTextColumn Header="Date" ColumnId="{x:Static vm:ImportExpiredGridRow.DateColumnId}" Width="100"/>
+
+                <deg:DataEntryGridTextColumn Header="Description" ColumnId="{x:Static vm:ImportExpiredGridRow.DescriptionColumnId}" Width="180"/>
+
+                <deg:DataEntryGridTextColumn Header="Amount" ColumnId="{x:Static vm:ImportExpiredGridRow.AmountColumnId}" Width="100" Alignment="Right"/>
+
+            </deg:DataEntryGrid.Columns>
+
+        </deg:DataEntryGrid>
+
+        <Button Grid.Row="2" Command="{Binding OkCommand}" Content="_OK" Width="75" HorizontalAlignment="Right" IsDefault="True" Margin="0,5,0,0"/>
+    </Grid>
+</dec:BaseWindow>

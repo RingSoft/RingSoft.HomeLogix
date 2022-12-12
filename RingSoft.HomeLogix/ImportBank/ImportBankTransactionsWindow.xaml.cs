@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using Microsoft.Win32;
+using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.HomeLogix.Library;
@@ -116,6 +118,20 @@ namespace RingSoft.HomeLogix.ImportBank
         public bool ShowYesNoMessage(string message, string caption)
         {
             return _importProcedure.ShowYesNoMessageBox(message, caption);
+        }
+
+        public void ShowExpiredWindow(List<BankAccountRegisterGridRow> expiredItems)
+        {
+            if (_importProcedure.SplashWindow is ProcessingSplashWindow procedureSplash)
+            {
+                var window = new ImportExpiredWindow(expiredItems);
+                window.Owner = this;
+                window.ContentRendered += (sender, args) =>
+                {
+                    window.Activate();
+                };
+                window.ShowDialog();
+            }
         }
 
         public static string OpenTextFile(string fileName)

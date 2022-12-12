@@ -216,10 +216,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
             if (registerIncompleteRows.Any())
             {
-                var message = "There are expired budget items in the register grid. Do you wish to delete them?";
-                var caption = "Delete Expired Register Items";
-                if (ViewModel.View.ShowYesNoMessage(message, caption))
-                {
+                ViewModel.View.ShowExpiredWindow(registerIncompleteRows);
+                //var message = "There are expired budget items in the register grid. Do you wish to delete them?";
+                //var caption = "Delete Expired Register Items";
+                //if (ViewModel.View.ShowYesNoMessage(message, caption))
+                //{
                     foreach (var registerGridRow in registerIncompleteRows)
                     {
                         ViewModel.BankViewModel.RegisterGridManager.RemoveRow(registerGridRow);
@@ -230,7 +231,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         //if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerGridRow.ActualAmountDetails))
                         //    return false;
                     }
-                }
+                //}
             }
 
             if (AppGlobals.DataRepository.DeleteTransactions(ViewModel.BankViewModel.Id))
@@ -249,6 +250,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     ViewModel.BankViewModel.RegisterGridManager.Grid?.RefreshGridView();
                     ViewModel.View.CloseWindow(true);
                     ViewModel.BankViewModel.SaveNoPost();
+                    ViewModel.BankViewModel.RecordDirty = true;
                 }
                 else
                 {
