@@ -1,5 +1,7 @@
 ﻿using System.Linq;
+using System.Windows;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
 using RingSoft.DbLookup.QueryBuilder;
@@ -17,7 +19,7 @@ namespace RingSoft.HomeLogix
 
         public DataEntryGridBudgetItemHost(DataEntryGrid grid) : base(grid)
         {
-            
+
         }
 
         public override DataEntryGridEditingCellProps GetCellValue()
@@ -32,7 +34,7 @@ namespace RingSoft.HomeLogix
 
         public override void UpdateFromCellProps(DataEntryGridCellProps cellProps)
         {
-            
+
         }
 
         protected override void OnControlLoaded(RegisterGridBudgetItemAutoFillControl control, DataEntryGridEditingCellProps cellProps,
@@ -49,27 +51,34 @@ namespace RingSoft.HomeLogix
 
                 var budgetItem =
                     AppGlobals.DataRepository.GetBudgetItem(_cellProps.Row.BudgetItemId);
-                
+
                 var lookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
                 lookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                     budgetItem.BankAccountId);
-                
+
 
                 var currentRowIndex = Grid.CurrentRowIndex;
                 lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,
                     _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput);
-                
-                if (currentRowIndex > Grid.Manager.Rows.Count - 1)
-                    currentRowIndex = Grid.Manager.Rows.Count - 1;
 
-                var registerRow = Grid.Manager.Rows.OfType<BankAccountRegisterGridRow>()
-                    .FirstOrDefault(f => f.RegisterId == _cellProps.Row.RegisterId);
+                var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+                if (window != null)
+                {
+                    window.Closed += (sender, args) =>
+                    {
+                        if (currentRowIndex > Grid.Manager.Rows.Count - 1)
+                            currentRowIndex = Grid.Manager.Rows.Count - 1;
 
-                if (registerRow != null)
-                    currentRowIndex = Grid.Manager.Rows.IndexOf(registerRow);
+                        var registerRow = Grid.Manager.Rows.OfType<BankAccountRegisterGridRow>()
+                            .FirstOrDefault(f => f.RegisterId == _cellProps.Row.RegisterId);
 
+                        if (registerRow != null)
+                            currentRowIndex = Grid.Manager.Rows.IndexOf(registerRow);
+
+                        Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
+                    };
+                }
                 Grid.DataEntryGridCancelEdit();
-                Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
             };
         }
     }

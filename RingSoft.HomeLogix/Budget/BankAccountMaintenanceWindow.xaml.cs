@@ -127,7 +127,7 @@ namespace RingSoft.HomeLogix.Budget
 
         public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
-            var bankAccountMiscWindow = new BankAccountMiscWindow(registerItem, viewModelInput);
+            var bankAccountMiscWindow = new BankAccountMiscWindow(BankAccountViewModel, registerItem, viewModelInput);
             bankAccountMiscWindow.Owner = this;
             bankAccountMiscWindow.ShowInTaskbar = false;
             return bankAccountMiscWindow.ShowDialog().GetValueOrDefault(false);

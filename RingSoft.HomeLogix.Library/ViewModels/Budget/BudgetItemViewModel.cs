@@ -1268,6 +1268,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var registerItem in registerItems)
             {
+                if (registerItem.ItemDate.Month == 1 && registerItem.ItemDate.Day == 3)
+                {
+                    
+                }
                 if (lowestBalanceDate == null)
                     lowestBalanceDate = registerItem.ItemDate.AddDays(-1);
 

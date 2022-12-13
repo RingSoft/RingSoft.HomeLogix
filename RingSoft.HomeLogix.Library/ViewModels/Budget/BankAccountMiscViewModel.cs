@@ -250,6 +250,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public IBankAccountMiscView View { get; private set; }
 
+        public BankAccountViewModel BankViewModel { get; private set; }
+
         public RelayCommand OkButtonCommand { get; }
 
         public bool TransferToVisible { get; private set; }
@@ -268,9 +270,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ItemTypeEnabled = true;
         }
 
-        public void OnViewLoaded(IBankAccountMiscView view, BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
+        public void OnViewLoaded(IBankAccountMiscView view, BankAccountViewModel bankAccountViewModel,
+            BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
             _viewModelInput = viewModelInput;
+            BankViewModel = bankAccountViewModel;
             View = view;
             TransferToBankAccountAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup.Clone())
                 {AddViewParameter = _viewModelInput};
@@ -449,27 +453,48 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
                 _registerItem.BudgetItem =
                     AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
-                _registerItem.ProjectedAmount = Math.Abs(Amount);
+
+                //_registerItem.ProjectedAmount = Math.Abs(Amount);
+                switch (ItemType)
+                {
+                    case BudgetItemTypes.Income:
+                        switch (BankViewModel.AccountType)
+                        {
+                            case BankAccountTypes.Checking:
+                            case BankAccountTypes.Savings:
+                                _registerItem.ProjectedAmount = Amount;
+                                break;
+                            case BankAccountTypes.CreditCard:
+                                _registerItem.ProjectedAmount = -Amount;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+                    case BudgetItemTypes.Expense:
+                        switch (BankViewModel.AccountType)
+                        {
+                            case BankAccountTypes.Checking:
+                            case BankAccountTypes.Savings:
+                                _registerItem.ProjectedAmount = -Amount;
+                                break;
+                            case BankAccountTypes.CreditCard:
+                                _registerItem.ProjectedAmount = Amount;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
             }
 
             _registerItem.ItemType = (int)BankAccountRegisterItemTypes.Miscellaneous;
             _registerItem.ItemDate = Date;
             _registerItem.Description = Description;
-            
-            //switch (ItemType)
-            //{
-            //    case BudgetItemTypes.Income:
-            //        _registerItem.ProjectedAmount = Amount;
-            //        break;
-            //    case BudgetItemTypes.Expense:
-            //        _registerItem.ProjectedAmount = -Amount;
-            //        break;
-            //    case BudgetItemTypes.Transfer:
-            //        _registerItem.ProjectedAmount = -Amount;
-            //        break;
-            //    default:
-            //        throw new ArgumentOutOfRangeException();
-            //}
+
             _registerItem.IsNegative = Amount < 0;
 
             if (_registerItem.ActualAmount != null)

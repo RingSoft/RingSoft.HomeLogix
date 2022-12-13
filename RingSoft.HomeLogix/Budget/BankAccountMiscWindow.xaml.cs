@@ -11,11 +11,11 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMiscWindow : IBankAccountMiscView
     {
-        public BankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
+        public BankAccountMiscWindow(BankAccountViewModel bankAccountViewModel, BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
             InitializeComponent();
 
-            ViewModel.OnViewLoaded(this, registerItem, viewModelInput);
+            ViewModel.OnViewLoaded(this, bankAccountViewModel, registerItem, viewModelInput);
             CancelButton.Click += (sender, args) => Close();
         }
 
