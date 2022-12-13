@@ -133,6 +133,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             set => TypeItem = TypeSetup.GetItem((int) value);
         }
 
+        private bool _typeEnabled;
+
+        public bool TypeEnabled
+        {
+            get => _typeEnabled;
+            set
+            {
+                if (_typeEnabled == value)
+                {
+                    return;
+                }
+                _typeEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private decimal _currentProjectedEndingBalance;
 
         public decimal CurrentProjectedEndingBalance
@@ -532,6 +549,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ImportTransactionsCommand = new RelayCommand(ImportTransactions);
 
             LastGenerationDate = null;
+            TypeEnabled = true;
         }
 
         protected override void Initialize()
@@ -607,6 +625,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
                 ImportTransactionsCommand.IsEnabled = false;
 
+            TypeEnabled = true;
+
             _loading = false;
         }
 
@@ -681,6 +701,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             CompleteAll = false;
+            TypeEnabled = false;
             return bankAccount;
         }
 
