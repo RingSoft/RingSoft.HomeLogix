@@ -781,7 +781,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _budgetItemHistoryFilter = budgetItem;
             ViewModelInput.HistoryFilterBudgetItem = budgetItem;
 
-            ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
+            //ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
             StartingDate = budgetItem.StartingDate;
             if (StartingDate != null)

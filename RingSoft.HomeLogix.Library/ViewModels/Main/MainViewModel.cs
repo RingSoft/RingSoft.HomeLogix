@@ -531,12 +531,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private string GetBudgetMonthlyAmountDifferenceFormulaSql()
         {
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            var table = sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName);
-            var typeField = sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems
-                .GetFieldDefinition(p => (int) p.Type).FieldName);
+            var typeField = AppGlobals.LookupContext.BudgetItems
+                .GetFieldDefinition(p => (int)p.Type);
 
             var result =
-                $"CASE {table}.{typeField} WHEN {(int) BudgetItemTypes.Income} THEN ({GeActualtMonthToDateFormulaSql()})"
+                $"CASE {typeField.GetSqlFormatObject()} WHEN {(int) BudgetItemTypes.Income} THEN ({GeActualtMonthToDateFormulaSql()})"
                 + $" - ({GetBudgetMonthToDateFormulaSql()}) "
                 + $"ELSE ({GetBudgetMonthToDateFormulaSql()}) - ({GeActualtMonthToDateFormulaSql()}) END";
 

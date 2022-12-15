@@ -687,7 +687,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             CalculateTotals();
 
-            ReadOnlyMode = AppGlobals.MainViewModel.BankAccountViewModels.Any(a => a != this && a.Id == Id);
+            //ReadOnlyMode = AppGlobals.MainViewModel.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled  =
                 ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
 
