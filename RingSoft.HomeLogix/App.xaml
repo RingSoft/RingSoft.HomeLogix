@@ -57,6 +57,8 @@
 
             <Style TargetType="controls:TwoTierProgressWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:DeleteRecordWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 
                 <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemLineTypeId}" HotKey="B">

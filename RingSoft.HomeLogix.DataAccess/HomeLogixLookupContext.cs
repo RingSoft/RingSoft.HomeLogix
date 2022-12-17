@@ -41,6 +41,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
+        public LookupDefinition<BankAccountRegisterLookup, BankAccountRegisterItem> BankRegisterLookup { get; set; }
         public LookupDefinition<SourceLookup, BudgetItemSource> BudgetItemSourceLookup { get; set; }
         public LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory> BudgetPeriodLookup { get; set; }
 
@@ -135,6 +136,12 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItemSourceLookup.AddVisibleColumnDefinition(p => p.SourceName, "Source Name", 
                 p => p.Name, 70);
             BudgetItemSources.HasLookupDefinition(BudgetItemSourceLookup);
+
+            BankRegisterLookup =
+                new LookupDefinition<BankAccountRegisterLookup, BankAccountRegisterItem>(BankAccountRegisterItems);
+            BankRegisterLookup.AddVisibleColumnDefinition(p => p.RegisterDate, "Register Date", p => p.ItemDate, 50);
+            BankRegisterLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 50);
+            BankAccountRegisterItems.HasLookupDefinition(BankRegisterLookup);
 
             HistoryLookup = new LookupDefinition<HistoryLookup, History>(History);
             var budgetInclude = HistoryLookup.Include(p => p.BudgetItem);
