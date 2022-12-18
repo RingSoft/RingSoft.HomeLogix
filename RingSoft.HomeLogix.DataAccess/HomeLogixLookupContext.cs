@@ -42,10 +42,12 @@ namespace RingSoft.HomeLogix.DataAccess
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
         public LookupDefinition<BankAccountRegisterLookup, BankAccountRegisterItem> BankRegisterLookup { get; set; }
+        public LookupDefinition<BankRegisterAmountDetailsLookup, BankAccountRegisterItemAmountDetail> BankRegisterAmountDetailsLookup { get; set; }
         public LookupDefinition<SourceLookup, BudgetItemSource> BudgetItemSourceLookup { get; set; }
         public LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory> BudgetPeriodLookup { get; set; }
 
         public LookupDefinition<HistoryLookup, History> HistoryLookup { get; set; }
+        public LookupDefinition<SourceHistoryLookup, SourceHistory> SourceHistoryLookup { get; set; }
 
         public LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> BankPeriodHistoryLookup { get; set; }
         public LookupDefinition<QifMapLookup, QifMap> QifMapLookup { get; set; }
@@ -143,6 +145,15 @@ namespace RingSoft.HomeLogix.DataAccess
             BankRegisterLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 50);
             BankAccountRegisterItems.HasLookupDefinition(BankRegisterLookup);
 
+            BankRegisterAmountDetailsLookup =
+                new LookupDefinition<BankRegisterAmountDetailsLookup, BankAccountRegisterItemAmountDetail>(
+                    BankAccountRegisterItemAmountDetails);
+            BankRegisterAmountDetailsLookup.AddVisibleColumnDefinition(p => p.Date, "Date", p => p.Date, 20);
+            BankRegisterAmountDetailsLookup.Include(p => p.Source)
+                .AddVisibleColumnDefinition(p => p.Source, "Source", p => p.Name, 60);
+            BankRegisterAmountDetailsLookup.AddVisibleColumnDefinition(p => p.Amount, "Amount", p => p.Amount, 20);
+            BankAccountRegisterItemAmountDetails.HasLookupDefinition(BankRegisterAmountDetailsLookup);
+
             HistoryLookup = new LookupDefinition<HistoryLookup, History>(History);
             var budgetInclude = HistoryLookup.Include(p => p.BudgetItem);
             var budgetAlias = budgetInclude.JoinDefinition.Alias;
@@ -176,6 +187,17 @@ namespace RingSoft.HomeLogix.DataAccess
                 .DoShowPositiveValuesInGreen();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
             History.HasLookupDefinition(HistoryLookup);
+
+            var sourceHistoryLookupDefinition = new LookupDefinition<SourceHistoryLookup, SourceHistory>(SourceHistory);
+            sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Date,
+                "Date", p => p.Date, 20);
+            sourceHistoryLookupDefinition.Include(p => p.Source).
+                AddVisibleColumnDefinition(p => p.Source, "Source",
+                    p => p.Name, 30);
+            sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Amount, "Amount", p => p.Amount, 20);
+            sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.BankText, "Bank Text", p => p.BankText, 30);
+            SourceHistoryLookup = sourceHistoryLookupDefinition;
+            SourceHistory.HasLookupDefinition(sourceHistoryLookupDefinition);
 
             var budgetPeriodLookup =
                 new LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>(BudgetPeriodHistory);
@@ -259,6 +281,9 @@ namespace RingSoft.HomeLogix.DataAccess
             BankAccounts.GetFieldDefinition(p => p.LastCompletedDate).HasDescription("Last Transaction Date");
 
             BankAccounts.GetFieldDefinition(p => p.Notes).IsMemo();
+
+            BankAccountRegisterItemAmountDetails.GetFieldDefinition(p => p.Amount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);

@@ -486,6 +486,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
 
             budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+            
             return budgetLookupDefinition;
         }
 
