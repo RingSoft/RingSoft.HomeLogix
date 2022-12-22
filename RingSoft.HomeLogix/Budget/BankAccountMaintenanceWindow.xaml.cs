@@ -72,6 +72,14 @@ namespace RingSoft.HomeLogix.Budget
             }
         }
 
+        public void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId)
+        {
+            TabControl.SelectedIndex = 0;
+            RegisterGrid.Focus();
+            RegisterGrid.GotoCell(row, columnId);
+
+        }
+
         public BankAccountMaintenanceWindow()
         {
             InitializeComponent();

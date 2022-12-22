@@ -62,6 +62,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId)
+        {
+            throw new NotImplementedException();
+        }
+
         public TestBankAccountView(string ownerName) : base(ownerName)
         {
         }

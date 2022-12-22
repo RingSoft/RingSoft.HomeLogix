@@ -260,5 +260,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ViewModel.CalculateTotals();
             AppGlobals.DataRepository.SaveRegisterItems(registerItems);
         }
+
+        public override void LoadGrid(IEnumerable<BankAccountRegisterItem> entityList)
+        {
+            base.LoadGrid(entityList);
+            if (ViewModel.InitRegisterId > 0)
+            {
+                var registerRows = Rows.OfType<BankAccountRegisterGridRow>();
+                if (registerRows != null)
+                {
+                    var registerRow = registerRows.FirstOrDefault(
+                        p => p.RegisterId == ViewModel.InitRegisterId);
+                    if (registerRow != null)
+                    {
+                        ViewModel.BankAccountView.SetInitGridFocus(registerRow, (int)BankAccountRegisterGridColumns.Description);
+                    }
+                }
+            }
+        }
     }
 }

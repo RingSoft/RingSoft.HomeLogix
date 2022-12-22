@@ -53,6 +53,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void UpdateStatus(string status);
 
         void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
+
+        void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId);
     }
 
     public class CompletedRegisterData
@@ -514,6 +516,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        public int InitRegisterId { get; private set; }
 
         public ViewModelInput ViewModelInput { get; set; }
 
@@ -1311,8 +1314,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var context = AppGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<BankAccount>();
             var bankAccount = query.FirstOrDefault(p => p.Id == Id);
-
-            return bankAccount != null && context.DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
+            var result = bankAccount != null && context.DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
+            if (result)
+            {
+                AppGlobals.MainViewModel.RefreshView();
+            }
+            return result;
         }
 
         public void OnAddModifyBudgetItems()
@@ -1403,5 +1410,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DoSave();
             _processCompletedRows = true;
         }
+
+        protected override PrimaryKeyValue GetAddViewPrimaryKeyValue(PrimaryKeyValue addViewPrimaryKeyValue)
+        {
+            if (addViewPrimaryKeyValue.TableDefinition == AppGlobals.LookupContext.BankAccountRegisterItems)
+            {
+                var bankRegisterItem =
+                    AppGlobals.LookupContext.BankAccountRegisterItems.GetEntityFromPrimaryKeyValue(addViewPrimaryKeyValue);
+
+                var context = AppGlobals.DataRepository.GetDataContext();
+                bankRegisterItem = context.GetTable<BankAccountRegisterItem>()
+                    .FirstOrDefault(p => p.Id == bankRegisterItem.Id);
+
+                if (bankRegisterItem != null)
+                {
+                    InitRegisterId = bankRegisterItem.Id;
+                    var bankAccount = new BankAccount() { Id = bankRegisterItem.BankAccountId };
+                    return TableDefinition.GetPrimaryKeyValueFromEntity(bankAccount);
+                }
+            }
+
+            return base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
+        }
+
     }
 }

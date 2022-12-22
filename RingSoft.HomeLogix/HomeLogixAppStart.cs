@@ -50,6 +50,10 @@ namespace RingSoft.HomeLogix
             {
                 ShowAddOnTheFlyWindow(new BankAccountMaintenanceWindow(), e);
             }
+            if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BankAccountRegisterItems)
+            {
+                ShowAddOnTheFlyWindow(new BankAccountMaintenanceWindow(), e);
+            }
             else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BankAccountPeriodHistory)
             {
                 ShowAddOnTheFlyWindow(new BankPeriodHistoryWindow(), e);
