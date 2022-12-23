@@ -303,7 +303,7 @@ namespace RingSoft.HomeLogix.DataAccess
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId)
-                .HasDescription("Transfer To Bank Account");
+                .HasDescription("Transfer To Bank Account").CanSetNull(false);
 
             BudgetItems.GetFieldDefinition(p => p.MonthlyAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);

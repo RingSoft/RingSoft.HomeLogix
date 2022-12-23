@@ -1329,6 +1329,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return result;
         }
 
+        public override void OnTablesDeleted(DeleteTables deleteTables)
+        {
+            var bankRegisterTable = deleteTables.Tables.FirstOrDefault(p =>
+                p.ChildField.TableDefinition == AppGlobals.LookupContext.BankAccountRegisterItems);
+
+            if (bankRegisterTable != null)
+            {
+                foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
+                {
+                    bankAccountViewModel.RefreshFromDb();
+                }
+            }
+            base.OnTablesDeleted(deleteTables);
+        }
+
         public override void OnWindowClosing(CancelEventArgs e)
         {
             base.OnWindowClosing(e);

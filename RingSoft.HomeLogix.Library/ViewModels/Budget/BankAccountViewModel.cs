@@ -553,6 +553,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             LastGenerationDate = null;
             TypeEnabled = true;
+
+            TablesToDelete.Add(AppGlobals.LookupContext.BankAccountRegisterItems);
+            TablesToDelete.Add(AppGlobals.LookupContext.BankAccountRegisterItemAmountDetails);
         }
 
         protected override void Initialize()
@@ -714,6 +717,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BankAccountView.LoadBank(entity);
             //LoadFromEntityProcedure(entity);
+        }
+
+        public void RefreshFromDb()
+        {
+            var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
+            if (bankAccount != null)
+            {
+                LoadFromEntityProcedure(bankAccount);
+            }
         }
 
         public void LoadFromEntityProcedure(BankAccount entity)
