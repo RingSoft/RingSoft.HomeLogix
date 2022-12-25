@@ -28,6 +28,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         string GetQifFile();
 
+        void ShowQifMaintenanceWindow();
+
         void UpdateStatus(string status);
 
         void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
@@ -79,10 +81,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public RelayCommand ImportQifCommand { get; set; }
 
+        public RelayCommand ShowQifMaintenanceCommand { get; set; }
+
         public ImportBankTransactionsViewModel()
         {
             OkCommand = new RelayCommand(OnOk);
             ImportQifCommand = new RelayCommand(ImportQif);
+            ShowQifMaintenanceCommand = new RelayCommand((() =>
+            {
+                View.ShowQifMaintenanceWindow();
+            }));
         }
 
         public void Initialize(BankAccountViewModel bankAccountViewModel, IImportTransactionView view)

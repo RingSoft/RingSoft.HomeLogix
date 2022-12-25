@@ -627,6 +627,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
                                 var qifMap = AppGlobals.DataRepository.GetQifMap(qifMapId);
 
+                                importTransactionGridRow.MapTransaction = false;
                                 importTransactionGridRow.QifMap = qifMap;
                                 if (qifMap.BudgetItem != null)
                                 {

@@ -1,0 +1,52 @@
+﻿<ac:DbMaintenanceWindow x:Class="RingSoft.HomeLogix.ImportBank.QifMapMaintenanceWindow"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:local="clr-namespace:RingSoft.HomeLogix.ImportBank"
+                        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+                        xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+                        xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+                        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.ImportBank;assembly=RingSoft.HomeLogix.Library"
+                        mc:Ignorable="d"
+                        Style="{StaticResource BaseWindowStyle}"
+                        Title="Qif Maps Maintenance Window" SizeToContent="WidthAndHeight">
+
+    <Window.DataContext>
+        <vm:QifMapsViewModel x:Name="LocalViewModel"/>
+    </Window.DataContext>
+
+    <DockPanel>
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row ="0" Grid.Column="0" Content="Qif Map ID"/>
+
+            <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Bank Text Contains"/>
+
+            <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="BankTextControl" Width="200"/>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Map to Budget Item"/>
+
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" Setup="{Binding BudgetItemAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Map to Source"/>
+
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Width="200" Setup="{Binding SourceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SourceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        </Grid>
+    </DockPanel>
+</ac:DbMaintenanceWindow>

@@ -105,6 +105,14 @@ namespace RingSoft.HomeLogix.ImportBank
             return qifText;
         }
 
+        public void ShowQifMaintenanceWindow()
+        {
+            var window = new QifMapMaintenanceWindow();
+            window.ShowInTaskbar = false;
+            window.Owner = this;
+            window.ShowDialog();
+        }
+
         public void UpdateStatus(string status)
         {
             _importProcedure.SplashWindow.SetProgress(status);
