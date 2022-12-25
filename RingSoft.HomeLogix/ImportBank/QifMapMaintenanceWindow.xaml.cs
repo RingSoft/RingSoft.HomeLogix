@@ -1,5 +1,7 @@
 ﻿using RingSoft.App.Controls;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
+using RingSoft.HomeLogix.Library;
 
 namespace RingSoft.HomeLogix.ImportBank
 {
@@ -18,5 +20,30 @@ namespace RingSoft.HomeLogix.ImportBank
             RegisterFormKeyControl(BankTextControl);
         }
 
+        public override void ResetViewForNewRecord()
+        {
+            BankTextControl.Focus();
+            base.ResetViewForNewRecord();
+        }
+
+        public override void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
+        {
+            var tableDefinition = AppGlobals.LookupContext.QifMaps;
+            if (fieldDefinition == tableDefinition.GetFieldDefinition(p => p.BankText))
+            {
+                BankTextControl.Focus();
+            }
+
+            if (fieldDefinition == tableDefinition.GetFieldDefinition(p => p.BudgetId))
+            {
+                BudgetControl.Focus();
+            }
+
+            if (fieldDefinition == tableDefinition.GetFieldDefinition(p => p.SourceId))
+            {
+                SourceControl.Focus();
+            }
+            base.OnValidationFail(fieldDefinition, text, caption);
+        }
     }
 }

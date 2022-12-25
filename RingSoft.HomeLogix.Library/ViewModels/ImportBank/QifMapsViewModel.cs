@@ -3,6 +3,7 @@ using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
@@ -129,7 +130,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         protected override QifMap GetEntityData()
         {
-            throw new System.NotImplementedException();
+            var result = new QifMap();
+            result.Id = Id;
+            result.BankText = KeyAutoFillValue.Text;
+
+            if (BudgetItemAutoFillValue.IsValid())
+            {
+                var budgetItem =
+                    AppGlobals.LookupContext.BudgetItems.GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue
+                        .PrimaryKeyValue);
+                result.BudgetId = budgetItem.Id;
+            }
+
+            if (SourceAutoFillValue.IsValid())
+            {
+                var sourceItem =
+                    AppGlobals.LookupContext.BudgetItemSources.GetEntityFromPrimaryKeyValue(SourceAutoFillValue
+                        .PrimaryKeyValue);
+                result.SourceId = sourceItem.Id;
+            }
+
+            return result;
         }
 
         protected override void ClearData()
@@ -139,14 +160,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             SourceAutoFillValue = null;
         }
 
+        protected override AutoFillValue GetAutoFillValueForNullableForeignKeyField(FieldDefinition fieldDefinition)
+        {
+            if (fieldDefinition == AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.SourceId))
+            {
+                return SourceAutoFillValue;
+            }
+            return base.GetAutoFillValueForNullableForeignKeyField(fieldDefinition);
+        }
+
         protected override bool SaveEntity(QifMap entity)
         {
-            throw new System.NotImplementedException();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context != null)
+            {
+                var result = context.SaveEntity(entity, "Saving Qif Map");
+                return result;
+            }
+
+            return false;
         }
 
         protected override bool DeleteEntity()
         {
-            throw new System.NotImplementedException();
+            var context = AppGlobals.DataRepository.GetDataContext();
+            if (context != null)
+            {
+                var table = context.GetTable<QifMap>();
+                var qifMap = table.FirstOrDefault(p => p.Id == Id);
+                if (qifMap != null)
+                {
+                    return context.DeleteEntity(qifMap, "Deleting QifMap");
+                }
+            }
+            return false;
         }
     }
 }

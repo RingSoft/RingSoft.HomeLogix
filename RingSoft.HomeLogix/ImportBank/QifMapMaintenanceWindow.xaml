@@ -35,17 +35,17 @@
 
             <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="{Binding Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-            <Label Grid.Row="1" Grid.Column="0" Content="Bank Text Contains"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Bank Text Starts With"/>
 
             <lc:AutoFillControl Grid.Row="1" Grid.Column="1" x:Name="BankTextControl" Width="200"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Map to Budget Item"/>
 
-            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" Setup="{Binding BudgetItemAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" x:Name="BudgetControl" Setup="{Binding BudgetItemAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Label Grid.Row="3" Grid.Column="0" Content="Map to Source"/>
 
-            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Width="200" Setup="{Binding SourceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SourceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <lc:AutoFillControl Grid.Row="3" Grid.Column="1" Width="200" x:Name="SourceControl" Setup="{Binding SourceAutoFillSetup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="{Binding SourceAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </Grid>
     </DockPanel>
