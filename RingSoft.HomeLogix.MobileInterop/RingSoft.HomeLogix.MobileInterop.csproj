@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="4.3.0" />
+    <PackageReference Include="RingSoft.App.Interop" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

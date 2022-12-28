@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.App.Interop;
 using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library.ViewModels

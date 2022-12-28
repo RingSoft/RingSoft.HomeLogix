@@ -6,12 +6,12 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.MasterData\RingSoft.HomeLogix.MasterData.csproj" />
+    <ProjectReference Include="..\RingSoft.HomeLogix.MobileInterop\RingSoft.HomeLogix.MobileInterop.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Sqlite\RingSoft.HomeLogix.Sqlite.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.SqlServer\RingSoft.HomeLogix.SqlServer.csproj" />
   </ItemGroup>
