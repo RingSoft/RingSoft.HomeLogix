@@ -995,15 +995,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     var bankData = result.FirstOrDefault(p => p.BankId == mainBankLookup.BankId);
                     if (bankData == null)
                     {
-                        result.Add(new BankData
+                        var newBankData = new BankData
                         {
                             BankId = mainBankLookup.BankId,
                             CurrentBalance = mainBankLookup.CurrentBalance,
                             Description = mainBankLookup.Description,
                             ProjectedLowestBalance = mainBankLookup.ProjectedLowestBalance,
                             ProjectedLowestBalanceDate = mainBankLookup.ProjectedLowestBalanceDate,
-                            AccountType = (BankAccountTypes)mainBankLookup.AccountType,
-                        });
+                        };
+                        var accountType = (int)mainBankLookup.AccountType;
+                        newBankData.AccountType = (BankAccountTypes)accountType;
+                        result.Add(newBankData);
+                        
                     }
                 }
             };

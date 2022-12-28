@@ -54,15 +54,15 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Include="RingSoft.DataEntryControls.Engine" Version="4.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Views\" />
-	  <Folder Include="ViewModels\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
+	  <ProjectReference Include="..\RingSoft.HomeLogix.MobileInterop\RingSoft.HomeLogix.MobileInterop.csproj" />
 	</ItemGroup>
 
 </Project>

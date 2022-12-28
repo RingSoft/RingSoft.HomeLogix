@@ -1,6 +1,14 @@
-﻿using System;
-using RingSoft.HomeLogix.DataAccess.Model;
-using RingSoft.HomeLogix.Library.ViewModels.Budget;
+﻿using System.ComponentModel;
+
+public enum BankAccountTypes
+{
+    [Description("Checking")]
+    Checking = 0,
+    [Description("Savings")]
+    Savings = 1,
+    [Description("Credit Card")]
+    CreditCard = 2
+}
 
 namespace RingSoft.HomeLogix.Library.PhoneModel
 {

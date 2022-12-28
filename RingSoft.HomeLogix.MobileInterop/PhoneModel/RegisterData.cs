@@ -1,9 +1,19 @@
-﻿using System;
-using RingSoft.HomeLogix.DataAccess.Model;
-using RingSoft.HomeLogix.Library.ViewModels.Budget;
-
-namespace RingSoft.HomeLogix.Library.PhoneModel
+﻿namespace RingSoft.HomeLogix.MobileInterop.PhoneModel
 {
+    public enum BankAccountRegisterItemTypes
+    {
+        BudgetItem = 0,
+        Miscellaneous = 1,
+        TransferToBankAccount = 2,
+    }
+
+    public enum TransactionTypes
+    {
+        Deposit = 0,
+        Withdrawal = 1
+    }
+
+
     public class RegisterData
     {
         public int BankAccountId { get; set; }

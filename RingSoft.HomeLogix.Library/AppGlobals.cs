@@ -393,19 +393,5 @@ namespace RingSoft.HomeLogix.Library
             return RingSoftAppGlobals.GetWebResponse($"{url}", method);
         }
 
-        public static string GetWebText(string fileName, string guid = "")
-        {
-            var url = "https://ringsoft.site/HomeLogixData/";
-            if (!guid.IsNullOrEmpty())
-            {
-                url += guid + "/";
-            }
-
-            url += fileName;
-
-            var client = new HttpClient();
-            var text = client.GetStringAsync(url).Result;
-            return text;
-        }
     }
 }

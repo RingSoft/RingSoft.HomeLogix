@@ -15,8 +15,11 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.PhoneModel;
-using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.MasterData;
+using RingSoft.HomeLogix.MobileInterop;
+using RingSoft.HomeLogix.MobileInterop.PhoneModel;
+using BankAccountRegisterItemTypes = RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes;
+using TransactionTypes = RingSoft.HomeLogix.Library.ViewModels.Budget.TransactionTypes;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
@@ -159,7 +162,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var loginsText = string.Empty;
             try
             {
-                loginsText = AppGlobals.GetWebText("Logins.json");
+                loginsText = InteropGlobals.GetWebText("Logins.json");
             }
             catch (Exception e)
             {
@@ -369,32 +372,47 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 registerData.ProjectedAmount = register.ProjectedAmount;
                 registerData.ItemDate = register.ItemDate;
                 registerData.IsNegative = register.IsNegative;
-                if (register.BudgetItem != null)
+                //registerData.RegisterItemType =
+                //    (MobileInterop.PhoneModel.BankAccountRegisterItemTypes)register.ItemType;
+                registerData.RegisterItemType = MobileInterop.PhoneModel.BankAccountRegisterItemTypes.BudgetItem;
+
+                if (register.BudgetItem == null)
+                {
+                    if (register.ProjectedAmount < 0)
+                    {
+                        registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
+                    }
+                    else
+                    {
+                        registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
+                    }
+                }
+                else
                 {
                     switch (register.BudgetItem.Type)
                     {
                         case BudgetItemTypes.Income:
-                            registerData.TransactionType = TransactionTypes.Deposit;
+                            registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
                             break;
                         case BudgetItemTypes.Expense:
-                            registerData.TransactionType = TransactionTypes.Withdrawal;
+                            registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
                             break;
                         case BudgetItemTypes.Transfer:
                             if (register.ProjectedAmount < 0)
                             {
-                                registerData.TransactionType = TransactionTypes.Withdrawal;
+                                registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
                             }
                             else
                             {
-                                registerData.TransactionType = TransactionTypes.Deposit;
+                                registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
                             }
+
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
                 }
 
-                registerData.RegisterItemType = (BankAccountRegisterItemTypes)register.ItemType;
                 list.Add(registerData);
             }
         }

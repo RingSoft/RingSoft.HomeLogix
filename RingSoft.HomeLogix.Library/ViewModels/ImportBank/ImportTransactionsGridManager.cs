@@ -12,7 +12,6 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
-using BankAccountTypes = RingSoft.HomeLogix.DataAccess.Model.BankAccountTypes;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
