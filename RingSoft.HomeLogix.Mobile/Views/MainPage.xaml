@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:RingSoft.HomeLogix.Mobile.ViewModels;assembly=RingSoft.HomeLogix.Mobile"
+             x:Class="RingSoft.HomeLogix.Mobile.Views.MainPage"
+             Title="MainPage">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel x:Name="ViewModel"/>
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout VerticalOptions="Center" Spacing="20">
+        <Button Text="Sync Computer" Command="{Binding SyncCommand}"/>
+
+        <Button Text="View Current Budget Month" Command="{Binding ShowCurrentBudgetsCommand}"/>
+
+        <Button Text="View Previous Budget Month" Command="{Binding ShowPreviousBudgetsCommand}"/>
+
+        <Button Text="View Bank Accounts" Command="{Binding ShowBanksCommand}"/>
+    </VerticalStackLayout>
+</ContentPage>

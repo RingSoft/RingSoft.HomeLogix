@@ -58,11 +58,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Views\" />
+	  <ProjectReference Include="..\RingSoft.HomeLogix.MobileInterop\RingSoft.HomeLogix.MobileInterop.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\RingSoft.HomeLogix.MobileInterop\RingSoft.HomeLogix.MobileInterop.csproj" />
+	  <MauiXaml Update="Views\ComputerSyncPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\MainPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	</ItemGroup>
 
 </Project>
