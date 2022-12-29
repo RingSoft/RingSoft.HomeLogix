@@ -34,9 +34,10 @@ public partial class MainPage : ContentPage, IMainPageView
         await Navigation.PushModalAsync(page);
     }
 
-    public void ShowBankAccounts()
+    public async void ShowBankAccounts()
     {
-        throw new NotImplementedException();
+        var page = new NavigationPage(new BankPage());
+        await Navigation.PushAsync(page);
     }
 
     protected override void OnAppearing()
