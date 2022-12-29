@@ -13,21 +13,16 @@ public partial class BudgetsPage : ContentPage
 
     private async void ViewHistory_OnClicked(object sender, EventArgs e)
     {
-        //var button = sender as Button;
+        var button = sender as Button;
 
-        //if (button != null)
-        //{
-        //    var budgetData = button.CommandParameter as BudgetData;
-        //    if (budgetData != null)
-        //    {
-        //        await Navigation.PushAsync(new HistoryPage(budgetData));
-        //    }
-        //}
+        if (button != null)
+        {
+            var budgetData = button.CommandParameter as BudgetData;
+            if (budgetData != null)
+            {
+                await Navigation.PushAsync(new HistoryPage(budgetData));
+            }
+        }
 
-    }
-
-    protected override bool OnBackButtonPressed()
-    {
-        return base.OnBackButtonPressed();
     }
 }

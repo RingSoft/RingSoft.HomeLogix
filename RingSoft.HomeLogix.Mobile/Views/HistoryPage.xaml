@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:RingSoft.HomeLogix.Mobile.ViewModels;assembly=RingSoft.HomeLogix.Mobile"
+             x:Class="RingSoft.HomeLogix.Mobile.Views.HistoryPage"
+             Title="HistoryPage">
+
+    <ContentPage.BindingContext>
+        <vm:HistoryViewModel x:Name="ViewModel"/>
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout>
+        <ListView x:Name="ListView" ItemsSource="{Binding HistoryDataList}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+
+                    <ViewCell>
+                        <StackLayout Orientation="Vertical" HorizontalOptions="Fill">
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Grid.Row="0" Grid.Column="0" Text="Date:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding Date, StringFormat='{0:dddd, MMMM d, yyyy}'}"/>
+
+                                <Label Grid.Row="1" Grid.Column="0" Text="Description:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding Description}"/>
+
+                                <Label Grid.Row="2" Grid.Column="0" Text="Bank Account:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding BankName}"/>
+
+                                <Label Grid.Row="3" Grid.Column="0" Text="Budget Item:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding BudgetName}"/>
+
+                                <Label Grid.Row="4" Grid.Column="0" Text="Budget:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="4" Grid.Column="1" Text="{Binding ProjectedAmount, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="4" Grid.Column="2" Text="Actual:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="4" Grid.Column="3" Text="{Binding ActualAmount, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="5" Grid.Column="0" Text="Difference:" HorizontalTextAlignment="End"/>
+
+                                <Label Grid.Row="5" Grid.Column="1" Style="{StaticResource DecimalLabel}" Text="{Binding Difference, StringFormat='{0:C2}'}" HorizontalTextAlignment="End"/>
+
+                                <StackLayout Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
+                                    <Button x:Name="ViewSources" Text="View Sources" CommandParameter="{Binding .}" Clicked="ViewSources_OnClicked" IsVisible="{Binding HasSourceHistory}"/>
+                                </StackLayout>
+
+                            </Grid>
+                            <BoxView Color="Blue" HeightRequest="5" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>
