@@ -26,4 +26,8 @@ public partial class BudgetsPage : ContentPage
 
     }
 
+    protected override bool OnBackButtonPressed()
+    {
+        return base.OnBackButtonPressed();
+    }
 }

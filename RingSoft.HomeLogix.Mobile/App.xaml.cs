@@ -1,4 +1,6 @@
-﻿namespace RingSoft.HomeLogix.Mobile
+﻿using RingSoft.HomeLogix.Mobile.Views;
+
+namespace RingSoft.HomeLogix.Mobile
 {
     public partial class App : Application
     {
@@ -6,7 +8,7 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new NavigationPage(new MainPage());
         }
     }
 }
