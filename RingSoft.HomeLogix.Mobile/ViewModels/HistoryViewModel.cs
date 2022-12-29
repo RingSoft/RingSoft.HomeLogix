@@ -26,8 +26,25 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
+        private string _header;
+
+        public string Header
+        {
+            get => _header;
+            set
+            {
+                if (_header == value)
+                    return;
+
+                _header = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         public void Initialize(BudgetData budgetData)
         {
+            Header = budgetData.Description;
             var startDate = new DateTime(budgetData.CurrentDate.Year, budgetData.CurrentDate.Month, 1);
             var endDate = new DateTime(budgetData.CurrentDate.Year, budgetData.CurrentDate.Month,  startDate.AddMonths(1).AddDays(-1).Day);
             var historyData = MobileGlobals.MainViewModel.HistoryData
@@ -38,6 +55,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
 
         public void Initialize(BankData bankData)
         {
+            Header = bankData.Description;
             var historyData = MobileGlobals.MainViewModel.HistoryData
                 .Where(p => p.BankAccountId == bankData.BankId)
                 .OrderByDescending(p => p.Date);

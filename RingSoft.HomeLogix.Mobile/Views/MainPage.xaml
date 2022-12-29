@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:RingSoft.HomeLogix.Mobile.ViewModels;assembly=RingSoft.HomeLogix.Mobile"
              x:Class="RingSoft.HomeLogix.Mobile.Views.MainPage"
-             Title="MainPage">
+             Title="HomeLogix">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel x:Name="ViewModel"/>

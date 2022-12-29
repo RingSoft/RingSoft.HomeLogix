@@ -12,16 +12,16 @@ public partial class BankPage : ContentPage
 
     private async void ViewRegister_OnClicked(object sender, EventArgs e)
     {
-        //var button = sender as Button;
+        var button = sender as Button;
 
-        //if (button != null)
-        //{
-        //    var bankData = button.CommandParameter as BankData;
-        //    if (bankData != null)
-        //    {
-        //        await Navigation.PushAsync(new BankDetailsPage(bankData));
-        //    }
-        //}
+        if (button != null)
+        {
+            var bankData = button.CommandParameter as BankData;
+            if (bankData != null)
+            {
+                await Navigation.PushAsync(new BankDetailsPage(bankData));
+            }
+        }
     }
 
     private async void ViewHistory_OnClicked(object sender, EventArgs e)
