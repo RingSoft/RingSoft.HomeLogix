@@ -16,14 +16,16 @@ public partial class MainPage : ContentPage, IMainPageView
         throw new NotImplementedException();
     }
 
-    public void ShowCurrentBudgetsPage()
+    public async void ShowCurrentBudgetsPage()
     {
-        throw new NotImplementedException();
+        var page = new NavigationPage(new BudgetsPage(true));
+        await Navigation.PushAsync(page);
     }
 
-    public void ShowPreviousBudgetsPage()
+    public async void ShowPreviousBudgetsPage()
     {
-        throw new NotImplementedException();
+        var page = new NavigationPage(new BudgetsPage(false));
+        await Navigation.PushAsync(page);
     }
 
     public async void SyncComputer()

@@ -1,7 +1,6 @@
-﻿<?xml version = "1.0" encoding = "UTF-8" ?>
-<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:RingSoft.HomeLogix.Mobile"
+             xmlns:mobile="clr-namespace:RingSoft.HomeLogix.Mobile;assembly=RingSoft.HomeLogix.Mobile"
              x:Class="RingSoft.HomeLogix.Mobile.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,6 +8,45 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <mobile:ValueToForegroundConverter x:Key="ValueToForeground" />
+            <mobile:ValueToForegroundParameter ShowNegativeValuesInRed="True" x:Key="ShowNegativeValuesInRed" />
+            <mobile:ValueToForegroundParameter ShowPositiveValuesInGreen="True" ShowNegativeValuesInRed="True" x:Key="NegativeRedPositiveGreen"/>
+            <mobile:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <Color x:Key="Primary">#2196F3</Color>
+            <Style TargetType="Button">
+                <Setter Property="TextColor" Value="White"></Setter>
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="Disabled">
+                                <VisualState.Setters>
+                                    <Setter Property="BackgroundColor" Value="#332196F3" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+            <Style TargetType="Label" ApplyToDerivedTypes="True">
+                <Setter Property="Margin" Value="5,0"/>
+            </Style>
+            <Style TargetType="Label" x:Key="DecimalLabel">
+                <Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="NegativeLabel">
+                <Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+            </Style>
+
+            <Style TargetType="Label" x:Key="ControlLabel">
+                <Setter Property="HorizontalTextAlignment" Value="End"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
