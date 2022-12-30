@@ -31,7 +31,83 @@
 
 	<PropertyGroup>
 	  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<PackageIcon>home.png</PackageIcon>
 	</PropertyGroup>
+
+		<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	  <AndroidKeyStore>True</AndroidKeyStore>
+		<AndroidSigningKeyStore>HomeLogix.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>HomeLogix</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>ring203301971</AndroidSigningKeyPass>
+		<AndroidSigningStorePass>ring203301971</AndroidSigningStorePass>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	  <AndroidKeyStore>True</AndroidKeyStore>
+		<AndroidSigningKeyStore>HomeLogix.keystore</AndroidSigningKeyStore>
+		<AndroidSigningKeyAlias>HomeLogix</AndroidSigningKeyAlias>
+		<AndroidSigningKeyPass>ring203301971</AndroidSigningKeyPass>
+		<AndroidSigningStorePass>ring203301971</AndroidSigningStorePass>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationTitle>HomeLogix</ApplicationTitle>
+	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
+	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
+	</PropertyGroup>
+
 
 	<ItemGroup>
 		<!-- App Icon -->

@@ -9,8 +9,13 @@
         <vm:SourceHistoryViewModel x:Name="ViewModel"/>
     </ContentPage.BindingContext>
 
-    <VerticalStackLayout>
-        <ListView x:Name="ListView" ItemsSource="{Binding HistoryDataList}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue" >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="1" x:Name="ListView" ItemsSource="{Binding HistoryDataList}" SeparatorVisibility="None" HasUnevenRows="True" SeparatorColor="Blue" >
             <ListView.ItemTemplate>
                 <DataTemplate>
 
@@ -57,5 +62,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>
