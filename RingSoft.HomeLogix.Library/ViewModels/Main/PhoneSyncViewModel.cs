@@ -129,7 +129,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
             
-            message = "Mobile device sync complete. To get the mobile Google Play app, [GPlay].  There is no iOS App because I don't own a Macintosh computer.  My mobile app is written in Xamarin Forms.  If you would like to join my team and compile the Xamarin Forms iOS app, please [Email1].";
+            message = "Mobile device sync complete. To get the mobile Google Play app, [GPlay].  There is no iOS App because I don't own a Macintosh computer.  My mobile app is written in .NET MAUI 7.0.  If you would like to join my team and compile the .NET MAUI 7.0 iOS app, please [Email1].";
             caption = "Operation Complete";
             var hyperLinks = new List<HyperlinkData>();
             hyperLinks.Add(new HyperlinkData
