@@ -36,40 +36,40 @@
 
 		<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	  <AndroidKeyStore>True</AndroidKeyStore>
@@ -81,8 +81,8 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	  <AndroidKeyStore>True</AndroidKeyStore>
@@ -94,16 +94,16 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.19041.0|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|AnyCPU'">
 	  <ApplicationTitle>HomeLogix</ApplicationTitle>
-	  <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-	  <ApplicationVersion>21</ApplicationVersion>
+	  <ApplicationDisplayVersion>2.8</ApplicationDisplayVersion>
+	  <ApplicationVersion>28</ApplicationVersion>
 	  <ApplicationIdGuid>7402AA28-345C-4101-AA75-C2F2EB329F9F</ApplicationIdGuid>
 	  <ApplicationId>com.ringsoft.homelogix</ApplicationId>
 	</PropertyGroup>
@@ -111,8 +111,8 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
+		<!--<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />-->
+		<MauiIcon Include="Resources\AppIcon\home.svg" ForegroundFile="Resources\AppIcon\home.svg" />
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
