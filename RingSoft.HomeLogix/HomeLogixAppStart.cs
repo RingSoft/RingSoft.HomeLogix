@@ -5,6 +5,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library;
 using System.Windows;
+using RingSoft.App.Library;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.HomeLogix.HistoryMaintenance;
 using RingSoft.HomeLogix.Library.ViewModels;
@@ -21,7 +22,13 @@ namespace RingSoft.HomeLogix
 
             LookupControlsGlobals.LookupControlContentTemplateFactory =
                 new AppLookupContentTemplateFactory(application);
+        }
 
+        protected override void CheckVersion()
+        {
+#if !DEBUG
+            base.CheckVersion();
+#endif
         }
 
         protected override bool DoProcess()

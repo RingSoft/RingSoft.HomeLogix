@@ -79,6 +79,8 @@
 		<ac:DbMaintenanceButton x:Name="SyncPhoneButton" Content="_Sync With Mobile Device" ImageSource="{StaticResource PhoneImage}" Command="{Binding SyncPhoneCommand}"/>
 
             <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
+
+            <ac:DbMaintenanceButton  Content="_Upgrade Version" ImageSource="{StaticResource AfUpImage}" Command="{Binding UpgradeCommand}"/>
         </StackPanel>
         <Grid>
             <Grid.RowDefinitions>

@@ -36,6 +36,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ShowRichMessageBox(string message, string caption, RsMessageBoxIcons icon, List<HyperlinkData> hyperLinks = null);
 
         string GetWriteablePath();
+
+        bool UpgradeVersion();
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -355,6 +357,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand ManageBankAccountsCommand { get; }
         public RelayCommand SyncPhoneCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
+        public RelayCommand UpgradeCommand { get; }
 
         public int PageSize { get; } = 20;
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
@@ -388,6 +391,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             AdvancedFindCommand = new RelayCommand(LaunchAdvancedFind);
             CloseAppCommand = new RelayCommand(CloseApp);
             SyncPhoneCommand = new RelayCommand(SyncPhone);
+            UpgradeCommand = new RelayCommand(() =>
+            {
+                if (!View.UpgradeVersion())
+                {
+                    var message = "You are already on the latest version.";
+                    var caption = "Upgrade Not Necessary";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                }
+            });
         }
 
         public void OnViewLoaded(IMainView view)

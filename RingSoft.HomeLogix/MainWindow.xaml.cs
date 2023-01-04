@@ -7,6 +7,7 @@ using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;
 using System.Windows.Media;
+using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -22,7 +23,7 @@ namespace RingSoft.HomeLogix
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : IMainView
+    public partial class MainWindow : IMainView, ICheckVersionView
     {
         public MainWindow()
         {
@@ -190,6 +191,17 @@ namespace RingSoft.HomeLogix
         public string GetWriteablePath()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        }
+
+        public bool UpgradeVersion()
+        {
+            return AppStart.CheckVersion(this, true);
+        }
+
+        public void ShutDownApp()
+        {
+            Application.Current.Shutdown();
+            Environment.Exit(0);
         }
     }
 }
