@@ -149,6 +149,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override void ClearData()
         {
+            Id = 0;
             SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
             TotalAmount = 0;
         }

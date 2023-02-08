@@ -69,7 +69,7 @@ namespace RingSoft.HomeLogix.Library
             RingSoftAppGlobals.AppTitle = "HomeLogix";
             RingSoftAppGlobals.AppCopyright = "©2023 by Peter Ringering";
             RingSoftAppGlobals.AppGuid = "7b811d4b-e39a-4316-a1dd-ba58eeafede7";
-            RingSoftAppGlobals.AppVersion = 24;
+            RingSoftAppGlobals.AppVersion = 37;
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
         }
 
@@ -78,6 +78,7 @@ namespace RingSoft.HomeLogix.Library
         {
             DataRepository ??= new DataRepository();
             SystemGlobals.DataRepository = DataRepository;
+            SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
             InitializeLookupContext();
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));

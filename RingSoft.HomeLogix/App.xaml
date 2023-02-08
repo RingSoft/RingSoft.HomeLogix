@@ -59,6 +59,12 @@
 
             <Style TargetType="lc:DeleteRecordWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:PrintSetupWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+            <Style TargetType="lc:PrintingProcessingWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+            <Style TargetType="lc:GenericReportFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 
                 <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemLineTypeId}" HotKey="B">
