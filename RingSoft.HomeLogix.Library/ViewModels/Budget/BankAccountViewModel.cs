@@ -20,6 +20,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.Sqlite.Migrations;
 using System.Globalization;
 using RingSoft.HomeLogix.DataAccess;
+using RingSoft.Printing.Interop;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -1445,5 +1446,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
         }
 
+        protected override void SetupPrinterArgs(PrinterSetupArgs printerSetupArgs, int stringFieldIndex = 1, int numericFieldIndex = 1,
+            int memoFieldIndex = 1)
+        {
+            printerSetupArgs.PrintingProperties.ReportType = ReportTypes.Custom;
+            printerSetupArgs.PrintingProperties.CustomReportPathFileName =
+                $"{RingSoftAppGlobals.AssemblyDirectory}\\BankAccount.rpt";
+
+            base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
+        }
+
+        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        {
+            base.ProcessPrintOutputData(printerSetupArgs);
+        }
     }
 }

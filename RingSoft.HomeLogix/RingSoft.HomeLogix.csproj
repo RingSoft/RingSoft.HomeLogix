@@ -34,7 +34,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RingSoft.App.Controls" Version="5.5.2" />
+    <PackageReference Include="RingSoft.App.Controls" Version="5.5.5" />
   </ItemGroup>
 
   <ItemGroup>
@@ -61,6 +61,12 @@
     <Resource Include="Resources\stock_index_down.png" />
     <Resource Include="Resources\stock_index_up.png" />
     <Resource Include="Resources\transfer_left_right.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="BankAccount.rpt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
