@@ -557,8 +557,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TablesToDelete.Add(AppGlobals.LookupContext.BankAccountRegisterItems);
             TablesToDelete.Add(AppGlobals.LookupContext.BankAccountRegisterItemAmountDetails);
+
+            PrintProcessingHeader += BankAccountViewModel_PrintProcessingHeader;
         }
 
+        
         protected override void Initialize()
         {
             BankAccountView = View as IBankAccountView;
@@ -1456,9 +1459,42 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
         }
 
-        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        private void BankAccountViewModel_PrintProcessingHeader(object sender, PrinterDataProcessedEventArgs e)
         {
-            base.ProcessPrintOutputData(printerSetupArgs);
+            var bankAccountId =
+                e.OutputRow.GetRowValue(AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.Id).FieldName)
+                    .ToInt();
+
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var bankAccount = context.GetTable<BankAccount>().Include(p => p.RegisterItems)
+                .FirstOrDefault(p => p.Id == bankAccountId);
+
+            var registerItems = bankAccount.RegisterItems.ToList().OrderBy(p => p.ItemDate)
+                .ThenBy(p => p.ItemType);
+
+            var index = 0;
+            var detailsChunk = new List<PrintingInputDetailsRow>();
+            foreach (var bankAccountRegisterItem in registerItems)
+            {
+                var detailsRow = new PrintingInputDetailsRow();
+                detailsRow.HeaderRowKey = e.HeaderRow.RowKey;
+                detailsRow.TablelId = 1;
+
+                detailsRow.StringField01 =
+                    bankAccountRegisterItem.ItemDate.FormatDateValue(DbDateTypes.DateOnly, false);
+
+                detailsChunk.Add(detailsRow);
+
+                if (index % 10 == 0)
+                {
+                    PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+                    detailsChunk.Clear();
+                }
+
+                index++;
+            }
+
+            PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
         }
     }
 }
