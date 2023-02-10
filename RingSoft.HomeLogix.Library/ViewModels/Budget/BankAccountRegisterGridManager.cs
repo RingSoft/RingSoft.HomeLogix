@@ -149,6 +149,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var bankAccountRegisterGridRow in rows)
             {
+                var registerData = bankAccountRegisterGridRow.GetRegisterData();
+                newBalance = BankAccountViewModel.CalcNewBalance(ViewModel.AccountType, registerData, newBalance);
+
                 if (lowestBalanceDate == null)
                     lowestBalanceDate = bankAccountRegisterGridRow.ItemDate.AddDays(-1);
 
@@ -158,39 +161,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
-                    switch (bankAccountRegisterGridRow.TransactionType)
-                    {
-                        case TransactionTypes.Deposit:
-                            switch (ViewModel.AccountType)
-                            {
-                                case BankAccountTypes.Checking:
-                                case BankAccountTypes.Savings:
-                                    newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                                    break;
-                                case BankAccountTypes.CreditCard:
-                                    newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
-                            }
-                            break;
-                        case TransactionTypes.Withdrawal:
-                            switch (ViewModel.AccountType)
-                            {
-                                case BankAccountTypes.Checking:
-                                case BankAccountTypes.Savings:
-                                    newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                                    break;
-                                case BankAccountTypes.CreditCard:
-                                    newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                                    break;
-                                default:
-                                    throw new ArgumentOutOfRangeException();
-                            }
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
+                    //switch (bankAccountRegisterGridRow.TransactionType)
+                    //{
+                    //    case TransactionTypes.Deposit:
+                    //        switch (ViewModel.AccountType)
+                    //        {
+                    //            case BankAccountTypes.Checking:
+                    //            case BankAccountTypes.Savings:
+                    //                newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                    //                break;
+                    //            case BankAccountTypes.CreditCard:
+                    //                newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                    //                break;
+                    //            default:
+                    //                throw new ArgumentOutOfRangeException();
+                    //        }
+                    //        break;
+                    //    case TransactionTypes.Withdrawal:
+                    //        switch (ViewModel.AccountType)
+                    //        {
+                    //            case BankAccountTypes.Checking:
+                    //            case BankAccountTypes.Savings:
+                    //                newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
+                    //                break;
+                    //            case BankAccountTypes.CreditCard:
+                    //                newBalance += bankAccountRegisterGridRow.ProjectedAmount;
+                    //                break;
+                    //            default:
+                    //                throw new ArgumentOutOfRangeException();
+                    //        }
+                    //        break;
+                    //    default:
+                    //        throw new ArgumentOutOfRangeException();
+                    //}
 
                     bankAccountRegisterGridRow.Balance = newBalance;
                 }

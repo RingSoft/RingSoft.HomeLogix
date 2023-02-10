@@ -16,6 +16,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 using RingSoft.HomeLogix.SqlServer;
 
@@ -37,7 +38,7 @@ namespace RingSoft.HomeLogix.Library
             ProgressText = progressText;
         }
     }
-    public class AppGlobals
+    public static class AppGlobals
     {
         public const int BudgetItemIncomeType = (int) BudgetItemTypes.Income;
         public const int BudgetItemExpenseType = (int) BudgetItemTypes.Expense;
@@ -396,5 +397,18 @@ namespace RingSoft.HomeLogix.Library
             return RingSoftAppGlobals.GetWebResponse($"{url}", method);
         }
 
+        public static MobileInterop.PhoneModel.TransactionTypes ToRegisterDataTranType(
+            this HomeLogix.Library.ViewModels.Budget.TransactionTypes sourceTransactionType)
+        {
+            switch (sourceTransactionType)
+            {
+                case TransactionTypes.Deposit:
+                    return MobileInterop.PhoneModel.TransactionTypes.Deposit;
+                case TransactionTypes.Withdrawal:
+                    return MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(sourceTransactionType), sourceTransactionType, null);
+            }
+        }
     }
 }

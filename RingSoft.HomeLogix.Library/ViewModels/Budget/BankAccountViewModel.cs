@@ -22,6 +22,7 @@ using System.Globalization;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.Printing.Interop;
 using RingSoft.HomeLogix.MobileInterop.PhoneModel;
+using RingSoft.HomeLogix.Library.PhoneModel;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -1467,7 +1468,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     .ToInt();
 
             var context = AppGlobals.DataRepository.GetDataContext();
-            var bankAccount = context.GetTable<BankAccount>().Include(p => p.RegisterItems)
+            var bankAccount = context.GetTable<BankAccount>()
+                .Include(p => p.RegisterItems)
                 .FirstOrDefault(p => p.Id == bankAccountId);
 
             var registerItems = bankAccount.RegisterItems.ToList().OrderBy(p => p.ItemDate)
@@ -1475,14 +1477,49 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var index = 0;
             var detailsChunk = new List<PrintingInputDetailsRow>();
+            var newBalance = bankAccount.CurrentBalance;
+
+            var tranTypeEnum = new EnumFieldTranslation();
+            tranTypeEnum.LoadFromEnum<MobileInterop.PhoneModel.TransactionTypes>();
+            var numFormat = GblMethods.GetNumFormat(2, true);
+
+            e.HeaderRow.NumberField01 = bankAccount.CurrentBalance.ToString(numFormat);
+
+            var lowestBalance = bankAccount.CurrentBalance;
+            DateTime? lowestDate = null;
+
             foreach (var bankAccountRegisterItem in registerItems)
             {
+                if (lowestDate == null)
+                {
+                    lowestDate = bankAccountRegisterItem.ItemDate;
+                }
                 var detailsRow = new PrintingInputDetailsRow();
                 detailsRow.HeaderRowKey = e.HeaderRow.RowKey;
                 detailsRow.TablelId = 1;
 
                 detailsRow.StringField01 =
                     bankAccountRegisterItem.ItemDate.FormatDateValue(DbDateTypes.DateOnly, false);
+                
+                var registerData = GetRegisterData(bankAccountRegisterItem);
+
+                detailsRow.StringField02 = registerData.Description;
+
+                var tranTypeField =
+                    tranTypeEnum.TypeTranslations.FirstOrDefault(p =>
+                        p.NumericValue == (int)registerData.TransactionType);
+                detailsRow.StringField03 = tranTypeField.TextValue;
+
+                newBalance = CalcNewBalance((BankAccountTypes)bankAccount.AccountType, registerData, newBalance);
+
+                if (newBalance < lowestBalance)
+                {
+                    lowestBalance = newBalance;
+                    lowestDate = bankAccountRegisterItem.ItemDate;
+                }
+
+                detailsRow.NumberField01 = registerData.ProjectedAmount.ToString(numFormat);
+                detailsRow.NumberField02 = newBalance.ToString(numFormat);
 
                 detailsChunk.Add(detailsRow);
 
@@ -1495,6 +1532,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 index++;
             }
 
+            e.HeaderRow.NumberField02 = newBalance.ToString(numFormat);
+            e.HeaderRow.StringField03 = lowestDate.Value.FormatDateValue(DbDateTypes.DateOnly);
+            e.HeaderRow.NumberField03 = lowestBalance.ToString(numFormat);
             PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
         }
 
@@ -1504,7 +1544,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.BankAccountId = register.BankAccountId;
             registerData.Description = register.Description;
             registerData.Completed = register.Completed;
-            registerData.ProjectedAmount = register.ProjectedAmount;
+            registerData.ProjectedAmount = Math.Abs(register.ProjectedAmount);
             registerData.ItemDate = register.ItemDate;
             registerData.IsNegative = register.IsNegative;
             //registerData.RegisterItemType =
@@ -1549,6 +1589,47 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return registerData;
+        }
+
+        public static decimal CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, decimal balance)
+        {
+            var amount = registerData.ProjectedAmount;
+            switch (accountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    switch (registerData.TransactionType)
+                    {
+                        case MobileInterop.PhoneModel.TransactionTypes.Deposit:
+                            balance += amount;
+                            break;
+                        case MobileInterop.PhoneModel.TransactionTypes.Withdrawal:
+                            balance -= amount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
+                case BankAccountTypes.CreditCard:
+                    switch (registerData.TransactionType)
+                    {
+                        case MobileInterop.PhoneModel.TransactionTypes.Deposit:
+                            balance -= amount;
+                            break;
+                        case MobileInterop.PhoneModel.TransactionTypes.Withdrawal:
+                            balance += amount;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return balance;
         }
     }
 }

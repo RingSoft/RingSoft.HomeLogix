@@ -8,12 +8,13 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.MobileInterop.PhoneModel;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
     public abstract class BankAccountRegisterGridRow : DbMaintenanceDataEntryGridRow<BankAccountRegisterItem>
     {
-        public abstract BankAccountRegisterItemTypes LineType { get; }
+        public abstract DataAccess.Model.BankAccountRegisterItemTypes LineType { get; }
 
         public new BankAccountRegisterGridManager Manager { get; }
             
@@ -235,8 +236,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 if (entity.BudgetItem != null)
                 {
-                    if ((BankAccountRegisterItemTypes) entity.ItemType ==
-                        BankAccountRegisterItemTypes.Miscellaneous)
+                    if ((DataAccess.Model.BankAccountRegisterItemTypes) entity.ItemType ==
+                        DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous)
                     {
                         IsNegative = entity.IsNegative;
                         switch (entity.BudgetItem.Type)
@@ -345,5 +346,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
         }
+
+        internal RegisterData GetRegisterData()
+        {
+            var registerData = new RegisterData();
+            registerData.BankAccountId = Manager.ViewModel.Id;
+            registerData.Description = Description;
+            registerData.Completed = Completed;
+            registerData.ProjectedAmount = ProjectedAmount;
+            registerData.ItemDate = ItemDate;
+            registerData.IsNegative = IsNegative;
+            //registerData.RegisterItemType =
+            //    (MobileInterop.PhoneModel.BankAccountRegisterItemTypes)register.ItemType;
+            registerData.RegisterItemType = MobileInterop.PhoneModel.BankAccountRegisterItemTypes.BudgetItem;
+
+            registerData.TransactionType = TransactionType.ToRegisterDataTranType();
+
+            return registerData;
+        }
+
     }
 }
