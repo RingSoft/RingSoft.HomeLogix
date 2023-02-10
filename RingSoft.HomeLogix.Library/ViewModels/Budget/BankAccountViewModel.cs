@@ -21,6 +21,7 @@ using RingSoft.HomeLogix.Sqlite.Migrations;
 using System.Globalization;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.Printing.Interop;
+using RingSoft.HomeLogix.MobileInterop.PhoneModel;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -1114,12 +1115,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var addToBudgetHistory = true;
                 switch (completedRow.LineType)
                 {
-                    case BankAccountRegisterItemTypes.BudgetItem:
+                    case DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem:
                         break;
-                    case BankAccountRegisterItemTypes.Miscellaneous:
+                    case DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous:
                         completedRow.ProjectedAmount = 0;
                         break;
-                    case BankAccountRegisterItemTypes.TransferToBankAccount:
+                    case DataAccess.Model.BankAccountRegisterItemTypes.TransferToBankAccount:
                         if (completedRow is BankAccountRegisterGridTransferRow transferRow)
                         {
                             var transferRegisterItem =
@@ -1372,7 +1373,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             return RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
                 .Any(a => a.BudgetItemId == budgetItemId
-                && a.LineType != BankAccountRegisterItemTypes.Miscellaneous);
+                && a.LineType != HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous);
         }
 
         public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
@@ -1495,6 +1496,59 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
+        }
+
+        public static RegisterData GetRegisterData(BankAccountRegisterItem register)
+        {
+            var registerData = new RegisterData();
+            registerData.BankAccountId = register.BankAccountId;
+            registerData.Description = register.Description;
+            registerData.Completed = register.Completed;
+            registerData.ProjectedAmount = register.ProjectedAmount;
+            registerData.ItemDate = register.ItemDate;
+            registerData.IsNegative = register.IsNegative;
+            //registerData.RegisterItemType =
+            //    (MobileInterop.PhoneModel.BankAccountRegisterItemTypes)register.ItemType;
+            registerData.RegisterItemType = MobileInterop.PhoneModel.BankAccountRegisterItemTypes.BudgetItem;
+
+            if (register.BudgetItem == null)
+            {
+                if (register.ProjectedAmount < 0)
+                {
+                    registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
+                }
+                else
+                {
+                    registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
+                }
+            }
+            else
+            {
+                switch (register.BudgetItem.Type)
+                {
+                    case BudgetItemTypes.Income:
+                        registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
+                        break;
+                    case BudgetItemTypes.Expense:
+                        registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
+                        break;
+                    case BudgetItemTypes.Transfer:
+                        if (register.ProjectedAmount < 0)
+                        {
+                            registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Withdrawal;
+                        }
+                        else
+                        {
+                            registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
+                        }
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            return registerData;
         }
     }
 }

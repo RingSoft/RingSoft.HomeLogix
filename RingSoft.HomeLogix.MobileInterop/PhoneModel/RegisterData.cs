@@ -16,6 +16,8 @@
 
     public class RegisterData
     {
+        public BankAccountTypes AccountType { get; set; }
+
         public int BankAccountId { get; set; }
 
         public DateTime ItemDate { get; set; }
