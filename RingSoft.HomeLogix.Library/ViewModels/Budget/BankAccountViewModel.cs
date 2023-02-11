@@ -1461,19 +1461,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.SetupPrinterArgs(printerSetupArgs, stringFieldIndex, numericFieldIndex, memoFieldIndex);
         }
 
+        public override void ProcessPrintOutputData(PrinterSetupArgs printerSetupArgs)
+        {
+            base.ProcessPrintOutputData(printerSetupArgs);
+            var customProperties = new List<PrintingCustomProperty>();
+            customProperties.Add(new PrintingCustomProperty
+            {
+                Name = "intRecordCount",
+                Value = printerSetupArgs.TotalRecords.ToString(),
+            });
+            PrintingInteropGlobals.PropertiesProcessor.CustomProperties = customProperties;
+        }
+
         private void BankAccountViewModel_PrintProcessingHeader(object sender, PrinterDataProcessedEventArgs e)
         {
             var bankAccountId =
                 e.OutputRow.GetRowValue(AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.Id).FieldName)
                     .ToInt();
 
-            var context = AppGlobals.DataRepository.GetDataContext();
-            var bankAccount = context.GetTable<BankAccount>()
-                .Include(p => p.RegisterItems)
-                .FirstOrDefault(p => p.Id == bankAccountId);
-
-            var registerItems = bankAccount.RegisterItems.ToList().OrderBy(p => p.ItemDate)
-                .ThenBy(p => p.ItemType);
+            var bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccountId);
+            var registerItems = bankAccount.RegisterItems;
 
             var index = 0;
             var detailsChunk = new List<PrintingInputDetailsRow>();
@@ -1533,7 +1540,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             e.HeaderRow.NumberField02 = newBalance.ToString(numFormat);
+            if (lowestDate == null)
+            {
+                lowestDate = DateTime.Now;
+            }
             e.HeaderRow.StringField03 = lowestDate.Value.FormatDateValue(DbDateTypes.DateOnly);
+
             e.HeaderRow.NumberField03 = lowestBalance.ToString(numFormat);
             PrintingInteropGlobals.DetailsProcessor.AddChunk(detailsChunk, e.PrinterSetup.PrintingProperties);
         }
