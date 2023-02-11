@@ -26,6 +26,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 {
                     return;
                 }
+
                 _bankAccount = value;
                 OnPropertyChanged();
             }
@@ -42,6 +43,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 {
                     return;
                 }
+
                 _periodEndingDate = value;
                 OnPropertyChanged();
             }
@@ -58,12 +60,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 {
                     return;
                 }
+
                 _totalDeposits = value;
                 OnPropertyChanged();
             }
         }
 
-        private decimal _totalWithdrawals ;
+        private decimal _totalWithdrawals;
 
         public decimal TotalWithdrawals
         {
@@ -74,7 +77,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 {
                     return;
                 }
-                _totalWithdrawals  = value;
+
+                _totalWithdrawals = value;
                 OnPropertyChanged();
             }
         }
@@ -128,6 +132,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         public ViewModelInput ViewModelInput { get; set; }
 
         private PeriodHistoryTypes _mode;
+        private bool _noFilters;
+        private BankAccountPeriodHistory _bankPeriodHistory;
 
         protected override void Initialize()
         {
@@ -146,6 +152,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             {
                 ViewModelInput = new ViewModelInput();
                 _mode = PeriodHistoryTypes.Monthly;
+                _noFilters = true;
             }
 
             if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
@@ -166,20 +173,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         protected override BankAccountPeriodHistory
             PopulatePrimaryKeyControls(BankAccountPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var bankPeriodHistory = AppGlobals.DataRepository.GetBankPeriodHistory(newEntity.BankAccountId,
+            _bankPeriodHistory = AppGlobals.DataRepository.GetBankPeriodHistory(newEntity.BankAccountId,
                 (PeriodHistoryTypes)newEntity.PeriodType, newEntity.PeriodEndingDate);
 
-            var bankItem = AppGlobals.DataRepository.GetBankAccount(bankPeriodHistory.BankAccountId);
+            var bankItem = AppGlobals.DataRepository.GetBankAccount(_bankPeriodHistory.BankAccountId);
 
             BankAccount = bankItem.Description;
 
-            PeriodEndingDate = bankPeriodHistory.PeriodEndingDate;
+            PeriodEndingDate = _bankPeriodHistory.PeriodEndingDate;
 
             FindButtonLookupDefinition.ReadOnlyMode = false;
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
-                bankPeriodHistory.BankAccountId);
+                _bankPeriodHistory.BankAccountId);
 
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var table = AppGlobals.LookupContext.History;
@@ -212,15 +219,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Month:D2}", sql);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals,
+                    $"{_bankPeriodHistory.PeriodEndingDate.Month:D2}", sql);
             }
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{bankPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
 
-            ViewModelInput.HistoryFilterBankAccountPeriod = bankPeriodHistory;
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals,
+                $"{_bankPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
+
+            ViewModelInput.HistoryFilterBankAccountPeriod = _bankPeriodHistory;
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
-            return bankPeriodHistory;
+            return _bankPeriodHistory;
 
         }
 
@@ -261,13 +271,55 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             base.OnWindowClosing(e);
         }
 
-        //FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-        //    TableDefinition.GetFieldDefinition(p => p.BankAccountId),
-        //    Conditions.Equals, bankPeriodHistory.BankAccountId);
+        private void MakeFilters(LookupDefinitionBase lookupDefinition)
+        {
+            if (!_noFilters)
+            {
+                lookupDefinition.FilterDefinition.AddFixedFilter(
+                    TableDefinition.GetFieldDefinition(p => p.BankAccountId),
+                    Conditions.Equals, _bankPeriodHistory.BankAccountId);
 
-        //FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-        //    TableDefinition.GetFieldDefinition(p => p.PeriodType),
-        //    Conditions.Equals, bankPeriodHistory.PeriodType);
+                lookupDefinition.FilterDefinition.AddFixedFilter(
+                    TableDefinition.GetFieldDefinition(p => p.PeriodType),
+                    Conditions.Equals, _bankPeriodHistory.PeriodType);
+            }
+        }
+
+        protected override void PrintOutput()
+        {
+            var printerSetup = CreatePrinterSetupArgs();
+
+            var callBack = new HistoryPrintFilterCallBack();
+            callBack.FilterDate = PeriodEndingDate;
+
+            callBack.PrintOutput += (sender, model) =>
+            {
+                if (printerSetup.LookupDefinition is LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> historyLookup)
+                {
+                    historyLookup.FilterDefinition.ClearFixedFilters();
+
+                    MakeFilters(printerSetup.LookupDefinition);
+
+                    if (model.BeginningDate.HasValue)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFilter(p => p.PeriodEndingDate,
+                            Conditions.GreaterThanEquals,
+                            model.BeginningDate.Value);
+                    }
+
+                    if (model.EndingDate.HasValue)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFilter(p => p.PeriodEndingDate,
+                            Conditions.LessThanEquals,
+                            model.EndingDate.Value);
+                    }
+                }
+
+                Processor.PrintOutput(printerSetup);
+            };
+
+            AppGlobals.MainViewModel.View.ShowHistoryPrintFilterWindow(callBack);
+        }
 
 
         public override TableDefinition<BankAccountPeriodHistory> TableDefinition =>
