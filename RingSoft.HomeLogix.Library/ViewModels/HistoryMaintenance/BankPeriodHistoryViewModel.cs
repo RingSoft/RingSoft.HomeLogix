@@ -175,14 +175,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             PeriodEndingDate = bankPeriodHistory.PeriodEndingDate;
 
-            FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-                TableDefinition.GetFieldDefinition(p => p.BankAccountId),
-                Conditions.Equals, bankPeriodHistory.BankAccountId);
-
-            FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-                TableDefinition.GetFieldDefinition(p => p.PeriodType),
-                Conditions.Equals, bankPeriodHistory.PeriodType);
-
             FindButtonLookupDefinition.ReadOnlyMode = false;
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
@@ -268,6 +260,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             ViewModelInput.HistoryFilterBankAccountPeriod = null;
             base.OnWindowClosing(e);
         }
+
+        //FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
+        //    TableDefinition.GetFieldDefinition(p => p.BankAccountId),
+        //    Conditions.Equals, bankPeriodHistory.BankAccountId);
+
+        //FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
+        //    TableDefinition.GetFieldDefinition(p => p.PeriodType),
+        //    Conditions.Equals, bankPeriodHistory.PeriodType);
+
 
         public override TableDefinition<BankAccountPeriodHistory> TableDefinition =>
             AppGlobals.LookupContext.BankAccountPeriodHistory;
