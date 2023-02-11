@@ -10,11 +10,14 @@ using System.Windows.Media;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.HomeLogix.HistoryMaintenance;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.PhoneModel;
+using RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;
 using ScottPlot;
 using Color = System.Drawing.Color;
 
@@ -196,6 +199,14 @@ namespace RingSoft.HomeLogix
         public bool UpgradeVersion()
         {
             return AppStart.CheckVersion(this, true);
+        }
+
+        public void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callback)
+        {
+            var window = new HistoryPrintFilterWindow(callback);
+            window.Owner = WPFControlsGlobals.ActiveWindow;
+            window.ShowInTaskbar = false;
+            window.ShowDialog();
         }
 
         public void ShutDownApp()

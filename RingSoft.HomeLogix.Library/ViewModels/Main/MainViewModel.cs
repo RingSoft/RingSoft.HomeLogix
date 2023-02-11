@@ -14,6 +14,7 @@ using RingSoft.DbLookup.TableProcessing;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
@@ -38,6 +39,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         string GetWriteablePath();
 
         bool UpgradeVersion();
+
+        void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack);
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl

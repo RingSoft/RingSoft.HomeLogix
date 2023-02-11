@@ -171,28 +171,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         protected override BudgetPeriodHistory PopulatePrimaryKeyControls(BudgetPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var budgetPeriodHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(newEntity.BudgetItemId,
+            _budgetPeriodHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(newEntity.BudgetItemId,
                 (PeriodHistoryTypes)newEntity.PeriodType, newEntity.PeriodEndingDate);
 
-            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetPeriodHistory.BudgetItemId);
+            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(_budgetPeriodHistory.BudgetItemId);
 
             BudgetItem = budgetItem.Description;
             
-            PeriodEndingDate = budgetPeriodHistory.PeriodEndingDate;
-
-            FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-                TableDefinition.GetFieldDefinition(p => p.BudgetItemId),
-                Conditions.Equals, budgetPeriodHistory.BudgetItemId);
-
-            FindButtonLookupDefinition.FilterDefinition.AddFixedFilter(
-                TableDefinition.GetFieldDefinition(p => p.PeriodType),
-                Conditions.Equals, budgetPeriodHistory.PeriodType);
+            PeriodEndingDate = _budgetPeriodHistory.PeriodEndingDate;
 
             FindButtonLookupDefinition.ReadOnlyMode = false;
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId, Conditions.Equals,
-                budgetPeriodHistory.BudgetItemId);
+                _budgetPeriodHistory.BudgetItemId);
 
             var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
             var table = AppGlobals.LookupContext.History;
@@ -224,17 +216,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{budgetPeriodHistory.PeriodEndingDate.Month:D2}", sql);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{_budgetPeriodHistory.PeriodEndingDate.Month:D2}", sql);
             }
             
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{budgetPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
+            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{_budgetPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
 
-            _budgetPeriodHistory = budgetPeriodHistory;
-            ViewModelInput.HistoryFilterBudgetPeriodItem = budgetPeriodHistory;
+            _budgetPeriodHistory = _budgetPeriodHistory;
+            ViewModelInput.HistoryFilterBudgetPeriodItem = _budgetPeriodHistory;
                 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
-            return budgetPeriodHistory;
+            return _budgetPeriodHistory;
         }
 
         protected override void LoadFromEntity(BudgetPeriodHistory entity)
@@ -281,6 +273,48 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         {
             ViewModelInput.HistoryFilterBudgetPeriodItem = null;
             base.OnWindowClosing(e);
+        }
+
+        protected override void PrintOutput()
+        {
+            var printerSetup = CreatePrinterSetupArgs();
+
+            var callBack = new HistoryPrintFilterCallBack();
+            callBack.FilterDate = PeriodEndingDate;
+
+            callBack.PrintOutput += (sender, model) =>
+            {
+                if (printerSetup.LookupDefinition is LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory> historyLookup)
+                {
+                    historyLookup.FilterDefinition.ClearFixedFilters();
+
+                    historyLookup.FilterDefinition.AddFixedFilter(
+                        TableDefinition.GetFieldDefinition(p => p.BudgetItemId),
+                        Conditions.Equals, _budgetPeriodHistory.BudgetItemId);
+
+                    historyLookup.FilterDefinition.AddFixedFilter(
+                        TableDefinition.GetFieldDefinition(p => p.PeriodType), Conditions.Equals,
+                        _budgetPeriodHistory.PeriodType);
+
+                    if (model.BeginningDate.HasValue)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFilter(p => p.PeriodEndingDate,
+                            Conditions.GreaterThanEquals,
+                            model.BeginningDate.Value);
+                    }
+
+                    if (model.EndingDate.HasValue)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFilter(p => p.PeriodEndingDate,
+                            Conditions.LessThanEquals,
+                            model.EndingDate.Value);
+                    }
+                }
+
+                Processor.PrintOutput(printerSetup);
+            };
+
+            AppGlobals.MainViewModel.View.ShowHistoryPrintFilterWindow(callBack);
         }
     }
 }
