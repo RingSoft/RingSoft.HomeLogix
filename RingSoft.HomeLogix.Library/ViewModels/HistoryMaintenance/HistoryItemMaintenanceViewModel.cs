@@ -311,11 +311,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             var historyItem = AppGlobals.DataRepository.GetHistoryItem(newEntity.Id);
             Id = newEntity.Id;
 
-            ViewLookupDefinition.FilterDefinition.ClearFixedFilters();
             //DbDataProcessor.ShowSqlStatementWindow();
+            MakeFilters(ViewLookupDefinition);
+
+            SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
+            SourceHistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.HistoryId, Conditions.Equals, Id);
+
+            SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+
+            return historyItem;
+        }
+
+        private void MakeFilters(LookupDefinitionBase lookupDefinition)
+        {
+            lookupDefinition.FilterDefinition.ClearFixedFilters();
+
             if (_budgetItemFilter != null)
             {
-                ViewLookupDefinition.FilterDefinition.AddFixedFilter(
+                lookupDefinition.FilterDefinition.AddFixedFilter(
                     AppGlobals.LookupContext.History.GetFieldDefinition(p => p.BudgetItemId),
                     Conditions.Equals, _budgetItemFilter.Id);
             }
@@ -335,7 +348,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
                 //formula += $"'{filterDate.Month:D2}'";
 
-                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month", 
+                lookupDefinition.FilterDefinition.AddFixedFilter("Month",
                     Conditions.Equals, $"{filterDate.Month:D2}", formula);
 
                 //formula =
@@ -344,7 +357,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
                 //formula += $"'{filterDate.Year:D4}'";
 
-                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
+                lookupDefinition.FilterDefinition.AddFixedFilter("Year",
                     Conditions.Equals, $"{filterDate.Year:D4}", formula);
             }
 
@@ -353,7 +366,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 filterDate = _bankAccountPeriodHistoryFilter.PeriodEndingDate;
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
 
-                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Month",
+                lookupDefinition.FilterDefinition.AddFixedFilter("Month",
                     Conditions.Equals, $"{filterDate.Month:D2}", formula);
 
                 //formula =
@@ -362,24 +375,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
                 //formula += $"'{filterDate.Year:D4}'";
 
-                ViewLookupDefinition.FilterDefinition.AddFixedFilter("Year",
+                lookupDefinition.FilterDefinition.AddFixedFilter("Year",
                     Conditions.Equals, $"{filterDate.Year:D4}", formula);
             }
 
 
             if (_bankAccountFilter != null)
             {
-                ViewLookupDefinition.FilterDefinition.AddFixedFilter(
+                lookupDefinition.FilterDefinition.AddFixedFilter(
                     AppGlobals.LookupContext.History.GetFieldDefinition(p => p.BankAccountId),
                     Conditions.Equals, _bankAccountFilter.Id);
             }
-
-            SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
-            SourceHistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.HistoryId, Conditions.Equals, Id);
-
-            SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
-
-            return historyItem;
         }
 
         private static string GetDateFormula(bool month)
@@ -497,5 +503,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
             return base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
         }
+
+        protected override void PrintOutput()
+        {
+            var printerSetup = CreatePrinterSetupArgs();
+
+            var callBack = new HistoryPrintFilterCallBack();
+            callBack.FilterDate = Date;
+
+            callBack.PrintOutput += (sender, model) =>
+            {
+                MakeFilters(printerSetup.LookupDefinition);
+
+                if (printerSetup.LookupDefinition is LookupDefinition<HistoryLookup, History> historyLookup)
+                {
+                    if (model.BeginningDate.HasValue)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFilter(p => p.Date,
+                            Conditions.GreaterThanEquals,
+                            model.BeginningDate.Value);
+                    }
+
+                    if (model.EndingDate.HasValue)
+                    {
+                        historyLookup.FilterDefinition.AddFixedFilter(p => p.Date,
+                            Conditions.LessThanEquals,
+                            model.EndingDate.Value);
+                    }
+                }
+
+                Processor.PrintOutput(printerSetup);
+            };
+
+            AppGlobals.MainViewModel.View.ShowHistoryPrintFilterWindow(callBack);
+        }
+
     }
 }
