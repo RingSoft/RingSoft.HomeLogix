@@ -34,7 +34,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RingSoft.App.Controls" Version="7.0.0" />
+    <PackageReference Include="RingSoft.App.Controls" Version="7.0.1" />
   </ItemGroup>
 
   <ItemGroup>
