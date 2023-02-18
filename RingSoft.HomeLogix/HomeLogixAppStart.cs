@@ -26,7 +26,9 @@ namespace RingSoft.HomeLogix
 
         protected override void CheckVersion()
         {
-#if !DEBUG
+#if DEBUG
+            RingSoftAppGlobals.IsAppVersionOld();
+#else
             base.CheckVersion();
 #endif
         }

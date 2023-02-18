@@ -1605,6 +1605,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public static decimal CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, decimal balance)
         {
+            if (registerData.Completed)
+            {
+                return balance;
+            }
             var amount = registerData.ProjectedAmount;
             switch (accountType)
             {

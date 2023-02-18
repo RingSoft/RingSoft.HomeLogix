@@ -41,6 +41,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         bool UpgradeVersion();
 
         void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack);
+
+        void ShowAbout();
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -361,6 +363,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand SyncPhoneCommand { get; }
         public RelayCommand AdvancedFindCommand { get; }
         public RelayCommand UpgradeCommand { get; }
+        public RelayCommand AboutCommand { get; }
 
         public int PageSize { get; } = 20;
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
@@ -403,6 +406,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
                 }
             });
+            AboutCommand = new RelayCommand((() =>
+            {
+                View.ShowAbout();
+            }));
         }
 
         public void OnViewLoaded(IMainView view)

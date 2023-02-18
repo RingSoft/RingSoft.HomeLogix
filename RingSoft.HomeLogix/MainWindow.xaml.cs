@@ -209,6 +209,15 @@ namespace RingSoft.HomeLogix
             window.ShowDialog();
         }
 
+        public void ShowAbout()
+        {
+            var splashWindow = new AppSplashWindow(false);
+            splashWindow.Title = "About HomeLogix";
+            splashWindow.Owner = this;
+            splashWindow.ShowInTaskbar = false;
+            splashWindow.ShowDialog();
+        }
+
         public void ShutDownApp()
         {
             Application.Current.Shutdown();
