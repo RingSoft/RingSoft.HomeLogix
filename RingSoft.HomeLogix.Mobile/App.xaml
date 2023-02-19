@@ -34,6 +34,8 @@
             </Style>
             <Style TargetType="Label" ApplyToDerivedTypes="True">
                 <Setter Property="Margin" Value="5,0"/>
+                <Setter Property="LineBreakMode" Value="WordWrap"/>
+                <Setter Property="MaximumWidthRequest" Value="200"/>
             </Style>
             <Style TargetType="Label" x:Key="DecimalLabel">
                 <Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=Text, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
@@ -46,6 +48,7 @@
             <Style TargetType="Label" x:Key="ControlLabel">
                 <Setter Property="HorizontalTextAlignment" Value="End"/>
             </Style>
+
 
         </ResourceDictionary>
     </Application.Resources>
