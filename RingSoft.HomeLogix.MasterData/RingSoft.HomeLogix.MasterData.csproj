@@ -9,7 +9,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RingSoft.App.Library" Version="7.0.4.11" />
+    <PackageReference Include="RingSoft.App.Library" Version="7.0.5" />
   </ItemGroup>
 
 </Project>
