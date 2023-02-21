@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
@@ -182,8 +183,9 @@ namespace RingSoft.HomeLogix.DataAccess
             + $" THEN {table}.{actualField} - {table}.{projectedField}"
             + $" ELSE {table}.{projectedField} - {table}.{actualField} END";
 
-            HistoryLookup.Include(p => p.BudgetItem).
-            AddVisibleColumnDefinition(p => p.Difference, "Difference", formula, 15, FieldDataTypes.Decimal).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
+            HistoryLookup.Include(p => p.BudgetItem)
+                .AddVisibleColumnDefinition(p => p.Difference, "Difference", formula, 15, FieldDataTypes.Decimal)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
                 .DoShowPositiveValuesInGreen();
             HistoryLookup.InitialOrderByType = OrderByTypes.Descending;
             History.HasLookupDefinition(HistoryLookup);
@@ -316,6 +318,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BudgetItemSources.PriorityLevel = 30;
 
+            BudgetPeriodHistory.PriorityLevel = 40;
+
             BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
@@ -326,12 +330,14 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankAccountPeriodHistory.GetFieldDefinition(p => p.PeriodType).IsEnum<PeriodHistoryTypes>();
 
+            History.PriorityLevel = 100;
             History.GetFieldDefinition(p => p.ItemType).HasContentTemplateId(RegisterTypeCustomContentId);
 
             History.GetFieldDefinition(p => p.ProjectedAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
 
             History.GetFieldDefinition(p => p.ActualAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
 
+            SourceHistory.PriorityLevel = 200;
             SourceHistory.GetFieldDefinition(p => p.Amount).HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             BankAccountRegisterItems.GetFieldDefinition(p => p.ItemType).IsEnum<BankAccountRegisterItemTypes>();
