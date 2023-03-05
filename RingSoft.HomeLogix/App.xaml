@@ -65,6 +65,8 @@
 
             <Style TargetType="lc:GenericReportFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
+            <Style TargetType="lc:ListWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 
                 <dec:DataEntryCustomContentTemplateItem ItemId="{x:Static lib:AppGlobals.BudgetItemLineTypeId}" HotKey="B">
