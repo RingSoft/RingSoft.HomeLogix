@@ -859,9 +859,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
-            if (!AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
-                    budgetItems, null, bankAccount))
-                return;
 
             foreach (var registerItem in registerItems)
             {
@@ -870,6 +867,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             RegisterGridManager.AddGeneratedRegisterItems(registerItems.Where(w => w.BankAccountId == Id));
             CalculateTotals();
+            SetTotals(bankAccount);
+            AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
+                budgetItems, null, bankAccount);
+        }
+
+        private void SetTotals(BankAccount bankAccount)
+        {
+            bankAccount.CurrentBalance = CurrentBalance;
+            bankAccount.ProjectedLowestBalanceDate = ProjectedLowestBalanceDate;
+            bankAccount.ProjectedLowestBalanceAmount = ProjectedLowestBalanceAmount;
+            bankAccount.MonthlyBudgetDeposits = MonthlyBudgetDeposits;
+            bankAccount.MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals;
+            bankAccount.LastGenerationDate = (DateTime)LastGenerationDate;
+            bankAccount.ProjectedEndingBalance = NewProjectedEndingBalance;
         }
 
         protected override BankAccount GetEntityData()
