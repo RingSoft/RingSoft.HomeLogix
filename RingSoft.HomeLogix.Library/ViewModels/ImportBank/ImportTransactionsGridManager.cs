@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using MySqlX.XDevAPI.Relational;
+using Org.BouncyCastle.Bcpg;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -12,6 +14,8 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
@@ -606,65 +610,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         text = importTransactionGridRow.Description.MidStr(0, spacePos).Trim();
                     while (foundMap == false)
                     {
-                        if (query.WhereItems.Any())
-                        {
-                            query.RemoveWhereItem(query.WhereItems[0]);
-                        }
-
-                        query.AddWhereItem(
-                            AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.BankText).FieldName,
-                            Conditions.Contains, text);
-
-                        var result = AppGlobals.LookupContext.DataProcessor.GetData(query);
-                        if (result.ResultCode == GetDataResultCodes.Success)
-                        {
-                            var table = result.DataSet.Tables[0];
-                            if (table.Rows.Count == 1)
-                            {
-                                foundMap = true;
-                                var qifMapId =
-                                    table.Rows[0].GetRowValue(AppGlobals.LookupContext.QifMaps
-                                        .GetFieldDefinition(p => p.Id).FieldName).ToInt();
-
-                                var qifMap = AppGlobals.DataRepository.GetQifMap(qifMapId);
-
-                                importTransactionGridRow.MapTransaction = false;
-                                importTransactionGridRow.QifMap = qifMap;
-                                if (qifMap.BudgetItem != null)
-                                {
-                                    importTransactionGridRow.BudgetItemAutoFillValue =
-                                        AppGlobals.LookupContext.OnAutoFillTextRequest(
-                                            AppGlobals.LookupContext.BudgetItems,
-                                            qifMap.BudgetId.ToString());
-                                }
-
-                                if (qifMap.Source != null)
-                                {
-                                    importTransactionGridRow.SourceAutoFillValue =
-                                        AppGlobals.LookupContext.OnAutoFillTextRequest(
-                                            AppGlobals.LookupContext.BudgetItemSources,
-                                            qifMap.SourceId.ToString());
-                                }
-
-                            }
-                            else if (table.Rows.Count == 0)
-                            {
-                                break;
-                            }
-                        }
-                        else
+                        var checkResult = CheckQuery(query, text, importTransactionGridRow, out var newFoundMap);
+                        foundMap = newFoundMap;
+                        if (!checkResult)
                         {
                             break;
                         }
-
                         spacePos = importTransactionGridRow.Description.IndexOf(" ", spacePos + 1);
                         if (spacePos == -1)
                         {
+                            checkResult = CheckQuery(query, importTransactionGridRow.Description, importTransactionGridRow, out var newCheckFoundMap);
+                            if (!checkResult)
+                            {
+                                break;
+                            }
                             foundMap = true;
                         }
                         else
                         {
-                            text = importTransactionGridRow.Description.MidStr(0, spacePos).Trim();
+                            var nextSpacePos = importTransactionGridRow.Description.IndexOf(" ", spacePos + 1);
+                            text = importTransactionGridRow.Description.MidStr(0, spacePos);
+                            text = text.Trim();
                         }
 
                     }
@@ -675,6 +641,83 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             PostLoadGridFromEntity();
             Grid?.SetBulkInsertMode(false);
             Grid?.RefreshGridView();
+        }
+
+        private bool CheckQuery(SelectQuery query, string text, ImportTransactionGridRow importTransactionGridRow,
+            out bool foundMap)
+        {
+            ProcessQifQuery(query, text);
+
+            var result = AppGlobals.LookupContext.DataProcessor.GetData(query);
+            foundMap = false;
+            if (result.ResultCode == GetDataResultCodes.Success)
+            {
+                var table = result.DataSet.Tables[0];
+                if (table.Rows.Count == 1)
+                {
+                    foundMap = true;
+                    ProcessFoundQif(table, importTransactionGridRow);
+                }
+                else if (table.Rows.Count == 0)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void ProcessQifQuery(SelectQuery query, string text)
+        {
+            if (query.WhereItems.Any())
+            {
+                query.RemoveWhereItem(query.WhereItems[0]);
+            }
+
+            query.AddWhereItem(
+                AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.BankText).FieldName,
+                Conditions.Contains, text);
+        }
+
+        private static void ProcessFoundQif(DataTable table, ImportTransactionGridRow importTransactionGridRow)
+        {
+            var qifMapId =
+                table.Rows[0].GetRowValue(AppGlobals.LookupContext.QifMaps
+                    .GetFieldDefinition(p => p.Id).FieldName).ToInt();
+
+            var qifMap = AppGlobals.DataRepository.GetQifMap(qifMapId);
+
+            importTransactionGridRow.MapTransaction = false;
+            importTransactionGridRow.QifMap = qifMap;
+            ProcessFoundBudgetItem(qifMap, importTransactionGridRow);
+
+            ProcessFoundSource(qifMap, importTransactionGridRow);
+        }
+
+        private static void ProcessFoundSource(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow)
+        {
+            if (qifMap.Source != null)
+            {
+                importTransactionGridRow.SourceAutoFillValue =
+                    AppGlobals.LookupContext.OnAutoFillTextRequest(
+                        AppGlobals.LookupContext.BudgetItemSources,
+                        qifMap.SourceId.ToString());
+            }
+        }
+
+        private static void ProcessFoundBudgetItem(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow)
+        {
+            if (qifMap.BudgetItem != null)
+            {
+                importTransactionGridRow.BudgetItemAutoFillValue =
+                    AppGlobals.LookupContext.OnAutoFillTextRequest(
+                        AppGlobals.LookupContext.BudgetItems,
+                        qifMap.BudgetId.ToString());
+            }
         }
     }
 }
