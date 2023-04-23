@@ -408,7 +408,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             if (registerRow == null)
             {
                 registerRow = registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id
-                                                               && p.ItemDate < dateMaxValue);
+                                                               && p.ItemDate <= dateMaxValue);
             }
 
             
