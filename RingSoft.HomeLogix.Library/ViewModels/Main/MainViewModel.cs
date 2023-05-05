@@ -808,23 +808,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             lookupData.LookupDataChanged -= LookupData_LookupDataChanged;
             lookupData.LookupDataChanged += LookupData_LookupDataChanged;
 
-            lookupData.GetInitData();
+            //lookupData.GetInitData();
+            lookupData.GetPrintData();
 
-            var stop = false;
+            //var stop = false;
 
-            while (!stop)
-            {
-                switch (lookupData.ScrollPosition)
-                {
-                    case LookupScrollPositions.Bottom:
-                    case LookupScrollPositions.Disabled:
-                        stop = true;
-                        break;
-                    default:
-                        lookupData.GotoNextPage();
-                        break;
-                }
-            }
+            //while (!stop)
+            //{
+            //    switch (lookupData.ScrollPosition)
+            //    {
+            //        case LookupScrollPositions.Bottom:
+            //        case LookupScrollPositions.Disabled:
+            //            stop = true;
+            //            break;
+            //        default:
+            //            lookupData.GotoNextPage();
+            //            break;
+            //    }
+            //}
         }
 
         private void LookupData_LookupDataChanged(object sender, LookupDataChangedArgs<MainBudgetLookup, BudgetItem> e)
@@ -833,7 +834,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             {
                 if (mainLookup.ItemType == "Expense")
                 {
-                    if (!_budgetItems.Contains(mainLookup.BudgetId))
+                    //if (!_budgetItems.Contains(mainLookup.BudgetId))
                     {
                         _budgetItems.Add(mainLookup.BudgetId);
                         if (_activeChartData == _initialBudgetChartData)
