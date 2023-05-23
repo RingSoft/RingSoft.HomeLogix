@@ -8,6 +8,7 @@ using System.Linq;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Linq.Expressions;
+using RingSoft.DbLookup.Lookup;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -113,6 +114,11 @@ namespace RingSoft.HomeLogix.Library
         public IDbContext GetDataContext()
         {
             return AppGlobals.GetNewDbContext();
+        }
+
+        public ILookupDataBase GetLookupDataBase<TEntity>(LookupDefinitionBase lookupDefinition, LookupUserInterface lookupUi) where TEntity : class, new()
+        {
+            throw new NotImplementedException();
         }
 
         [CanBeNull]

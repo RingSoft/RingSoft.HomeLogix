@@ -364,7 +364,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow, bool isSplit)
         {
             var dateMinValue = gridRow.Date;
-            var incompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(p => !p.Completed && p.BudgetItemId == budgetItem.Id);
+            var incompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridRow>()
+                .Where(p => !p.Completed && p.BudgetItemId == budgetItem.Id);
             if (incompleteRows.Any())
             {
                 var budgetDate = incompleteRows.Min(p => p.ItemDate);
