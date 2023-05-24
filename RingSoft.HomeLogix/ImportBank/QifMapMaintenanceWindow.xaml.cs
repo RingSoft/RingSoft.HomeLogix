@@ -1,4 +1,5 @@
 ﻿using RingSoft.App.Controls;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.Library;
@@ -13,7 +14,8 @@ namespace RingSoft.HomeLogix.ImportBank
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Qif Map";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;
-        
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
+
         public QifMapMaintenanceWindow()
         {
             InitializeComponent();

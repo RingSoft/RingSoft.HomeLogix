@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.DbLookup.Controls.WPF;
 
 namespace RingSoft.HomeLogix.Budget
 {
@@ -19,6 +20,7 @@ namespace RingSoft.HomeLogix.Budget
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Budget Item";
         public override DbMaintenanceViewModelBase ViewModel => BudgetItemViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         public BudgetItemWindow()
         {

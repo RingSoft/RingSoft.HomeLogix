@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.ImportBank;
@@ -19,6 +20,7 @@ namespace RingSoft.HomeLogix.Budget
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Bank Account";
         public override DbMaintenanceViewModelBase ViewModel => BankAccountViewModel;
+        public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         private BankProcedure _bankProcedure;
 
