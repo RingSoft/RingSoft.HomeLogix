@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.HomeLogix.MobileIn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbLookup.Controls.WPF", "..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj", "{CCB5F681-E799-4E36-9ADD-1C843C4B7370}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RingSoft.DbMaintenance", "..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj", "{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,18 @@ Global
 		{CCB5F681-E799-4E36-9ADD-1C843C4B7370}.Release|iPhone.Build.0 = Release|Any CPU
 		{CCB5F681-E799-4E36-9ADD-1C843C4B7370}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{CCB5F681-E799-4E36-9ADD-1C843C4B7370}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Release|iPhone.Build.0 = Release|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{05F414C5-F057-4DD0-A60B-BDDF0A1454FF}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
