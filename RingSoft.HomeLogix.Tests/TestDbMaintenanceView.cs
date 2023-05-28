@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Media;
 using RingSoft.DbLookup;
@@ -20,6 +21,11 @@ namespace RingSoft.HomeLogix.Tests
         {
             Debug.WriteLine($"{_ownerName} Validation Fail: {text}");
             SystemSounds.Exclamation.Play();
+        }
+
+        public void HandleAutoFillValFail(DbAutoFillMap autoFillMap)
+        {
+            
         }
 
         public void ResetViewForNewRecord()
@@ -60,6 +66,11 @@ namespace RingSoft.HomeLogix.Tests
         public void SetReadOnlyMode(bool readOnlyValue)
         {
             Debug.WriteLine($"{_ownerName} {nameof(SetReadOnlyMode)}");
+        }
+
+        public List<DbAutoFillMap> GetAutoFills()
+        {
+            return null;
         }
 
         public event EventHandler<LookupSelectArgs> LookupFormReturn;
