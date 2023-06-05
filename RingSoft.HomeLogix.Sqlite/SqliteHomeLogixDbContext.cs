@@ -12,7 +12,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Sqlite
 {
-    public class SqliteHomeLogixDbContext : DbContext, IHomeLogixDbContext
+    public class SqliteHomeLogixDbContext : DbContextEfCore, IHomeLogixDbContext
     {
         //install Microsoft.EntityFrameworkCore.Tools NuGet
 
@@ -37,9 +37,6 @@ namespace RingSoft.HomeLogix.Sqlite
         public virtual DbSet<SourceHistory> SourceHistory { get; set; }
         public virtual DbSet<BudgetPeriodHistory> BudgetPeriodHistory { get; set; }
         public virtual DbSet<BankAccountPeriodHistory> BankAccountPeriodHistory { get; set; }
-        public DbSet<AdvancedFind> AdvancedFinds { get; set; }
-        public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
-        public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbSet<BankTransaction> BankTransactions { get; set; }
         public DbSet<BankTransactionBudget> BankTransactionBudget { get; set; }
         public DbSet<QifMap> QifMaps { get; set; }
@@ -84,56 +81,15 @@ namespace RingSoft.HomeLogix.Sqlite
             return this;
         }
 
+        public override DbContextEfCore GetNewDbContextEfCore()
+        {
+            return new SqliteHomeLogixDbContext();
+        }
+
         public IAdvancedFindDbContextEfCore GetNewDbContext()
         {
             return new SqliteHomeLogixDbContext();
         }
 
-        public DbSet<RecordLock> RecordLocks { get; set; }
-        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.SaveNoCommitEntity(entity, message);
-        }
-
-        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.SaveEntity(entity, message);
-        }
-
-        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.DeleteEntity(entity, message);
-        }
-
-        public bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.DeleteNoCommitEntity(entity, message);
-        }
-
-        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.AddNewNoCommitEntity(entity, message);
-        }
-
-        public bool Commit(string message)
-        {
-            return HomeLogixModelBuilder.Commit(message);
-        }
-
-        public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
-        {
-            HomeLogixModelBuilder.RemoveRange(listToRemove);
-        }
-
-        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
-        {
-            HomeLogixModelBuilder.AddRange(listToAdd);
-        }
-
-        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
-        {
-            var dbSet = DbContext.Set<TEntity>();
-            return dbSet;
-        }
     }
 }

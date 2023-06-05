@@ -11,11 +11,8 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.SqlServer
 {
-    public class SqlServerHomeLogixDbContext : DbContext, IHomeLogixDbContext
+    public class SqlServerHomeLogixDbContext : DbContextEfCore, IHomeLogixDbContext
     {
-        public DbSet<AdvancedFind> AdvancedFinds { get; set; }
-        public DbSet<AdvancedFindColumn> AdvancedFindColumns { get; set; }
-        public DbSet<AdvancedFindFilter> AdvancedFindFilters { get; set; }
         public DbContext DbContext => this;
         public DbSet<SystemMaster> SystemMaster { get; set; }
         public DbSet<BudgetItem> BudgetItems { get; set; }
@@ -73,12 +70,15 @@ namespace RingSoft.HomeLogix.SqlServer
             return this;
         }
 
-        public IAdvancedFindDbContextEfCore GetNewDbContext()
+        public override DbContextEfCore GetNewDbContextEfCore()
         {
             return new SqlServerHomeLogixDbContext();
         }
 
-        public DbSet<RecordLock> RecordLocks { get; set; }
+        public IAdvancedFindDbContextEfCore GetNewDbContext()
+        {
+            return new SqlServerHomeLogixDbContext();
+        }
 
         public void SetLookupContext(HomeLogixLookupContext lookupContext)
         {
@@ -86,52 +86,6 @@ namespace RingSoft.HomeLogix.SqlServer
             _lookupContext.LocalDbContext = this;
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
 
-        }
-
-        public bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.SaveNoCommitEntity(entity, message);
-        }
-
-        public bool SaveEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.SaveEntity(entity, message);
-        }
-
-        public bool DeleteEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.DeleteEntity(entity, message);
-        }
-
-        public bool DeleteNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.DeleteNoCommitEntity(entity, message);
-        }
-
-        public bool AddNewNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class
-        {
-            return HomeLogixModelBuilder.AddNewNoCommitEntity(entity, message);
-        }
-
-        public bool Commit(string message)
-        {
-            return HomeLogixModelBuilder.Commit(message);
-        }
-
-        public void RemoveRange<TEntity>(IEnumerable<TEntity> listToRemove) where TEntity : class
-        {
-            HomeLogixModelBuilder.RemoveRange(listToRemove);
-        }
-
-        public void AddRange<TEntity>(List<TEntity> listToAdd) where TEntity : class
-        {
-            HomeLogixModelBuilder.AddRange(listToAdd);
-        }
-
-        public IQueryable<TEntity> GetTable<TEntity>() where TEntity : class
-        {
-            var dbSet = DbContext.Set<TEntity>();
-            return dbSet;
         }
     }
 }
