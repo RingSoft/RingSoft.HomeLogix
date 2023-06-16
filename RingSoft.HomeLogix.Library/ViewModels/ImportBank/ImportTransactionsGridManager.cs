@@ -503,6 +503,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             bankRegisterItem.ActualAmount = amount;
             bankRegisterItem.BankText = gridRow.Description;
             BankAccountRegisterItem transferToRegisterItem = null;
+            var itemToAdd = bankRegisterItem;
             switch (budgetItem.Type)
             {
                 case BudgetItemTypes.Income:
@@ -519,8 +520,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     bankRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
                     transferToRegisterItem = new BankAccountRegisterItem();
 
-                    if (budgetItem.TransferToBankAccountId != null)
-                        transferToRegisterItem.BankAccountId = budgetItem.TransferToBankAccountId.Value;
                     transferToRegisterItem.ProjectedAmount = gridRow.Amount;
                     transferToRegisterItem.BudgetItem = budgetItem;
                     transferToRegisterItem.BudgetItemId = budgetItem.Id;
@@ -532,6 +531,27 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     transferToRegisterItem.BankText = gridRow.Description;
                     bankRegisterItem.ProjectedAmount = -amount;
                     bankRegisterItem.TransferRegisterGuid = transferToRegisterItem.RegisterGuid;
+                    switch (gridRow.TransactionTypes)
+                    {
+                        case TransactionTypes.Deposit:
+                            if (budgetItem.TransferToBankAccountId != null
+                                && budgetItem.TransferToBankAccountId.Value == ViewModel.BankViewModel.Id)
+                            {
+                                transferToRegisterItem.BankAccountId = budgetItem.TransferToBankAccountId.Value;
+                                itemToAdd = transferToRegisterItem;
+                                transferToRegisterItem.ProjectedAmount = amount;
+                                transferToRegisterItem.Completed = true;
+                                bankRegisterItem.BankAccountId = budgetItem.BankAccountId;
+                                bankRegisterItem.Completed = false;
+                            }
+                            break;
+                        case TransactionTypes.Withdrawal:
+                            if (budgetItem.TransferToBankAccountId != null)
+                                transferToRegisterItem.BankAccountId = budgetItem.TransferToBankAccountId.Value;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -541,9 +561,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 return null;
 
             ViewModel.BankViewModel.RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem>()
-                {bankRegisterItem});
+                {itemToAdd});
             var newRow = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
-                .FirstOrDefault(p => p.RegisterId == bankRegisterItem.Id);
+                .FirstOrDefault(p => p.RegisterId == itemToAdd.Id);
             return newRow;
         }
 
