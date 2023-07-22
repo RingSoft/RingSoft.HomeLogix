@@ -295,6 +295,9 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void SetupModel()
         {
+            MainBudget.GetFieldDefinition(p => p.ItemType)
+                .IsEnum<BudgetItemTypes>();
+
             MainBudget.GetFieldDefinition(p => p.BudgetAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
             MainBudget.GetFieldDefinition(p => p.ActualAmount)

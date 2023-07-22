@@ -4,6 +4,7 @@ using RingSoft.DataEntryControls.Engine;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
@@ -11,6 +12,7 @@ using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbLookup.TableProcessing;
+using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -18,6 +20,12 @@ using RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
+    public class MainBudgetData
+    {
+        public MainBudget BudgetObj { get; set; }
+
+        public string Description { get; set; }
+    }
     public interface IMainView
     {
         bool ChangeHousehold();
@@ -731,6 +739,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
             //BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var mainTable = context.GetTable<MainBudget>();
+            context.RemoveRange(mainTable);
+            if (context.Commit("Clearing Main Budget Table"))
+            {
+                var budgetItems = GetBudgetItems(context);
+
+                context.AddRange(budgetItems);
+                context.Commit("Adding Main Budgets");
+            }
             BudgetLookupCommand = new LookupCommand(LookupCommands.Refresh);
             BankLookupCommand = new LookupCommand(LookupCommands.Refresh);
 
@@ -766,6 +784,66 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
+        private List<MainBudget> GetBudgetItems(IDbContext context)
+        {
+            var budgetItems = new List<MainBudget>();
+
+            var periodHistoryTable = context.GetTable<BudgetPeriodHistory>();
+            var periodHistory = periodHistoryTable
+                .Include(p => p.BudgetItem)
+                .Where(p => p.BudgetItem.Type != BudgetItemTypes.Transfer
+                            && p.PeriodEndingDate.Month == CurrentMonthEnding.Month
+                            && p.PeriodEndingDate.Year == CurrentMonthEnding.Year)
+                .OrderBy(p => p.BudgetItem.Description);
+
+            foreach (var budgetPeriodHistory in periodHistory)
+            {
+                var budgetItem = budgetItems
+                    .FirstOrDefault(p => p.BudgetItemId == budgetPeriodHistory.BudgetItemId);
+
+                if (budgetItem == null)
+                {
+                    budgetItem = new MainBudget();
+                    budgetItem.BudgetItemId = budgetPeriodHistory.BudgetItemId;
+                    budgetItem.ItemType = (byte)budgetPeriodHistory.BudgetItem.Type;
+                    budgetItem.BudgetItem = budgetPeriodHistory.BudgetItem;
+                    budgetItems.Add(budgetItem);
+                }
+
+                budgetItem.BudgetAmount += (double)budgetPeriodHistory.ProjectedAmount;
+                budgetItem.ActualAmount += (double)budgetPeriodHistory.ActualAmount;
+            }
+
+            var registerTable = context.GetTable<BankAccountRegisterItem>();
+            var monthlyRegisterItems = registerTable
+                .Include(p => p.BudgetItem)
+                .Where(p => p.BudgetItem != null
+                            && p.BudgetItem.Type != BudgetItemTypes.Transfer
+                            && p.ItemDate.Month == CurrentMonthEnding.Month
+                            && p.ItemDate.Year == CurrentMonthEnding.Year)
+                .OrderBy(p => p.BudgetItem.Description);
+            foreach (var bankAccountRegisterItem in monthlyRegisterItems)
+            {
+                var budgetItem = budgetItems
+                    .FirstOrDefault(p => p.BudgetItemId == bankAccountRegisterItem.BudgetItemId);
+
+                if (budgetItem == null)
+                {
+                    budgetItem = new MainBudget();
+                    budgetItem.BudgetItemId = bankAccountRegisterItem.BudgetItemId.GetValueOrDefault();
+                    budgetItem.ItemType = (byte)bankAccountRegisterItem.BudgetItem.Type;
+                    budgetItem.BudgetItem = bankAccountRegisterItem.BudgetItem;
+                    budgetItems.Add(budgetItem);
+                }
+
+                budgetItem.BudgetAmount += Math.Abs((double)bankAccountRegisterItem.ProjectedAmount);
+                budgetItem.ActualAmount += Math.Abs((double)bankAccountRegisterItem.ActualAmount.GetValueOrDefault()
+                                                    + (double)bankAccountRegisterItem.ProjectedAmount);
+            }
+
+            return budgetItems;
+        }
+
         private void MakeBudgetChartData()
         {
             _initialBudgetChartData = new ChartData();
@@ -777,7 +855,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             _activeChartData = _initialBudgetChartData;
 
-            MakeChartData(lookupDefinition);
+            MakeChartData();
 
             BudgetChartData = _initialBudgetChartData;
         }
@@ -793,24 +871,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             _activeChartData = _initialActualChartData;
 
-            MakeChartData(lookupDefinition);
+            MakeChartData();
 
             ActualChartData = _initialActualChartData;
         }
 
 
-        private void MakeChartData(LookupDefinition<MainBudgetLookup, MainBudget> lookupDefinition)
+        private void MakeChartData()
         {
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var budgetItems = GetBudgetItems(context);
+
             _budgetItems.Clear();
-            lookupDefinition.InitialOrderByType = OrderByTypes.Descending;
+            MakeChartData(budgetItems);
+            //lookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
-            var lookupData = new LookupData<MainBudgetLookup, MainBudget>(lookupDefinition, this);
+            //var lookupData = new LookupData<MainBudgetLookup, MainBudget>(lookupDefinition, this);
 
-            lookupData.LookupDataChanged -= LookupData_LookupDataChanged;
-            lookupData.LookupDataChanged += LookupData_LookupDataChanged;
+            //lookupData.LookupDataChanged -= LookupData_LookupDataChanged;
+            //lookupData.LookupDataChanged += LookupData_LookupDataChanged;
 
             //lookupData.GetInitData();
-            lookupData.GetPrintData();
+            //lookupData.GetPrintData();
 
             //var stop = false;
 
@@ -829,30 +911,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             //}
         }
 
-        private void LookupData_LookupDataChanged(object sender, LookupDataChangedArgs<MainBudgetLookup, MainBudget> e)
+        private void MakeChartData(List<MainBudget> budgets)
         {
-            foreach (var mainLookup in e.LookupData.LookupResultsList)
+            var sortedBudgets = budgets;
+            if (_activeChartData == _initialBudgetChartData)
             {
-                var itemType = (BudgetItemTypes)mainLookup.ItemType;
+                sortedBudgets = budgets.OrderByDescending(p => p.BudgetAmount).ToList();
+            }
+            else
+            {
+                sortedBudgets = budgets.OrderByDescending(p => p.ActualAmount).ToList();
+            }
+            foreach (var mainBudget in sortedBudgets)
+            {
+                var itemType = (BudgetItemTypes)mainBudget.ItemType;
                 if (itemType == BudgetItemTypes.Expense)
                 {
                     //if (!_budgetItems.Contains(mainLookup.BudgetId))
                     {
-                        _budgetItems.Add(mainLookup.BudgetItemId);
+                        _budgetItems.Add(mainBudget.BudgetItemId);
                         if (_activeChartData == _initialBudgetChartData)
                         {
                             _activeChartData.Items.Add(new ChartDataItem
                             {
-                                Name = mainLookup.BudgetItem,
-                                Value = (double) mainLookup.BudgetAmount
+                                Name = mainBudget.BudgetItem.Description,
+                                Value = (double) mainBudget.BudgetAmount
                             });
                         }
                         else if (_activeChartData == _initialActualChartData)
                         {
                             _activeChartData.Items.Add(new ChartDataItem
                             {
-                                Name = mainLookup.BudgetItem,
-                                Value = (double) mainLookup.ActualAmount
+                                Name = mainBudget.BudgetItem.Description,
+                                Value = (double) mainBudget.ActualAmount
                             });
                         }
                     }
