@@ -7,6 +7,7 @@
                   xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
                   xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                   xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Main;assembly=RingSoft.HomeLogix.Library"
+                  xmlns:da="clr-namespace:RingSoft.HomeLogix.DataAccess.Model;assembly=RingSoft.HomeLogix.DataAccess"
                   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                   xmlns:sp="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
                   mc:Ignorable="d"
@@ -117,20 +118,20 @@
 
                 <lc:LookupControl.LookupColumns>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBudgetLookup}}"
+                    <lc:LookupColumn PropertyName="{lc:NameOf BudgetItem, Type={x:Type da:MainBudgetLookup}}"
                                      Header="Budget Item" DesignText="A Very Large Budget Item" Width="250" />
 
-                    <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type vm:MainBudgetLookup}}"
+                    <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type da:MainBudgetLookup}}"
                                                   ContentTemplate="{StaticResource BudgetItemType}" Header="Item Type" DesignerSelectedId="3" Width="100"/>
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf ProjectedMonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
+                    <lc:LookupColumn PropertyName="{lc:NameOf BudgetAmount, Type={x:Type da:MainBudgetLookup}}"
                                      Header="Budget Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf ActualMonthlyAmount, Type={x:Type vm:MainBudgetLookup}}"
+                    <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type da:MainBudgetLookup}}"
                                      Header="Actual Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
-                    <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmountDifference, Type={x:Type vm:MainBudgetLookup}}"
-                                     Header="Monthly Difference" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
+                    <!--<lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmountDifference, Type={x:Type vm:MainBudgetLookup}}"
+                                     Header="Monthly Difference" TextAlignment="Right" DesignText="$123,456.78" Width="120" />-->
 
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>

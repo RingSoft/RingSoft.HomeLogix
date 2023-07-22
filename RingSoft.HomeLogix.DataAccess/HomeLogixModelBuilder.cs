@@ -24,6 +24,7 @@ namespace RingSoft.HomeLogix.DataAccess
             modelBuilder.ApplyConfiguration(new BankTransactionConfiguration());
             modelBuilder.ApplyConfiguration(new BankTransactionBudgetConfiguration());
             modelBuilder.ApplyConfiguration(new QifMapConfiguration());
+            modelBuilder.ApplyConfiguration(new MainBudgetConfiguration());
 
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Id)
                 .HasColumnType(DbConstants.IntegerColumnType);

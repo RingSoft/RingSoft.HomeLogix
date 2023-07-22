@@ -21,6 +21,7 @@ namespace RingSoft.HomeLogix.DataAccess
         DbSet<BankTransaction> BankTransactions { get; set; }
         DbSet<BankTransactionBudget> BankTransactionBudget { get; set; }
         DbSet<QifMap> QifMaps { get; set; }
+        DbSet<MainBudget> MainBudget { get; set; }
 
         void SetLookupContext(HomeLogixLookupContext lookupContext);
     }

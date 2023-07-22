@@ -33,11 +33,14 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<BankAccountPeriodHistory> BankAccountPeriodHistory { get; set; }
         public TableDefinition<BankTransaction> BankTransactions { get; set; }
         public TableDefinition<QifMap> QifMaps { get; set; }
+        public TableDefinition<MainBudget> MainBudget { get; set; }
+
         public LookupContextBase Context => this;
         public TableDefinition<RecordLock> RecordLocks { get; set; }
         public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
         public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
         public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
+
         public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
         public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
@@ -52,6 +55,7 @@ namespace RingSoft.HomeLogix.DataAccess
 
         public LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> BankPeriodHistoryLookup { get; set; }
         public LookupDefinition<QifMapLookup, QifMap> QifMapLookup { get; set; }
+        public LookupDefinition<MainBudgetLookup, MainBudget> MainBudgetLookup { get; set; }
         //----------------------------------------------------------------------
 
         public override DbDataProcessor DataProcessor
@@ -112,6 +116,29 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void InitializeLookupDefinitions()
         {
+            MainBudgetLookup = new LookupDefinition<MainBudgetLookup, MainBudget>(MainBudget);
+            MainBudgetLookup.Include(p => p.BudgetItem)
+                .AddVisibleColumnDefinition(p => p.BudgetItem
+                    , "Budget Item",
+                p => p.Description, 35);
+            MainBudgetLookup.Include(p => p.BudgetItem)
+                .AddHiddenColumn(p => p.BudgetItemId
+                    , p => p.Id);
+            MainBudgetLookup.Include(p => p.BudgetItem)
+                .AddVisibleColumnDefinition(p => p.ItemType
+                    , "Item\r\nType"
+                    , p => p.Type, 20);
+            MainBudgetLookup.AddVisibleColumnDefinition(
+                p => p.BudgetAmount
+                , "Budget\r\nAmount",
+                p => p.BudgetAmount, 20);
+            MainBudgetLookup.AddVisibleColumnDefinition(
+                p => p.ActualAmount
+                , "Actual\r\nAmount",
+                p => p.ActualAmount, 20);
+
+            MainBudget.HasLookupDefinition(MainBudgetLookup);
+
             BudgetItemsLookup = new LookupDefinition<BudgetItemLookup, BudgetItem>(BudgetItems);
             BudgetItemsLookup.AddVisibleColumnDefinition(p => p.Description, "Budget Item",
                 p => p.Description, 35);
@@ -268,6 +295,11 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void SetupModel()
         {
+            MainBudget.GetFieldDefinition(p => p.BudgetAmount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+            MainBudget.GetFieldDefinition(p => p.ActualAmount)
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
             var test = this;
             BankAccounts.HasRecordDescription("Bank Account").HasDescription("Bank Account");
             BankAccounts.PriorityLevel = 10;

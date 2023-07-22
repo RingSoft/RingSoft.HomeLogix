@@ -595,6 +595,25 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.ToTable("History");
                 });
 
+            modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.MainBudget", b =>
+                {
+                    b.Property<int>("BudgetItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("ActualAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("BudgetAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<byte>("ItemType")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("BudgetItemId");
+
+                    b.ToTable("MainBudget");
+                });
+
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.QifMap", b =>
                 {
                     b.Property<int>("Id")
@@ -853,6 +872,17 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Navigation("TransferToBankAccount");
                 });
 
+            modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.MainBudget", b =>
+                {
+                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
+                        .WithMany("MainBudgets")
+                        .HasForeignKey("BudgetItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("BudgetItem");
+                });
+
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.QifMap", b =>
                 {
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
@@ -934,6 +964,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", b =>
                 {
                     b.Navigation("History");
+
+                    b.Navigation("MainBudgets");
 
                     b.Navigation("Maps");
 

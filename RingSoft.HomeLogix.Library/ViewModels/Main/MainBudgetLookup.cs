@@ -4,7 +4,7 @@ using System.Text;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
-    public class MainBudgetLookup
+    public class MainBudgetLookup1
     {
         public int BudgetId { get; set; }
 

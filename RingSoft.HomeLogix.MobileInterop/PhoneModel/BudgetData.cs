@@ -8,9 +8,9 @@ namespace RingSoft.HomeLogix.Library.PhoneModel
 
         public string Description { get; set; }
 
-        public decimal BudgetAmount { get; set; }
+        public double BudgetAmount { get; set; }
 
-        public decimal ActualAmount { get; set; }
+        public double ActualAmount { get; set; }
 
         public decimal Difference { get; set; }
 

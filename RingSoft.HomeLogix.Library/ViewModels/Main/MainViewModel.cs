@@ -77,9 +77,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private LookupDefinition<MainBudgetLookup, BudgetItem> _budgetLookupDefinition;
+        private LookupDefinition<MainBudgetLookup, MainBudget> _budgetLookupDefinition;
 
-        public LookupDefinition<MainBudgetLookup, BudgetItem> BudgetLookupDefinition
+        public LookupDefinition<MainBudgetLookup, MainBudget> BudgetLookupDefinition
         {
             get => _budgetLookupDefinition;
             set
@@ -475,237 +475,238 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             return bankLookupDefinition;
         }
 
-        private LookupDefinition<MainBudgetLookup, BudgetItem> CreateBudgetLookupDefinition(bool createColumns)
+        private LookupDefinition<MainBudgetLookup, MainBudget> CreateBudgetLookupDefinition(bool createColumns)
         {
-            var budgetLookupDefinition = BudgetLookupDefinition;
+            return AppGlobals.LookupContext.MainBudgetLookup.Clone();
+        //    var budgetLookupDefinition = BudgetLookupDefinition;
             
-            if (createColumns)
-            {
-                if (budgetLookupDefinition == null)
-                    budgetLookupDefinition =
-                        new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
+        //    if (createColumns)
+        //    {
+        //        if (budgetLookupDefinition == null)
+        //            budgetLookupDefinition =
+        //                new LookupDefinition<MainBudgetLookup, BudgetItem>(AppGlobals.LookupContext.BudgetItems);
 
-                budgetLookupDefinition.AddHiddenColumn(p => p.BudgetId, p => p.Id);
-                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description","");
-                budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
+        //        budgetLookupDefinition.AddHiddenColumn(p => p.BudgetId, p => p.Id);
+        //        budgetLookupDefinition.AddVisibleColumnDefinition(p => p.Description, "Description","");
+        //        budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ItemType, p => p.Type);
 
-                _projectedMonthToDateColumnDefinition = budgetLookupDefinition.AddVisibleColumnDefinition(
-                    p => p.ProjectedMonthlyAmount, "Projected", "");
-                _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
+        //        _projectedMonthToDateColumnDefinition = budgetLookupDefinition.AddVisibleColumnDefinition(
+        //            p => p.ProjectedMonthlyAmount, "Projected", "");
+        //        _projectedMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
-                _actualMonthToDateColumnDefinition =
-                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual", "");
-                _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
+        //        _actualMonthToDateColumnDefinition =
+        //            budgetLookupDefinition.AddVisibleColumnDefinition(p => p.ActualMonthlyAmount, "Actual", "");
+        //        _actualMonthToDateColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency);//.HasKeepNullEmpty();
 
-                _monthlyAmountDifferrenceColumnDefinition =
-                    budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference", "");
-                _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
-                    .HasKeepNullEmpty()
-                    .DoShowNegativeValuesInRed()
-                    .DoShowPositiveValuesInGreen();
+        //        _monthlyAmountDifferrenceColumnDefinition =
+        //            budgetLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmountDifference, "Difference", "");
+        //        _monthlyAmountDifferrenceColumnDefinition.HasDecimalFieldType(DecimalFieldTypes.Currency)
+        //            .HasKeepNullEmpty()
+        //            .DoShowNegativeValuesInRed()
+        //            .DoShowPositiveValuesInGreen();
 
-                //BudgetLookupDefinition = budgetLookupDefinition;
-            }
+        //        //BudgetLookupDefinition = budgetLookupDefinition;
+        //    }
 
-            budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+        //    budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             
-            return budgetLookupDefinition;
+        //    return budgetLookupDefinition;
         }
 
 
 
-        private string CreateBudgetLookupDefinitionFormula()
-        {
-            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            var table = AppGlobals.LookupContext.BudgetItems;
-            var query = new SelectQuery(table.TableName);
-            var outerQuery = new SelectQuery(table.TableName, query);
+        //private string CreateBudgetLookupDefinitionFormula()
+        //{
+        //    var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+        //    var table = AppGlobals.LookupContext.BudgetItems;
+        //    var query = new SelectQuery(table.TableName);
+        //    var outerQuery = new SelectQuery(table.TableName, query);
 
-            outerQuery.AddSelectColumn("Id", "Id");
-            outerQuery.AddSelectColumn("Description", "Description");
-            outerQuery.AddSelectColumn("Type", "Type");
-            outerQuery.AddSelectColumn("Projected", "Projected");
-            outerQuery.AddSelectColumn("Actual", "Actual");
+        //    outerQuery.AddSelectColumn("Id", "Id");
+        //    outerQuery.AddSelectColumn("Description", "Description");
+        //    outerQuery.AddSelectColumn("Type", "Type");
+        //    outerQuery.AddSelectColumn("Projected", "Projected");
+        //    outerQuery.AddSelectColumn("Actual", "Actual");
 
-            var formula = $"CASE WHEN {sqlGenerator.FormatSqlObject("Actual")}=0 THEN 0 ELSE ";
-            formula += $"{sqlGenerator.FormatSqlObject("Difference")} END";
-            outerQuery.AddSelectFormulaColumn("Difference", formula);
+        //    var formula = $"CASE WHEN {sqlGenerator.FormatSqlObject("Actual")}=0 THEN 0 ELSE ";
+        //    formula += $"{sqlGenerator.FormatSqlObject("Difference")} END";
+        //    outerQuery.AddSelectFormulaColumn("Difference", formula);
 
-            query.AddSelectColumn(table.GetFieldDefinition(p => p.Id).FieldName, "Id");
-            query.AddSelectColumn(table.GetFieldDefinition(p => p.Description).FieldName, "Description");
-            query.AddSelectFormulaColumn("Type", $"{sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject("Type")}");
+        //    query.AddSelectColumn(table.GetFieldDefinition(p => p.Id).FieldName, "Id");
+        //    query.AddSelectColumn(table.GetFieldDefinition(p => p.Description).FieldName, "Description");
+        //    query.AddSelectFormulaColumn("Type", $"{sqlGenerator.FormatSqlObject(table.TableName)}.{sqlGenerator.FormatSqlObject("Type")}");
 
-            query.AddSelectFormulaColumn("Projected", GetBudgetMonthToDateFormulaSql());
-            query.AddSelectFormulaColumn("Actual", GeActualtMonthToDateFormulaSql());
-            query.AddSelectFormulaColumn("Difference", GetBudgetMonthlyAmountDifferenceFormulaSql());
+        //    query.AddSelectFormulaColumn("Projected", GetBudgetMonthToDateFormulaSql());
+        //    query.AddSelectFormulaColumn("Actual", GeActualtMonthToDateFormulaSql());
+        //    query.AddSelectFormulaColumn("Difference", GetBudgetMonthlyAmountDifferenceFormulaSql());
 
-            //query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
-            //query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
+        //    //query.AddWhereItemFormula("Projected", Conditions.NotEquals, (int)0).SetEndLogic(EndLogics.Or);
+        //    //query.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0);
 
-            outerQuery.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or)
-                .SetLeftParenthesesCount(1);
-            outerQuery.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0).SetRightParenthesesCount(1);
-            outerQuery.AddWhereItem("Type", Conditions.NotEquals, (int) BudgetItemTypes.Transfer);
+        //    outerQuery.AddWhereItemFormula("Projected", Conditions.NotEquals, (int) 0).SetEndLogic(EndLogics.Or)
+        //        .SetLeftParenthesesCount(1);
+        //    outerQuery.AddWhereItemFormula("Actual", Conditions.NotEquals, (int)0).SetRightParenthesesCount(1);
+        //    outerQuery.AddWhereItem("Type", Conditions.NotEquals, (int) BudgetItemTypes.Transfer);
 
-            var sql = sqlGenerator.GenerateSelectStatement(outerQuery);
-            return sql;
-        }
+        //    var sql = sqlGenerator.GenerateSelectStatement(outerQuery);
+        //    return sql;
+        //}
 
-        private string GetBudgetMonthlyAmountDifferenceFormulaSql()
-        {
-            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            var typeField = AppGlobals.LookupContext.BudgetItems
-                .GetFieldDefinition(p => (int)p.Type);
+        //private string GetBudgetMonthlyAmountDifferenceFormulaSql()
+        //{
+        //    var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+        //    var typeField = AppGlobals.LookupContext.BudgetItems
+        //        .GetFieldDefinition(p => (int)p.Type);
 
-            var result =
-                $"CASE {typeField.GetSqlFormatObject()} WHEN {(int) BudgetItemTypes.Income} THEN ({GeActualtMonthToDateFormulaSql()})"
-                + $" - ({GetBudgetMonthToDateFormulaSql()}) "
-                + $"ELSE ({GetBudgetMonthToDateFormulaSql()}) - ({GeActualtMonthToDateFormulaSql()}) END";
+        //    var result =
+        //        $"CASE {typeField.GetSqlFormatObject()} WHEN {(int) BudgetItemTypes.Income} THEN ({GeActualtMonthToDateFormulaSql()})"
+        //        + $" - ({GetBudgetMonthToDateFormulaSql()}) "
+        //        + $"ELSE ({GetBudgetMonthToDateFormulaSql()}) - ({GeActualtMonthToDateFormulaSql()}) END";
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        private string GeActualtMonthToDateFormulaSql()
-        {
-            var table = AppGlobals.LookupContext.BankAccountRegisterItems;
-            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+        //private string GeActualtMonthToDateFormulaSql()
+        //{
+        //    var table = AppGlobals.LookupContext.BankAccountRegisterItems;
+        //    var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
 
-            var sql = GetBudgetMonthToDateFormulaSql(false);
-            var query = new SelectQuery(table.TableName);
+        //    var sql = GetBudgetMonthToDateFormulaSql(false);
+        //    var query = new SelectQuery(table.TableName);
 
-            var unionSql = $"{sql}\r\n";
-            unionSql += $"\r\nUNION ALL\r\n\r\n";
+        //    var unionSql = $"{sql}\r\n";
+        //    unionSql += $"\r\nUNION ALL\r\n\r\n";
 
-            sql = $"ROUND(coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
-            sql += ")),0), 2)";
-            query.AddSelectFormulaColumn("Actual", sql);
+        //    sql = $"ROUND(coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
+        //    sql += ")),0), 2)";
+        //    query.AddSelectFormulaColumn("Actual", sql);
 
-            sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
-            sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
-            query.AddWhereItemFormula(sql);
+        //    sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
+        //    sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
+        //    sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+        //    query.AddWhereItemFormula(sql);
 
-            switch (AppGlobals.DbPlatform)
-            {
-                case DbPlatforms.SqlServer:
-                    sql =
-                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-                    sql += $"'{CurrentMonthEnding.Month:D2}'";
-                    break;
-                case DbPlatforms.Sqlite:
-                case DbPlatforms.MySql:
-                    sql =
-                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-                    sql += $"'{CurrentMonthEnding.Month:D2}'";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+        //    switch (AppGlobals.DbPlatform)
+        //    {
+        //        case DbPlatforms.SqlServer:
+        //            sql =
+        //                $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+        //            sql += $"'{CurrentMonthEnding.Month:D2}'";
+        //            break;
+        //        case DbPlatforms.Sqlite:
+        //        case DbPlatforms.MySql:
+        //            sql =
+        //                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+        //            sql += $"'{CurrentMonthEnding.Month:D2}'";
+        //            break;
+        //        default:
+        //            throw new ArgumentOutOfRangeException();
+        //    }
 
-            query.AddWhereItemFormula(sql);
+        //    query.AddWhereItemFormula(sql);
 
-            unionSql += sqlGenerator.GenerateSelectStatement(query);
+        //    unionSql += sqlGenerator.GenerateSelectStatement(query);
 
-            var outerQuery = new SelectQuery("Outer");
-            outerQuery.AddSelectFormulaColumn("Actual", "SUM(Actual)");
-            outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
+        //    var outerQuery = new SelectQuery("Outer");
+        //    outerQuery.AddSelectFormulaColumn("Actual", "SUM(Actual)");
+        //    outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
 
-            var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
+        //    var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
 
-            return projectedSql;
-        }
+        //    return projectedSql;
+        //}
 
 
-        private string GetBudgetMonthToDateFormulaSql()
-        {
-            var table = AppGlobals.LookupContext.BankAccountRegisterItems;
-            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+        //private string GetBudgetMonthToDateFormulaSql()
+        //{
+        //    var table = AppGlobals.LookupContext.BankAccountRegisterItems;
+        //    var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
 
-            var sql = GetBudgetMonthToDateFormulaSql(true);
-            var query = new SelectQuery(table.TableName);
+        //    var sql = GetBudgetMonthToDateFormulaSql(true);
+        //    var query = new SelectQuery(table.TableName);
             
-            var unionSql = $"{sql}\r\n";
-            unionSql += $"\r\nUNION ALL\r\n\r\n";
+        //    var unionSql = $"{sql}\r\n";
+        //    unionSql += $"\r\nUNION ALL\r\n\r\n";
 
-            sql = $"ROUND(coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
-            sql += ")),0), 2)";
-            query.AddSelectFormulaColumn("Projected",sql);
+        //    sql = $"ROUND(coalesce(SUM(abs({sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ProjectedAmount).FieldName)}";
+        //    sql += ")),0), 2)";
+        //    query.AddSelectFormulaColumn("Projected",sql);
 
-            sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
-            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
-            sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
-            sql += $"{ sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
-            query.AddWhereItemFormula(sql);
+        //    sql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)} = ";
+        //    sql += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
+        //    sql += $"{ sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+        //    query.AddWhereItemFormula(sql);
 
-            switch (AppGlobals.DbPlatform)
-            {
-                case DbPlatforms.SqlServer:
-                    sql =
-                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-                    sql += $"'{CurrentMonthEnding.Month:D2}'";
-                    break;
-                case DbPlatforms.Sqlite:
-                case DbPlatforms.MySql:
-                    sql =
-                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
-                    sql += $"'{CurrentMonthEnding.Month:D2}'";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            query.AddWhereItemFormula(sql);
+        //    switch (AppGlobals.DbPlatform)
+        //    {
+        //        case DbPlatforms.SqlServer:
+        //            sql =
+        //                $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+        //            sql += $"'{CurrentMonthEnding.Month:D2}'";
+        //            break;
+        //        case DbPlatforms.Sqlite:
+        //        case DbPlatforms.MySql:
+        //            sql =
+        //                $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //            sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.ItemDate).FieldName)}) = ";
+        //            sql += $"'{CurrentMonthEnding.Month:D2}'";
+        //            break;
+        //        default:
+        //            throw new ArgumentOutOfRangeException();
+        //    }
+        //    query.AddWhereItemFormula(sql);
 
-            unionSql += sqlGenerator.GenerateSelectStatement(query);
+        //    unionSql += sqlGenerator.GenerateSelectStatement(query);
 
-            var outerQuery = new SelectQuery("Outer");
-            outerQuery.AddSelectFormulaColumn("Projected", "SUM(Projected)");
-            outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
+        //    var outerQuery = new SelectQuery("Outer");
+        //    outerQuery.AddSelectFormulaColumn("Projected", "SUM(Projected)");
+        //    outerQuery.BaseTable.HasFormula(unionSql + "\r\n");
 
-            var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
+        //    var projectedSql = sqlGenerator.GenerateSelectStatement(outerQuery);
 
-            return projectedSql;
-        }
+        //    return projectedSql;
+        //}
 
-        private string GetBudgetMonthToDateFormulaSql(bool projected)
-        {
-            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            var query = new SelectQuery(AppGlobals.LookupContext.BudgetPeriodHistory.TableName);
-            var table = AppGlobals.LookupContext.BudgetPeriodHistory;
+        //private string GetBudgetMonthToDateFormulaSql(bool projected)
+        //{
+        //    var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
+        //    var query = new SelectQuery(AppGlobals.LookupContext.BudgetPeriodHistory.TableName);
+        //    var table = AppGlobals.LookupContext.BudgetPeriodHistory;
 
-            var field = projected
-                ? AppGlobals.LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount).FieldName
-                : AppGlobals.LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName;
+        //    var field = projected
+        //        ? AppGlobals.LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount).FieldName
+        //        : AppGlobals.LookupContext.BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName;
 
-            var sumField = projected
-                ? "Projected"
-                : "Actual";
+        //    var sumField = projected
+        //        ? "Projected"
+        //        : "Actual";
 
-            query.AddSelectFormulaColumn(sumField,
-                $"ROUND((coalesce(SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{field}), 0)), 2) ");
-            query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodType).FieldName, Conditions.Equals,
-                (int)PeriodHistoryTypes.Monthly);
-            query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,
-                CurrentMonthEnding, DbDateTypes.DateOnly);
+        //    query.AddSelectFormulaColumn(sumField,
+        //        $"ROUND((coalesce(SUM({sqlGenerator.FormatSqlObject(table.TableName)}.{field}), 0)), 2) ");
+        //    query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodType).FieldName, Conditions.Equals,
+        //        (int)PeriodHistoryTypes.Monthly);
+        //    query.AddWhereItem(table.GetFieldDefinition(p => p.PeriodEndingDate).FieldName, Conditions.Equals,
+        //        CurrentMonthEnding, DbDateTypes.DateOnly);
 
-            var formulaSql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
-            formulaSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)}";
+        //    var formulaSql = $"{sqlGenerator.FormatSqlObject(table.TableName)}.";
+        //    formulaSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.BudgetItemId).FieldName)}";
 
-            var equalsClause = $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
-            equalsClause += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
+        //    var equalsClause = $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.TableName)}.";
+        //    equalsClause += $"{sqlGenerator.FormatSqlObject(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.Id).FieldName)}";
 
-            query.AddWhereItemFormula($"{formulaSql} = {equalsClause}");
+        //    query.AddWhereItemFormula($"{formulaSql} = {equalsClause}");
 
-            formulaSql = sqlGenerator.GenerateSelectStatement(query);
+        //    formulaSql = sqlGenerator.GenerateSelectStatement(query);
 
-            return formulaSql;
-        }
+        //    return formulaSql;
+        //}
 
         private void ChangeHousehold()
         {
@@ -729,7 +730,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             {
                 return;
             }
-            BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+            //BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             BudgetLookupCommand = new LookupCommand(LookupCommands.Refresh);
             BankLookupCommand = new LookupCommand(LookupCommands.Refresh);
 
@@ -772,7 +773,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             var lookupDefinition = BudgetLookupDefinition.Clone();
             lookupDefinition.InitialSortColumnDefinition =
-                lookupDefinition.GetColumnDefinition(p => p.ProjectedMonthlyAmount);
+                lookupDefinition.GetColumnDefinition(p => p.BudgetAmount);
 
             _activeChartData = _initialBudgetChartData;
 
@@ -788,7 +789,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             var lookupDefinition = BudgetLookupDefinition.Clone();
             lookupDefinition.InitialSortColumnDefinition =
-                lookupDefinition.GetColumnDefinition(p => p.ActualMonthlyAmount);
+                lookupDefinition.GetColumnDefinition(p => p.ActualAmount);
 
             _activeChartData = _initialActualChartData;
 
@@ -798,12 +799,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         }
 
 
-        private void MakeChartData(LookupDefinition<MainBudgetLookup, BudgetItem> lookupDefinition)
+        private void MakeChartData(LookupDefinition<MainBudgetLookup, MainBudget> lookupDefinition)
         {
             _budgetItems.Clear();
             lookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
-            var lookupData = new LookupData<MainBudgetLookup, BudgetItem>(lookupDefinition, this);
+            var lookupData = new LookupData<MainBudgetLookup, MainBudget>(lookupDefinition, this);
 
             lookupData.LookupDataChanged -= LookupData_LookupDataChanged;
             lookupData.LookupDataChanged += LookupData_LookupDataChanged;
@@ -828,29 +829,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             //}
         }
 
-        private void LookupData_LookupDataChanged(object sender, LookupDataChangedArgs<MainBudgetLookup, BudgetItem> e)
+        private void LookupData_LookupDataChanged(object sender, LookupDataChangedArgs<MainBudgetLookup, MainBudget> e)
         {
             foreach (var mainLookup in e.LookupData.LookupResultsList)
             {
-                if (mainLookup.ItemType == "Expense")
+                var itemType = (BudgetItemTypes)mainLookup.ItemType;
+                if (itemType == BudgetItemTypes.Expense)
                 {
                     //if (!_budgetItems.Contains(mainLookup.BudgetId))
                     {
-                        _budgetItems.Add(mainLookup.BudgetId);
+                        _budgetItems.Add(mainLookup.BudgetItemId);
                         if (_activeChartData == _initialBudgetChartData)
                         {
                             _activeChartData.Items.Add(new ChartDataItem
                             {
-                                Name = mainLookup.Description,
-                                Value = (double) mainLookup.ProjectedMonthlyAmount
+                                Name = mainLookup.BudgetItem,
+                                Value = (double) mainLookup.BudgetAmount
                             });
                         }
                         else if (_activeChartData == _initialActualChartData)
                         {
                             _activeChartData.Items.Add(new ChartDataItem
                             {
-                                Name = mainLookup.Description,
-                                Value = (double) mainLookup.ActualMonthlyAmount
+                                Name = mainLookup.BudgetItem,
+                                Value = (double) mainLookup.ActualAmount
                             });
                         }
                     }
@@ -946,7 +948,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var budgetItems = new List<int>();
 
             var budgetLookupDefinition = CreateBudgetLookupDefinition(true);
-            var lookupData = new LookupData<MainBudgetLookup, BudgetItem>(budgetLookupDefinition, this);
+            var lookupData = new LookupData<MainBudgetLookup, MainBudget>(budgetLookupDefinition, this);
             var total = lookupData.GetRecordCountWait();
             procedure.UpdateBottomTier("Processing Budgets", total, 1);
             var procedureTotal = total;
@@ -957,17 +959,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 procedure.UpdateBottomTier("Processing Budgets", procedureTotal, total);
                 foreach (var mainBudgetLookup in args.LookupData.LookupResultsList)
                 {
-                    if (!budgetItems.Contains(mainBudgetLookup.BudgetId))
+                    if (!budgetItems.Contains(mainBudgetLookup.BudgetItemId))
                     {
-                        budgetItems.Add(mainBudgetLookup.BudgetId);
+                        budgetItems.Add(mainBudgetLookup.BudgetItemId);
                         result.Add(new BudgetData
                         {
-                            BudgetItemId = mainBudgetLookup.BudgetId,
-                            Description = mainBudgetLookup.Description,
-                            BudgetAmount = mainBudgetLookup.ProjectedMonthlyAmount,
-                            ActualAmount = mainBudgetLookup.ActualMonthlyAmount,
-                            Difference = mainBudgetLookup.MonthlyAmountDifference,
-                            HistoryExists = AppGlobals.DataRepository.HistoryExists(mainBudgetLookup.BudgetId, month),
+                            BudgetItemId = mainBudgetLookup.BudgetItemId,
+                            Description = mainBudgetLookup.BudgetItem,
+                            BudgetAmount = mainBudgetLookup.BudgetAmount,
+                            ActualAmount = mainBudgetLookup.ActualAmount,
+                            //Difference = mainBudgetLookup.MonthlyAmountDifference,
+                            HistoryExists = AppGlobals.DataRepository.HistoryExists(mainBudgetLookup.BudgetItemId, month),
                             CurrentDate = month
                         });
                     }

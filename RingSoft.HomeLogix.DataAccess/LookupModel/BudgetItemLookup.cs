@@ -6,6 +6,8 @@
 
         public string ItemType { get; set; }
 
+        public byte ItemTypeId { get; set; }
+
         public int RecurringPeriod { get; set; }
 
         public string RecurringType { get; set; }

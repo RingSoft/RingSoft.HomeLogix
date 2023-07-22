@@ -40,6 +40,7 @@ namespace RingSoft.HomeLogix.Sqlite
         public DbSet<BankTransaction> BankTransactions { get; set; }
         public DbSet<BankTransactionBudget> BankTransactionBudget { get; set; }
         public DbSet<QifMap> QifMaps { get; set; }
+        public DbSet<MainBudget> MainBudget { get; set; }
 
         //-----------------------------------------------------------------------
 
