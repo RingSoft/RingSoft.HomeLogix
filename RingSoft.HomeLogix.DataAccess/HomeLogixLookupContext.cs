@@ -423,7 +423,9 @@ namespace RingSoft.HomeLogix.DataAccess
             BankAccountPeriodHistory.GetFieldDefinition(p => p.PeriodType).IsEnum<PeriodHistoryTypes>();
 
             History.PriorityLevel = 100;
-            History.GetFieldDefinition(p => p.ItemType).HasContentTemplateId(RegisterTypeCustomContentId);
+            History.GetFieldDefinition(p => p.ItemType)
+                .HasContentTemplateId(RegisterTypeCustomContentId)
+                .IsEnum<BankAccountRegisterItemTypes>();
 
             History.GetFieldDefinition(p => p.ProjectedAmount).HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed();
 

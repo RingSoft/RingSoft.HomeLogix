@@ -10,7 +10,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item Source" Height="400" Width="450">
+        Title="Budget Item Source" Height="500" Width="450">
     <Window.DataContext>
         <vm:BudgetItemSourceViewModel x:Name="BudgetItemSourceViewModel"/>
     </Window.DataContext>
