@@ -138,7 +138,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return result;
 
             var amount = budgetItem.Amount;
-            switch (budgetItem.Type)
+            switch ((BudgetItemTypes)budgetItem.Type)
             {
                 case BudgetItemTypes.Income:
                     break;
@@ -167,7 +167,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 result.Add(registerItem);
 
-                if (budgetItem.Type == BudgetItemTypes.Transfer && budgetItem.TransferToBankAccountId != null)
+                if ((BudgetItemTypes)budgetItem.Type == BudgetItemTypes.Transfer && budgetItem.TransferToBankAccountId != null)
                 {
                     registerItem.RegisterGuid = Guid.NewGuid().ToString();
                     registerItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;

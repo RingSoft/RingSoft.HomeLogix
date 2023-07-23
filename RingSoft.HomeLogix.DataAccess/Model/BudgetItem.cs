@@ -32,7 +32,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public int Id { get; set; }
 
         [Required]
-        public BudgetItemTypes Type { get; set; }
+        public byte Type { get; set; }
 
         [Required]
         [MaxLength(50)]

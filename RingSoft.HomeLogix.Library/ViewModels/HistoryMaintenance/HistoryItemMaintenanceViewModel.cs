@@ -434,7 +434,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             if (entity.BudgetItem != null)
             {
-                if (entity.BudgetItem.Type == BudgetItemTypes.Income)
+                if ((BudgetItemTypes)entity.BudgetItem.Type == BudgetItemTypes.Income)
                     Difference = ActualAmount - ProjectedAmount;
                 else
                 {

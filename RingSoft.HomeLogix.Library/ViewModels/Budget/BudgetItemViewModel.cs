@@ -852,7 +852,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
 
-            BudgetItemType = entity.Type;
+            BudgetItemType = (BudgetItemTypes)entity.Type;
             BankAutoFillValue =
                 new AutoFillValue(
                     AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
@@ -1127,7 +1127,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 Id = Id,
                 Description = description,
-                Type = BudgetItemType,
+                Type = (byte)BudgetItemType,
                 Amount = Amount,
                 RecurringPeriod = RecurringPeriod == 0 ? 1 : RecurringPeriod,
                 RecurringType = RecurringType,

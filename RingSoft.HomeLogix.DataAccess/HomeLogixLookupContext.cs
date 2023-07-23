@@ -389,7 +389,9 @@ namespace RingSoft.HomeLogix.DataAccess
                 .HasDescription("Bank Account");
 
             BudgetItems.PriorityLevel = 20;
-            BudgetItems.GetFieldDefinition(p => (int)p.Type).HasContentTemplateId(BudgetItemTypeContentId).EnumTranslation.LoadFromEnum<BudgetItemTypes>();
+            var budgetField = BudgetItems.GetFieldDefinition(p => p.Type);
+            var customContent = budgetField.HasContentTemplateId(BudgetItemTypeContentId);
+            customContent.IsEnum<BudgetItemTypes>();
 
             BudgetItems.GetFieldDefinition(p => p.Amount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);

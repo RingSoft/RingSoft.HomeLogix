@@ -265,7 +265,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var result = rowAmount;
             if (gridRow != null)
             {
-                switch (budgetItem.Type)
+                switch ((BudgetItemTypes)budgetItem.Type)
                 {
                     case BudgetItemTypes.Income:
                         switch (gridRow.TransactionTypes)
@@ -498,7 +498,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             bankRegisterItem.BankText = gridRow.Description;
             BankAccountRegisterItem transferToRegisterItem = null;
             var itemToAdd = bankRegisterItem;
-            switch (budgetItem.Type)
+            switch ((BudgetItemTypes)budgetItem.Type)
             {
                 case BudgetItemTypes.Income:
                     //bankRegisterItem.Description += "Income";

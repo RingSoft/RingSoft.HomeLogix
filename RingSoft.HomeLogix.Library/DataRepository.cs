@@ -497,13 +497,13 @@ namespace RingSoft.HomeLogix.Library
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
                                 w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
-                                w.BudgetItem.Type == BudgetItemTypes.Income)
+                                w.BudgetItem.Type == (byte)BudgetItemTypes.Income)
                     .Sum(s => s.ProjectedAmount);
 
             var registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
                 .Where(w => w.ProjectedAmount > 0 &&
                                  w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
-                                 w.BudgetItem.Type == BudgetItemTypes.Income)
+                                 w.BudgetItem.Type == (byte)BudgetItemTypes.Income)
                 .Sum(s => s.ProjectedAmount);
 
             result.TotalProjectedMonthlyIncome += registerAmount;
@@ -513,13 +513,13 @@ namespace RingSoft.HomeLogix.Library
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
                                 w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
-                                w.BudgetItem.Type == BudgetItemTypes.Expense)
+                                w.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                     .Sum(s => s.ProjectedAmount);
 
              registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
                 .Where(w => w.ProjectedAmount < 0 &&
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
-                            w.BudgetItem.Type == BudgetItemTypes.Expense)
+                            w.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
              result.TotalProjectedMonthlyExpenses += Math.Abs(registerAmount);
 
@@ -528,13 +528,13 @@ namespace RingSoft.HomeLogix.Library
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int) PeriodHistoryTypes.Monthly &&
                                 w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
-                                w.BudgetItem.Type == BudgetItemTypes.Income)
+                                w.BudgetItem.Type == (byte)BudgetItemTypes.Income)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
                 .Where(w => w.ProjectedAmount > 0 &&
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
-                            w.BudgetItem.Type == BudgetItemTypes.Income)
+                            w.BudgetItem.Type == (byte)BudgetItemTypes.Income)
                 .Sum(s => s.ProjectedAmount);
 
             result.TotalActualMonthlyIncome += registerAmount;
@@ -544,13 +544,13 @@ namespace RingSoft.HomeLogix.Library
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
                                 w.PeriodEndingDate.Year == monthEndDate.Year && w.PeriodEndingDate.Month == monthEndDate.Month &&
-                                w.BudgetItem.Type == BudgetItemTypes.Expense)
+                                w.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
                 .Where(w => w.ProjectedAmount < 0 &&
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
-                            w.BudgetItem.Type == BudgetItemTypes.Expense)
+                            w.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
 
             result.TotalActualMonthlyExpenses += Math.Abs(registerAmount);
@@ -561,12 +561,12 @@ namespace RingSoft.HomeLogix.Library
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Yearly &&
                                 w.PeriodEndingDate.Year == yearEndDate.Year && 
-                                w.BudgetItem.Type == BudgetItemTypes.Income)
+                                w.BudgetItem.Type == (byte)BudgetItemTypes.Income)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
                 .Where(w => w.ProjectedAmount > 0 &&
-                            w.ItemDate.Year == monthEndDate.Year && w.BudgetItem.Type == BudgetItemTypes.Income)
+                            w.ItemDate.Year == monthEndDate.Year && w.BudgetItem.Type == (byte)BudgetItemTypes.Income)
                 .Sum(s => s.ProjectedAmount);
 
             result.YearToDateIncome += registerAmount;
@@ -575,12 +575,12 @@ namespace RingSoft.HomeLogix.Library
                 context.BudgetPeriodHistory
                     .Include(i => i.BudgetItem)
                     .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Yearly &&
-                                w.PeriodEndingDate.Year == yearEndDate.Year && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                                w.PeriodEndingDate.Year == yearEndDate.Year && w.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
                 .Where(w => w.ProjectedAmount < 0 &&
-                            w.ItemDate.Year == monthEndDate.Year && w.BudgetItem.Type == BudgetItemTypes.Expense)
+                            w.ItemDate.Year == monthEndDate.Year && w.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
 
             result.YearToDateExpenses += Math.Abs(registerAmount);
@@ -627,7 +627,7 @@ namespace RingSoft.HomeLogix.Library
                             p.Date.Year == monthEndDate.Year &&
                             p.Date.Month == monthEndDate.Month &&
                             p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
-                            p.BudgetItem.Type == BudgetItemTypes.Expense).ToList().Sum(p => p.ProjectedAmount);
+                            p.BudgetItem.Type == (byte)BudgetItemTypes.Expense).ToList().Sum(p => p.ProjectedAmount);
 
             var historyIncomeAmount = context.History
                 .Include(i => i.BankAccount)
@@ -636,7 +636,7 @@ namespace RingSoft.HomeLogix.Library
                             p.Date.Year == monthEndDate.Year &&
                             p.Date.Month == monthEndDate.Month &&
                             p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
-                            p.BudgetItem.Type == BudgetItemTypes.Income).ToList().Sum(p => p.ProjectedAmount);
+                            p.BudgetItem.Type == (byte)BudgetItemTypes.Income).ToList().Sum(p => p.ProjectedAmount);
 
             result.TotalProjectedMonthlyIncome = historyIncomeAmount;
             result.TotalProjectedMonthlyExpenses = historyExpenseAmount;

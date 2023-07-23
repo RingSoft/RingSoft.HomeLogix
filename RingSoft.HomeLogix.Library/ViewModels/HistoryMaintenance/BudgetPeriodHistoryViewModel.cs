@@ -239,7 +239,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             ActualAmount = entity.ActualAmount;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(entity.BudgetItemId);
 
-            if (budgetItem.Type == BudgetItemTypes.Income)
+            if ((BudgetItemTypes)budgetItem.Type == BudgetItemTypes.Income)
             {
                 Difference = ActualAmount - ProjectedAmount;
             }

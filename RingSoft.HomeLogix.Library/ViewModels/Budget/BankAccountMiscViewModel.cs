@@ -313,7 +313,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         new AutoFillValue(
                             AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
                             budgetItem.Description);
-                    ItemType = _registerItem.BudgetItem.Type;
+                    ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
                 }
                 else
                 {

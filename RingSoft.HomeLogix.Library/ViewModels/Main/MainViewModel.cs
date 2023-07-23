@@ -796,7 +796,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var periodHistoryTable = context.GetTable<BudgetPeriodHistory>();
             var periodHistory = periodHistoryTable
                 .Include(p => p.BudgetItem)
-                .Where(p => p.BudgetItem.Type != BudgetItemTypes.Transfer
+                .Where(p => p.BudgetItem.Type != (byte)BudgetItemTypes.Transfer
                             && p.PeriodEndingDate.Month == CurrentMonthEnding.Month
                             && p.PeriodEndingDate.Year == CurrentMonthEnding.Year)
                 .OrderBy(p => p.BudgetItem.Description);
@@ -823,7 +823,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var monthlyRegisterItems = registerTable
                 .Include(p => p.BudgetItem)
                 .Where(p => p.BudgetItem != null
-                            && p.BudgetItem.Type != BudgetItemTypes.Transfer
+                            && p.BudgetItem.Type != (byte)BudgetItemTypes.Transfer
                             && p.ItemDate.Month == CurrentMonthEnding.Month
                             && p.ItemDate.Year == CurrentMonthEnding.Year)
                 .OrderBy(p => p.BudgetItem.Description);

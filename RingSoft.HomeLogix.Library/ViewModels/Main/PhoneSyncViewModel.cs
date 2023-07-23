@@ -406,7 +406,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 }
                 if (historyItem.BudgetItem != null)
                 {
-                    switch (historyItem.BudgetItem.Type)
+                    switch ((BudgetItemTypes)historyItem.BudgetItem.Type)
                     {
                         case BudgetItemTypes.Income:
                             historyData.Difference = historyItem.ActualAmount - historyItem.ProjectedAmount;

@@ -240,7 +240,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous)
                     {
                         IsNegative = entity.IsNegative;
-                        switch (entity.BudgetItem.Type)
+                        switch ((BudgetItemTypes)entity.BudgetItem.Type)
                         {
                             case BudgetItemTypes.Income:
                                 TransactionType = entity.IsNegative
@@ -258,7 +258,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                     else
                     {
-                        switch (entity.BudgetItem.Type)
+                        switch ((BudgetItemTypes)entity.BudgetItem.Type)
                         {
                             case BudgetItemTypes.Income:
                                 TransactionType = TransactionTypes.Deposit;
