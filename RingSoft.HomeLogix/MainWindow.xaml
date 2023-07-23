@@ -130,8 +130,8 @@
                     <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type da:MainBudgetLookup}}"
                                      Header="Actual Amount" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
-                    <!--<lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmountDifference, Type={x:Type vm:MainBudgetLookup}}"
-                                     Header="Monthly Difference" TextAlignment="Right" DesignText="$123,456.78" Width="120" />-->
+                    <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type da:MainBudgetLookup}}"
+                                     Header="Monthly Difference" TextAlignment="Right" DesignText="$123,456.78" Width="120" />
 
                 </lc:LookupControl.LookupColumns>
             </lc:LookupControl>

@@ -1054,13 +1054,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             foreach (var budgetItem in budgetItems)
             {
+                var difference = budgetItem.BudgetAmount - budgetItem.ActualAmount;
+                switch ((BudgetItemTypes)budgetItem.ItemType)
+                {
+                    case BudgetItemTypes.Income:
+                        difference = budgetItem.ActualAmount - budgetItem.BudgetAmount;
+                        break;
+                }
                 result.Add(new BudgetData
                 {
                     BudgetItemId = budgetItem.BudgetItemId,
                     Description = budgetItem.BudgetItem.Description,
                     BudgetAmount = budgetItem.BudgetAmount,
                     ActualAmount = budgetItem.ActualAmount,
-                    //Difference = mainBudgetLookup.MonthlyAmountDifference,
+                    Difference = difference,
                     HistoryExists = AppGlobals.DataRepository.HistoryExists(budgetItem.BudgetItemId, month),
                     CurrentDate = month
                 });
@@ -1093,18 +1100,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 {
                     var bankAccount = AppGlobals.LookupContext.BankAccounts
                         .GetEntityFromPrimaryKeyValue(primaryKey);
+                    bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccount.Id, false);
+
                     var bankData = result.FirstOrDefault(p => p.BankId == bankAccount.Id);
                     if (bankData == null)
                     {
                         var newBankData = new BankData
                         {
                             BankId = bankAccount.Id,
-                            CurrentBalance = bankData.CurrentBalance,
-                            Description = bankData.Description,
-                            ProjectedLowestBalance = bankData.ProjectedLowestBalance,
-                            ProjectedLowestBalanceDate = bankData.ProjectedLowestBalanceDate,
+                            CurrentBalance = bankAccount.CurrentBalance,
+                            Description = bankAccount.Description,
+                            ProjectedLowestBalance = bankAccount.ProjectedLowestBalanceAmount,
+                            ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate.GetValueOrDefault(),
                         };
-                        var accountType = (int)bankData.AccountType;
+                        var accountType = (int)bankAccount.AccountType;
                         newBankData.AccountType = (BankAccountTypes)accountType;
                         result.Add(newBankData);
                         

@@ -470,7 +470,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("RecurringPeriod")
                         .HasColumnType("integer");
 
-                    b.Property<int>("RecurringType")
+                    b.Property<byte>("RecurringType")
                         .HasColumnType("smallint");
 
                     b.Property<DateTime?>("StartingDate")
@@ -479,7 +479,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("TransferToBankAccountId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Type")
+                    b.Property<byte>("Type")
                         .HasColumnType("smallint");
 
                     b.HasKey("Id");
@@ -869,13 +869,13 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
                         .WithMany("Maps")
                         .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", "Source")
                         .WithMany("Maps")
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("BudgetItem");
 
@@ -887,7 +887,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.History", "HistoryItem")
                         .WithMany("Sources")
                         .HasForeignKey("HistoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", "Source")

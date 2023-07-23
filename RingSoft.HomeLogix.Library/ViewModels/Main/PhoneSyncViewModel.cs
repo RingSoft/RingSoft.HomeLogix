@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
@@ -335,28 +336,49 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var total = lookupData.GetRecordCount();
             var progress = 0;
 
-            var chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20);
-            if (chunk.Chunk.Rows.Count < 20)
+            lookupData.PrintOutput += (sender, output) =>
             {
-                LoadRegisterChunk(result, chunk.Chunk);
-            }
-            else
-            {
-                while (chunk.Chunk.Rows.Count >= 20)
+                foreach (var primaryKeyValue in output.Result)
                 {
-                    progress += chunk.Chunk.Rows.Count;
-                    procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
-                    LoadRegisterChunk(result, chunk.Chunk);
-                    chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20, chunk.BottomPrimaryKey);
-                }
+                    var bankAccountRegisterItem = AppGlobals
+                        .LookupContext
+                        .BankAccountRegisterItems
+                        .GetEntityFromPrimaryKeyValue(primaryKeyValue);
 
-                if (chunk.Chunk.Rows.Count < 20)
-                {
-                    progress += chunk.Chunk.Rows.Count;
-                    procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
-                    LoadRegisterChunk(result, chunk.Chunk);
+                    bankAccountRegisterItem = AppGlobals
+                        .DataRepository
+                        .GetBankAccountRegisterItem(bankAccountRegisterItem.Id);
+
+                    var registerData = BankAccountViewModel.GetRegisterData(bankAccountRegisterItem);
+                    result.Add(registerData);
+
                 }
-            }
+                progress += output.Result.Count;
+                procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
+            };
+            //var chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20);
+            //if (chunk.Chunk.Rows.Count < 20)
+            //{
+            //    LoadRegisterChunk(result, chunk.Chunk);
+            //}
+            //else
+            //{
+            //    while (chunk.Chunk.Rows.Count >= 20)
+            //    {
+            //        progress += chunk.Chunk.Rows.Count;
+            //        procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
+            //        LoadRegisterChunk(result, chunk.Chunk);
+            //        chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20, chunk.BottomPrimaryKey);
+            //    }
+
+            //    if (chunk.Chunk.Rows.Count < 20)
+            //    {
+            //        progress += chunk.Chunk.Rows.Count;
+            //        procedure.UpdateBottomTier($"Processing Record {progress}/{total}", total, progress);
+            //        LoadRegisterChunk(result, chunk.Chunk);
+            //    }
+            //}
+            lookupData.DoPrintOutput(20);
             return result;
         }
 

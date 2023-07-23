@@ -22,7 +22,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.HasOne(p => p.HistoryItem)
                 .WithMany(w => w.Sources)
                 .HasForeignKey(h => h.HistoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.Source)
                 .WithMany(w => w.History)

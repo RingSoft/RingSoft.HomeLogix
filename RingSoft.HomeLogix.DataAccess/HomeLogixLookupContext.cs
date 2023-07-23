@@ -64,6 +64,35 @@ namespace RingSoft.HomeLogix.DataAccess
         }
     }
 
+    public class MainBudgetDifferenceFormula : ILookupFormula
+    {
+        public int Id => 4;
+
+        public string GetDatabaseValue(object entity)
+        {
+            if (entity is MainBudget mainBudget)
+            {
+                switch ((BudgetItemTypes)mainBudget.ItemType)
+                {
+                    case BudgetItemTypes.Income:
+                        return (mainBudget.ActualAmount - mainBudget.BudgetAmount).ToString();
+                    case BudgetItemTypes.Expense:
+                    case BudgetItemTypes.Transfer:
+                        return (mainBudget.BudgetAmount - mainBudget.ActualAmount).ToString();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            //if (entity is Order_Detail orderDetail)
+            //{
+            //    var extendedPrice = orderDetail.Quantity * orderDetail.UnitPrice;
+            //    return Math.Round(extendedPrice, 2).ToString();
+            //}
+
+            return string.Empty;
+        }
+    }
+
 
     public class HomeLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
@@ -185,6 +214,12 @@ namespace RingSoft.HomeLogix.DataAccess
                 p => p.ActualAmount
                 , "Actual\r\nAmount",
                 p => p.ActualAmount, 20);
+            MainBudgetLookup.AddVisibleColumnDefinition(p => p.Difference
+                , "Difference"
+                , new MainBudgetDifferenceFormula(), 20, "")
+                .HasDecimalFieldType(DecimalFieldTypes.Currency)
+                .DoShowNegativeValuesInRed()
+                .DoShowPositiveValuesInGreen();
 
             MainBudget.HasLookupDefinition(MainBudgetLookup);
 
