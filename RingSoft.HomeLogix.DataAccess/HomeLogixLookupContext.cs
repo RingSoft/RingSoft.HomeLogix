@@ -22,11 +22,23 @@ namespace RingSoft.HomeLogix.DataAccess
 
         public string GetDatabaseValue(object entity)
         {
-            //if (entity is Order_Detail orderDetail)
-            //{
-            //    var extendedPrice = orderDetail.Quantity * orderDetail.UnitPrice;
-            //    return Math.Round(extendedPrice, 2).ToString();
-            //}
+            if (entity is History history)
+            {
+                if (history.BudgetItem == null)
+                {
+                    return (history.ProjectedAmount - history.ActualAmount).ToString();
+                }
+                switch ((BudgetItemTypes)history.BudgetItem.Type)
+                {
+                    case BudgetItemTypes.Income:
+                        return (history.ActualAmount - history.ProjectedAmount).ToString();
+                    case BudgetItemTypes.Expense:
+                    case BudgetItemTypes.Transfer:
+                        return (history.ProjectedAmount - history.ActualAmount).ToString();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
 
             return string.Empty;
         }
@@ -38,11 +50,19 @@ namespace RingSoft.HomeLogix.DataAccess
 
         public string GetDatabaseValue(object entity)
         {
-            //if (entity is Order_Detail orderDetail)
-            //{
-            //    var extendedPrice = orderDetail.Quantity * orderDetail.UnitPrice;
-            //    return Math.Round(extendedPrice, 2).ToString();
-            //}
+            if (entity is BudgetPeriodHistory budgetPeriodHistory)
+            {
+                switch ((BudgetItemTypes)budgetPeriodHistory.BudgetItem.Type)
+                {
+                    case BudgetItemTypes.Income:
+                        return (budgetPeriodHistory.ActualAmount - budgetPeriodHistory.ProjectedAmount).ToString();
+                    case BudgetItemTypes.Expense:
+                    case BudgetItemTypes.Transfer:
+                        return (budgetPeriodHistory.ProjectedAmount - budgetPeriodHistory.ActualAmount).ToString();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
 
             return string.Empty;
         }
@@ -54,11 +74,10 @@ namespace RingSoft.HomeLogix.DataAccess
 
         public string GetDatabaseValue(object entity)
         {
-            //if (entity is Order_Detail orderDetail)
-            //{
-            //    var extendedPrice = orderDetail.Quantity * orderDetail.UnitPrice;
-            //    return Math.Round(extendedPrice, 2).ToString();
-            //}
+            if (entity is BankAccountPeriodHistory bankHistory)
+            {
+                return (bankHistory.TotalDeposits - bankHistory.TotalWithdrawals).ToString();
+            }
 
             return string.Empty;
         }
@@ -83,12 +102,7 @@ namespace RingSoft.HomeLogix.DataAccess
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            //if (entity is Order_Detail orderDetail)
-            //{
-            //    var extendedPrice = orderDetail.Quantity * orderDetail.UnitPrice;
-            //    return Math.Round(extendedPrice, 2).ToString();
-            //}
-
+            
             return string.Empty;
         }
     }

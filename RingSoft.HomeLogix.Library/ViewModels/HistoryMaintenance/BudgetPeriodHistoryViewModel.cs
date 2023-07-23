@@ -194,40 +194,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             var table = AppGlobals.LookupContext.History;
             var sql = string.Empty;
             var yearSql = string.Empty;
-            switch (AppGlobals.DbPlatform)
-            {
-                case DbPlatforms.SqlServer:
-                    sql =
-                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
-                    yearSql =
-                        $"YEAR({sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    yearSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    break;
-                case DbPlatforms.Sqlite:
-                case DbPlatforms.MySql:
-                    sql =
-                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
-                    yearSql =
-                        $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    yearSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals, $"{_budgetPeriodHistory.PeriodEndingDate.Month:D2}", sql);
+                var beginDate = new DateTime(_budgetPeriodHistory.PeriodEndingDate.Year
+                    , _budgetPeriodHistory.PeriodEndingDate.Month, 1);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.GreaterThanEquals, beginDate);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.LessThanEquals, _budgetPeriodHistory.PeriodEndingDate);
             }
-            
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals, $"{_budgetPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
+            else
+            {
+                var beginDate = new DateTime(_budgetPeriodHistory.PeriodEndingDate.Year
+                    , 1, 1);
+                var endDate = new DateTime(_budgetPeriodHistory.PeriodEndingDate.Year
+                    , 12, 31);
 
-            _budgetPeriodHistory = _budgetPeriodHistory;
-            ViewModelInput.HistoryFilterBudgetPeriodItem = _budgetPeriodHistory;
-                
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.GreaterThanEquals, beginDate);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.LessThanEquals, endDate);
+            }
+
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
             return _budgetPeriodHistory;
