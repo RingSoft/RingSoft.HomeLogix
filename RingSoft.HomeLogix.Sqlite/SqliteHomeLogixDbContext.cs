@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.RecordLocking;
 using RingSoft.HomeLogix.DataAccess;
@@ -43,6 +44,21 @@ namespace RingSoft.HomeLogix.Sqlite
         public DbSet<MainBudget> MainBudget { get; set; }
 
         //-----------------------------------------------------------------------
+        private static string? _connectionString;
+
+        public static string? ConnectionString
+        {
+            get
+            {
+                if (_connectionString == null)
+                {
+                    return _lookupContext.SqliteDataProcessor.ConnectionString;
+                }
+                return _connectionString;
+            }
+            set { _connectionString = value; }
+        }
+
 
         private static HomeLogixLookupContext _lookupContext;
 
@@ -90,6 +106,15 @@ namespace RingSoft.HomeLogix.Sqlite
         public IAdvancedFindDbContextEfCore GetNewDbContext()
         {
             return new SqliteHomeLogixDbContext();
+        }
+        public override void SetProcessor(DbDataProcessor processor)
+        {
+
+        }
+
+        public override void SetConnectionString(string? connectionString)
+        {
+            ConnectionString = connectionString;
         }
 
     }

@@ -20,7 +20,6 @@ namespace RingSoft.HomeLogix.Tests
         public void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
         {
             Debug.WriteLine($"{_ownerName} Validation Fail: {text}");
-            SystemSounds.Exclamation.Play();
         }
 
         public void HandleAutoFillValFail(DbAutoFillMap autoFillMap)

@@ -31,6 +31,21 @@ namespace RingSoft.HomeLogix.SqlServer
 
         public bool IsDesignTime { get; set; }
 
+        private static string? _connectionString;
+
+        public static string? ConnectionString
+        {
+            get
+            {
+                if (_connectionString == null)
+                {
+                    return _lookupContext.SqliteDataProcessor.ConnectionString;
+                }
+                return _connectionString;
+            }
+            set { _connectionString = value; }
+        }
+
         private static HomeLogixLookupContext _lookupContext;
 
         public SqlServerHomeLogixDbContext()
@@ -88,5 +103,15 @@ namespace RingSoft.HomeLogix.SqlServer
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
 
         }
+        public override void SetProcessor(DbDataProcessor processor)
+        {
+
+        }
+
+        public override void SetConnectionString(string? connectionString)
+        {
+            ConnectionString = connectionString;
+        }
+
     }
 }

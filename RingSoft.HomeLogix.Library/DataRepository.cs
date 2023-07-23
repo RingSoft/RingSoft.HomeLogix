@@ -8,6 +8,7 @@ using System.Linq;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Linq.Expressions;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 
 namespace RingSoft.HomeLogix.Library
@@ -112,6 +113,11 @@ namespace RingSoft.HomeLogix.Library
     public class DataRepository : IDataRepository
     {
         public IDbContext GetDataContext()
+        {
+            return AppGlobals.GetNewDbContext();
+        }
+
+        public DbLookup.IDbContext GetDataContext(DbDataProcessor dataProcessor)
         {
             return AppGlobals.GetNewDbContext();
         }

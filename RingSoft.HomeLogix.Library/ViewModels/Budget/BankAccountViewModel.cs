@@ -1486,9 +1486,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void BankAccountViewModel_PrintProcessingHeader(object sender, PrinterDataProcessedEventArgs e)
         {
-            var bankAccountId =
-                e.OutputRow.GetRowValue(AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.Id).FieldName)
-                    .ToInt();
+            var bankAccountId = TableDefinition.GetEntityFromPrimaryKeyValue(e.PrimaryKey).Id;
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccountId);
             var registerItems = bankAccount.RegisterItems;

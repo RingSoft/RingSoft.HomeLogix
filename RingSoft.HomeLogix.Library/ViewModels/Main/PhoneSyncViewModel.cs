@@ -328,8 +328,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var lookupDefinition =
                 new LookupDefinition<RegisterLookup, BankAccountRegisterItem>(AppGlobals.LookupContext
                     .BankAccountRegisterItems);
-            var lookupData = new LookupData<RegisterLookup, BankAccountRegisterItem>(lookupDefinition, AppGlobals.MainViewModel);
-            var total = lookupData.GetRecordCountWait();
+            var lookupData = lookupDefinition
+                .TableDefinition
+                .LookupDefinition
+                .GetLookupDataMaui(lookupDefinition, false);
+            var total = lookupData.GetRecordCount();
             var progress = 0;
 
             var chunk = AppGlobals.LookupContext.BankAccountRegisterItems.GetChunk(20);

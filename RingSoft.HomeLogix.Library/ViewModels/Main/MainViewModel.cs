@@ -373,9 +373,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand UpgradeCommand { get; }
         public RelayCommand AboutCommand { get; }
 
+        public void SetLookupIndex(int index)
+        {
+        }
+
         public int PageSize { get; } = 20;
         public LookupSearchTypes SearchType { get; } = LookupSearchTypes.Equals;
         public string SearchText { get; set; } = string.Empty;
+        public int SelectedIndex { get; }
 
         public DateTime CurrentMonth { get; private set; }
 
@@ -1036,56 +1041,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
             _setCurrentDateText = false;
             CurrentMonthEnding = GetPeriodEndDate(month);
-            var budgetItems = new List<int>();
+            //var budgetItems = new List<int>();
 
             var budgetLookupDefinition = CreateBudgetLookupDefinition(true);
-            var lookupData = new LookupData<MainBudgetLookup, MainBudget>(budgetLookupDefinition, this);
-            var total = lookupData.GetRecordCountWait();
+            //var lookupData = new LookupData<MainBudgetLookup, MainBudget>(budgetLookupDefinition, this);
+            var context = AppGlobals.DataRepository.GetDataContext();
+            var budgetItems = GetBudgetItems(context);
+            var total = budgetItems.Count;
             procedure.UpdateBottomTier("Processing Budgets", total, 1);
             var procedureTotal = total;
             total = 0;
-            lookupData.LookupDataChanged += (sender, args) =>
+
+            foreach (var budgetItem in budgetItems)
             {
-                total += PageSize;
-                procedure.UpdateBottomTier("Processing Budgets", procedureTotal, total);
-                foreach (var mainBudgetLookup in args.LookupData.LookupResultsList)
+                result.Add(new BudgetData
                 {
-                    if (!budgetItems.Contains(mainBudgetLookup.BudgetItemId))
-                    {
-                        budgetItems.Add(mainBudgetLookup.BudgetItemId);
-                        result.Add(new BudgetData
-                        {
-                            BudgetItemId = mainBudgetLookup.BudgetItemId,
-                            Description = mainBudgetLookup.BudgetItem,
-                            BudgetAmount = mainBudgetLookup.BudgetAmount,
-                            ActualAmount = mainBudgetLookup.ActualAmount,
-                            //Difference = mainBudgetLookup.MonthlyAmountDifference,
-                            HistoryExists = AppGlobals.DataRepository.HistoryExists(mainBudgetLookup.BudgetItemId, month),
-                            CurrentDate = month
-                        });
-                    }
-                }
-            };
-
-            if (lookupData.GetInitData().ResultCode == GetDataResultCodes.Success)
-            {
-                var stop = false;
-
-                while (!stop)
-                {
-                    switch (lookupData.ScrollPosition)
-                    {
-                        case LookupScrollPositions.Bottom:
-                        case LookupScrollPositions.Disabled:
-                            stop = true;
-                            break;
-                        default:
-                            lookupData.GotoNextPage();
-                            break;
-                    }
-                }
-
+                    BudgetItemId = budgetItem.BudgetItemId,
+                    Description = budgetItem.BudgetItem.Description,
+                    BudgetAmount = budgetItem.BudgetAmount,
+                    ActualAmount = budgetItem.ActualAmount,
+                    //Difference = mainBudgetLookup.MonthlyAmountDifference,
+                    HistoryExists = AppGlobals.DataRepository.HistoryExists(budgetItem.BudgetItemId, month),
+                    CurrentDate = month
+                });
             }
+
 
             SetCurrentMonthEnding(GetPeriodEndDate(currentMonthEnding), type == StatisticsType.Previous);
             _setCurrentDateText = true;
@@ -1097,29 +1077,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var result = new List<BankData>();
 
             var bankLookupDefinition = CreateBankLookupDefinition();
-            var lookupData = new LookupData<MainBankLookup, BankAccount>(bankLookupDefinition, this);
-            var total = lookupData.GetRecordCountWait();
+            var lookupData = bankLookupDefinition
+                .TableDefinition
+                .LookupDefinition
+                .GetLookupDataMaui(bankLookupDefinition, false);
+            var total = lookupData.GetRecordCount();
             procedure.UpdateBottomTier("Processing Banks", total, 1);
             var procedureTotal = total;
             total = 0;
-            lookupData.LookupDataChanged += (sender, args) =>
+            lookupData.PrintOutput += (sender, args) =>
             {
                 total += PageSize;
                 procedure.UpdateBottomTier("Processing Banks", procedureTotal, total);
-                foreach (var mainBankLookup in args.LookupData.LookupResultsList)
+                foreach (var primaryKey in args.Result)
                 {
-                    var bankData = result.FirstOrDefault(p => p.BankId == mainBankLookup.BankId);
+                    var bankAccount = AppGlobals.LookupContext.BankAccounts
+                        .GetEntityFromPrimaryKeyValue(primaryKey);
+                    var bankData = result.FirstOrDefault(p => p.BankId == bankAccount.Id);
                     if (bankData == null)
                     {
                         var newBankData = new BankData
                         {
-                            BankId = mainBankLookup.BankId,
-                            CurrentBalance = mainBankLookup.CurrentBalance,
-                            Description = mainBankLookup.Description,
-                            ProjectedLowestBalance = mainBankLookup.ProjectedLowestBalance,
-                            ProjectedLowestBalanceDate = mainBankLookup.ProjectedLowestBalanceDate,
+                            BankId = bankAccount.Id,
+                            CurrentBalance = bankData.CurrentBalance,
+                            Description = bankData.Description,
+                            ProjectedLowestBalance = bankData.ProjectedLowestBalance,
+                            ProjectedLowestBalanceDate = bankData.ProjectedLowestBalanceDate,
                         };
-                        var accountType = (int)mainBankLookup.AccountType;
+                        var accountType = (int)bankData.AccountType;
                         newBankData.AccountType = (BankAccountTypes)accountType;
                         result.Add(newBankData);
                         
@@ -1127,25 +1112,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 }
             };
 
-            if (lookupData.GetInitData().ResultCode == GetDataResultCodes.Success)
-            {
-                var stop = false;
-
-                while (!stop)
-                {
-                    switch (lookupData.ScrollPosition)
-                    {
-                        case LookupScrollPositions.Bottom:
-                        case LookupScrollPositions.Disabled:
-                            stop = true;
-                            break;
-                        default:
-                            lookupData.GotoNextPage();
-                            break;
-                    }
-                }
-
-            }
+            lookupData.DoPrintOutput(10);
 
             return result;
         }

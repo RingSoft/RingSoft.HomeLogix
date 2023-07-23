@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -70,6 +71,11 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         public IDbContext GetDataContext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DbLookup.IDbContext GetDataContext(DbDataProcessor dataProcessor)
         {
             throw new NotImplementedException();
         }
