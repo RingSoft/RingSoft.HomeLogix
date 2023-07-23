@@ -52,7 +52,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var monthlyAmount = CalculateBudgetItemMonthlyAmount(budgetItem);
 
-            switch (processorData.BudgetItem.RecurringType)
+            switch ((BudgetItemRecurringTypes)processorData.BudgetItem.RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
                 case BudgetItemRecurringTypes.Weeks:
@@ -98,7 +98,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var dailyAmount = (double)0;
             var monthlyAmount = (double)0;
 
-            switch (budgetItem.RecurringType)
+            switch ((BudgetItemRecurringTypes)budgetItem.RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
                     dailyAmount = budgetItem.Amount / budgetItem.RecurringPeriod;
@@ -200,7 +200,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (budgetItem.StartingDate == null)
                 return;
 
-            budgetItem.StartingDate = budgetItem.RecurringType switch
+            budgetItem.StartingDate = (BudgetItemRecurringTypes)budgetItem.RecurringType switch
             {
                 BudgetItemRecurringTypes.Days => budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod),
                 BudgetItemRecurringTypes.Weeks => budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod * 7),

@@ -859,7 +859,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     entity.BankAccount.Description);
 
             RecurringPeriod = entity.RecurringPeriod;
-            RecurringType = entity.RecurringType;
+            RecurringType = (BudgetItemRecurringTypes)entity.RecurringType;
             EndingDate = entity.EndingDate;
             MonthlyAmount = entity.MonthlyAmount;
             CurrentMonthAmount = entity.CurrentMonthAmount;
@@ -1130,7 +1130,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Type = (byte)BudgetItemType,
                 Amount = Amount,
                 RecurringPeriod = RecurringPeriod == 0 ? 1 : RecurringPeriod,
-                RecurringType = RecurringType,
+                RecurringType = (byte)RecurringType,
                 StartingDate = StartingDate,
                 EndingDate = EndingDate,
                 MonthlyAmount = MonthlyAmount,

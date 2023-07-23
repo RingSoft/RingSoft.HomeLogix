@@ -63,7 +63,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdvancedFinds");
+                    b.ToTable("AdvancedFinds", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
@@ -95,7 +95,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar");
 
-                    b.Property<double>("PercentWidth")
+                    b.Property<decimal>("PercentWidth")
                         .HasColumnType("numeric");
 
                     b.Property<string>("PrimaryFieldName")
@@ -112,7 +112,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
-                    b.ToTable("AdvancedFindColumns");
+                    b.ToTable("AdvancedFindColumns", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindFilter", b =>
@@ -182,7 +182,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("SearchForAdvancedFindId");
 
-                    b.ToTable("AdvancedFindFilters");
+                    b.ToTable("AdvancedFindFilters", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
@@ -204,7 +204,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("Table", "PrimaryKey");
 
-                    b.ToTable("RecordLocks");
+                    b.ToTable("RecordLocks", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccount", b =>
@@ -218,7 +218,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<byte>("AccountType")
                         .HasColumnType("tinyint");
 
-                    b.Property<double>("CurrentBalance")
+                    b.Property<decimal>("CurrentBalance")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -232,19 +232,19 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime>("LastGenerationDate")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("MonthlyBudgetDeposits")
+                    b.Property<decimal>("MonthlyBudgetDeposits")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("MonthlyBudgetWithdrawals")
+                    b.Property<decimal>("MonthlyBudgetWithdrawals")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<double>("ProjectedEndingBalance")
+                    b.Property<decimal>("ProjectedEndingBalance")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("ProjectedLowestBalanceAmount")
+                    b.Property<decimal>("ProjectedLowestBalanceAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ProjectedLowestBalanceDate")
@@ -255,7 +255,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BankAccounts");
+                    b.ToTable("BankAccounts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountPeriodHistory", b =>
@@ -269,15 +269,15 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime>("PeriodEndingDate")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("TotalDeposits")
+                    b.Property<decimal>("TotalDeposits")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("TotalWithdrawals")
+                    b.Property<decimal>("TotalWithdrawals")
                         .HasColumnType("numeric");
 
                     b.HasKey("BankAccountId", "PeriodType", "PeriodEndingDate");
 
-                    b.ToTable("BankAccountPeriodHistory");
+                    b.ToTable("BankAccountPeriodHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", b =>
@@ -288,7 +288,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double?>("ActualAmount")
+                    b.Property<decimal?>("ActualAmount")
                         .HasColumnType("numeric");
 
                     b.Property<int>("BankAccountId")
@@ -317,7 +317,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ProjectedAmount")
+                    b.Property<decimal>("ProjectedAmount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("RegisterGuid")
@@ -334,7 +334,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("BudgetItemId");
 
-                    b.ToTable("BankAccountRegisterItems");
+                    b.ToTable("BankAccountRegisterItems", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItemAmountDetail", b =>
@@ -345,7 +345,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("DetailId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("BankText")
@@ -362,7 +362,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("BankAccountRegisterItemAmountDetails");
+                    b.ToTable("BankAccountRegisterItemAmountDetails", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankTransaction", b =>
@@ -373,7 +373,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("TransactionId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("BankAccountRegisterItemAmountDetailDetailId")
@@ -416,7 +416,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("BankAccountRegisterItemAmountDetailRegisterId", "BankAccountRegisterItemAmountDetailDetailId");
 
-                    b.ToTable("BankTransactions");
+                    b.ToTable("BankTransactions", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankTransactionBudget", b =>
@@ -430,7 +430,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("RowId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<int>("BudgetItemId")
@@ -440,7 +440,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("BudgetItemId");
 
-                    b.ToTable("BankTransactionBudget");
+                    b.ToTable("BankTransactionBudget", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", b =>
@@ -451,13 +451,13 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<int>("BankAccountId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("CurrentMonthAmount")
+                    b.Property<decimal>("CurrentMonthAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("CurrentMonthEnding")
@@ -474,7 +474,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime?>("LastCompletedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("MonthlyAmount")
+                    b.Property<decimal>("MonthlyAmount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
@@ -501,7 +501,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("TransferToBankAccountId");
 
-                    b.ToTable("BudgetItems");
+                    b.ToTable("BudgetItems", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", b =>
@@ -522,7 +522,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BudgetItemSources");
+                    b.ToTable("BudgetItemSources", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetPeriodHistory", b =>
@@ -536,15 +536,15 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime>("PeriodEndingDate")
                         .HasColumnType("datetime");
 
-                    b.Property<double>("ActualAmount")
+                    b.Property<decimal>("ActualAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("ProjectedAmount")
+                    b.Property<decimal>("ProjectedAmount")
                         .HasColumnType("numeric");
 
                     b.HasKey("BudgetItemId", "PeriodType", "PeriodEndingDate");
 
-                    b.ToTable("BudgetPeriodHistory");
+                    b.ToTable("BudgetPeriodHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.History", b =>
@@ -555,7 +555,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("ActualAmount")
+                    b.Property<decimal>("ActualAmount")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("BankAccountId")
@@ -578,7 +578,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ProjectedAmount")
+                    b.Property<decimal>("ProjectedAmount")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("TransferToBankAccountId")
@@ -592,7 +592,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("TransferToBankAccountId");
 
-                    b.ToTable("History");
+                    b.ToTable("History", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.MainBudget", b =>
@@ -600,10 +600,10 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("BudgetItemId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("ActualAmount")
+                    b.Property<decimal>("ActualAmount")
                         .HasColumnType("numeric");
 
-                    b.Property<double>("BudgetAmount")
+                    b.Property<decimal>("BudgetAmount")
                         .HasColumnType("numeric");
 
                     b.Property<byte>("ItemType")
@@ -611,7 +611,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("BudgetItemId");
 
-                    b.ToTable("MainBudget");
+                    b.ToTable("MainBudget", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.QifMap", b =>
@@ -638,7 +638,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("QifMaps");
+                    b.ToTable("QifMaps", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.SourceHistory", b =>
@@ -649,7 +649,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("DetailId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("BankText")
@@ -666,7 +666,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("SourceHistory");
+                    b.ToTable("SourceHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.SystemMaster", b =>
@@ -685,7 +685,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("HouseholdName");
 
-                    b.ToTable("SystemMaster");
+                    b.ToTable("SystemMaster", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>

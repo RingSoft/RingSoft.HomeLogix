@@ -50,7 +50,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public int RecurringPeriod { get; set; }
 
         [Required]
-        public BudgetItemRecurringTypes RecurringType { get; set; }
+        public byte RecurringType { get; set; }
 
         public DateTime? StartingDate { get; set; }
 

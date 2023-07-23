@@ -10,13 +10,11 @@ namespace RingSoft.HomeLogix.DataAccess
     {
         public void Configure(EntityTypeBuilder<BudgetPeriodHistory> builder)
         {
-            builder.Property(p => p.ActualAmount).HasColumnType(DbConstants.DecimalColumnType)
-                .HasConversion<double>();
+            builder.Property(p => p.ActualAmount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.BudgetItemId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.PeriodEndingDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.PeriodType).HasColumnType(DbConstants.ByteColumnType);
-            builder.Property(p => p.ProjectedAmount).HasColumnType(DbConstants.DecimalColumnType)
-                .HasConversion<double>();
+            builder.Property(p => p.ProjectedAmount).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(hk => new {hk.BudgetItemId, hk.PeriodType, hk.PeriodEndingDate});
 

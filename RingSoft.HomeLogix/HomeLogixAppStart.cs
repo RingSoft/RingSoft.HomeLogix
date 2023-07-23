@@ -71,6 +71,10 @@ namespace RingSoft.HomeLogix
             {
                 ShowAddOnTheFlyWindow(new BankPeriodHistoryWindow(), e);
             }
+            else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.MainBudget)
+            {
+                ShowAddOnTheFlyWindow(new BudgetItemWindow(), e);
+            }
             else if (e.LookupData.LookupDefinition.TableDefinition == AppGlobals.LookupContext.BudgetItems)
             {
                 ShowAddOnTheFlyWindow(new BudgetItemWindow(), e);

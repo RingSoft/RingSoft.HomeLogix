@@ -10,8 +10,7 @@ namespace RingSoft.HomeLogix.DataAccess
     {
         public void Configure(EntityTypeBuilder<BudgetItem> builder)
         {
-            builder.Property(p => p.Amount).HasColumnType(DbConstants.DecimalColumnType)
-                .HasConversion<double>();
+            builder.Property(p => p.Amount).HasColumnType(DbConstants.DecimalColumnType);          
             builder.Property(p => p.BankAccountId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.CurrentMonthAmount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.CurrentMonthEnding).HasColumnType(DbConstants.DateColumnType);
@@ -19,8 +18,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.EndingDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.LastCompletedDate).HasColumnType(DbConstants.DateColumnType);
-            builder.Property(p => p.MonthlyAmount).HasColumnType(DbConstants.DecimalColumnType)
-                .HasConversion<double>();
+            builder.Property(p => p.MonthlyAmount).HasColumnType(DbConstants.DecimalColumnType);          
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.RecurringPeriod).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.RecurringType).HasColumnType(DbConstants.ByteColumnType);

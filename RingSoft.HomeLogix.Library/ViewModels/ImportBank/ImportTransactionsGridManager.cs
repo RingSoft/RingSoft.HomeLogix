@@ -375,7 +375,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
 
             var dateMaxValue = gridRow.Date;
-            switch (budgetItem.RecurringType)
+            switch ((BudgetItemRecurringTypes)budgetItem.RecurringType)
             {
                 case BudgetItemRecurringTypes.Days:
                     dateMaxValue = dateMaxValue.AddDays(budgetItem.RecurringPeriod);

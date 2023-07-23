@@ -110,7 +110,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.ActualAmount:
                     return new ActualAmountCellProps(this, columnId, _decimalValueSetup, ActualAmount);
                 case BankAccountRegisterGridColumns.Difference:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal)Difference);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal?)Difference);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
