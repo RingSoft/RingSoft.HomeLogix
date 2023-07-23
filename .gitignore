@@ -339,3 +339,4 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /RingSoft.HomeLogix/RingSoft.HomeLogix.csproj
+/RingSoft.HomeLogix.SqlServer/RingSoft.HomeLogix.SqlServer.csproj
