@@ -79,9 +79,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _totalAmount;
+        private double _totalAmount;
 
-        public decimal TotalAmount
+        public double TotalAmount
         {
             get => _totalAmount;
             set

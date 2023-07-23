@@ -150,9 +150,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
 
 
-        private decimal _totalProjectedMonthlyIncome;
+        private double _totalProjectedMonthlyIncome;
 
-        public decimal TotalProjectedMonthlyIncome
+        public double TotalProjectedMonthlyIncome
         {
             get => _totalProjectedMonthlyIncome;
             set
@@ -165,9 +165,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalProjectedMonthlyExpenses;
+        private double _totalProjectedMonthlyExpenses;
 
-        public decimal TotalProjectedMonthlyExpenses
+        public double TotalProjectedMonthlyExpenses
         {
             get => _totalProjectedMonthlyExpenses;
             set
@@ -180,9 +180,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalBudgetMonthlyNetIncome;
+        private double _totalBudgetMonthlyNetIncome;
 
-        public decimal TotalBudgetMonthlyNetIncome
+        public double TotalBudgetMonthlyNetIncome
         {
             get => _totalBudgetMonthlyNetIncome;
             set
@@ -195,9 +195,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalActualMonthlyIncome;
+        private double _totalActualMonthlyIncome;
 
-        public decimal TotalActualMonthlyIncome
+        public double TotalActualMonthlyIncome
         {
             get => _totalActualMonthlyIncome;
             set
@@ -210,9 +210,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalActualMonthlyExpenses;
+        private double _totalActualMonthlyExpenses;
 
-        public decimal TotalActualMonthlyExpenses
+        public double TotalActualMonthlyExpenses
         {
             get => _totalActualMonthlyExpenses;
             set
@@ -225,9 +225,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalActualMonthlyNetIncome;
+        private double _totalActualMonthlyNetIncome;
 
-        public decimal TotalActualMonthlyNetIncome
+        public double TotalActualMonthlyNetIncome
         {
             get => _totalActualMonthlyNetIncome;
             set
@@ -240,9 +240,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalMonthlyIncomeDifference;
+        private double _totalMonthlyIncomeDifference;
 
-        public decimal TotalMonthlyIncomeDifference
+        public double TotalMonthlyIncomeDifference
         {
             get => _totalMonthlyIncomeDifference;
             set
@@ -255,9 +255,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalMonthlyExpensesDifference;
+        private double _totalMonthlyExpensesDifference;
 
-        public decimal TotalMonthlyExpensesDifference
+        public double TotalMonthlyExpensesDifference
         {
             get => _totalMonthlyExpensesDifference;
             set
@@ -270,9 +270,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _totalMonthlyNetIncomeDifference;
+        private double _totalMonthlyNetIncomeDifference;
 
-        public decimal TotalMonthlyNetIncomeDifference
+        public double TotalMonthlyNetIncomeDifference
         {
             get => _totalMonthlyNetIncomeDifference;
             set
@@ -285,9 +285,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _yearToDateIncome;
+        private double _yearToDateIncome;
 
-        public decimal YearToDateIncome
+        public double YearToDateIncome
         {
             get => _yearToDateIncome;
             set
@@ -300,9 +300,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _yearToDateExpenses;
+        private double _yearToDateExpenses;
 
-        public decimal YearToDateExpenses
+        public double YearToDateExpenses
         {
             get => _yearToDateExpenses;
             set
@@ -315,9 +315,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private decimal _yearToDateNetIncome;
+        private double _yearToDateNetIncome;
 
-        public decimal YearToDateNetIncome
+        public double YearToDateNetIncome
         {
             get => _yearToDateNetIncome;
             set

@@ -409,7 +409,7 @@ namespace RingSoft.HomeLogix.Tests
                 "Saving Jane's Income Budget Item");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            Assert.AreEqual(expected: (decimal)1178.57, bankAccount.MonthlyBudgetDeposits,
+            Assert.AreEqual(expected: (double)1178.57, bankAccount.MonthlyBudgetDeposits,
                 "Jane's Checking Initial Monthly Deposits");
 
             //-----------------------------------------------------------------------------------------------------------
@@ -481,7 +481,7 @@ namespace RingSoft.HomeLogix.Tests
                 "Saving Groceries Budget Item");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            Assert.AreEqual((decimal)1285.71, bankAccount.MonthlyBudgetWithdrawals,
+            Assert.AreEqual((double)1285.71, bankAccount.MonthlyBudgetWithdrawals,
                 "Jane's Checking Initial Monthly Withdrawals");
 
             //-----------------------------------------------------------------------------------------------------------

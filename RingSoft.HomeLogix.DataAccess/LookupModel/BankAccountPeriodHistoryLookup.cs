@@ -10,10 +10,10 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
 
         public DateTime PeriodEndingDate { get; set; }
 
-        public decimal TotalDeposits { get; set; }
+        public double TotalDeposits { get; set; }
 
-        public decimal TotalWithdrawals { get; set; }
+        public double TotalWithdrawals { get; set; }
 
-        public decimal Difference { get; set; }
+        public double Difference { get; set; }
     }
 }

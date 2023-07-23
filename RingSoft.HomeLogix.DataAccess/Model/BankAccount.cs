@@ -34,23 +34,23 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [Required]
         [DefaultValue(0)]
-        public decimal CurrentBalance { get; set; }
+        public double CurrentBalance { get; set; }
 
-        public decimal ProjectedEndingBalance { get; set; }
+        public double ProjectedEndingBalance { get; set; }
 
         public DateTime? ProjectedLowestBalanceDate { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal ProjectedLowestBalanceAmount { get; set; }
+        public double ProjectedLowestBalanceAmount { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal MonthlyBudgetDeposits { get; set; }
+        public double MonthlyBudgetDeposits { get; set; }
 
         [Required]
         [DefaultValue(0)]
-        public decimal MonthlyBudgetWithdrawals { get; set; }
+        public double MonthlyBudgetWithdrawals { get; set; }
 
         public DateTime LastGenerationDate { get; set; }
 

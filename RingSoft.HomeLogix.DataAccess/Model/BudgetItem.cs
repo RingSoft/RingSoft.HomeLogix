@@ -44,7 +44,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BankAccount BankAccount { get; set; }
 
         [Required]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         [Required]
         public int RecurringPeriod { get; set; }
@@ -61,10 +61,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BankAccount TransferToBankAccount { get; set; }
 
         [Required]
-        public decimal MonthlyAmount { get; set; }
+        public double MonthlyAmount { get; set; }
 
         [Required]
-        public decimal CurrentMonthAmount { get; set; }
+        public double CurrentMonthAmount { get; set; }
 
         [Required]
         public DateTime CurrentMonthEnding { get; set; }

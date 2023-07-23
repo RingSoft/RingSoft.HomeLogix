@@ -24,9 +24,9 @@
 
         public string Description { get; set; }
 
-        public decimal ProjectedAmount { get; set; }
+        public double ProjectedAmount { get; set; }
 
-        public decimal EndingBalance { get; set; }
+        public double EndingBalance { get; set; }
 
         public bool IsNegative { get; set; }
 

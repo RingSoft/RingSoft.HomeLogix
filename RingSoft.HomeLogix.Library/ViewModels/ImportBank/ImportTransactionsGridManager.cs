@@ -260,7 +260,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return false;
         }
 
-        private decimal ProcessAmount(decimal rowAmount, ImportTransactionGridRow gridRow, BudgetItem budgetItem)
+        private double ProcessAmount(double rowAmount, ImportTransactionGridRow gridRow, BudgetItem budgetItem)
         {
             var result = rowAmount;
             if (gridRow != null)
@@ -323,7 +323,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
-        private decimal UpdateBankBalance(BankAccountRegisterGridRow row, decimal bankBalance, decimal amount)
+        private double UpdateBankBalance(BankAccountRegisterGridRow row, double bankBalance, double amount)
         {
             switch (row.TransactionType)
             {
@@ -355,7 +355,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return bankBalance;
         }
 
-        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow, bool isSplit)
+        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
         {
             var dateMinValue = gridRow.Date;
             var incompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows
@@ -454,10 +454,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
-        private static bool UpdateRegisterRow(decimal amount, BankAccountRegisterGridRow registerRow,  
+        private static bool UpdateRegisterRow(double amount, BankAccountRegisterGridRow registerRow,  
             BankAccountRegisterItem registerItem, ImportTransactionGridRow importTransactionGridRow)
         {
-            var actualAmount = (decimal) 0;
+            var actualAmount = (double) 0;
             if (registerRow.ActualAmount != null)
             {
                 actualAmount = registerRow.ActualAmount.Value;
@@ -474,7 +474,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return true;
         }
 
-        private BankAccountRegisterGridRow AddNewGridRow(BudgetItem budgetItem, decimal amount, ImportTransactionGridRow gridRow, bool isSplit)
+        private BankAccountRegisterGridRow AddNewGridRow(BudgetItem budgetItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
         {
             var bankRegisterItem = new BankAccountRegisterItem();
             bankRegisterItem.BankAccountId = gridRow.Manager.ViewModel.BankViewModel.Id;

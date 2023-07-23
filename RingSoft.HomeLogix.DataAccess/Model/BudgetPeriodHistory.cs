@@ -23,9 +23,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public DateTime PeriodEndingDate { get; set; }
 
         [Required]
-        public decimal ProjectedAmount { get; set; }
+        public double ProjectedAmount { get; set; }
 
         [Required]
-        public decimal ActualAmount { get; set; }
+        public double ActualAmount { get; set; }
     }
 }

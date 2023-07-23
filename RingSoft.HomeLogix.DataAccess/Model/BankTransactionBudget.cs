@@ -21,6 +21,6 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BudgetItem BudgetItem { get; set; }
 
         [Required]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
     }
 }

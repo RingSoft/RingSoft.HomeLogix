@@ -28,7 +28,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 gridRow = rows.LastOrDefault();
             }
-            var total = (decimal)0;
+            var total = (double)0;
             foreach (var row in rows)
             {
                 
@@ -47,7 +47,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public List<BudgetSplit> SaveData()
         {
-            var total = (decimal)0;
+            var total = (double)0;
             var rows = Rows.OfType<ImportBankTransactionsBudgetsGridRow>();
             foreach (var importBankTransactionsBudgetsGridRow in rows)
             {

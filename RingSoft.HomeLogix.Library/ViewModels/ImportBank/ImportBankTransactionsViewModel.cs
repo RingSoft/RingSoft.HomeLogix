@@ -252,8 +252,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var text = GetQifValue(qifText, columnPos, "P");
                 var amountText = GetQifValue(qifText, columnPos, "T");
 
-                var amount = (decimal) 0;
-                if (!decimal.TryParse(amountText, out amount))
+                var amount = (double) 0;
+                if (!double.TryParse(amountText, out amount))
                     return null;
 
                 var row = new ImportTransactionGridRow(Manager);

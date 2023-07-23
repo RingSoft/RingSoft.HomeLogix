@@ -22,7 +22,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public DateTime Date { get; set; }
 
         [Required]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         [MaxLength(250)]
         public string BankText { get; set; }

@@ -165,9 +165,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _amount;
+        private double _amount;
 
-        public decimal Amount
+        public double Amount
         {
             get => _amount;
             set

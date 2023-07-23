@@ -240,8 +240,9 @@ namespace RingSoft.HomeLogix.Library
 
 
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Connecting to the {household.Name} Database."));
-            var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
-            LookupContext.DataProcessor.GetData(selectQuery, false);
+            //var selectQuery = new SelectQuery(LookupContext.SystemMaster.TableName);
+            //LookupContext.DataProcessor.GetData(selectQuery, false);
+            LookupContext.DataProcessor.TestConnection();
 
             return string.Empty;
         }

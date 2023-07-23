@@ -28,7 +28,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     DetailId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
                     StoreId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    Amount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

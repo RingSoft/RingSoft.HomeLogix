@@ -36,12 +36,12 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     AccountType = table.Column<byte>(type: "tinyint", nullable: false),
-                    CurrentBalance = table.Column<decimal>(type: "numeric", nullable: false),
-                    ProjectedEndingBalance = table.Column<decimal>(type: "numeric", nullable: false),
+                    CurrentBalance = table.Column<double>(type: "numeric", nullable: false),
+                    ProjectedEndingBalance = table.Column<double>(type: "numeric", nullable: false),
                     ProjectedLowestBalanceDate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    ProjectedLowestBalanceAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    MonthlyBudgetDeposits = table.Column<decimal>(type: "numeric", nullable: false),
-                    MonthlyBudgetWithdrawals = table.Column<decimal>(type: "numeric", nullable: false),
+                    ProjectedLowestBalanceAmount = table.Column<double>(type: "numeric", nullable: false),
+                    MonthlyBudgetDeposits = table.Column<double>(type: "numeric", nullable: false),
+                    MonthlyBudgetWithdrawals = table.Column<double>(type: "numeric", nullable: false),
                     LastGenerationDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     Notes = table.Column<string>(type: "ntext", nullable: true),
                     ShowInGraph = table.Column<bool>(type: "bit", nullable: false),
@@ -88,7 +88,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     PrimaryTableName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PrimaryFieldName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Caption = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
-                    PercentWidth = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
+                    PercentWidth = table.Column<double>(type: "numeric(38,17)", nullable: false),
                     Formula = table.Column<string>(type: "ntext", nullable: true),
                     FieldDataType = table.Column<byte>(type: "tinyint", nullable: false),
                     DecimalFormatType = table.Column<byte>(type: "tinyint", nullable: false)
@@ -147,8 +147,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     BankAccountId = table.Column<int>(type: "integer", nullable: false),
                     PeriodType = table.Column<byte>(type: "tinyint", nullable: false),
                     PeriodEndingDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    TotalDeposits = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalWithdrawals = table.Column<decimal>(type: "numeric", nullable: false)
+                    TotalDeposits = table.Column<double>(type: "numeric", nullable: false),
+                    TotalWithdrawals = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -170,14 +170,14 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     Type = table.Column<byte>(type: "tinyint", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BankAccountId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
+                    Amount = table.Column<double>(type: "numeric(38,17)", nullable: false),
                     RecurringPeriod = table.Column<int>(type: "integer", nullable: false),
                     RecurringType = table.Column<byte>(type: "tinyint", nullable: false),
                     StartingDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     EndingDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     TransferToBankAccountId = table.Column<int>(type: "integer", nullable: true),
-                    MonthlyAmount = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
-                    CurrentMonthAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    MonthlyAmount = table.Column<double>(type: "numeric(38,17)", nullable: false),
+                    CurrentMonthAmount = table.Column<double>(type: "numeric", nullable: false),
                     CurrentMonthEnding = table.Column<DateTime>(type: "datetime", nullable: false),
                     LastCompletedDate = table.Column<DateTime>(type: "datetime", nullable: true),
                     Notes = table.Column<string>(type: "ntext", nullable: true)
@@ -211,9 +211,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     ItemDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     BudgetItemId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ProjectedAmount = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
+                    ProjectedAmount = table.Column<double>(type: "numeric(38,17)", nullable: false),
                     IsNegative = table.Column<bool>(type: "bit", nullable: false),
-                    ActualAmount = table.Column<decimal>(type: "numeric", nullable: true),
+                    ActualAmount = table.Column<double>(type: "numeric", nullable: true),
                     TransferRegisterGuid = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Completed = table.Column<bool>(type: "bit", nullable: false),
                     BankText = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
@@ -242,8 +242,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     BudgetItemId = table.Column<int>(type: "integer", nullable: false),
                     PeriodType = table.Column<byte>(type: "tinyint", nullable: false),
                     PeriodEndingDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ProjectedAmount = table.Column<decimal>(type: "numeric(38,17)", nullable: false),
-                    ActualAmount = table.Column<decimal>(type: "numeric(38,17)", nullable: false)
+                    ProjectedAmount = table.Column<double>(type: "numeric(38,17)", nullable: false),
+                    ActualAmount = table.Column<double>(type: "numeric(38,17)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -268,8 +268,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     BudgetItemId = table.Column<int>(type: "integer", nullable: true),
                     TransferToBankAccountId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ProjectedAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    ActualAmount = table.Column<decimal>(type: "numeric", nullable: false),
+                    ProjectedAmount = table.Column<double>(type: "numeric", nullable: false),
+                    ActualAmount = table.Column<double>(type: "numeric", nullable: false),
                     BankText = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
@@ -328,7 +328,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     DetailId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
                     SourceId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<double>(type: "numeric", nullable: false),
                     BankText = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
@@ -356,7 +356,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     DetailId = table.Column<int>(type: "integer", nullable: false),
                     SourceId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<double>(type: "numeric", nullable: false),
                     BankText = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
@@ -386,7 +386,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     BankTransactionText = table.Column<string>(type: "nvarchar", nullable: true),
                     BudgetId = table.Column<int>(type: "integer", nullable: true),
                     SourceId = table.Column<int>(type: "integer", nullable: true),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<double>(type: "numeric", nullable: false),
                     QifMapId = table.Column<int>(type: "integer", nullable: true),
                     MapTransaction = table.Column<bool>(type: "bit", nullable: false),
                     TransactionType = table.Column<byte>(type: "tinyint", nullable: false),
@@ -432,7 +432,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     TransactionId = table.Column<int>(type: "integer", nullable: false),
                     RowId = table.Column<int>(type: "integer", nullable: false),
                     BudgetItemId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    Amount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -93,7 +93,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
-                    b.Property<decimal>("PercentWidth")
+                    b.Property<double>("PercentWidth")
                         .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("PrimaryFieldName")
@@ -212,7 +212,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<byte>("AccountType")
                         .HasColumnType("tinyint");
 
-                    b.Property<decimal>("CurrentBalance")
+                    b.Property<double>("CurrentBalance")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Description")
@@ -226,19 +226,19 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime>("LastGenerationDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("MonthlyBudgetDeposits")
+                    b.Property<double>("MonthlyBudgetDeposits")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("MonthlyBudgetWithdrawals")
+                    b.Property<double>("MonthlyBudgetWithdrawals")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<decimal>("ProjectedEndingBalance")
+                    b.Property<double>("ProjectedEndingBalance")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("ProjectedLowestBalanceAmount")
+                    b.Property<double>("ProjectedLowestBalanceAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("ProjectedLowestBalanceDate")
@@ -263,10 +263,10 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime>("PeriodEndingDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("TotalDeposits")
+                    b.Property<double>("TotalDeposits")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalWithdrawals")
+                    b.Property<double>("TotalWithdrawals")
                         .HasColumnType("numeric");
 
                     b.HasKey("BankAccountId", "PeriodType", "PeriodEndingDate");
@@ -281,7 +281,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal?>("ActualAmount")
+                    b.Property<double?>("ActualAmount")
                         .HasColumnType("numeric");
 
                     b.Property<int>("BankAccountId")
@@ -310,7 +310,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("ProjectedAmount")
+                    b.Property<double>("ProjectedAmount")
                         .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("RegisterGuid")
@@ -338,7 +338,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("DetailId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<double>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("BankText")
@@ -366,7 +366,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("TransactionId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<double>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("BankAccountRegisterItemAmountDetailDetailId")
@@ -423,7 +423,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("RowId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<double>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<int>("BudgetItemId")
@@ -443,13 +443,13 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Amount")
+                    b.Property<double>("Amount")
                         .HasColumnType("numeric(38,17)");
 
                     b.Property<int>("BankAccountId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("CurrentMonthAmount")
+                    b.Property<double>("CurrentMonthAmount")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime>("CurrentMonthEnding")
@@ -466,7 +466,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime?>("LastCompletedDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("MonthlyAmount")
+                    b.Property<double>("MonthlyAmount")
                         .HasColumnType("numeric(38,17)");
 
                     b.Property<string>("Notes")
@@ -527,10 +527,10 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime>("PeriodEndingDate")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("ActualAmount")
+                    b.Property<double>("ActualAmount")
                         .HasColumnType("numeric(38,17)");
 
-                    b.Property<decimal>("ProjectedAmount")
+                    b.Property<double>("ProjectedAmount")
                         .HasColumnType("numeric(38,17)");
 
                     b.HasKey("BudgetItemId", "PeriodType", "PeriodEndingDate");
@@ -545,7 +545,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("ActualAmount")
+                    b.Property<double>("ActualAmount")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("BankAccountId")
@@ -568,7 +568,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("ProjectedAmount")
+                    b.Property<double>("ProjectedAmount")
                         .HasColumnType("numeric");
 
                     b.Property<int?>("TransferToBankAccountId")
@@ -619,7 +619,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<int>("DetailId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<double>("Amount")
                         .HasColumnType("numeric");
 
                     b.Property<string>("BankText")

@@ -12,7 +12,7 @@ namespace RingSoft.HomeLogix.Library.PhoneModel
 
         public double ActualAmount { get; set; }
 
-        public decimal Difference { get; set; }
+        public double Difference { get; set; }
 
         public bool HistoryExists { get; set; }
 

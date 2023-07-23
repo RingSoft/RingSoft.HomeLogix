@@ -10,22 +10,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     {
         public BudgetItem BudgetItem { get; set; }
 
-        public decimal YearlyAmount { get; set; }
+        public double YearlyAmount { get; set; }
 
-        public decimal CurrentMonthPercent { get; set; }
+        public double CurrentMonthPercent { get; set; }
 
-        public decimal MonthToDatePercent { get; set; }
+        public double MonthToDatePercent { get; set; }
 
-        public decimal MonthlyPercentDifference { get; set; }
+        public double MonthlyPercentDifference { get; set; }
 
-        public decimal MonthlyAmountRemaining { get; set; }
+        public double MonthlyAmountRemaining { get; set; }
     }
 
     public class BudgetItemBankAccountData
     {
         public BudgetItem BudgetItem { get; }
 
-        public decimal DbMonthlyAmount { get; }
+        public double DbMonthlyAmount { get; }
 
         public int DbBankAccountId { get; }
 
@@ -35,7 +35,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public BankAccount DbTransferToBank { get; set; }
 
-        public BudgetItemBankAccountData(BudgetItem budgetItem, decimal dbMonthlyAmount, int dbBankAccountId, int? dbTransferToBankId)
+        public BudgetItemBankAccountData(BudgetItem budgetItem, double dbMonthlyAmount, int dbBankAccountId, int? dbTransferToBankId)
         {
             BudgetItem = budgetItem;
             DbMonthlyAmount = dbMonthlyAmount;
@@ -63,7 +63,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             processorData.BudgetItem.LastCompletedDate.Value.Month);
 
                         var currentMonthPercent =
-                            (decimal) processorData.BudgetItem.LastCompletedDate.Value.Day / currentDays;
+                            (double) processorData.BudgetItem.LastCompletedDate.Value.Day / currentDays;
 
                         processorData.CurrentMonthPercent = Math.Round(currentMonthPercent, 4);
                         if (processorData.BudgetItem.MonthlyAmount > 0)
@@ -93,10 +93,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 CultureInfo.CurrentCulture.NumberFormat.CurrencyDecimalDigits);
         }
 
-        public static decimal CalculateBudgetItemMonthlyAmount(BudgetItem budgetItem)
+        public static double CalculateBudgetItemMonthlyAmount(BudgetItem budgetItem)
         {
-            var dailyAmount = (decimal)0;
-            var monthlyAmount = (decimal)0;
+            var dailyAmount = (double)0;
+            var monthlyAmount = (double)0;
 
             switch (budgetItem.RecurringType)
             {
@@ -123,7 +123,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (monthlyAmount.Equals(0))
                 monthlyAmount = dailyAmount * 30;
 
-            budgetItem.MonthlyAmount = monthlyAmount.RoundCurrency();
+            var decimalMonthlyAmount = (decimal)monthlyAmount;
+
+            budgetItem.MonthlyAmount = (double)decimalMonthlyAmount.RoundCurrency();
 
             return monthlyAmount;
         }

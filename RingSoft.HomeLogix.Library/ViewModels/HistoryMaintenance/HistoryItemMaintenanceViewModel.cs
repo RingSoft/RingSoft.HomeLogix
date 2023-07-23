@@ -141,9 +141,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         }
 
 
-        private decimal _projectedAmount;
+        private double _projectedAmount;
 
-        public decimal ProjectedAmount
+        public double ProjectedAmount
         {
             get => _projectedAmount;
             set
@@ -157,9 +157,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private decimal _actualAmount;
+        private double _actualAmount;
 
-        public decimal ActualAmount
+        public double ActualAmount
         {
             get => _actualAmount;
             set
@@ -173,9 +173,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private decimal _difference;
+        private double _difference;
 
-        public decimal Difference
+        public double Difference
         {
             get => _difference;
             set

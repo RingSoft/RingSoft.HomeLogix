@@ -137,9 +137,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _amount;
+        private double _amount;
 
-        public decimal Amount
+        public double Amount
         {
             get => _amount;
             set
@@ -274,9 +274,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _monthlyAmount;
+        private double _monthlyAmount;
 
-        public decimal MonthlyAmount
+        public double MonthlyAmount
         {
             get => _monthlyAmount;
             set
@@ -289,9 +289,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _yearlyAmount;
+        private double _yearlyAmount;
 
-        public decimal YearlyAmount
+        public double YearlyAmount
         {
             get => _yearlyAmount;
             set
@@ -304,9 +304,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _currentMonthAmount;
+        private double _currentMonthAmount;
 
-        public decimal CurrentMonthAmount
+        public double CurrentMonthAmount
         {
             get => _currentMonthAmount;
             set
@@ -335,9 +335,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _currentMonthPercent;
+        private double _currentMonthPercent;
 
-        public decimal CurrentMonthPercent
+        public double CurrentMonthPercent
         {
             get => _currentMonthPercent;
             set
@@ -351,9 +351,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _monthToDatePercent;
+        private double _monthToDatePercent;
 
-        public decimal MonthToDatePercent
+        public double MonthToDatePercent
         {
             get => _monthToDatePercent;
             set
@@ -366,9 +366,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _monthlyPercentDifference;
+        private double _monthlyPercentDifference;
 
-        public decimal MonthlyPercentDifference
+        public double MonthlyPercentDifference
         {
             get => _monthlyPercentDifference;
             set
@@ -381,9 +381,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _monthlyAmountRemaining;
+        private double _monthlyAmountRemaining;
 
-        public decimal MonthlyAmountRemaining
+        public double MonthlyAmountRemaining
         {
             get => _monthlyAmountRemaining;
             set
@@ -537,7 +537,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private IBudgetItemView _view;
         private bool _loading;
-        private decimal _dbMonthlyAmount;
+        private double _dbMonthlyAmount;
         private DateTime _dbStartDate;
         private bool _registerAffected;
         private BankAccount _newTransferToBankAccount;

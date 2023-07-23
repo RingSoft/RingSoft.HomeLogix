@@ -23,7 +23,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BudgetItemSource Source { get; set; }
 
         [Required]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         [MaxLength(250)]
         public string BankText { get; set; }

@@ -32,15 +32,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public TransactionTypes TransactionType { get; private set; }
 
-        public decimal ProjectedAmount { get; set; }
+        public double ProjectedAmount { get; set; }
 
         public bool Completed { get; set; }
 
-        public decimal? Balance { get; set; }
+        public double? Balance { get; set; }
 
-        public decimal? ActualAmount { get; set; }
+        public double? ActualAmount { get; set; }
 
-        public decimal? Difference
+        public double? Difference
         {
             get
             {
@@ -102,15 +102,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.TransactionType:
                     return new DataEntryGridCustomControlCellProps(this, columnId, (int) TransactionType);
                 case BankAccountRegisterGridColumns.Amount:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, ProjectedAmount);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal)ProjectedAmount);
                 case BankAccountRegisterGridColumns.Completed:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, Completed);
                 case BankAccountRegisterGridColumns.Balance:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, Balance);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal)Balance);
                 case BankAccountRegisterGridColumns.ActualAmount:
                     return new ActualAmountCellProps(this, columnId, _decimalValueSetup, ActualAmount);
                 case BankAccountRegisterGridColumns.Difference:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, Difference);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal)Difference);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -168,7 +168,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Amount:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        ProjectedAmount = decimalCellProps.Value.GetValueOrDefault(0);
+                        ProjectedAmount = (double)decimalCellProps.Value.GetValueOrDefault(0);
                         Manager.ViewModel.CalculateTotals();
                         SaveToDbOnTheFly();
                     }
@@ -187,7 +187,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     break;
                 case BankAccountRegisterGridColumns.ActualAmount:
                     var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
-                    ActualAmount = actualAmountCellProps.Value;
+                    ActualAmount = (double)actualAmountCellProps.Value;
                     SaveToDbOnTheFly();
                     break;
                 case BankAccountRegisterGridColumns.Difference:

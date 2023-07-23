@@ -12,8 +12,8 @@
 
         public string RecurringType { get; set; }
 
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
-        public decimal MonthlyAmount { get; set; }
+        public double MonthlyAmount { get; set; }
     }
 }

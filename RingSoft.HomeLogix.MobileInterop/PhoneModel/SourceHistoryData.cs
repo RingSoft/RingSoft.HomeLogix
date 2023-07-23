@@ -10,7 +10,7 @@ namespace RingSoft.HomeLogix.Library.PhoneModel
 
         public DateTime Date { get; set; }
 
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         public string BankText { get; set; }
     }

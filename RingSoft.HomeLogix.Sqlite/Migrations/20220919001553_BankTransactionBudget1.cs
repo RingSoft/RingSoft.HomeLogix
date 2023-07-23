@@ -14,7 +14,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     TransactionId = table.Column<int>(type: "integer", nullable: false),
                     RowId = table.Column<int>(type: "integer", nullable: false),
                     BudgetItemId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    Amount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

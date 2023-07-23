@@ -65,7 +65,7 @@ namespace RingSoft.HomeLogix.Library
 
         BudgetItemSource GetBudgetItemSource(int storeId);
 
-        decimal GetSourceTotal(int storeId);
+        double GetSourceTotal(int storeId);
 
         bool SaveBudgetItemSource(BudgetItemSource store);
 
@@ -420,7 +420,7 @@ namespace RingSoft.HomeLogix.Library
             return context.BudgetItemSources.FirstOrDefault(f => f.Id == sourceId);
         }
 
-        public decimal GetSourceTotal(int storeId)
+        public double GetSourceTotal(int storeId)
         {
             var context = AppGlobals.GetNewDbContext();
             var amount = context.SourceHistory.Where(p => p.SourceId == storeId).ToList().Sum(p => p.Amount);
@@ -501,9 +501,9 @@ namespace RingSoft.HomeLogix.Library
                     .Sum(s => s.ProjectedAmount);
 
             var registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
-                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.GreaterThan &&
-                            w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
-                            w.BudgetItem.Type == BudgetItemTypes.Income)
+                .Where(w => w.ProjectedAmount > 0 &&
+                                 w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
+                                 w.BudgetItem.Type == BudgetItemTypes.Income)
                 .Sum(s => s.ProjectedAmount);
 
             result.TotalProjectedMonthlyIncome += registerAmount;
@@ -517,7 +517,7 @@ namespace RingSoft.HomeLogix.Library
                     .Sum(s => s.ProjectedAmount);
 
              registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
-                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.LessThan &&
+                .Where(w => w.ProjectedAmount < 0 &&
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
                             w.BudgetItem.Type == BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
@@ -532,7 +532,7 @@ namespace RingSoft.HomeLogix.Library
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
-                .Where(w => (Relationship) decimal.Compare(w.ProjectedAmount, 0) == Relationship.GreaterThan &&
+                .Where(w => w.ProjectedAmount > 0 &&
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
                             w.BudgetItem.Type == BudgetItemTypes.Income)
                 .Sum(s => s.ProjectedAmount);
@@ -548,7 +548,7 @@ namespace RingSoft.HomeLogix.Library
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
-                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.LessThan &&
+                .Where(w => w.ProjectedAmount < 0 &&
                             w.ItemDate.Month == monthEndDate.Month && w.ItemDate.Year == monthEndDate.Year &&
                             w.BudgetItem.Type == BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
@@ -565,7 +565,7 @@ namespace RingSoft.HomeLogix.Library
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
-                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.GreaterThan &&
+                .Where(w => w.ProjectedAmount > 0 &&
                             w.ItemDate.Year == monthEndDate.Year && w.BudgetItem.Type == BudgetItemTypes.Income)
                 .Sum(s => s.ProjectedAmount);
 
@@ -579,7 +579,7 @@ namespace RingSoft.HomeLogix.Library
                     .Sum(s => s.ActualAmount);
 
             registerAmount = context.BankAccountRegisterItems.Include(p => p.BudgetItem)
-                .Where(w => (Relationship)decimal.Compare(w.ProjectedAmount, 0) == Relationship.LessThan &&
+                .Where(w => w.ProjectedAmount < 0 &&
                             w.ItemDate.Year == monthEndDate.Year && w.BudgetItem.Type == BudgetItemTypes.Expense)
                 .Sum(s => s.ProjectedAmount);
 

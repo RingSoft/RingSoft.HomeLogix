@@ -29,9 +29,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
-        private decimal _transactionAmountDecimal;
+        private double _transactionAmountDecimal;
 
-        public decimal TransactionAmount
+        public double TransactionAmount
         {
             get => _transactionAmountDecimal;
             set

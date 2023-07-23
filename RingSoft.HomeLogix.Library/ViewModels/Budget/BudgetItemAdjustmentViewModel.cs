@@ -61,9 +61,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal? _projectedAdjustment;
+        private double? _projectedAdjustment;
 
-        public decimal? ProjectedAdjustment
+        public double? ProjectedAdjustment
         {
             get => _projectedAdjustment;
             set
@@ -76,9 +76,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal? _actualAdjustment;
+        private double? _actualAdjustment;
 
-        public decimal? ActualAdjustment
+        public double? ActualAdjustment
         {
             get => _actualAdjustment;
             set

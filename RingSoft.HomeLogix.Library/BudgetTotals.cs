@@ -2,17 +2,17 @@
 {
     public class BudgetTotals
     {
-        public decimal TotalProjectedMonthlyIncome { get; set; }
+        public double TotalProjectedMonthlyIncome { get; set; }
 
-        public decimal TotalProjectedMonthlyExpenses { get; set; }
+        public double TotalProjectedMonthlyExpenses { get; set; }
 
-        public decimal TotalActualMonthlyIncome { get; set; }
+        public double TotalActualMonthlyIncome { get; set; }
 
-        public decimal TotalActualMonthlyExpenses { get; set; }
+        public double TotalActualMonthlyExpenses { get; set; }
 
-        public decimal YearToDateIncome { get; set; }
+        public double YearToDateIncome { get; set; }
 
-        public decimal YearToDateExpenses { get; set; }
+        public double YearToDateExpenses { get; set; }
 
         public bool PreviousMonthHasValues { get; set; }
 

@@ -6,7 +6,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "Amount",
                 table: "BankAccountRegisterItemEscrows",
                 type: "numeric",

@@ -20,7 +20,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public ImportBankTransactionsBudgetManager Manager { get; set; }
         public AutoFillSetup BudgetAutoFillSetup { get; set; }
         public AutoFillValue BudgetAutoFillValue { get; set; }
-        public decimal BudgetAmount { get; set; }
+        public double BudgetAmount { get; set; }
 
         public ImportBankTransactionsBudgetsGridRow(ImportBankTransactionsBudgetManager manager) : base(manager)
         {
@@ -42,7 +42,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, BudgetAmount);
+                        }, (decimal)BudgetAmount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -65,7 +65,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var amountCellProps = value as DataEntryGridDecimalCellProps;
                     if (amountCellProps != null)
                     {
-                        if (amountCellProps.Value != null) BudgetAmount = amountCellProps.Value.Value;
+                        if (amountCellProps.Value != null) BudgetAmount = (double)amountCellProps.Value.Value;
                         Manager.SetLastRowAmount();
                     }
                     break;

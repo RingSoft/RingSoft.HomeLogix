@@ -24,9 +24,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _endingBalance;
+        private double _endingBalance;
 
-        public decimal EndingBalance
+        public double EndingBalance
         {
             get => _endingBalance;
             set
@@ -40,9 +40,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _projectedLowestBalance;
+        private double _projectedLowestBalance;
 
-        public decimal ProjectedLowestBalance
+        public double ProjectedLowestBalance
         {
             get => _projectedLowestBalance;
             set
@@ -72,9 +72,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _currentBalance;
+        private double _currentBalance;
 
-        public decimal CurrentBalance
+        public double CurrentBalance
         {
             get => _currentBalance;
             set
@@ -194,7 +194,7 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             ProjectedLowestBalanceDate = bankAccount.ProjectedLowestBalanceDate;
         }
 
-        private decimal SetBalance(BankData bankAccount, RegisterData registerItem, decimal balance, decimal amount)
+        private double SetBalance(BankData bankAccount, RegisterData registerItem, double balance, double amount)
         {
             switch (bankAccount.AccountType)
             {

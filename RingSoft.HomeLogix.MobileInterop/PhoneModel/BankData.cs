@@ -18,9 +18,9 @@ namespace RingSoft.HomeLogix.Library.PhoneModel
         
         public string Description { get; set; }
 
-        public decimal CurrentBalance { get; set; }
+        public double CurrentBalance { get; set; }
 
-        public decimal ProjectedLowestBalance { get; set; }
+        public double ProjectedLowestBalance { get; set; }
 
         public DateTime ProjectedLowestBalanceDate { get; set; }
 

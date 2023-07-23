@@ -17,7 +17,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     BankTransactionText = table.Column<string>(type: "nvarchar", nullable: true),
                     BudgetId = table.Column<int>(type: "integer", nullable: false),
                     SourceId = table.Column<int>(type: "integer", nullable: true),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    Amount = table.Column<double>(type: "numeric", nullable: false),
                     BankAccountRegisterItemAmountDetailDetailId = table.Column<int>(type: "integer", nullable: true),
                     BankAccountRegisterItemAmountDetailRegisterId = table.Column<int>(type: "integer", nullable: true)
                 },

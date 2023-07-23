@@ -40,9 +40,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _budgetIncome;
+        private double _budgetIncome;
 
-        public decimal BudgetIncome
+        public double BudgetIncome
         {
             get => _budgetIncome;
             set
@@ -56,9 +56,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _budgetExpenses;
+        private double _budgetExpenses;
 
-        public decimal BudgetExpenses
+        public double BudgetExpenses
         {
             get => _budgetExpenses;
             set
@@ -72,9 +72,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _budgetDifference;
+        private double _budgetDifference;
 
-        public decimal BudgetDifference
+        public double BudgetDifference
         {
             get => _budgetDifference;
             set
@@ -88,9 +88,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _actualIncome;
+        private double _actualIncome;
 
-        public decimal ActualIncome
+        public double ActualIncome
         {
             get => _actualIncome;
             set
@@ -104,9 +104,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _actualExpenses;
+        private double _actualExpenses;
 
-        public decimal ActualExpenses
+        public double ActualExpenses
         {
             get => _actualExpenses;
             set
@@ -120,9 +120,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _actualDifference;
+        private double _actualDifference;
 
-        public decimal ActualDifference
+        public double ActualDifference
         {
             get => _actualDifference;
             set
@@ -136,9 +136,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _incomeDifference;
+        private double _incomeDifference;
 
-        public decimal IncomeDifference
+        public double IncomeDifference
         {
             get => _incomeDifference;
             set
@@ -152,9 +152,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _expenseDifference;
+        private double _expenseDifference;
 
-        public decimal ExpenseDifference
+        public double ExpenseDifference
         {
             get => _expenseDifference;
             set
@@ -169,9 +169,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
         }
 
 
-        private decimal _difference;
+        private double _difference;
 
-        public decimal Difference
+        public double Difference
         {
             get => _difference;
             set
@@ -185,9 +185,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _ytdIncome;
+        private double _ytdIncome;
 
-        public decimal YtdIncome
+        public double YtdIncome
         {
             get => _ytdIncome;
             set
@@ -201,9 +201,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _ytdExpenses;
+        private double _ytdExpenses;
 
-        public decimal YtdExpenses
+        public double YtdExpenses
         {
             get => _ytdExpenses;
             set
@@ -217,9 +217,9 @@ namespace RingSoft.HomeLogix.Mobile.ViewModels
             }
         }
 
-        private decimal _ytdDifference;
+        private double _ytdDifference;
 
-        public decimal YtdDifference
+        public double YtdDifference
         {
             get => _ytdDifference;
             set

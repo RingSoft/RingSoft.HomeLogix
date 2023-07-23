@@ -149,10 +149,10 @@ namespace RingSoft.HomeLogix.DataAccess
             LocalDbContext = dbContext.DbContext;
             if (_initialized)
                 return;
-            SystemGlobals.AdvancedFindLookupContext = this;
-            var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
-            configuration.InitializeModel();
-            configuration.ConfigureLookups();
+            //SystemGlobals.AdvancedFindLookupContext = this;
+            //var configuration = new AdvancedFindLookupConfiguration(SystemGlobals.AdvancedFindLookupContext);
+            //configuration.InitializeModel();
+            //configuration.ConfigureLookups();
 
             Initialize();
             _initialized = true;

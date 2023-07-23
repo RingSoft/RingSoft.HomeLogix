@@ -12,11 +12,11 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
 
         public byte ItemType { get; set; }
 
-        public decimal ProjectedAmount { get; set; }
+        public double ProjectedAmount { get; set; }
 
-        public decimal ActualAmount { get; set; }
+        public double ActualAmount { get; set; }
 
-        public decimal Difference { get; set; }
+        public double Difference { get; set; }
 
         public string BankText { get; set; }
     }

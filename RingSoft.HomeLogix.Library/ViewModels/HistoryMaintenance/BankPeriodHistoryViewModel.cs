@@ -49,9 +49,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private decimal _totalDeposits;
+        private double _totalDeposits;
 
-        public decimal TotalDeposits
+        public double TotalDeposits
         {
             get => _totalDeposits;
             set
@@ -66,9 +66,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private decimal _totalWithdrawals;
+        private double _totalWithdrawals;
 
-        public decimal TotalWithdrawals
+        public double TotalWithdrawals
         {
             get => _totalWithdrawals;
             set
@@ -84,9 +84,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         }
 
 
-        private decimal _difference;
+        private double _difference;
 
-        public decimal Difference
+        public double Difference
         {
             get => _difference;
             set

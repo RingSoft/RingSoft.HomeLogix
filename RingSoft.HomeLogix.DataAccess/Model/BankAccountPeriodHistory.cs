@@ -17,9 +17,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public DateTime PeriodEndingDate { get; set; }
 
         [Required]
-        public decimal TotalDeposits { get; set; }
+        public double TotalDeposits { get; set; }
 
         [Required]
-        public decimal TotalWithdrawals { get; set; }
+        public double TotalWithdrawals { get; set; }
     }
 }

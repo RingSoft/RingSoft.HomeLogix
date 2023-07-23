@@ -30,7 +30,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public virtual BudgetItemSource Source { get; set; }
 
         [Required]
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         public int? QifMapId { get; set; }
 

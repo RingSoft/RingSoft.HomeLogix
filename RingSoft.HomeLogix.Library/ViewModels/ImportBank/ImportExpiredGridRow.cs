@@ -34,7 +34,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public string Description { get; private set; }
 
-        public decimal Amount { get; private set; }
+        public double Amount { get; private set; }
 
         public ImportExpiredGridRow(ImportExpiredGridManager manager) : base(manager)
         {
@@ -60,7 +60,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         new DecimalEditControlSetup()
                         {
                             FormatType = DecimalEditFormatTypes.Currency
-                        }, Amount);
+                        }, (decimal)Amount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

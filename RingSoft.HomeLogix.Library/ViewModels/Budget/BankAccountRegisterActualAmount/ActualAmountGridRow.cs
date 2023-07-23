@@ -18,7 +18,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public AutoFillValue Source { get; set; }
 
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         public string BankText { get; set; }
 
@@ -66,7 +66,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     _sourceAutoFillSetup.AddViewParameter = new ViewModelInput() {SourceHistoryIsIncome = IsIncome};
                     return new DataEntryGridAutoFillCellProps(this, columnId, _sourceAutoFillSetup, Source);
                 case ActualAmountGridColumns.Amount:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _amountSetup, Amount);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _amountSetup, (decimal)Amount);
                 case ActualAmountGridColumns.BankText:
                     return new DataEntryGridTextCellProps(this, columnId, BankText);
                 default:
@@ -127,7 +127,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case ActualAmountGridColumns.Amount:
                     if (value is DataEntryGridDecimalCellProps decimalCellProps)
                     {
-                        Amount = decimalCellProps.Value.GetValueOrDefault(0);
+                        Amount = (double)decimalCellProps.Value.GetValueOrDefault(0);
                         Manager.ViewModel.CalculateTotals();
                     }
 

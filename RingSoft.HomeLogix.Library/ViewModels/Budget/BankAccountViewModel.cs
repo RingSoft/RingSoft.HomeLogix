@@ -155,9 +155,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _currentProjectedEndingBalance;
+        private double _currentProjectedEndingBalance;
 
-        public decimal CurrentProjectedEndingBalance
+        public double CurrentProjectedEndingBalance
         {
             get => _currentProjectedEndingBalance;
             set
@@ -171,9 +171,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _currentBalance;
+        private double _currentBalance;
 
-        public decimal CurrentBalance
+        public double CurrentBalance
         {
             get => _currentBalance;
             set
@@ -203,9 +203,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _newProjectedEndingBalance;
+        private double _newProjectedEndingBalance;
 
-        public decimal NewProjectedEndingBalance
+        public double NewProjectedEndingBalance
         {
             get => _newProjectedEndingBalance;
             set
@@ -219,9 +219,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _projectedEndingBalanceDifference;
+        private double _projectedEndingBalanceDifference;
 
-        public decimal ProjectedEndingBalanceDifference
+        public double ProjectedEndingBalanceDifference
         {
             get => _projectedEndingBalanceDifference;
             set
@@ -250,9 +250,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _projectedLowestBalanceAmount;
+        private double _projectedLowestBalanceAmount;
 
-        public decimal ProjectedLowestBalanceAmount
+        public double ProjectedLowestBalanceAmount
         {
             get => _projectedLowestBalanceAmount;
             set
@@ -266,9 +266,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        private decimal _monthlyBudgetDeposits;
+        private double _monthlyBudgetDeposits;
 
-        public decimal MonthlyBudgetDeposits
+        public double MonthlyBudgetDeposits
         {
             get => _monthlyBudgetDeposits;
             set
@@ -281,9 +281,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _monthlyBudgetWithdrawals;
+        private double _monthlyBudgetWithdrawals;
 
-        public decimal MonthlyBudgetWithdrawals
+        public double MonthlyBudgetWithdrawals
         {
             get => _monthlyBudgetWithdrawals;
             set
@@ -296,9 +296,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _monthlyBudgetDifference;
+        private double _monthlyBudgetDifference;
 
-        public decimal MonthlyBudgetDifference
+        public double MonthlyBudgetDifference
         {
             get => _monthlyBudgetDifference;
             set
@@ -535,7 +535,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             new List<BankAccountRegisterItemAmountDetail>();
 
         private bool _loading;
-        private decimal _dbCurrentBalance;
+        private double _dbCurrentBalance;
         private bool _completeGrid = true;
         private bool _processCompletedRows = true;
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
@@ -1585,7 +1585,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             else
             {
-                switch (register.BudgetItem.Type)
+                var budgetType = (BudgetItemTypes)register.BudgetItem.Type;
+                switch (budgetType)
                 {
                     case BudgetItemTypes.Income:
                         registerData.TransactionType = MobileInterop.PhoneModel.TransactionTypes.Deposit;
@@ -1612,7 +1613,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return registerData;
         }
 
-        public static decimal CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, decimal balance)
+        public static double CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, double balance)
         {
             if (registerData.Completed)
             {

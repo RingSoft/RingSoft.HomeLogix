@@ -43,11 +43,11 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public string Description { get; set; }
 
         [Required]
-        public decimal ProjectedAmount { get; set; }
+        public double ProjectedAmount { get; set; }
 
         public bool IsNegative { get; set; }
 
-        public decimal? ActualAmount { get; set; }
+        public double? ActualAmount { get; set; }
 
         [MaxLength(50)]
         public string TransferRegisterGuid { get; set; }

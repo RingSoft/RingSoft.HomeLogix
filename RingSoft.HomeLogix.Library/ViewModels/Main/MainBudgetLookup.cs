@@ -12,11 +12,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public string ItemType { get; set; }
 
-        public decimal ProjectedMonthlyAmount { get; set; }
+        public double ProjectedMonthlyAmount { get; set; }
 
-        public decimal ActualMonthlyAmount { get; set; }
+        public double ActualMonthlyAmount { get; set; }
 
-        public decimal MonthlyAmountDifference { get; set; }
+        public double MonthlyAmountDifference { get; set; }
 
         public int BudgetItemType { get; set; }
     }

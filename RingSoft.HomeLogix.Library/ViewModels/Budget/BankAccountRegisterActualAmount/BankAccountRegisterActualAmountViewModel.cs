@@ -80,9 +80,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _projectedAmount;
+        private double _projectedAmount;
 
-        public decimal ProjectedAmount
+        public double ProjectedAmount
         {
             get => _projectedAmount;
             set
@@ -95,9 +95,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _totalActualAmount;
+        private double _totalActualAmount;
 
-        public decimal TotalActualAmount
+        public double TotalActualAmount
         {
             get => _totalActualAmount;
             set
@@ -110,9 +110,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private decimal _difference;
+        private double _difference;
 
-        public decimal Difference
+        public double Difference
         {
             get => _difference;
             set
@@ -187,7 +187,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return;
             }
             var amountDetails = GridManager.SaveData();
-            ActualAmountCellProps.Value = TotalActualAmount;
+            ActualAmountCellProps.Value = (decimal)TotalActualAmount;
             var registerItem = new BankAccountRegisterItem();
             ActualAmountCellProps.RegisterGridRow.SaveToEntity(registerItem, 0);
             registerItem.ActualAmount = TotalActualAmount;

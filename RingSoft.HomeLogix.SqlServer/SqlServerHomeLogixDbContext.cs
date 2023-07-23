@@ -51,8 +51,8 @@ namespace RingSoft.HomeLogix.SqlServer
         public SqlServerHomeLogixDbContext()
         {
             //DbConstants.ConstantGenerator = new SqlServerDbConstants();
-            EfCoreGlobals.DbAdvancedFindContextCore = this;
-            SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
+            //EfCoreGlobals.DbAdvancedFindContextCore = this;
+            //SystemGlobals.AdvancedFindDbProcessor = new AdvancedFindDataProcessorEfCore();
             HomeLogixModelBuilder.DbContext = this;
         }
 

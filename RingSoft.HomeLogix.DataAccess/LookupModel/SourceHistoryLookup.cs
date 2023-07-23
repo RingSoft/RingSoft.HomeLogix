@@ -9,7 +9,7 @@ namespace RingSoft.HomeLogix.DataAccess.LookupModel
     {
         public DateTime Date { get; set; }
 
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
 
         public string Source { get; set; }
 

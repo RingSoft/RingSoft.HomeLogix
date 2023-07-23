@@ -44,9 +44,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnRowsChanged(e);
         }
 
-        public decimal GetTotalAmount()
+        public double GetTotalAmount()
         {
-            var result = (decimal) 0;
+            var result = (double) 0;
             var rows = Rows.OfType<ActualAmountGridRow>();
             foreach (var actualAmountGridRow in rows)
             {

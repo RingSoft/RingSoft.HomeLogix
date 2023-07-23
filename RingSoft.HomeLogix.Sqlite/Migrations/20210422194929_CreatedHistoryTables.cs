@@ -14,8 +14,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     BankAccountId = table.Column<int>(type: "integer", nullable: false),
                     PeriodType = table.Column<byte>(type: "smallint", nullable: false),
                     PeriodEndingDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    TotalDeposits = table.Column<decimal>(type: "numeric", nullable: false),
-                    TotalWithdrawals = table.Column<decimal>(type: "numeric", nullable: false)
+                    TotalDeposits = table.Column<double>(type: "numeric", nullable: false),
+                    TotalWithdrawals = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -35,8 +35,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     BudgetItemId = table.Column<int>(type: "integer", nullable: false),
                     PeriodType = table.Column<byte>(type: "smallint", nullable: false),
                     PeriodEndingDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    ProjectedAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    ActualAmount = table.Column<decimal>(type: "numeric", nullable: false)
+                    ProjectedAmount = table.Column<double>(type: "numeric", nullable: false),
+                    ActualAmount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,8 +61,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     BudgetItemId = table.Column<int>(type: "integer", nullable: true),
                     TransferToBankAccountId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "nvarchar", maxLength: 50, nullable: true),
-                    ProjectedAmount = table.Column<decimal>(type: "numeric", nullable: false),
-                    ActualAmount = table.Column<decimal>(type: "numeric", nullable: false)
+                    ProjectedAmount = table.Column<double>(type: "numeric", nullable: false),
+                    ActualAmount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -95,7 +95,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     DetailId = table.Column<int>(type: "integer", nullable: false),
                     SourceId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    Amount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

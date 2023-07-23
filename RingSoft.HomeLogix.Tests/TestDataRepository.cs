@@ -292,7 +292,7 @@ namespace RingSoft.HomeLogix.Tests
             throw new System.NotImplementedException();
         }
 
-        public decimal GetSourceTotal(int storeId)
+        public double GetSourceTotal(int storeId)
         {
             throw new NotImplementedException();
         }

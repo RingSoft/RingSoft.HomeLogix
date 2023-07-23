@@ -55,13 +55,13 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "EscrowBalance",
                 table: "BudgetItems",
                 type: "numeric",
                 nullable: true);
 
-            migrationBuilder.AddColumn<decimal>(
+            migrationBuilder.AddColumn<double>(
                 name: "EscrowBalance",
                 table: "BankAccounts",
                 type: "numeric",
@@ -99,7 +99,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                 {
                     RegisterId = table.Column<int>(type: "integer", nullable: false),
                     BudgetItemId = table.Column<int>(type: "integer", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false)
+                    Amount = table.Column<double>(type: "numeric", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -26,7 +26,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
     public class BudgetSplit
     {
         public AutoFillValue BudgetItem { get; set; }
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
     }
     public class ImportTransactionGridRow : DataEntryGridRow
     {
@@ -52,7 +52,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public AutoFillValue BudgetItemAutoFillValue { get; set; }
         public AutoFillSetup SourceAutoFillSetup { get; set; }
         public AutoFillValue SourceAutoFillValue { get; set; }
-        public decimal Amount { get; set; }
+        public double Amount { get; set; }
         public bool MapTransaction { get; set; }
         public List<BudgetSplit> BudgetItemSplits { get; set; }
 
@@ -203,7 +203,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var decimalProps = value as ActualAmountCellProps;
                     if (decimalProps != null)
                     {
-                        if (decimalProps.Value != null) Amount = decimalProps.Value.Value;
+                        if (decimalProps.Value != null) Amount = (double)decimalProps.Value.Value;
                     }
                     break;
                 case ImportColumns.Map:
