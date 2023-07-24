@@ -298,30 +298,12 @@ namespace RingSoft.HomeLogix.DataAccess
             HistoryLookup.AddVisibleColumnDefinition(p => p.Description, "Description",
                 p => p.Description, 25);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ItemType, "Item Type",
-                p => p.ItemType, 20);
+                p => p.ItemType, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ProjectedAmount, "Budget\r\nAmount",
                 p => p.ProjectedAmount, 15);
             HistoryLookup.AddVisibleColumnDefinition(p => p.ActualAmount, "Actual\r\nAmount", 
                 p => p.ActualAmount, 15);
             
-            var table = DataProcessor.SqlGenerator.FormatSqlObject(History.TableName);
-            var projectedField = DataProcessor.SqlGenerator.FormatSqlObject(History
-                .GetFieldDefinition(p => p.ProjectedAmount).FieldName);
-            var actualField = DataProcessor.SqlGenerator.FormatSqlObject(History
-                .GetFieldDefinition(p => p.ActualAmount).FieldName);
-            budgetAlias = DataProcessor.SqlGenerator.FormatSqlObject(budgetAlias);
-            var typeField = DataProcessor.SqlGenerator.FormatSqlObject(BudgetItems
-                .GetFieldDefinition(p => (int)p.Type).FieldName);
-
-            var formula = $"CASE {budgetAlias}.{typeField} WHEN {(int)BudgetItemTypes.Income}"
-            + $" THEN {table}.{actualField} - {table}.{projectedField}"
-            + $" ELSE {table}.{projectedField} - {table}.{actualField} END";
-
-            //HistoryLookup.Include(p => p.BudgetItem)
-            //    .AddVisibleColumnDefinition(p => p.Difference, "Difference", formula, 15, FieldDataTypes.Decimal)
-            //    .HasDecimalFieldType(DecimalFieldTypes.Currency).DoShowNegativeValuesInRed()
-            //    .DoShowPositiveValuesInGreen();
-
             HistoryLookup.Include(p => p.BudgetItem)
                 .AddVisibleColumnDefinition(
                     p => p.Difference, "Difference", new HistoryDifferenceFormula(), 15, FieldDataTypes.Decimal)
@@ -353,15 +335,6 @@ namespace RingSoft.HomeLogix.DataAccess
             var budgetPeriodInclude = budgetPeriodLookup.Include(p => p.BudgetItem);
             budgetAlias = budgetPeriodInclude.JoinDefinition.Alias;
 
-            table = DataProcessor.SqlGenerator.FormatSqlObject(BudgetPeriodHistory.TableName);
-            var projectedAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
-                BudgetPeriodHistory.GetFieldDefinition(p => p.ProjectedAmount).FieldName);
-            var actualAmountField = DataProcessor.SqlGenerator.FormatSqlObject(
-                BudgetPeriodHistory.GetFieldDefinition(p => p.ActualAmount).FieldName);
-
-            formula = $"CASE {budgetAlias}.{typeField} WHEN {(int)BudgetItemTypes.Income}"
-                      + $" THEN {table}.{actualAmountField} - {table}.{projectedAmountField}"
-                      + $" ELSE {table}.{projectedAmountField} - {table}.{actualAmountField} END";
             budgetPeriodInclude.AddVisibleColumnDefinition(p => p.Difference, "Difference"
                     , new BudgetPeriodHistoryDifferenceFormula(), 25, FieldDataTypes.Decimal)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)
@@ -382,12 +355,7 @@ namespace RingSoft.HomeLogix.DataAccess
             bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.TotalWithdrawals, 
                 "Total Withdrawals", p => p.TotalWithdrawals, 20);
 
-            var tableString = DataProcessor.SqlGenerator.FormatSqlObject(BankAccountPeriodHistory.TableName);
-            var depositField = DataProcessor.SqlGenerator.FormatSqlObject(BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalDeposits).FieldName);
-            var withdrawalsField = DataProcessor.SqlGenerator.FormatSqlObject(
-                BankAccountPeriodHistory.GetFieldDefinition(p => p.TotalWithdrawals).FieldName);
 
-            formula = $"{tableString}.{depositField} - {tableString}.{withdrawalsField}";
             bankPeriodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Difference,
                     "Difference", new BankPeriodHistoryDifferenceFormula(), 20, "")
                 .HasDecimalFieldType(DecimalFieldTypes.Currency)

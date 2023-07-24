@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.TableProcessing;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
@@ -618,7 +620,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 ViewModel.View.UpdateStatus($"Loading Row {rowIndex} of {count}");
                 if (!importTransactionGridRow.Description.IsNullOrEmpty())
                 {
-                    var query = new SelectQuery(AppGlobals.LookupContext.QifMaps.TableName);
+                    var filter = new TableFilterDefinition<QifMap>(AppGlobals.LookupContext.QifMaps);
                     var foundMap = false;
                     var spacePos = importTransactionGridRow.Description.IndexOf(" ");
                     var text = importTransactionGridRow.Description;
@@ -626,7 +628,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         text = importTransactionGridRow.Description.MidStr(0, spacePos).Trim();
                     while (foundMap == false)
                     {
-                        var checkResult = CheckQuery(query, text, importTransactionGridRow, out var newFoundMap);
+                        var checkResult = CheckQuery(filter, text, importTransactionGridRow, out var newFoundMap);
                         foundMap = newFoundMap;
                         if (!checkResult)
                         {
@@ -635,7 +637,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         spacePos = importTransactionGridRow.Description.IndexOf(" ", spacePos + 1);
                         if (spacePos == -1)
                         {
-                            checkResult = CheckQuery(query, importTransactionGridRow.Description, importTransactionGridRow, out var newCheckFoundMap);
+                            checkResult = CheckQuery(filter, importTransactionGridRow.Description, importTransactionGridRow, out var newCheckFoundMap);
                             if (!checkResult)
                             {
                                 break;
@@ -659,53 +661,50 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             Grid?.RefreshGridView();
         }
 
-        private bool CheckQuery(SelectQuery query, string text, ImportTransactionGridRow importTransactionGridRow,
+        private bool CheckQuery(TableFilterDefinition<QifMap> filter, string text, ImportTransactionGridRow importTransactionGridRow,
             out bool foundMap)
         {
-            ProcessQifQuery(query, text);
+            ProcessQifQuery(filter, text);
 
-            var result = AppGlobals.LookupContext.DataProcessor.GetData(query);
+            var param = GblMethods.GetParameterExpression<QifMap>();
+            var filterExpr = filter.GetWhereExpresssion<QifMap>(param);
+            var query = AppGlobals
+                .LookupContext
+                .GetQueryable<QifMap>(AppGlobals
+                    .LookupContext
+                    .QifMapLookup);
+            query = FilterItemDefinition.FilterQuery(query, param, filterExpr);
             foundMap = false;
-            if (result.ResultCode == GetDataResultCodes.Success)
+            //if (result.ResultCode == GetDataResultCodes.Success)
             {
-                var table = result.DataSet.Tables[0];
-                if (table.Rows.Count == 1)
+                if (query.Count() == 1)
                 {
                     foundMap = true;
-                    ProcessFoundQif(table, importTransactionGridRow);
+                    ProcessFoundQif(query.FirstOrDefault(), importTransactionGridRow);
                 }
-                else if (table.Rows.Count == 0)
+                else if (query.Count() == 0)
                 {
                     return false;
                 }
             }
-            else
-            {
-                return false;
-            }
-
             return true;
         }
 
-        private static void ProcessQifQuery(SelectQuery query, string text)
+        private static void ProcessQifQuery(TableFilterDefinition<QifMap> filter, string text)
         {
-            if (query.WhereItems.Any())
+            if (filter.FixedFilters.Any())
             {
-                query.RemoveWhereItem(query.WhereItems[0]);
+                filter
+                    .RemoveFixedFilter(filter.FixedFilters[0]);
             }
 
-            query.AddWhereItem(
-                AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.BankText).FieldName,
+            filter.AddFixedFieldFilter(AppGlobals.LookupContext.QifMaps.GetFieldDefinition(p => p.BankText),
                 Conditions.Contains, text);
         }
 
-        private static void ProcessFoundQif(DataTable table, ImportTransactionGridRow importTransactionGridRow)
+        private static void ProcessFoundQif(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow)
         {
-            var qifMapId =
-                table.Rows[0].GetRowValue(AppGlobals.LookupContext.QifMaps
-                    .GetFieldDefinition(p => p.Id).FieldName).ToInt();
-
-            var qifMap = AppGlobals.DataRepository.GetQifMap(qifMapId);
+            qifMap = AppGlobals.DataRepository.GetQifMap(qifMap.Id);
 
             importTransactionGridRow.MapTransaction = false;
             importTransactionGridRow.QifMap = qifMap;

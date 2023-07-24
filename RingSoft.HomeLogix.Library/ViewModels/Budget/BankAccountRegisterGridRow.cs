@@ -106,7 +106,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.Completed:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, Completed);
                 case BankAccountRegisterGridColumns.Balance:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal)Balance);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal?)Balance);
                 case BankAccountRegisterGridColumns.ActualAmount:
                     return new ActualAmountCellProps(this, columnId, _decimalValueSetup, ActualAmount);
                 case BankAccountRegisterGridColumns.Difference:
