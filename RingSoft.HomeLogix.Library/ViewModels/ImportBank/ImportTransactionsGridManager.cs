@@ -734,5 +734,98 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         qifMap.BudgetId.ToString());
             }
         }
+
+        public void SetMapRowsBudget(ImportTransactionGridRow row)
+        {
+            var refresh = false;
+
+            var rowsToSet =  GetMaps(row);
+
+            if (rowsToSet.Any())
+            {
+                refresh = true;
+                foreach (var importTransactionGridRow in rowsToSet)
+                {
+                    if (importTransactionGridRow != row)
+                    {
+                        importTransactionGridRow.BudgetItemAutoFillValue = row.BudgetItemAutoFillValue;
+                        importTransactionGridRow.MapTransaction = false;
+                    }
+                }
+            }
+            if (refresh)
+            {
+                Grid?.RefreshGridView();
+            }
+        }
+
+        private List<ImportTransactionGridRow> GetMaps(ImportTransactionGridRow row)
+        {
+            var result = new List<ImportTransactionGridRow>();
+
+            var foundMap = false;
+            var spacePos = row.Description.IndexOf(" ");
+            var text = row.Description;
+            if (spacePos > 0)
+                text = row.Description.MidStr(0, spacePos).Trim();
+            while (foundMap == false)
+            {
+                var foundRows = GetRowsContainingText(text);
+                if (foundRows.Any())
+                {
+                    result.AddRange(foundRows);
+                    foundMap = true;
+                }
+                else
+                {
+                    spacePos = row.Description.IndexOf(" ", spacePos + 1);
+                    if (spacePos == -1)
+                    {
+                        foundMap = true;
+                    }
+                    else
+                    {
+                        var nextSpacePos = row.Description.IndexOf(" ", spacePos + 1);
+                        text = row.Description.MidStr(0, spacePos);
+                        text = text.Trim();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public List<ImportTransactionGridRow> GetRowsContainingText(string text)
+        {
+            var rows = Rows.OfType<ImportTransactionGridRow>()
+                .Where(p => p.FromBank
+                && p.Description.Contains(text));
+
+            var result = rows.ToList();
+            return result;
+        }
+
+        public void SetMapRowsSource(ImportTransactionGridRow row)
+        {
+            var refresh = false;
+
+            var rowsToSet = GetMaps(row);
+
+            if (rowsToSet.Any())
+            {
+                refresh = true;
+                foreach (var importTransactionGridRow in rowsToSet)
+                {
+                    if (importTransactionGridRow != row)
+                    {
+                        importTransactionGridRow.SourceAutoFillValue = row.SourceAutoFillValue;
+                    }
+                }
+            }
+            if (refresh)
+            {
+                Grid?.RefreshGridView();
+            }
+        }
     }
 }

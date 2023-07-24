@@ -189,6 +189,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     if (budgetAutoFillCellProps != null && budgetAutoFillCellProps.AutoFillValue.IsValid())
                     {
                         BudgetItemAutoFillValue = budgetAutoFillCellProps.AutoFillValue;
+                        Manager.SetMapRowsBudget(this);
                     }
 
                     break;
@@ -197,6 +198,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     if (autoFillCellProps != null)
                     {
                         SourceAutoFillValue = autoFillCellProps.AutoFillValue;
+                        Manager.SetMapRowsSource(this);
                     }
                     break;
                 case ImportColumns.Amount:
