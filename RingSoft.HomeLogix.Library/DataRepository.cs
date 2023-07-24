@@ -10,6 +10,7 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Linq.Expressions;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -119,7 +120,13 @@ namespace RingSoft.HomeLogix.Library
 
         public DbLookup.IDbContext GetDataContext(DbDataProcessor dataProcessor)
         {
-            return AppGlobals.GetNewDbContext();
+            var platform = DbPlatforms.Sqlite;
+
+            if (dataProcessor is SqlServerDataProcessor)
+            {
+                platform = DbPlatforms.SqlServer;
+            }
+            return AppGlobals.GetNewDbContext(platform);
         }
 
         public ILookupDataBase GetLookupDataBase<TEntity>(LookupDefinitionBase lookupDefinition, LookupUserInterface lookupUi) where TEntity : class, new()

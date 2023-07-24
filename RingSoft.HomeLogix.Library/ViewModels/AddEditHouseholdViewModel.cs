@@ -14,6 +14,7 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AdvancedFind;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Sqlite;
 using RingSoft.HomeLogix.SqlServer;
 
@@ -107,9 +108,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             entity.Password = SqlServerLoginViewModel.Password.EncryptDatabasePassword();
         }
 
-        protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor, ITwoTierProcedure procedure)
+        protected override bool PreDataCopy(ref LookupContext context, ref DbDataProcessor destinationProcessor
+            , ITwoTierProcedure procedure)
         {
-            DbContext dbContext = null;
+            DbContext destinationDbContext = null;
+            IHomeLogixDbContext sourceDbContext = null;
             context = AppGlobals.LookupContext;
             switch (DbPlatform)
             {
@@ -118,7 +121,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     LoadDbDataProcessor(destinationProcessor);
                     var sqliteHomeLogixDbContext = new SqliteHomeLogixDbContext();
                     sqliteHomeLogixDbContext.SetLookupContext(AppGlobals.LookupContext);
-                    dbContext = sqliteHomeLogixDbContext;
+                    destinationDbContext = sqliteHomeLogixDbContext;
                     break;
                 case DbPlatforms.SqlServer:
                     var sqlServerProcessor = AppGlobals.LookupContext.SqlServerDataProcessor;
@@ -126,37 +129,67 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                     LoadDbDataProcessor(destinationProcessor);
                     var sqlServerContext = new SqlServerHomeLogixDbContext();
                     sqlServerContext.SetLookupContext(AppGlobals.LookupContext);
-                    dbContext = sqlServerContext;
+                    destinationDbContext = sqlServerContext;
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
 
             }
+
+            AppGlobals.DbPlatform = OriginalDbPlatform;
+            switch (OriginalDbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    sourceDbContext = new SqliteHomeLogixDbContext();
+                    break;
+                case DbPlatforms.SqlServer:
+                    sourceDbContext = new SqlServerHomeLogixDbContext();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             AppGlobals.LoadDataProcessor(Object, OriginalDbPlatform);
+            switch (OriginalDbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    if (DbPlatform == DbPlatforms.SqlServer)
+                    {
+                    }
+                    break;
+                case DbPlatforms.SqlServer:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             var dropResult = destinationProcessor.DropDatabase();
             if (dropResult.ResultCode != GetDataResultCodes.Success)
             {
-                procedure.ShowError(dropResult.Message, "Error Dropping Destination Database");
+                procedure.ShowError(dropResult.Message, "Error Dropping Database");
                 return false;
             }
 
-            AppGlobals.GetNewDbContext().SetLookupContext(AppGlobals.LookupContext);
-            AppGlobals.LookupContext.Initialize(AppGlobals.GetNewDbContext(), OriginalDbPlatform);
+            procedure.SetCursor(WindowCursorTypes.Wait);
+            sourceDbContext = AppGlobals.GetNewDbContext();
+            sourceDbContext.SetLookupContext(AppGlobals.LookupContext);
+            AppGlobals.LookupContext.Initialize(sourceDbContext, OriginalDbPlatform);
+
 
             var result = AppGlobals.MigrateContext(AppGlobals.GetNewDbContext().DbContext);
             if (!result.IsNullOrEmpty())
             {
+                procedure.SetCursor(WindowCursorTypes.Default);
                 procedure.ShowError(result, "File Access Error");
                 return false;
             }
-            
-            result = AppGlobals.MigrateContext(dbContext);
+
+            result = AppGlobals.MigrateContext(destinationDbContext);
             if (!result.IsNullOrEmpty())
             {
+                procedure.SetCursor(WindowCursorTypes.Default);
                 procedure.ShowError(result, "File Access Error");
                 return false;
             }
-            //dbContext.Database.Migrate();
             return true;
         }
     }

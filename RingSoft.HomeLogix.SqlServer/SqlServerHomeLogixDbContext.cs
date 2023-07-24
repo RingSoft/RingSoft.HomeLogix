@@ -39,7 +39,7 @@ namespace RingSoft.HomeLogix.SqlServer
             {
                 if (_connectionString == null)
                 {
-                    return _lookupContext.SqliteDataProcessor.ConnectionString;
+                    return _lookupContext.SqlServerDataProcessor.ConnectionString;
                 }
                 return _connectionString;
             }
@@ -67,7 +67,7 @@ namespace RingSoft.HomeLogix.SqlServer
                 optionsBuilder.UseSqlServer(sqlProcessor.ConnectionString);
             }
             else
-                optionsBuilder.UseSqlServer(_lookupContext.SqlServerDataProcessor.ConnectionString);
+                optionsBuilder.UseSqlServer(ConnectionString);
 
             base.OnConfiguring(optionsBuilder);
         }

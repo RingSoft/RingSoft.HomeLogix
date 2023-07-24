@@ -128,13 +128,9 @@ namespace RingSoft.HomeLogix.DataAccess
         public TableDefinition<MainBudget> MainBudget { get; set; }
 
         public LookupContextBase Context => this;
-        public TableDefinition<RecordLock> RecordLocks { get; set; }
-        public TableDefinition<AdvancedFind> AdvancedFinds { get; set; }
-        public TableDefinition<AdvancedFindColumn> AdvancedFindColumns { get; set; }
-        public TableDefinition<AdvancedFindFilter> AdvancedFindFilters { get; set; }
 
-        public LookupDefinition<AdvancedFindLookup, AdvancedFind> AdvancedFindLookup { get; set; }
-        public LookupDefinition<RecordLockingLookup, RecordLock> RecordLockingLookup { get; set; }
+        public LookupDefinition<BudgetItemLookup, SystemMaster> SystemMasterLookup { get; set; }
+        public LookupDefinition<BudgetItemLookup, BankTransaction> BankTransactionsLookup { get; set; }
         public LookupDefinition<BudgetItemLookup, BudgetItem> BudgetItemsLookup { get; set; }
         public LookupDefinition<BankAccountLookup, BankAccount> BankAccountsLookup { get; set; }
         public LookupDefinition<BankAccountRegisterLookup, BankAccountRegisterItem> BankRegisterLookup { get; set; }
@@ -208,6 +204,13 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void InitializeLookupDefinitions()
         {
+            
+            SystemMasterLookup = new LookupDefinition<BudgetItemLookup, SystemMaster>(SystemMaster);
+            SystemMasterLookup.AddVisibleColumnDefinition(p => p.Description
+                , "Description"
+                , p => p.HouseholdName, 99);
+            SystemMaster.HasLookupDefinition(SystemMasterLookup);
+
             MainBudgetLookup = new LookupDefinition<MainBudgetLookup, MainBudget>(MainBudget);
             MainBudgetLookup.Include(p => p.BudgetItem)
                 .AddVisibleColumnDefinition(p => p.BudgetItem
@@ -270,6 +273,12 @@ namespace RingSoft.HomeLogix.DataAccess
             BankRegisterLookup.AddVisibleColumnDefinition(p => p.RegisterDate, "Register Date", p => p.ItemDate, 50);
             BankRegisterLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 50);
             BankAccountRegisterItems.HasLookupDefinition(BankRegisterLookup);
+
+            BankTransactionsLookup = new LookupDefinition<BudgetItemLookup, BankTransaction>(BankTransactions);
+            BankTransactionsLookup.AddVisibleColumnDefinition(p => p.Description
+                , "Description"
+                , p => p.Description, 99);
+            BankTransactions.HasLookupDefinition(BankTransactionsLookup);
 
             BankRegisterAmountDetailsLookup =
                 new LookupDefinition<BankRegisterAmountDetailsLookup, BankAccountRegisterItemAmountDetail>(
@@ -399,8 +408,9 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void SetupModel()
         {
-            //MainBudget.GetFieldDefinition(p => p.ItemType)
-            //    .HasSearchForHostId();
+            SystemMaster.ShowInAdvFind(false);
+
+            MainBudget.IsTempTable().ShowInAdvFind(false);
 
             MainBudget.GetFieldDefinition(p => p.BudgetAmount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
