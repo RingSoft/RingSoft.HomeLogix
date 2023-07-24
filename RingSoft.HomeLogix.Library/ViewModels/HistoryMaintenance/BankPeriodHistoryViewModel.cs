@@ -188,43 +188,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                 _bankPeriodHistory.BankAccountId);
 
-            var sqlGenerator = AppGlobals.LookupContext.DataProcessor.SqlGenerator;
-            var table = AppGlobals.LookupContext.History;
-            var sql = string.Empty;
-            var yearSql = string.Empty;
-            switch (AppGlobals.DbPlatform)
-            {
-                case DbPlatforms.SqlServer:
-                    sql =
-                        $"MONTH({sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
-                    yearSql =
-                        $"YEAR({sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    yearSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    break;
-                case DbPlatforms.Sqlite:
-                case DbPlatforms.MySql:
-                    sql =
-                        $"strftime('%m', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    sql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    //sql += $"'{budgetPeriodHistory.PeriodEndingDate.Month:D2}'";
-                    yearSql =
-                        $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
-                    yearSql += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+
 
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Month", Conditions.Equals,
-                    $"{_bankPeriodHistory.PeriodEndingDate.Month:D2}", sql);
+                var beginDate = new DateTime(_bankPeriodHistory.PeriodEndingDate.Year
+                    , _bankPeriodHistory.PeriodEndingDate.Month, 1);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.GreaterThanEquals, beginDate);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.LessThanEquals, _bankPeriodHistory.PeriodEndingDate);
             }
+            else
+            {
+                var beginDate = new DateTime(_bankPeriodHistory.PeriodEndingDate.Year
+                    , 1, 1);
+                var endDate = new DateTime(_bankPeriodHistory.PeriodEndingDate.Year
+                    , 12, 31);
 
-            HistoryLookupDefinition.FilterDefinition.AddFixedFilter("Year", Conditions.Equals,
-                $"{_bankPeriodHistory.PeriodEndingDate.Year:D4}", yearSql);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.GreaterThanEquals, beginDate);
+                HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
+                    , Conditions.LessThanEquals, endDate);
+            }
 
             ViewModelInput.HistoryFilterBankAccountPeriod = _bankPeriodHistory;
 
