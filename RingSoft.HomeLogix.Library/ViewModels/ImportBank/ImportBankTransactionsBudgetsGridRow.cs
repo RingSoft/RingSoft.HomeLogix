@@ -42,7 +42,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         new DecimalEditControlSetup
                         {
                             FormatType = DecimalEditFormatTypes.Currency,
-                        }, (decimal)BudgetAmount);
+                        }, BudgetAmount);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

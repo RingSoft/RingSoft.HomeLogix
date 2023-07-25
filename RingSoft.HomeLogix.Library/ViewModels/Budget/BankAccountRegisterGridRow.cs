@@ -102,15 +102,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.TransactionType:
                     return new DataEntryGridCustomControlCellProps(this, columnId, (int) TransactionType);
                 case BankAccountRegisterGridColumns.Amount:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal)ProjectedAmount);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, ProjectedAmount);
                 case BankAccountRegisterGridColumns.Completed:
                     return new DataEntryGridCheckBoxCellProps(this, columnId, Completed);
                 case BankAccountRegisterGridColumns.Balance:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal?)Balance);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, Balance);
                 case BankAccountRegisterGridColumns.ActualAmount:
                     return new ActualAmountCellProps(this, columnId, _decimalValueSetup, ActualAmount);
                 case BankAccountRegisterGridColumns.Difference:
-                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, (decimal?)Difference);
+                    return new DataEntryGridDecimalCellProps(this, columnId, _decimalValueSetup, Difference);
                 default:
                     throw new ArgumentOutOfRangeException();
             }

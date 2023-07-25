@@ -16,7 +16,7 @@ namespace RingSoft.HomeLogix.Library
         public ImportTransactionGridRow ImportTransactionGridRow { get; set; }
 
         public ActualAmountCellProps(DataEntryGridRow row, int columnId, 
-            DecimalEditControlSetup setup, double? value) : base(row, columnId, setup, (decimal?)value)
+            DecimalEditControlSetup setup, double? value) : base(row, columnId, setup, value)
         {
             RegisterGridRow = row as BankAccountRegisterGridRow;
             ImportTransactionGridRow = row as ImportTransactionGridRow;

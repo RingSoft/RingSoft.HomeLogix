@@ -187,7 +187,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return;
             }
             var amountDetails = GridManager.SaveData();
-            ActualAmountCellProps.Value = (decimal)TotalActualAmount;
+            ActualAmountCellProps.Value = TotalActualAmount;
             var registerItem = new BankAccountRegisterItem();
             ActualAmountCellProps.RegisterGridRow.SaveToEntity(registerItem, 0);
             registerItem.ActualAmount = TotalActualAmount;
