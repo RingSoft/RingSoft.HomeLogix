@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using RingSoft.App.Interop;
 using RingSoft.App.Library;
 
@@ -295,7 +296,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
         }
 
-        private void DeleteHousehold()
+        private async void DeleteHousehold()
         {
             string message;
             if (SelectedItem.Household.Id == 1)
@@ -307,7 +308,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             }
 
             message = "Are you sure you wish to delete this household?";
-            if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
+            if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Confirm Delete") ==
                 MessageBoxButtonsResult.Yes)
             {
                 if (MasterDbContext.DeleteHousehold(SelectedItem.Household.Id))
@@ -334,12 +335,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels
             View.CloseWindow();
         }
 
-        public bool DoCancelClose()
+        public async Task<bool> DoCancelClose()
         {
             if (AppGlobals.LoggedInHousehold == null && !DialogResult)
             {
                 var message = "Application will shut down if you do not login.  Do you wish to continue?";
-                if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Login Failure") ==
+                if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Login Failure") ==
                     MessageBoxButtonsResult.Yes)
                 {
                     View.ShutDownApplication();

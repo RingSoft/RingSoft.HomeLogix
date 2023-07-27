@@ -486,7 +486,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         #endregion
 
         private bool _completeAll;
-
+        
         public bool CompleteAll
         {
             get => _completeAll;
@@ -541,6 +541,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
         private bool _recordSaved;
         private DateTime _firstRegisterDate = DateTime.Now;
+        private bool _saveEntity = true;
+        private bool _doProcessCompletedRows;
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
 
@@ -913,24 +915,35 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return bankAccount;
         }
 
+        private async void CheckProcessCompletedData(List<BankAccountRegisterGridRow> completedRows
+        , CompletedRegisterData completedRegisterData)
+        {
+            _saveEntity = true;
+            _doProcessCompletedRows = false;
+            if (completedRows.Any() && _processCompletedRows)
+            {
+                var message = "Do you wish to post the Completed rows to History and delete them from the Register?";
+                if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
+                    MessageBoxButtonsResult.Yes)
+                    _doProcessCompletedRows = true;
+            }
+
+            if (_doProcessCompletedRows)
+                if (!ProcessCompletedRows(completedRegisterData, completedRows))
+                    _saveEntity = false;
+        }
+
         protected override bool SaveEntity(BankAccount entity)
         {
             var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(w => w.Completed).ToList();
 
             var completedRegisterData = new CompletedRegisterData();
 
-            var processCompletedRows = false;
-            if (completedRows.Any() && _processCompletedRows)
+            CheckProcessCompletedData(completedRows, completedRegisterData);
+            if (!_saveEntity)
             {
-                var message = "Do you wish to post the Completed rows to History and delete them from the Register?";
-                if (ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
-                    MessageBoxButtonsResult.Yes)
-                    processCompletedRows = true;
+                return false;
             }
-
-            if (processCompletedRows)
-                if (!ProcessCompletedRows(completedRegisterData, completedRows))
-                    return false;
 
             //var lastCompletedDate = DateTime.Today;
             //DateTime lastRegisterDate = DateTime.MinValue;
@@ -1040,7 +1053,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             //if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
             {
-                if (processCompletedRows)
+                if (_doProcessCompletedRows)
                 {
                     var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
                     BankAccountRegisterGridRow currentRow = null;

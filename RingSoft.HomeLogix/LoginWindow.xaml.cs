@@ -103,9 +103,9 @@ namespace RingSoft.HomeLogix
             Application.Current.Shutdown(0);
         }
 
-        protected override void OnClosing(CancelEventArgs e)
+        protected async override void OnClosing(CancelEventArgs e)
         {
-            e.Cancel = ViewModel.DoCancelClose();
+            e.Cancel = await ViewModel.DoCancelClose();
             base.OnClosing(e);
         }
     }
