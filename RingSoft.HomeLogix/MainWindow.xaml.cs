@@ -178,7 +178,11 @@ namespace RingSoft.HomeLogix
 
         public Login ShowPhoneSync(Login input)
         {
-            var phoneSyncWindow = new PhoneSyncWindow(input) { Owner = this };
+            var phoneSyncWindow = new PhoneSyncWindow(input)
+            {
+                Owner = this,
+                ShowInTaskbar = false,
+            };
             phoneSyncWindow.ShowDialog();
             return phoneSyncWindow.ViewModel.DialogResult;
         }
