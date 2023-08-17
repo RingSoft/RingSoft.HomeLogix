@@ -746,7 +746,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 refresh = true;
                 foreach (var importTransactionGridRow in rowsToSet)
                 {
-                    if (importTransactionGridRow != row)
+                    if (importTransactionGridRow != row
+                        && !importTransactionGridRow.BudgetItemAutoFillValue.IsValid())
                     {
                         importTransactionGridRow.BudgetItemAutoFillValue = row.BudgetItemAutoFillValue;
                         importTransactionGridRow.MapTransaction = false;

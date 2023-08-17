@@ -59,7 +59,7 @@ namespace RingSoft.HomeLogix
 
                 var currentRowIndex = Grid.CurrentRowIndex;
                 lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,
-                    _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput);
+                    _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput, _cellProps.Row.BudgetItemValue.PrimaryKeyValue);
 
                 var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
                 if (window != null)
