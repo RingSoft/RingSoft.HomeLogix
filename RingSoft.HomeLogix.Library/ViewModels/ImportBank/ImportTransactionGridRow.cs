@@ -75,6 +75,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }
 
+        public override string ToString()
+        {
+            return Description;
+        }
+
         public override DataEntryGridCellProps GetCellProps(int columnId)
         {
             var column = (ImportColumns) columnId;

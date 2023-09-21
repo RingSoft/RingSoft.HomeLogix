@@ -189,7 +189,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 row.FromBank = true;
                 importRows.Add(row);
                 //columnPos = qifText.IndexOf("^", columnPos);
-                columnPos = qifText.IndexOf("C*", columnPos + 2);
+                var newColumnPos = qifText.IndexOf("C*\n", columnPos + 3);
+                if (newColumnPos == -1)
+                {
+                    newColumnPos = qifText.IndexOf("C*\r\n", columnPos + 4);
+                }
+
+                columnPos = newColumnPos;
             }
 
             FinishImport(importRows);
