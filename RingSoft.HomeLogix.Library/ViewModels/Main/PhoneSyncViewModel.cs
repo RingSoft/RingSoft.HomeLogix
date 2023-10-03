@@ -229,6 +229,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             try
             {
                 AppGlobals.UploadFile("Logins.json");
+                procedure.UpdateBottomTier("Deleting File Logins.", loginSteps, loginStep);
                 AppGlobals.DeleteFile("Logins.json");
             }
             catch (Exception e)
@@ -240,12 +241,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             try
             {
+                procedure.UpdateBottomTier("Getting Remote File List.", loginSteps, loginStep);
                 var response = AppGlobals.GetWebResponse(WebRequestMethods.Ftp.ListDirectory, DialogResult.Guid + "/");
 
                 using (var stream = response.GetResponseStream())
                 {
                     using (var reader = new StreamReader(stream, true))
                     {
+                        procedure.UpdateBottomTier("Processing Remote File List Stream.", loginSteps, loginStep);
                         var text = reader.ReadToEnd();
                         var crLfPos = text.IndexOf("\r\n");
                         while (crLfPos >= 0)
