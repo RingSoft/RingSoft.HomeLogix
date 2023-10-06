@@ -796,7 +796,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var periodHistoryTable = context.GetTable<BudgetPeriodHistory>();
             var periodHistory = periodHistoryTable
                 .Include(p => p.BudgetItem)
-                .Where(p => p.BudgetItem.Type != (byte)BudgetItemTypes.Transfer
+                .Where(p => p.PeriodType == (byte)PeriodHistoryTypes.Monthly
+                            && p.BudgetItem.Type != (byte)BudgetItemTypes.Transfer
                             && p.PeriodEndingDate.Month == CurrentMonthEnding.Month
                             && p.PeriodEndingDate.Year == CurrentMonthEnding.Year)
                 .OrderBy(p => p.BudgetItem.Description);

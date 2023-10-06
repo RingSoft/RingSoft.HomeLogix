@@ -490,7 +490,8 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BudgetPeriodHistory.OrderByDescending(o => o.PeriodEndingDate)
-                .FirstOrDefault(f => f.PeriodType == (int)PeriodHistoryTypes.Monthly);
+                .FirstOrDefault(f => f.PeriodType == (int)PeriodHistoryTypes.Monthly
+                && f.ActualAmount > 0);
         }
 
         public BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding,
