@@ -1,4 +1,6 @@
-﻿namespace RingSoft.HomeLogix.MobileInterop
+﻿using System.Net;
+
+namespace RingSoft.HomeLogix.MobileInterop
 {
     public static class InteropGlobals
     {
@@ -12,8 +14,8 @@
 
             url += fileName;
 
-            var client = new HttpClient();
-            var text = client.GetStringAsync(url).Result;
+            var client = new WebClient();
+            var text = client.DownloadString(url);
             return text;
         }
 
