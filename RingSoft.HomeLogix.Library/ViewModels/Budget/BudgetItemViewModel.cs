@@ -898,13 +898,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _bankAccountRegisterItemsToDelete = null;
 
             var newBankAccountId = 0;
-            if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid)
+            if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid())
                 newBankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(BankAutoFillValue.PrimaryKeyValue).Id;
 
             int? newTransferToBankAccountId = null;
             if (TransferToBankAccountAutoFillValue != null &&
-                TransferToBankAccountAutoFillValue.PrimaryKeyValue.IsValid)
+                TransferToBankAccountAutoFillValue.PrimaryKeyValue.IsValid())
                 newTransferToBankAccountId = AppGlobals.LookupContext.BankAccounts
                     .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue).Id;
 
