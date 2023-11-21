@@ -76,6 +76,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
             budgetItemViewModel.OnViewLoaded(
                 new TestBudgetItemView(nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)));
 
@@ -152,6 +153,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
             budgetItemViewModel.OnViewLoaded(
                 new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo)));
 
@@ -229,6 +231,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
 
             var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
             budgetItemViewModel.OnViewLoaded(
                 new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo)));
             
@@ -289,6 +292,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
             budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(TestBudgetItemIncome_Change)));
 
             var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
@@ -335,6 +339,7 @@ namespace RingSoft.HomeLogix.Tests
             CreateAndTestBudgetItems();
 
             var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
             budgetItemViewModel.OnViewLoaded(
                 new TestBudgetItemView(nameof(TestDeleteBudgetItems)));
 
@@ -389,6 +394,7 @@ namespace RingSoft.HomeLogix.Tests
         private static void CreateAndTestBudgetItems()
         {
             var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
             budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(CreateAndTestBudgetItems)));
 
             budgetItemViewModel.Id = JaneIncomeBudgetItemId;
@@ -605,8 +611,8 @@ namespace RingSoft.HomeLogix.Tests
         private void CreateAndTestBankAccounts()
         {
             var bankAccountViewModel = new BankAccountViewModel();
-            bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
             bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();
+            bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
 
             bankAccountViewModel.Id = JaneSavingsBankAccountId;
             bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Savings Account");

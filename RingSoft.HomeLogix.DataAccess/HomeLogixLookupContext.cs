@@ -204,7 +204,6 @@ namespace RingSoft.HomeLogix.DataAccess
 
         protected override void InitializeLookupDefinitions()
         {
-            
             SystemMasterLookup = new LookupDefinition<BudgetItemLookup, SystemMaster>(SystemMaster);
             SystemMasterLookup.AddVisibleColumnDefinition(p => p.Description
                 , "Description"

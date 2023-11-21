@@ -82,7 +82,6 @@ namespace RingSoft.HomeLogix.Library
             SystemGlobals.DataRepository = DataRepository;
             
             InitializeLookupContext();
-
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
 
@@ -91,7 +90,8 @@ namespace RingSoft.HomeLogix.Library
                 var sqliteContext = new SqliteHomeLogixDbContext();
                 sqliteContext.IsDesignTime = true;
                 LookupContext.LocalDbContext = sqliteContext;
-                LookupContext.TestInitialize();
+                LookupContext.Initialize(sqliteContext, DbPlatforms.Sqlite);
+                //LookupContext.TestInitialize();
                 MainViewModel = new MainViewModel();
             }
             else
