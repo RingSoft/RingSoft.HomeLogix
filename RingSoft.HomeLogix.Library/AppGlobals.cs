@@ -78,9 +78,6 @@ namespace RingSoft.HomeLogix.Library
 
         public static async void Initialize()
         {
-            DataRepository ??= new DataRepository();
-            SystemGlobals.DataRepository = DataRepository;
-            
             InitializeLookupContext();
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
 
@@ -125,7 +122,6 @@ namespace RingSoft.HomeLogix.Library
         private static void InitializeLookupContext()
         {
             LookupContext = new HomeLogixLookupContext();
-            SystemGlobals.LookupContext = LookupContext;
             LookupContext.SqliteDataProcessor.FilePath = MasterDbContext.ProgramDataFolder;
             LookupContext.SqliteDataProcessor.FileName = MasterDbContext.DemoDataFileName;
 
@@ -156,6 +152,8 @@ namespace RingSoft.HomeLogix.Library
 
         public static string LoginToHousehold(Household household)
         {
+            DataRepository = new DataRepository();
+            DataRepository.Initialize();
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
             DbPlatform = (DbPlatforms) household.Platform;
             LookupContext.DbPlatform = DbPlatform;

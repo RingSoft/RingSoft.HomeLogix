@@ -111,8 +111,12 @@ namespace RingSoft.HomeLogix.Library
         bool HistoryExists(int budgetId, DateTime date);
     }
 
-    public class DataRepository : IDataRepository
+    public class DataRepository : SystemDataRepositoryEfCore, IDataRepository
     {
+        public DataRepository()
+        {
+            
+        }
         public IDbContext GetDataContext()
         {
             return AppGlobals.GetNewDbContext();

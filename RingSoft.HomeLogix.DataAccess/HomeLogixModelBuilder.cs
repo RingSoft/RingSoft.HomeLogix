@@ -33,7 +33,7 @@ namespace RingSoft.HomeLogix.DataAccess
             modelBuilder.Entity<BudgetItemSource>().Property(p => p.Name)
                 .HasColumnType(DbConstants.StringColumnType);
 
-            AdvancedFindDataProcessorEfCore.ConfigureAdvancedFind(modelBuilder);
+            SystemDataRepositoryEfCore.ConfigureAdvancedFind(modelBuilder);
         }
 
         public static bool SaveNoCommitEntity<TEntity>(TEntity entity, string message) where TEntity : class

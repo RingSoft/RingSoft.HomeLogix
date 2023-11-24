@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using RingSoft.DbLookup.DataProcessor;
+using RingSoft.DbLookup.EfCore;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -60,7 +61,8 @@ namespace RingSoft.HomeLogix.Tests
             return null;
         }
     }
-    public class TestDataRepository : IDataRepository
+
+    public class TestDataRepository : SystemDataRepositoryEfCore, IDataRepository
     {
         public DataRepositoryRegistry DbContext { get; private set; }
         public TestDataRepository()
