@@ -11,6 +11,8 @@ using System.Linq.Expressions;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.App.Library;
+using RingSoft.DbLookup;
+using IDbContext = RingSoft.DbLookup.IDbContext;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -19,7 +21,7 @@ namespace RingSoft.HomeLogix.Library
 
     public interface IDataRepository : DbLookup.IDataRepository
     {
-        IDbContext GetDataContext();
+        RingSoft.HomeLogix.DataAccess.IDbContext GetDataContext();
         [CanBeNull] SystemMaster GetSystemMaster();
 
         bool SaveSystemMaster(SystemMaster systemMaster);
@@ -111,13 +113,19 @@ namespace RingSoft.HomeLogix.Library
         bool HistoryExists(int budgetId, DateTime date);
     }
 
-    public class DataRepository : SystemDataRepositoryEfCore, IDataRepository
+    public class DataRepository : SystemDataRepositoryBase, IDataRepository
     {
         public DataRepository()
         {
             
         }
-        public IDbContext GetDataContext()
+
+        public override IDbContext GetDataContext()
+        {
+            return AppGlobals.GetNewDbContext();
+        }
+
+        DataAccess.IDbContext IDataRepository.GetDataContext()
         {
             return AppGlobals.GetNewDbContext();
         }
@@ -133,10 +141,6 @@ namespace RingSoft.HomeLogix.Library
             return AppGlobals.GetNewDbContext(platform);
         }
 
-        public ILookupDataBase GetLookupDataBase<TEntity>(LookupDefinitionBase lookupDefinition, LookupUserInterface lookupUi) where TEntity : class, new()
-        {
-            throw new NotImplementedException();
-        }
 
         [CanBeNull]
         public SystemMaster GetSystemMaster()

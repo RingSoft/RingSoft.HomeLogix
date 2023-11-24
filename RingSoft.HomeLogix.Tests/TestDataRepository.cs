@@ -97,6 +97,11 @@ namespace RingSoft.HomeLogix.Tests
             throw new NotImplementedException();
         }
 
+        public bool SaveBudgetPeriodRecord(DbLookup.IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool SaveBudgetPeriodRecord(IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
         {
             throw new NotImplementedException();
