@@ -58,6 +58,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
 
         void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId);
+
+        void RestartApp();
     }
 
     public class CompletedRegisterData
@@ -1370,7 +1372,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
 
-        public override void OnWindowClosing(CancelEventArgs e)
+        public async override void OnWindowClosing(CancelEventArgs e)
         {
             base.OnWindowClosing(e);
             if (!e.Cancel)
@@ -1379,7 +1381,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
                 if (_recordSaved && !systemMaster.PhoneLogin.IsNullOrEmpty())
                 {
-                    AppGlobals.MainViewModel.SyncPhoneCommand.Execute(null);
+                    var message = "You must restart this app to sync with mobile device.  Do you wish to restart now?";
+                    var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Restart?");
+                    if (result == MessageBoxButtonsResult.Yes)
+                    {
+                        BankAccountView.RestartApp();
+                    }
                 }
             }
         }

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -80,6 +83,13 @@ namespace RingSoft.HomeLogix.Budget
             RegisterGrid.Focus();
             RegisterGrid.GotoCell(row, columnId);
 
+        }
+
+        public void RestartApp()
+        {
+            var path = Process.GetCurrentProcess().MainModule.FileName;
+            Application.Current.Shutdown(0);
+            Process.Start(path);
         }
 
         public BankAccountMaintenanceWindow()
