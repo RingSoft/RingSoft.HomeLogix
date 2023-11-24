@@ -8,4 +8,8 @@
     <PackageReference Include="RingSoft.App.Library" Version="7.23.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbLookup.EfCore\RingSoft.DbLookup.EfCore.csproj" />
+  </ItemGroup>
+
 </Project>

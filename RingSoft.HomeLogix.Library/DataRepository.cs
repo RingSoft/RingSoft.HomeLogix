@@ -122,7 +122,7 @@ namespace RingSoft.HomeLogix.Library
             return AppGlobals.GetNewDbContext();
         }
 
-        public DbLookup.IDbContext GetDataContext(DbDataProcessor dataProcessor)
+        public override DbLookup.IDbContext GetDataContext(DbDataProcessor dataProcessor)
         {
             var platform = DbPlatforms.Sqlite;
 

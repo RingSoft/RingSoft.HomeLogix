@@ -78,6 +78,7 @@ namespace RingSoft.HomeLogix.Library
 
         public static async void Initialize()
         {
+            DataRepository = new DataRepository();
             InitializeLookupContext();
             AppSplashProgress?.Invoke(null, new AppProgressArgs("Initializing Database Structure."));
             SystemGlobals.ValidateDeletedData = false;
@@ -152,7 +153,6 @@ namespace RingSoft.HomeLogix.Library
 
         public static string LoginToHousehold(Household household)
         {
-            DataRepository = new DataRepository();
             DataRepository.Initialize();
             AppSplashProgress?.Invoke(null, new AppProgressArgs($"Migrating the {household.Name} Database."));
             DbPlatform = (DbPlatforms) household.Platform;
