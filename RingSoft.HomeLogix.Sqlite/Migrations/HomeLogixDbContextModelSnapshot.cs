@@ -56,7 +56,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdvancedFinds");
+                    b.ToTable("AdvancedFinds", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
@@ -105,7 +105,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("AdvancedFindId", "ColumnId");
 
-                    b.ToTable("AdvancedFindColumns");
+                    b.ToTable("AdvancedFindColumns", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindFilter", b =>
@@ -175,7 +175,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("SearchForAdvancedFindId");
 
-                    b.ToTable("AdvancedFindFilters");
+                    b.ToTable("AdvancedFindFilters", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.RecordLocking.RecordLock", b =>
@@ -197,7 +197,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("Table", "PrimaryKey");
 
-                    b.ToTable("RecordLocks");
+                    b.ToTable("RecordLocks", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccount", b =>
@@ -246,7 +246,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BankAccounts");
+                    b.ToTable("BankAccounts", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountPeriodHistory", b =>
@@ -268,7 +268,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("BankAccountId", "PeriodType", "PeriodEndingDate");
 
-                    b.ToTable("BankAccountPeriodHistory");
+                    b.ToTable("BankAccountPeriodHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", b =>
@@ -323,7 +323,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("BudgetItemId");
 
-                    b.ToTable("BankAccountRegisterItems");
+                    b.ToTable("BankAccountRegisterItems", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItemAmountDetail", b =>
@@ -351,7 +351,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("BankAccountRegisterItemAmountDetails");
+                    b.ToTable("BankAccountRegisterItemAmountDetails", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankTransaction", b =>
@@ -405,7 +405,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("BankAccountRegisterItemAmountDetailRegisterId", "BankAccountRegisterItemAmountDetailDetailId");
 
-                    b.ToTable("BankTransactions");
+                    b.ToTable("BankTransactions", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankTransactionBudget", b =>
@@ -429,7 +429,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("BudgetItemId");
 
-                    b.ToTable("BankTransactionBudget");
+                    b.ToTable("BankTransactionBudget", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", b =>
@@ -488,7 +488,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("TransferToBankAccountId");
 
-                    b.ToTable("BudgetItems");
+                    b.ToTable("BudgetItems", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", b =>
@@ -507,7 +507,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BudgetItemSources");
+                    b.ToTable("BudgetItemSources", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetPeriodHistory", b =>
@@ -529,7 +529,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("BudgetItemId", "PeriodType", "PeriodEndingDate");
 
-                    b.ToTable("BudgetPeriodHistory");
+                    b.ToTable("BudgetPeriodHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.History", b =>
@@ -575,7 +575,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("TransferToBankAccountId");
 
-                    b.ToTable("History");
+                    b.ToTable("History", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.MainBudget", b =>
@@ -594,7 +594,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("BudgetItemId");
 
-                    b.ToTable("MainBudget");
+                    b.ToTable("MainBudget", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.QifMap", b =>
@@ -619,7 +619,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("QifMaps");
+                    b.ToTable("QifMaps", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.SourceHistory", b =>
@@ -647,7 +647,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("SourceHistory");
+                    b.ToTable("SourceHistory", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.SystemMaster", b =>
@@ -666,7 +666,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("HouseholdName");
 
-                    b.ToTable("SystemMaster");
+                    b.ToTable("SystemMaster", (string)null);
                 });
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFindColumn", b =>
