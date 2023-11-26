@@ -113,7 +113,7 @@ namespace RingSoft.HomeLogix.Library
         bool HistoryExists(int budgetId, DateTime date);
     }
 
-    public class DataRepository : SystemDataRepositoryBase, IDataRepository
+    public class DataRepository : SystemDataRepository, IDataRepository
     {
         public DataRepository()
         {

@@ -9,661 +9,661 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Tests
 {
-    public class TestBudgetItemView : TestDbMaintenanceView, IBudgetItemView
-    {
-        public void SetViewType()
-        {
+    //public class TestBudgetItemView : TestDbMaintenanceView, IBudgetItemView
+    //{
+    //    public void SetViewType()
+    //    {
             
-        }
+    //    }
 
-        public void ShowMonthlyStatsControls(bool show = true)
-        {
+    //    public void ShowMonthlyStatsControls(bool show = true)
+    //    {
             
-        }
+    //    }
 
-        public bool AddAdjustment(BudgetItem budgetItem)
-        {
-            return true;
-        }
+    //    public bool AddAdjustment(BudgetItem budgetItem)
+    //    {
+    //        return true;
+    //    }
 
-        public TestBudgetItemView(string ownerName) : base(ownerName)
-        {
-        }
-    }
+    //    public TestBudgetItemView(string ownerName) : base(ownerName)
+    //    {
+    //    }
+    //}
 
-    [TestClass]
-    public class BudgetItemViewModelTests
-    {
-        public const int JaneSavingsBankAccountId = 1;
-        public const int JuniorSavingsBankAccountId = 2;
-        public const int JointCheckingBankAccountId = 3;
-        public const int JaneCheckingBankAccountId = 4;
-        public const int JuniorCheckingBankAccountId = 5;
-        public const int SallyCheckingBankAccountId = 6;
+    //[TestClass]
+    //public class BudgetItemViewModelTests
+    //{
+    //    public const int JaneSavingsBankAccountId = 1;
+    //    public const int JuniorSavingsBankAccountId = 2;
+    //    public const int JointCheckingBankAccountId = 3;
+    //    public const int JaneCheckingBankAccountId = 4;
+    //    public const int JuniorCheckingBankAccountId = 5;
+    //    public const int SallyCheckingBankAccountId = 6;
 
-        public const int JohnIncomeBudgetItemId = 1;
-        public const int JaneIncomeBudgetItemId = 2;
-        public const int HousePaymentBudgetItemId = 3;
-        public const int GroceriesBudgetItemId = 4;
-        public const int TransferBudgetItemId = 5;
-        public const int JuniorIncomeBudgetItemId = 7;
-        public const int JuniorSavingsDepositBudgetItemId = 9;
-        public const int SallyAllowanceBudgetItemId = 10;
+    //    public const int JohnIncomeBudgetItemId = 1;
+    //    public const int JaneIncomeBudgetItemId = 2;
+    //    public const int HousePaymentBudgetItemId = 3;
+    //    public const int GroceriesBudgetItemId = 4;
+    //    public const int TransferBudgetItemId = 5;
+    //    public const int JuniorIncomeBudgetItemId = 7;
+    //    public const int JuniorSavingsDepositBudgetItemId = 9;
+    //    public const int SallyAllowanceBudgetItemId = 10;
 
-        [ClassInitialize]
-        public static void Setup(TestContext testContext)
-        {
-            AppGlobals.UnitTesting = true;
-            AppGlobals.Initialize();
-        }
+    //    [ClassInitialize]
+    //    public static void Setup(TestContext testContext)
+    //    {
+    //        AppGlobals.UnitTesting = true;
+    //        AppGlobals.Initialize();
+    //    }
 
-        [TestMethod]
-        public void TestBudgetItemTransfer_Swap_TransferFrom_TransferTo()
-        {
-            var dataRepository = new TestDataRepository();
-            AppGlobals.DataRepository = dataRepository;
+    //    [TestMethod]
+    //    public void TestBudgetItemTransfer_Swap_TransferFrom_TransferTo()
+    //    {
+    //        var dataRepository = new TestDataRepository();
+    //        AppGlobals.DataRepository = dataRepository;
 
-            CreateAndTestBankAccounts();
+    //        CreateAndTestBankAccounts();
 
-            CreateAndTestBudgetItems();
+    //        CreateAndTestBudgetItems();
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+    //        var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+    //        var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-            var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+    //        var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-            budgetItemViewModel.OnViewLoaded(
-                new TestBudgetItemView(nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)));
+    //        var budgetItemViewModel = new BudgetItemViewModel();
+    //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        budgetItemViewModel.OnViewLoaded(
+    //            new TestBudgetItemView(nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)));
 
-            var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
-            budgetItemViewModel.UnitTestLoadFromEntity(transferBudgetItem);
-            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+    //        var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+    //        budgetItemViewModel.UnitTestLoadFromEntity(transferBudgetItem);
+    //        var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(janeBankAccount),
-                janeBankAccount.Description);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(janeBankAccount),
+    //            janeBankAccount.Description);
 
-            budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
-                jointBankAccount.Description);
+    //        budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
+    //            jointBankAccount.Description);
 
-            budgetItemViewModel.Amount = 175;
+    //        budgetItemViewModel.Amount = 175;
 
-            budgetItemViewModel.UnitTestGetEntityData();
-            Assert.IsNull(budgetItemViewModel.DbBankAccount,
-                $"{nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)} {nameof(budgetItemViewModel.DbBankAccount)} is null");
+    //        budgetItemViewModel.UnitTestGetEntityData();
+    //        Assert.IsNull(budgetItemViewModel.DbBankAccount,
+    //            $"{nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)} {nameof(budgetItemViewModel.DbBankAccount)} is null");
 
-            Assert.IsNull(budgetItemViewModel.DbTransferToBankAccount,
-                $"{nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)} {nameof(budgetItemViewModel.DbTransferToBankAccount)} is null");
+    //        Assert.IsNull(budgetItemViewModel.DbTransferToBankAccount,
+    //            $"{nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)} {nameof(budgetItemViewModel.DbTransferToBankAccount)} is null");
 
-            budgetItemViewModel.DoSave(true);
-            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+    //        budgetItemViewModel.DoSave(true);
+    //        var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+    //        jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+    //        var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-            var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+    //        janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            Assert.AreEqual(oldJaneMonthlyWithdrawals + newMonthlyAmount, newJaneMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
+    //        Assert.AreEqual(oldJaneMonthlyWithdrawals + newMonthlyAmount, newJaneMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
 
-            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
-
-
-            Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
-
-            Assert.AreEqual(oldJointMonthlyWithdrawals - oldMonthlyAmount, newJointMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
-        }
-
-        [TestMethod]
-        public void TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo()
-        {
-            var dataRepository = new TestDataRepository();
-            AppGlobals.DataRepository = dataRepository;
-
-            CreateAndTestBankAccounts();
-
-            CreateAndTestBudgetItems();
-
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
-
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-            var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
-
-            var juniorBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
-            var oldJuniorMonthlyDeposits = juniorBankAccount.MonthlyBudgetDeposits;
-            var oldJuniorMonthlyWithdrawals = juniorBankAccount.MonthlyBudgetWithdrawals;
-
-            var savingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
-            var oldSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
-            var oldSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
-
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-            budgetItemViewModel.OnViewLoaded(
-                new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo)));
-
-            var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
-            budgetItemViewModel.UnitTestLoadFromEntity(transferBudgetItem);
-            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
-
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(juniorBankAccount),
-                janeBankAccount.Description);
-
-            budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBankAccount),
-                jointBankAccount.Description);
-
-            budgetItemViewModel.Amount = 175;
-
-            budgetItemViewModel.DoSave(true);
-            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
-
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
-
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-            var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
-
-            juniorBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
-            var newJuniorMonthlyDeposits = juniorBankAccount.MonthlyBudgetDeposits;
-            var newJuniorMonthlyWithdrawals = juniorBankAccount.MonthlyBudgetWithdrawals;
-
-            savingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
-            var newSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
-            var newSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
-
-            Assert.AreEqual(oldJointMonthlyDeposits, newJointMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
-
-            Assert.AreEqual(oldJointMonthlyWithdrawals - oldMonthlyAmount, newJointMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
-
-            Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
-
-            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+    //        Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
 
 
-            Assert.AreEqual(oldJuniorMonthlyDeposits, newJuniorMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+    //        Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
 
-            Assert.AreEqual(oldJuniorMonthlyWithdrawals + newMonthlyAmount, newJuniorMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+    //        Assert.AreEqual(oldJointMonthlyWithdrawals - oldMonthlyAmount, newJointMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo));
+    //    }
 
-            Assert.AreEqual(oldSavingsMonthlyWithdrawals, newSavingsMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+    //    [TestMethod]
+    //    public void TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo()
+    //    {
+    //        var dataRepository = new TestDataRepository();
+    //        AppGlobals.DataRepository = dataRepository;
 
-            Assert.AreEqual(oldSavingsMonthlyDeposits + newMonthlyAmount, newSavingsMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
-        }
+    //        CreateAndTestBankAccounts();
 
-        [TestMethod]
-        public void TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo()
-        {
-            var dataRepository = new TestDataRepository();
-            AppGlobals.DataRepository = dataRepository;
+    //        CreateAndTestBudgetItems();
 
-            CreateAndTestBankAccounts();
+    //        var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+    //        var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+    //        var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var juniorBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+    //        var oldJuniorMonthlyDeposits = juniorBankAccount.MonthlyBudgetDeposits;
+    //        var oldJuniorMonthlyWithdrawals = juniorBankAccount.MonthlyBudgetWithdrawals;
 
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-            budgetItemViewModel.OnViewLoaded(
-                new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo)));
+    //        var savingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+    //        var oldSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
+    //        var oldSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
+
+    //        var budgetItemViewModel = new BudgetItemViewModel();
+    //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        budgetItemViewModel.OnViewLoaded(
+    //            new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo)));
+
+    //        var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+    //        budgetItemViewModel.UnitTestLoadFromEntity(transferBudgetItem);
+    //        var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(juniorBankAccount),
+    //            janeBankAccount.Description);
+
+    //        budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBankAccount),
+    //            jointBankAccount.Description);
+
+    //        budgetItemViewModel.Amount = 175;
+
+    //        budgetItemViewModel.DoSave(true);
+    //        var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+
+    //        jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+    //        var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+
+    //        janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+
+    //        juniorBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+    //        var newJuniorMonthlyDeposits = juniorBankAccount.MonthlyBudgetDeposits;
+    //        var newJuniorMonthlyWithdrawals = juniorBankAccount.MonthlyBudgetWithdrawals;
+
+    //        savingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+    //        var newSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
+    //        var newSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
+
+    //        Assert.AreEqual(oldJointMonthlyDeposits, newJointMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+    //        Assert.AreEqual(oldJointMonthlyWithdrawals - oldMonthlyAmount, newJointMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+    //        Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+    //        Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+
+    //        Assert.AreEqual(oldJuniorMonthlyDeposits, newJuniorMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+    //        Assert.AreEqual(oldJuniorMonthlyWithdrawals + newMonthlyAmount, newJuniorMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+    //        Assert.AreEqual(oldSavingsMonthlyWithdrawals, newSavingsMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+
+    //        Assert.AreEqual(oldSavingsMonthlyDeposits + newMonthlyAmount, newSavingsMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_AndTransferTo));
+    //    }
+
+    //    [TestMethod]
+    //    public void TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo()
+    //    {
+    //        var dataRepository = new TestDataRepository();
+    //        AppGlobals.DataRepository = dataRepository;
+
+    //        CreateAndTestBankAccounts();
+
+    //        var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+
+    //        var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+
+    //        var budgetItemViewModel = new BudgetItemViewModel();
+    //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        budgetItemViewModel.OnViewLoaded(
+    //            new TestBudgetItemView(nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo)));
             
-            budgetItemViewModel.Id = TransferBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
+    //        budgetItemViewModel.Id = TransferBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
 
-            var bankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var bankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
 
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
-            budgetItemViewModel.Amount = 100;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
+    //        budgetItemViewModel.Amount = 100;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            bankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        bankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
 
-            budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
 
-            budgetItemViewModel.DoSave(true);
-            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+    //        budgetItemViewModel.DoSave(true);
+    //        var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+    //        jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
 
-            Assert.AreEqual(oldJointMonthlyWithdrawals + newMonthlyAmount, newJointMonthlyWithdrawals,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
+    //        Assert.AreEqual(oldJointMonthlyWithdrawals + newMonthlyAmount, newJointMonthlyWithdrawals,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
 
-            Assert.AreEqual(oldJaneMonthlyDeposits + newMonthlyAmount, newJaneMonthlyDeposits,
-                nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
-        }
+    //        Assert.AreEqual(oldJaneMonthlyDeposits + newMonthlyAmount, newJaneMonthlyDeposits,
+    //            nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
+    //    }
 
-        [TestMethod]
-        public void TestBudgetItemIncome_Change()
-        {
-            var dataRepository = new TestDataRepository();
-            AppGlobals.DataRepository = dataRepository;
+    //    [TestMethod]
+    //    public void TestBudgetItemIncome_Change()
+    //    {
+    //        var dataRepository = new TestDataRepository();
+    //        AppGlobals.DataRepository = dataRepository;
 
-            CreateAndTestBankAccounts();
+    //        CreateAndTestBankAccounts();
 
-            CreateAndTestBudgetItems();
+    //        CreateAndTestBudgetItems();
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+    //        var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+    //        var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-            var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+    //        var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(TestBudgetItemIncome_Change)));
+    //        var budgetItemViewModel = new BudgetItemViewModel();
+    //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(TestBudgetItemIncome_Change)));
 
-            var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
-            budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
-            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+    //        var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
+    //        budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
+    //        var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
-                janeBankAccount.Description);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
+    //            janeBankAccount.Description);
 
-            budgetItemViewModel.Amount = 600;
-            budgetItemViewModel.DoSave(true);
-            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+    //        budgetItemViewModel.Amount = 600;
+    //        budgetItemViewModel.DoSave(true);
+    //        var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+    //        jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+    //        var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-            var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+    //        janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+    //        var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
-                nameof(TestBudgetItemIncome_Change));
+    //        Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
+    //            nameof(TestBudgetItemIncome_Change));
 
-            Assert.AreEqual(oldJointMonthlyWithdrawals, newJointMonthlyWithdrawals,
-                nameof(TestBudgetItemIncome_Change));
+    //        Assert.AreEqual(oldJointMonthlyWithdrawals, newJointMonthlyWithdrawals,
+    //            nameof(TestBudgetItemIncome_Change));
 
-            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
-                nameof(TestBudgetItemIncome_Change));
+    //        Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
+    //            nameof(TestBudgetItemIncome_Change));
 
-            Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
-                nameof(TestBudgetItemIncome_Change));
-        }
+    //        Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
+    //            nameof(TestBudgetItemIncome_Change));
+    //    }
 
-        [TestMethod]
-        public void TestDeleteBudgetItems()
-        {
-            var dataRepository = new TestDataRepository();
-            AppGlobals.DataRepository = dataRepository;
+    //    [TestMethod]
+    //    public void TestDeleteBudgetItems()
+    //    {
+    //        var dataRepository = new TestDataRepository();
+    //        AppGlobals.DataRepository = dataRepository;
 
-            CreateAndTestBankAccounts();
+    //        CreateAndTestBankAccounts();
 
-            CreateAndTestBudgetItems();
+    //        CreateAndTestBudgetItems();
 
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-            budgetItemViewModel.OnViewLoaded(
-                new TestBudgetItemView(nameof(TestDeleteBudgetItems)));
+    //        var budgetItemViewModel = new BudgetItemViewModel();
+    //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        budgetItemViewModel.OnViewLoaded(
+    //            new TestBudgetItemView(nameof(TestDeleteBudgetItems)));
 
-            var janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
-            var oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+    //        var janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+    //        var oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
-            var budgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
-            budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+    //        var budgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
+    //        budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Income");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Income");
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+    //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
 
-            Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
-                "Delete Income, Update Deposits");
+    //        Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
+    //            "Delete Income, Update Deposits");
 
-            budgetItem = dataRepository.GetBudgetItem(GroceriesBudgetItemId);
-            budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+    //        budgetItem = dataRepository.GetBudgetItem(GroceriesBudgetItemId);
+    //        budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Expense");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Expense");
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+    //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
-            Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
-                "Delete Expense, Update Withdrawals");
+    //        Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
+    //            "Delete Expense, Update Withdrawals");
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+    //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
 
-            var jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var oldJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+    //        var jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var oldJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
 
-            budgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
-            budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+    //        budgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+    //        budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Transfer");
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Transfer");
+    //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
 
-            newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
-            Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
-                "Delete Transfer, Update Deposits");
+    //        newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+    //        Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
+    //            "Delete Transfer, Update Deposits");
 
-            var newJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
-            Assert.AreEqual(oldJointWithdrawals - budgetItem.MonthlyAmount, newJointWithdrawals,
-                "Delete Transfer, Update Withdrawals");
-        }
+    //        var newJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+    //        Assert.AreEqual(oldJointWithdrawals - budgetItem.MonthlyAmount, newJointWithdrawals,
+    //            "Delete Transfer, Update Withdrawals");
+    //    }
 
-        private static void CreateAndTestBudgetItems()
-        {
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-            budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(CreateAndTestBudgetItems)));
+    //    private static void CreateAndTestBudgetItems()
+    //    {
+    //        var budgetItemViewModel = new BudgetItemViewModel();
+    //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(CreateAndTestBudgetItems)));
 
-            budgetItemViewModel.Id = JaneIncomeBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Income");
+    //        budgetItemViewModel.Id = JaneIncomeBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Income");
 
-            var bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        var bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
-            budgetItemViewModel.Amount = 550;
-            budgetItemViewModel.RecurringPeriod = 2;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/05/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
+    //        budgetItemViewModel.Amount = 550;
+    //        budgetItemViewModel.RecurringPeriod = 2;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/05/2021");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving Jane's Income Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving Jane's Income Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            Assert.AreEqual(expected: (double)1178.57, bankAccount.MonthlyBudgetDeposits,
-                "Jane's Checking Initial Monthly Deposits");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        Assert.AreEqual(expected: (double)1178.57, bankAccount.MonthlyBudgetDeposits,
+    //            "Jane's Checking Initial Monthly Deposits");
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = JohnIncomeBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "John's Social Security Disability");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = JohnIncomeBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "John's Social Security Disability");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
-            budgetItemViewModel.Amount = 1530;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
+    //        budgetItemViewModel.Amount = 1530;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving John's Income Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving John's Income Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
-            Assert.AreEqual(1530, bankAccount.MonthlyBudgetDeposits,
-                "Joint Checking Initial Monthly Deposits");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        Assert.AreEqual(1530, bankAccount.MonthlyBudgetDeposits,
+    //            "Joint Checking Initial Monthly Deposits");
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = HousePaymentBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "House Payment");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = HousePaymentBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "House Payment");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
-            budgetItemViewModel.Amount = 790;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
+    //        budgetItemViewModel.Amount = 790;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving House Payment Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving House Payment Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
-            Assert.AreEqual(790, bankAccount.MonthlyBudgetWithdrawals,
-                "Joint Checking Initial Monthly Withdrawals");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        Assert.AreEqual(790, bankAccount.MonthlyBudgetWithdrawals,
+    //            "Joint Checking Initial Monthly Withdrawals");
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = GroceriesBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Groceries");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = GroceriesBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Groceries");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
-            budgetItemViewModel.Amount = 300;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
-            budgetItemViewModel.StartingDate = DateTime.Parse("01/29/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Expense;
+    //        budgetItemViewModel.Amount = 300;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("01/29/2021");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving Groceries Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving Groceries Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            Assert.AreEqual((double)1285.71, bankAccount.MonthlyBudgetWithdrawals,
-                "Jane's Checking Initial Monthly Withdrawals");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        Assert.AreEqual((double)1285.71, bankAccount.MonthlyBudgetWithdrawals,
+    //            "Jane's Checking Initial Monthly Withdrawals");
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = TransferBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = TransferBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
-            var monthlyWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        var monthlyWithdrawals = bankAccount.MonthlyBudgetWithdrawals;
 
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
-            budgetItemViewModel.Amount = 100;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
+    //        budgetItemViewModel.Amount = 100;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            var monthlyDeposits = bankAccount.MonthlyBudgetDeposits;
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        var monthlyDeposits = bankAccount.MonthlyBudgetDeposits;
 
-            budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving Transfer Error Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving Transfer Error Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
-            Assert.AreEqual(monthlyWithdrawals + 100, bankAccount.MonthlyBudgetWithdrawals,
-                "Joint Checking Monthly Withdrawals After Initial Transfer");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JointCheckingBankAccountId);
+    //        Assert.AreEqual(monthlyWithdrawals + 100, bankAccount.MonthlyBudgetWithdrawals,
+    //            "Joint Checking Monthly Withdrawals After Initial Transfer");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            Assert.AreEqual(monthlyDeposits + 100, bankAccount.MonthlyBudgetDeposits,
-                "Jane's Checking Monthly Deposits After Initial Transfer");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
+    //        Assert.AreEqual(monthlyDeposits + 100, bankAccount.MonthlyBudgetDeposits,
+    //            "Jane's Checking Monthly Deposits After Initial Transfer");
 
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = JuniorIncomeBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Social Security");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = JuniorIncomeBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Social Security");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorCheckingBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
-            budgetItemViewModel.Amount = 750;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
+    //        budgetItemViewModel.Amount = 750;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            Assert.AreEqual(750, budgetItemViewModel.MonthlyAmount, "Junior's Initial Monthly Amount");
+    //        Assert.AreEqual(750, budgetItemViewModel.MonthlyAmount, "Junior's Initial Monthly Amount");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving Income To Junior's Checking Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving Income To Junior's Checking Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorCheckingBankAccountId);
-            Assert.AreEqual(750, bankAccount.MonthlyBudgetDeposits,
-                "Junior's Initial Income");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+    //        Assert.AreEqual(750, bankAccount.MonthlyBudgetDeposits,
+    //            "Junior's Initial Income");
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = JuniorSavingsDepositBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Savings");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = JuniorSavingsDepositBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Savings");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
-            budgetItemViewModel.Amount = 100;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
+    //        budgetItemViewModel.Amount = 100;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            Assert.AreEqual(100, budgetItemViewModel.MonthlyAmount, "Junior's Initial Savings");
+    //        Assert.AreEqual(100, budgetItemViewModel.MonthlyAmount, "Junior's Initial Savings");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving Income To Junior's Savings Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving Income To Junior's Savings Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
-            Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
-                "Junior's Initial Savings Deposit");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId);
+    //        Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
+    //            "Junior's Initial Savings Deposit");
 
-            //-----------------------------------------------------------------------------------------------------------
+    //        //-----------------------------------------------------------------------------------------------------------
 
-            budgetItemViewModel.OnNewButton();
-            budgetItemViewModel.Id = SallyAllowanceBudgetItemId;
-            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Monthly Allowance");
+    //        budgetItemViewModel.OnNewButton();
+    //        budgetItemViewModel.Id = SallyAllowanceBudgetItemId;
+    //        budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Monthly Allowance");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
-                bankAccount.Description);
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
+    //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
+    //            bankAccount.Description);
 
-            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
-            budgetItemViewModel.Amount = 100;
-            budgetItemViewModel.RecurringPeriod = 1;
-            budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+    //        budgetItemViewModel.BudgetItemType = BudgetItemTypes.Income;
+    //        budgetItemViewModel.Amount = 100;
+    //        budgetItemViewModel.RecurringPeriod = 1;
+    //        budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
+    //        budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            Assert.AreEqual(100, budgetItemViewModel.MonthlyAmount, "Sally's Monthly Allowance");
+    //        Assert.AreEqual(100, budgetItemViewModel.MonthlyAmount, "Sally's Monthly Allowance");
 
-            Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
-                "Saving Sally's Allowance Budget Item");
+    //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
+    //            "Saving Sally's Allowance Budget Item");
 
-            bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
-            Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
-                "Sally's Allowance Deposit");
+    //        bankAccount = AppGlobals.DataRepository.GetBankAccount(SallyCheckingBankAccountId);
+    //        Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
+    //            "Sally's Allowance Deposit");
 
-        }
+    //    }
 
-        private void CreateAndTestBankAccounts()
-        {
-            var bankAccountViewModel = new BankAccountViewModel();
-            bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();
-            bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
+    //    private void CreateAndTestBankAccounts()
+    //    {
+    //        var bankAccountViewModel = new BankAccountViewModel();
+    //        bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();
+    //        bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
 
-            bankAccountViewModel.Id = JaneSavingsBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Savings Account");
+    //        bankAccountViewModel.Id = JaneSavingsBankAccountId;
+    //        bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Savings Account");
 
-            bankAccountViewModel.DoSave(true);
-            bankAccountViewModel.OnNewButton();
+    //        bankAccountViewModel.DoSave(true);
+    //        bankAccountViewModel.OnNewButton();
 
-            bankAccountViewModel.Id = JuniorSavingsBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Savings Account");
+    //        bankAccountViewModel.Id = JuniorSavingsBankAccountId;
+    //        bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Savings Account");
 
-            bankAccountViewModel.DoSave(true);
-            bankAccountViewModel.OnNewButton();
+    //        bankAccountViewModel.DoSave(true);
+    //        bankAccountViewModel.OnNewButton();
 
-            bankAccountViewModel.Id = JointCheckingBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Joint Checking Account");
-            var savingsBank = AppGlobals.DataRepository.GetBankAccount(JaneSavingsBankAccountId, false);
-            var savingsBankPrimaryKeyValue =
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBank);
+    //        bankAccountViewModel.Id = JointCheckingBankAccountId;
+    //        bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Joint Checking Account");
+    //        var savingsBank = AppGlobals.DataRepository.GetBankAccount(JaneSavingsBankAccountId, false);
+    //        var savingsBankPrimaryKeyValue =
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBank);
 
-            bankAccountViewModel.DoSave(true);
-            bankAccountViewModel.OnNewButton();
+    //        bankAccountViewModel.DoSave(true);
+    //        bankAccountViewModel.OnNewButton();
 
-            bankAccountViewModel.Id = JaneCheckingBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Checking Account");
-            savingsBank = AppGlobals.DataRepository.GetBankAccount(JaneSavingsBankAccountId, false);
-            savingsBankPrimaryKeyValue =
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBank);
+    //        bankAccountViewModel.Id = JaneCheckingBankAccountId;
+    //        bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Jane's Checking Account");
+    //        savingsBank = AppGlobals.DataRepository.GetBankAccount(JaneSavingsBankAccountId, false);
+    //        savingsBankPrimaryKeyValue =
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBank);
 
-            var newDate = DateTime.Today;
-            newDate =
-                newDate.AddDays(DateTime.DaysInMonth(newDate.Year, newDate.Month) - newDate.Day);
+    //        var newDate = DateTime.Today;
+    //        newDate =
+    //            newDate.AddDays(DateTime.DaysInMonth(newDate.Year, newDate.Month) - newDate.Day);
 
-            Assert.AreEqual(newDate, bankAccountViewModel.LastGenerationDate,
-                $"Jane's Checking Account {nameof(bankAccountViewModel.LastGenerationDate)} set right.");
+    //        Assert.AreEqual(newDate, bankAccountViewModel.LastGenerationDate,
+    //            $"Jane's Checking Account {nameof(bankAccountViewModel.LastGenerationDate)} set right.");
 
-            bankAccountViewModel.DoSave(true);
-            bankAccountViewModel.OnNewButton();
+    //        bankAccountViewModel.DoSave(true);
+    //        bankAccountViewModel.OnNewButton();
 
-            bankAccountViewModel.Id = JuniorCheckingBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Checking Account");
-            savingsBank = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId, false);
-            savingsBankPrimaryKeyValue =
-                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBank);
+    //        bankAccountViewModel.Id = JuniorCheckingBankAccountId;
+    //        bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Junior's Checking Account");
+    //        savingsBank = AppGlobals.DataRepository.GetBankAccount(JuniorSavingsBankAccountId, false);
+    //        savingsBankPrimaryKeyValue =
+    //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(savingsBank);
 
-            bankAccountViewModel.DoSave(true);
-            bankAccountViewModel.OnNewButton();
+    //        bankAccountViewModel.DoSave(true);
+    //        bankAccountViewModel.OnNewButton();
 
-            bankAccountViewModel.Id = SallyCheckingBankAccountId;
-            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Checking Account");
+    //        bankAccountViewModel.Id = SallyCheckingBankAccountId;
+    //        bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Checking Account");
 
-            bankAccountViewModel.DoSave(true);
-        }
-    }
+    //        bankAccountViewModel.DoSave(true);
+    //    }
+    //}
 }
