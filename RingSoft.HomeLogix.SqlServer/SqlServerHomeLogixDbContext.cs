@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AdvancedFind;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
-using RingSoft.DbLookup.RecordLocking;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 
@@ -81,17 +76,7 @@ namespace RingSoft.HomeLogix.SqlServer
         }
 
 
-        public DbContext GetDbContextEf()
-        {
-            return this;
-        }
-
         public override DbContextEfCore GetNewDbContextEfCore()
-        {
-            return new SqlServerHomeLogixDbContext();
-        }
-
-        public IAdvancedFindDbContextEfCore GetNewDbContext()
         {
             return new SqlServerHomeLogixDbContext();
         }

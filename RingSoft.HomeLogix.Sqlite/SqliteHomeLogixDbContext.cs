@@ -103,10 +103,6 @@ namespace RingSoft.HomeLogix.Sqlite
             return new SqliteHomeLogixDbContext();
         }
 
-        public IAdvancedFindDbContextEfCore GetNewDbContext()
-        {
-            return new SqliteHomeLogixDbContext();
-        }
         public override void SetProcessor(DbDataProcessor processor)
         {
 

@@ -19,9 +19,9 @@ namespace RingSoft.HomeLogix.Library
     public enum Relationship
     { LessThan = -1, Equals = 0, GreaterThan = 1 }
 
-    public interface IDataRepository : DbLookup.IDataRepository
+    public interface IDataRepository
     {
-        RingSoft.HomeLogix.DataAccess.IDbContext GetDataContext();
+        DataAccess.IDbContext GetDataContext();
         [CanBeNull] SystemMaster GetSystemMaster();
 
         bool SaveSystemMaster(SystemMaster systemMaster);
@@ -130,7 +130,7 @@ namespace RingSoft.HomeLogix.Library
             return AppGlobals.GetNewDbContext();
         }
 
-        public override DbLookup.IDbContext GetDataContext(DbDataProcessor dataProcessor)
+        public override IDbContext GetDataContext(DbDataProcessor dataProcessor)
         {
             var platform = DbPlatforms.Sqlite;
 
@@ -789,11 +789,6 @@ namespace RingSoft.HomeLogix.Library
             var result =
                 context.History.Any(p => p.BudgetItemId == budgetId && p.Date >= startDate && p.Date <= endDate);
             return result;
-        }
-
-        DbLookup.IDbContext DbLookup.IDataRepository.GetDataContext()
-        {
-            return GetDataContext();
         }
     }
 }
