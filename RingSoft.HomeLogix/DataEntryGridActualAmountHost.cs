@@ -54,6 +54,8 @@ namespace RingSoft.HomeLogix
                 {
                     ActualAmountCellProps.RegisterGridRow.Manager.ViewModel
                         .BankAccountView.ShowActualAmountDetailsWindow(newCellProps);
+                    ActualAmountCellProps.RegisterGridRow.ActualAmount = newCellProps.Value.GetValueOrDefault();
+                    ActualAmountCellProps.RegisterGridRow.Manager.ViewModel.CalculateTotals();
                 }
 
                 if (ActualAmountCellProps.ImportTransactionGridRow != null)

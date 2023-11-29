@@ -188,6 +188,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountRegisterGridColumns.ActualAmount:
                     var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
                     ActualAmount = (double)actualAmountCellProps.Value;
+                    Manager.ViewModel.CalculateTotals();
                     SaveToDbOnTheFly();
                     break;
                 case BankAccountRegisterGridColumns.Difference:
@@ -354,6 +355,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.Description = Description;
             registerData.Completed = Completed;
             registerData.ProjectedAmount = ProjectedAmount;
+            registerData.ActualAmount = ActualAmount.GetValueOrDefault();
             registerData.ItemDate = ItemDate;
             registerData.IsNegative = IsNegative;
             //registerData.RegisterItemType =

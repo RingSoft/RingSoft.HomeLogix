@@ -1640,6 +1640,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return balance;
             }
             var amount = registerData.ProjectedAmount;
+            if (registerData.ActualAmount > 0)
+            {
+                if (registerData.ProjectedAmount > registerData.ActualAmount)
+                {
+                    amount = registerData.ProjectedAmount - registerData.ActualAmount;
+                }
+            }
             switch (accountType)
             {
                 case BankAccountTypes.Checking:

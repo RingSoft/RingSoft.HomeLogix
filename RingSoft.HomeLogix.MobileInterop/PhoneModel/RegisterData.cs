@@ -26,6 +26,8 @@
 
         public double ProjectedAmount { get; set; }
 
+        public double ActualAmount { get; set; }
+
         public double EndingBalance { get; set; }
 
         public bool IsNegative { get; set; }
