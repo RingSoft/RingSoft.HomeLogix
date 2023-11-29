@@ -1646,6 +1646,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     amount = registerData.ProjectedAmount - registerData.ActualAmount;
                 }
+                else
+                {
+                    return balance;
+                }
             }
             switch (accountType)
             {
