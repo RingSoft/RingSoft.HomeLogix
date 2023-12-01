@@ -283,7 +283,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ProjectedAmount = Math.Abs(entity.ProjectedAmount);
             }
 
-            ActualAmount = entity.ActualAmount;
+            if (entity.ActualAmount != null) 
+            {
+                ActualAmount = Math.Abs(entity.ActualAmount.GetValueOrDefault());
+            }
+            else
+            {
+                ActualAmount = entity.ActualAmount;
+            }
             ActualAmountDetails = entity.AmountDetails.ToList();
             Completed = entity.Completed;
         }
