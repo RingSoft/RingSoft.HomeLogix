@@ -100,22 +100,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             base.Initialize();
         }
 
-        protected override QifMap PopulatePrimaryKeyControls(QifMap newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(QifMap newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            Id = newEntity.Id;
+        }
+
+        protected override QifMap GetEntityFromDb(QifMap newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var qifMap = AppGlobals.LookupContext.QifMaps.GetEntityFromPrimaryKeyValue(primaryKeyValue);
             var query = AppGlobals.DataRepository.GetDataContext().GetTable<QifMap>();
             qifMap = query.FirstOrDefault(p => p.Id == qifMap.Id);
-            if (qifMap != null)
-            {
-                Id = qifMap.Id;
-                KeyAutoFillValue =
-                    AppGlobals.LookupContext.QifMaps.GetAutoFillValue(Id.ToString());
-
-                return qifMap;
-            }
-
-            return qifMap;
-        }
+            return qifMap; }
 
         protected override void LoadFromEntity(QifMap entity)
         {

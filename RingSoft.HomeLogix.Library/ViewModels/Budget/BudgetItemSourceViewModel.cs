@@ -119,16 +119,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
 
-        protected override BudgetItemSource PopulatePrimaryKeyControls(BudgetItemSource newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(BudgetItemSource newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-            var budgetItemSource = AppGlobals.DataRepository.GetBudgetItemSource(Id);
-            KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItemSource.Name);
 
             SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
-            SourceHistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.SourceId, Conditions.Equals, Id);
+            SourceHistoryLookupDefinition
+                .FilterDefinition
+                .AddFixedFilter(p => p.SourceId, Conditions.Equals, Id);
             SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
+        }
 
+        protected override BudgetItemSource GetEntityFromDb(BudgetItemSource newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var budgetItemSource = AppGlobals.DataRepository.GetBudgetItemSource(Id);
             return budgetItemSource;
         }
 

@@ -170,15 +170,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             SelectButtonEnabled = SaveButtonEnabled = DeleteButtonEnabled = NewButtonEnabled = false;
         }
 
-        protected override BankAccountPeriodHistory
+        protected override void
             PopulatePrimaryKeyControls(BankAccountPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
         {
             _bankPeriodHistory = AppGlobals.DataRepository.GetBankPeriodHistory(newEntity.BankAccountId,
                 (PeriodHistoryTypes)newEntity.PeriodType, newEntity.PeriodEndingDate);
-
-            var bankItem = AppGlobals.DataRepository.GetBankAccount(_bankPeriodHistory.BankAccountId);
-
-            BankAccount = bankItem.Description;
 
             PeriodEndingDate = _bankPeriodHistory.PeriodEndingDate;
 
@@ -216,8 +212,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
 
-            return _bankPeriodHistory;
+        }
 
+        protected override BankAccountPeriodHistory GetEntityFromDb(BankAccountPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var bankItem = AppGlobals.DataRepository.GetBankAccount(_bankPeriodHistory.BankAccountId);
+
+            BankAccount = bankItem.Description;
+
+            return _bankPeriodHistory;
         }
 
         protected override void LoadFromEntity(BankAccountPeriodHistory entity)

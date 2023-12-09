@@ -646,25 +646,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = false;
         }
 
-        protected override BankAccount PopulatePrimaryKeyControls(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
             //var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
 
-            IQueryable<BankAccount> query = AppGlobals.DataRepository.GetDataContext().GetTable<BankAccount>();
-            query = query.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
-                    .ThenByDescending(t => t.ProjectedAmount))
-                .Include(i => i.RegisterItems)
-                .ThenInclude(ti => ti.AmountDetails)
-                .Include(i => i.RegisterItems)
-                .ThenInclude(ti => ti.BudgetItem)
-                .ThenInclude(ti => ti.TransferToBankAccount);
-            //var bankAccount = AppGlobals.DataRepository.GetEntity(query, p => p.Id == Id);
-            var bankAccount = query.FirstOrDefault(p => p.Id == Id);
-
-            KeyAutoFillValue = new AutoFillValue(primaryKeyValue, bankAccount.Description);
-
-            ViewModelInput.HistoryFilterBankAccount = bankAccount;
 
             MonthlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType, 
@@ -694,6 +680,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Conditions.Equals, Id).SetRightParenthesesCount(1);
 
             BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            
+            CompleteAll = false;
+            TypeEnabled = false;
+        }
+
+        protected override BankAccount GetEntityFromDb(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            IQueryable<BankAccount> query = AppGlobals.DataRepository.GetDataContext().GetTable<BankAccount>();
+            query = query.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
+                    .ThenByDescending(t => t.ProjectedAmount))
+                .Include(i => i.RegisterItems)
+                .ThenInclude(ti => ti.AmountDetails)
+                .Include(i => i.RegisterItems)
+                .ThenInclude(ti => ti.BudgetItem)
+                .ThenInclude(ti => ti.TransferToBankAccount);
+            //var bankAccount = AppGlobals.DataRepository.GetEntity(query, p => p.Id == Id);
+            var bankAccount = query.FirstOrDefault(p => p.Id == Id);
+
+            ViewModelInput.HistoryFilterBankAccount = bankAccount;
+
             CurrentProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
 
             if (_processCompletedRows)
@@ -704,7 +710,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CalculateTotals();
 
             //ReadOnlyMode = AppGlobals.MainViewModel.BankAccountViewModels.Any(a => a != this && a.Id == Id);
-            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled  =
+            AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
                 ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
 
             if (bankAccount.LastCompletedDate.HasValue)
@@ -716,9 +722,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastCompleteDate = new DateTime().MinDate();
             }
 
-            CompleteAll = false;
-            TypeEnabled = false;
             return bankAccount;
+
         }
 
         protected override void LoadFromEntity(BankAccount entity)

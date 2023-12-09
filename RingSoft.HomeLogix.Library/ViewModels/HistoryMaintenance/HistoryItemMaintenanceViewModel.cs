@@ -306,19 +306,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             SelectButtonEnabled = SaveButtonEnabled = DeleteButtonEnabled = NewButtonEnabled = false;
         }
 
-        protected override History PopulatePrimaryKeyControls(History newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(History newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            var historyItem = AppGlobals.DataRepository.GetHistoryItem(newEntity.Id);
             Id = newEntity.Id;
 
             //DbDataProcessor.ShowSqlStatementWindow();
             MakeFilters(ViewLookupDefinition);
 
             SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
-            SourceHistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.HistoryId, Conditions.Equals, Id);
+            SourceHistoryLookupDefinition.FilterDefinition
+                .AddFixedFilter(p => p.HistoryId, Conditions.Equals, Id);
 
             SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+        }
 
+        protected override History GetEntityFromDb(History newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            var historyItem = AppGlobals.DataRepository.GetHistoryItem(newEntity.Id);
             return historyItem;
         }
 

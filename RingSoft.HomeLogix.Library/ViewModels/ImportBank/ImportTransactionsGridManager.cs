@@ -765,6 +765,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var result = new List<ImportTransactionGridRow>();
 
             var foundMap = false;
+            if (row.Description.IsNullOrEmpty())
+            {
+                return result;
+            }
             var spacePos = row.Description.IndexOf(" ");
             var text = row.Description;
             if (spacePos > 0)

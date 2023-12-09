@@ -15,6 +15,7 @@ using System.ComponentModel;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using RingSoft.DbLookup.EfCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -601,7 +602,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BudgetItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             BudgetItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
-
+            
             RecurringTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             RecurringTypeComboBoxControlSetup.LoadFromEnum<BudgetItemRecurringTypes>();
 
@@ -615,7 +616,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
 
             //if (LookupAddViewArgs != null && LookupAddViewArgs.LookupReadOnlyMode
-            
+            ClearData();
             _loading = false;
 
             base.Initialize();
@@ -761,36 +762,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyAmountRemaining = budgetItemData.MonthlyAmountRemaining;
         }
 
-        protected override BudgetItem PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
+        protected override void PopulatePrimaryKeyControls(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
             _loading = true;
             Id = newEntity.Id;
-            IQueryable<BudgetItem> query = AppGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
-
-            query = query.Include(i => i.BankAccount)
-                .Include(i => i.TransferToBankAccount);
-
-            var budgetItem = query.FirstOrDefault(p => p.Id == Id);
-            KeyAutoFillValue = new AutoFillValue(primaryKeyValue, budgetItem.Description);
-
-            Amount = budgetItem.Amount;
-            _dbMonthlyAmount = budgetItem.MonthlyAmount;
-            DbBankAccountId = budgetItem.BankAccountId;
-            DbTransferToBankId = budgetItem.TransferToBankAccountId;
-
-            _budgetItemHistoryFilter = budgetItem;
-            ViewModelInput.HistoryFilterBudgetItem = budgetItem;
-
-            //ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
-            BudgetItemTypeEnabled = false;
-            StartingDate = budgetItem.StartingDate;
-            if (StartingDate != null)
-                _dbStartDate = StartingDate.Value;
-
-            if (StartingDate == null)
-            {
-                DateControlsEnabled = false;
-            }
 
             MonthlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType,
@@ -817,6 +792,37 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _loading = false;
             _registerAffected = false;
+        }
+
+        protected override BudgetItem GetEntityFromDb(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
+        {
+            IQueryable<BudgetItem> query = AppGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
+            query = query.Include(i => i.BankAccount)
+                .Include(i => i.TransferToBankAccount);
+
+            var budgetItem = query.FirstOrDefault(p => p.Id == Id);
+
+            Amount = budgetItem.Amount;
+
+            //Amount = budgetItem.Amount;
+            _dbMonthlyAmount = budgetItem.MonthlyAmount;
+            DbBankAccountId = budgetItem.BankAccountId;
+            DbTransferToBankId = budgetItem.TransferToBankAccountId;
+
+            _budgetItemHistoryFilter = budgetItem;
+            ViewModelInput.HistoryFilterBudgetItem = budgetItem;
+
+            //ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
+            BudgetItemTypeEnabled = false;
+            StartingDate = budgetItem.StartingDate;
+            if (StartingDate != null)
+                _dbStartDate = StartingDate.Value;
+
+            if (StartingDate == null)
+            {
+                DateControlsEnabled = false;
+            }
+
             return budgetItem;
         }
 
