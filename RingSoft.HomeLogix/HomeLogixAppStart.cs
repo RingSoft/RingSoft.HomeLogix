@@ -106,7 +106,7 @@ namespace RingSoft.HomeLogix
             }
         }
 
-        public void ShowAddOnTheFlyWindow(DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
+        public void ShowAddOnTheFlyWindow(RingSoft.App.Controls.DbMaintenanceWindow maintenanceWindow, LookupAddViewArgs e)
         {
             Window ownWindow = null;
             if (e.OwnerWindow is Window ownerWindow)

@@ -10,7 +10,7 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
     /// <summary>
     /// Interaction logic for BankPeriodHistoryWindow.xaml
     /// </summary>
-    public partial class BankPeriodHistoryWindow : DbMaintenanceWindow
+    public partial class BankPeriodHistoryWindow
     {
         public BankPeriodHistoryWindow()
         {

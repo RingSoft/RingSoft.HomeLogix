@@ -8,7 +8,7 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
     /// <summary>
     /// Interaction logic for BudgetPeriodHistoryWindow.xaml
     /// </summary>
-    public partial class BudgetPeriodHistoryWindow : DbMaintenanceWindow
+    public partial class BudgetPeriodHistoryWindow
     {
         public BudgetPeriodHistoryWindow()
         {

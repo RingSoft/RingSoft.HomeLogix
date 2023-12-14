@@ -20,7 +20,7 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
     /// <summary>
     /// Interaction logic for HistoryItemMaintenanceWindow.xaml
     /// </summary>
-    public partial class HistoryItemMaintenanceWindow : DbMaintenanceWindow
+    public partial class HistoryItemMaintenanceWindow
     {
         public HistoryItemMaintenanceWindow()
         {
