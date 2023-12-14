@@ -19,9 +19,7 @@ namespace RingSoft.HomeLogix
             : base(application, new MainWindow())
         {
             AppGlobals.InitSettings();
-
-            LookupControlsGlobals.LookupControlContentTemplateFactory =
-                new AppLookupContentTemplateFactory(application);
+            var appLookupContentTemplateFactory = new AppLookupContentTemplateFactory(application);
         }
 
         protected override void CheckVersion()
@@ -43,8 +41,7 @@ namespace RingSoft.HomeLogix
 
             AppGlobals.Initialize();
 
-            WPFControlsGlobals.DataEntryGridHostFactory = new HomeLogixGridEditHostFactory();
-
+            var homeLogixGridEditHostFactory = new HomeLogixGridEditHostFactory();
             AppGlobals.LookupContext.LookupAddView += LookupContext_LookupAddView;
 
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
