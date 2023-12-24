@@ -1065,16 +1065,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         var existingDbTransferBankAccount =
                         AppGlobals.DataRepository.GetBankAccount(DbTransferToBankId.Value);
 
-                        if (StartingDate == null)
+                        var regItems = existingDbTransferBankAccount.RegisterItems;
+                        if (regItems != null)
                         {
-                            _bankAccountRegisterItemsToDelete.AddRange(existingDbTransferBankAccount.RegisterItems
-                                .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType == BankAccountRegisterItemTypes.BudgetItem));
+                            if (StartingDate == null)
+                            {
+                                _bankAccountRegisterItemsToDelete.AddRange(regItems
+                                    .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType ==
+                                        BankAccountRegisterItemTypes.BudgetItem));
 
-                        }
-                        else
-                        {
-                            _bankAccountRegisterItemsToDelete.AddRange(existingDbTransferBankAccount.RegisterItems
-                                .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate));
+                            }
+                            else
+                            {
+                                _bankAccountRegisterItemsToDelete.AddRange(regItems
+                                    .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate));
+                            }
                         }
                     }
                     foreach (var registerItem in _bankAccountRegisterItemsToDelete)

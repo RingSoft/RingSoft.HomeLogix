@@ -398,6 +398,7 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankAccounts.GetFieldDefinition(p => p.LastCompletedDate).HasDescription("Last Transaction Date");
 
+            BankAccountRegisterItems.SetHeaderEntity<BankAccount>();
             BankAccountRegisterItems.GetFieldDefinition(p => p.BudgetItemId).CanSetNull(false);
 
             BankAccounts.GetFieldDefinition(p => p.Notes).IsMemo();
