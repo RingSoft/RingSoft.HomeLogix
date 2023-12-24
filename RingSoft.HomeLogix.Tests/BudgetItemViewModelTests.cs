@@ -55,12 +55,9 @@ namespace RingSoft.HomeLogix.Tests
         public static TestGlobals<BudgetItemViewModel, BudgetView> Globals { get; } =
             new TestGlobals<BudgetItemViewModel, BudgetView>();
 
-        public static DataRepository DataRepository { get; private set; }
-
         [ClassInitialize]
         public static void Setup(TestContext testContext)
         {
-            DataRepository = new DataRepository();
             Globals.Initialize();
         }
 
