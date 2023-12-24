@@ -157,11 +157,12 @@ namespace RingSoft.HomeLogix.Library
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
-            var context = AppGlobals.GetNewDbContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccount>();
 
             if (getRelatedEntities)
             {
-                return context.BankAccounts.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
+                return table.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
                         .ThenByDescending(t => t.ProjectedAmount))
                     .Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.AmountDetails)
@@ -171,13 +172,14 @@ namespace RingSoft.HomeLogix.Library
                     .FirstOrDefault(f => f.Id == bankAccountId);
             }
 
-            return context.BankAccounts.FirstOrDefault(f => f.Id == bankAccountId);
+            return table.FirstOrDefault(f => f.Id == bankAccountId);
         }
 
         public IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BankAccountRegisterItems.OrderBy(o => o.ItemDate)
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountRegisterItem>();
+            return table.OrderBy(o => o.ItemDate)
                 .ThenByDescending(t => t.ProjectedAmount)
                 .Where(w => w.BankAccountId == bankAccountId).ToList();
         }
@@ -296,8 +298,9 @@ namespace RingSoft.HomeLogix.Library
 
         public BudgetItem GetBudgetItem(int? budgetItemId)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BudgetItems
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BudgetItem>();
+            return table
                 .Include(i => i.BankAccount)
                 .Include(i => i.TransferToBankAccount)
                 .FirstOrDefault(f => f.Id == budgetItemId);
@@ -628,7 +631,8 @@ namespace RingSoft.HomeLogix.Library
         public BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId)
         {
             var result =new BudgetTotals();
-            var context = AppGlobals.GetNewDbContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<History>();
 
             //var bankPeriodRecords = 
             //    context.BankAccountPeriodHistory
@@ -636,7 +640,7 @@ namespace RingSoft.HomeLogix.Library
             //        .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
             //                    w.PeriodEndingDate == monthEndDate && w.BankAccount.Id == bankAccountId);
 
-            var historyExpenseAmount = context.History
+            var historyExpenseAmount = table
                 .Include(i => i.BankAccount)
                 .Include(p => p.BudgetItem)
                 .Where(p => p.BankAccountId == bankAccountId &&
@@ -645,7 +649,7 @@ namespace RingSoft.HomeLogix.Library
                             p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
                             p.BudgetItem.Type == (byte)BudgetItemTypes.Expense).ToList().Sum(p => p.ProjectedAmount);
 
-            var historyIncomeAmount = context.History
+            var historyIncomeAmount = table
                 .Include(i => i.BankAccount)
                 .Include(p => p.BudgetItem)
                 .Where(p => p.BankAccountId == bankAccountId &&

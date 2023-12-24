@@ -687,7 +687,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BankAccount GetEntityFromDb(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            IQueryable<BankAccount> query = AppGlobals.DataRepository.GetDataContext().GetTable<BankAccount>();
+            IQueryable<BankAccount> query = SystemGlobals.DataRepository.GetDataContext().GetTable<BankAccount>();
             query = query.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
                     .ThenByDescending(t => t.ProjectedAmount))
                 .Include(i => i.RegisterItems)

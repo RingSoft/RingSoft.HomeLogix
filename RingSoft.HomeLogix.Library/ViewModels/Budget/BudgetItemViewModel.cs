@@ -796,7 +796,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BudgetItem GetEntityFromDb(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            IQueryable<BudgetItem> query = AppGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
+            IQueryable<BudgetItem> query = SystemGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
             query = query.Include(i => i.BankAccount)
                 .Include(i => i.TransferToBankAccount);
 
