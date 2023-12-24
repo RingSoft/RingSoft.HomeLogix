@@ -952,23 +952,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return false;
             }
 
-            //var lastCompletedDate = DateTime.Today;
-            //DateTime lastRegisterDate = DateTime.MinValue;
-            //if (completedRows.Any())
-            //{
-            //     lastRegisterDate = completedRows.Max(p => p.ItemDate);
-            //     if (lastRegisterDate < lastCompletedDate)
-            //     {
-            //         lastCompletedDate = lastRegisterDate;
-            //     }
-            //     entity.LastCompletedDate = lastCompletedDate;
-            //}
-            //else
-            //{
-            //    entity.LastCompletedDate = LastCompleteDate;
-            //}
-
-            var context = AppGlobals.DataRepository.GetDataContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             if (context != null)
             {
                 if (!context.SaveNoCommitEntity(entity, $"Saving Bank Account '{entity.Description}'"))
@@ -1000,9 +984,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     foreach (var bankAccountRegisterItem in completedRegisterData.CompletedRegisterItems)
                     {
-                        //bankAccountRegisterItem.BudgetItemId = 0;
                         bankAccountRegisterItem.BudgetItem = null;
-                        //bankAccountRegisterItem.BankAccountId = 0;
                         bankAccountRegisterItem.BankAccount = null;
                     }
 
@@ -1030,22 +1012,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         foreach (var newSourceHistoryRecord in completedRegisterData.NewSourceHistoryRecords)
                         {
                             newSourceHistoryRecord.HistoryId = newSourceHistoryRecord.HistoryItem.Id;
-                            //newSourceHistoryRecord.HistoryItem.BankAccount = null;
-                            //newSourceHistoryRecord.HistoryItem = null;
                         }
-
-                        //foreach (var newHistoryRecord in completedRegisterData.NewHistoryRecords)
-                        //{
-                        //    if (checkDate == null)
-                        //    {
-                        //        checkDate = newHistoryRecord.Date;
-                        //    }
-                        //    else
-                        //    {
-                        //        if (newHistoryRecord.Date < checkDate)
-                        //            checkDate = newHistoryRecord.Date;
-                        //    }
-                        //}
 
                         context.AddRange<SourceHistory>(completedRegisterData.NewSourceHistoryRecords);
                     }
@@ -1058,46 +1025,43 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _recordSaved = true;
             }
 
-            //if (AppGlobals.DataRepository.SaveBankAccount(entity, completedRegisterData))
+            if (_doProcessCompletedRows)
             {
-                if (_doProcessCompletedRows)
+                var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
+                BankAccountRegisterGridRow currentRow = null;
+                if (currentRowIndex >= 0)
                 {
-                    var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
-                    BankAccountRegisterGridRow currentRow = null;
-                    if (currentRowIndex >= 0)
+                    currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
+                    while (currentRow.Completed && currentRowIndex > 0)
                     {
-                        currentRow = (BankAccountRegisterGridRow) RegisterGridManager.Rows[currentRowIndex];
-                        while (currentRow.Completed && currentRowIndex > 0)
-                        {
-                            currentRowIndex--;
-                            currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
-                        }
-                    }
-                    foreach (var completedRow in completedRows)
-                    {
-                        RegisterGridManager.InternalRemoveRow(completedRow);
-                    }
-
-                    CalculateTotals();
-                    if (RegisterGridManager.Rows.Any())
-                    {
-                        var newRowIndex = RegisterGridManager.Rows.IndexOf(currentRow);
-                        if (newRowIndex < 0)
-                            newRowIndex = 0;
-                        RegisterGridManager.Grid.GotoCell(
-                            RegisterGridManager.Rows[newRowIndex],
-                            RegisterGridManager.Grid.CurrentColumnId);
+                        currentRowIndex--;
+                        currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
                     }
                 }
-
-                foreach (var budgetItemViewModel in AppGlobals.MainViewModel.BudgetItemViewModels)
+                foreach (var completedRow in completedRows)
                 {
-                    budgetItemViewModel.RecalculateBudgetItem();
+                    RegisterGridManager.InternalRemoveRow(completedRow);
                 }
-                if (AppGlobals.MainViewModel != null)
-                    AppGlobals.MainViewModel.RefreshView();
-                result = true;
+
+                CalculateTotals();
+                if (RegisterGridManager.Rows.Any())
+                {
+                    var newRowIndex = RegisterGridManager.Rows.IndexOf(currentRow);
+                    if (newRowIndex < 0)
+                        newRowIndex = 0;
+                    RegisterGridManager.Grid.GotoCell(
+                        RegisterGridManager.Rows[newRowIndex],
+                        RegisterGridManager.Grid.CurrentColumnId);
+                }
             }
+
+            foreach (var budgetItemViewModel in AppGlobals.MainViewModel.BudgetItemViewModels)
+            {
+                budgetItemViewModel.RecalculateBudgetItem();
+            }
+            if (AppGlobals.MainViewModel != null)
+                AppGlobals.MainViewModel.RefreshView();
+            result = true;
             if (RegisterGridManager.Rows.Any())
             {
                 var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);

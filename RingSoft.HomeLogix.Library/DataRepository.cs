@@ -194,14 +194,14 @@ namespace RingSoft.HomeLogix.Library
         public bool SaveBankAccount(BankAccount bankAccount,
             CompletedRegisterData completedRegisterData = null)
         {
-            var context = AppGlobals.GetNewDbContext();
-            if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, bankAccount,
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            if (!context.SaveNoCommitEntity(bankAccount,
                 $"Saving Bank Account '{bankAccount.Description}'"))
                 return false;
 
             //DateTime? checkDate = null;
 
-            var result = context.DbContext.SaveEfChanges($"Saving Bank Account '{bankAccount.Description}' Source History");
+            var result = context.Commit($"Saving Bank Account '{bankAccount.Description}' Source History");
 
             //var historyItems = context.History.Where(p => p.Date >= (DateTime)checkDate);
 
@@ -307,19 +307,19 @@ namespace RingSoft.HomeLogix.Library
             BankAccount dbTransferToBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
-            var context = AppGlobals.GetNewDbContext();
-            if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem, "Saving Budget Item"))
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            if (!context.SaveNoCommitEntity(budgetItem, "Saving Budget Item"))
                 return false;
 
             if (dbBankAccount != null)
             {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbBankAccount, "Saving Bank Account"))
+                if (!context.SaveNoCommitEntity(dbBankAccount, "Saving Bank Account"))
                     return false;
             }
 
             if (dbTransferToBankAccount != null)
             {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbTransferToBankAccount, "Saving Transfer To Bank Account"))
+                if (!context.SaveNoCommitEntity(dbTransferToBankAccount, "Saving Transfer To Bank Account"))
                     return false;
             }
 
@@ -328,13 +328,13 @@ namespace RingSoft.HomeLogix.Library
             {
                 addAfterSave = false;
                 if (newBankRegisterItems != null)
-                    context.BankAccountRegisterItems.AddRange(newBankRegisterItems);
+                    context.AddRange(newBankRegisterItems);
 
                 if (registerItemsToDelete != null)
-                    context.BankAccountRegisterItems.RemoveRange(registerItemsToDelete);
+                    context.RemoveRange(registerItemsToDelete);
             }
 
-            var result = context.DbContext.SaveEfChanges("Saving Budget Item");
+            var result = context.Commit("Saving Budget Item");
             if (!result)
                 return false;
 
@@ -344,8 +344,8 @@ namespace RingSoft.HomeLogix.Library
                 {
                     bankRegisterItem.BudgetItemId = budgetItem.Id;
                 }
-                context.BankAccountRegisterItems.AddRange(newBankRegisterItems);
-                return context.DbContext.SaveEfChanges("Saving Budget Item");
+                context.AddRange(newBankRegisterItems);
+                return context.Commit("Saving Budget Item");
             }
 
             return true;
