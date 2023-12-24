@@ -286,60 +286,67 @@ namespace RingSoft.HomeLogix.Tests
                 nameof(TestBudgetItemTransfer_ChangeTransferFrom_KeepTransferTo));
         }
 
-        //    [TestMethod]
-        //    public void TestBudgetItemIncome_Change()
-        //    {
-        //        var dataRepository = new TestDataRepository();
-        //        AppGlobals.DataRepository = dataRepository;
+        [TestMethod]
+        public void TestBudgetItemIncome_Change()
+        {
+            Globals.ClearData();
+            var dataRepository = AppGlobals.DataRepository;
 
-        //        CreateAndTestBankAccounts();
+            CreateAndTestBankAccounts();
 
-        //        CreateAndTestBudgetItems();
+            CreateAndTestBudgetItems();
 
-        //        var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-        //        var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-        //        var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+            var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-        //        var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-        //        var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+            var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-        //        var budgetItemViewModel = new BudgetItemViewModel();
-        //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-        //        budgetItemViewModel.OnViewLoaded(new TestBudgetItemView(nameof(TestBudgetItemIncome_Change)));
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            budgetItemViewModel.OnViewLoaded(new BudgetView());
 
-        //        var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
-        //        budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
-        //        var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+            var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
 
-        //        budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
-        //            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
-        //            janeBankAccount.Description);
+            //budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
+            var janeBudgetPk = AppGlobals
+                .LookupContext
+                .BudgetItems
+                .GetPrimaryKeyValueFromEntity(janeIncomeBudgetItem);
+            budgetItemViewModel.OnRecordSelected(janeBudgetPk);
 
-        //        budgetItemViewModel.Amount = 600;
-        //        budgetItemViewModel.DoSave(true);
-        //        var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-        //        jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-        //        var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
-        //        var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
+            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+                AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
+                janeBankAccount.Description);
 
-        //        janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
-        //        var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
+            budgetItemViewModel.Amount = 600;
+            budgetItemViewModel.SaveCommand.Execute(null);
+            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-        //        Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
-        //            nameof(TestBudgetItemIncome_Change));
+            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
+            var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-        //        Assert.AreEqual(oldJointMonthlyWithdrawals, newJointMonthlyWithdrawals,
-        //            nameof(TestBudgetItemIncome_Change));
+            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
+            var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-        //        Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
-        //            nameof(TestBudgetItemIncome_Change));
+            Assert.AreEqual(oldJointMonthlyDeposits + newMonthlyAmount, newJointMonthlyDeposits,
+                nameof(TestBudgetItemIncome_Change));
 
-        //        Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
-        //            nameof(TestBudgetItemIncome_Change));
-        //    }
+            Assert.AreEqual(oldJointMonthlyWithdrawals, newJointMonthlyWithdrawals,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJaneMonthlyDeposits - oldMonthlyAmount, newJaneMonthlyDeposits,
+                nameof(TestBudgetItemIncome_Change));
+
+            Assert.AreEqual(oldJaneMonthlyWithdrawals, newJaneMonthlyWithdrawals,
+                nameof(TestBudgetItemIncome_Change));
+        }
 
         //    [TestMethod]
         //    public void TestDeleteBudgetItems()
