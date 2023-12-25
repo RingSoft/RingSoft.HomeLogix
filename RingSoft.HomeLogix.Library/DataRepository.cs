@@ -157,12 +157,13 @@ namespace RingSoft.HomeLogix.Library
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
         {
+            BankAccount result = null;
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<BankAccount>();
 
             if (getRelatedEntities)
             {
-                return table.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
+                result = table.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
                         .ThenByDescending(t => t.ProjectedAmount))
                     .Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.AmountDetails)
@@ -170,9 +171,14 @@ namespace RingSoft.HomeLogix.Library
                     .ThenInclude(ti => ti.BudgetItem)
                        .ThenInclude(ti => ti.TransferToBankAccount)
                     .FirstOrDefault(f => f.Id == bankAccountId);
+
+            }
+            else
+            {
+                result = table.FirstOrDefault(f => f.Id == bankAccountId);
             }
 
-            return table.FirstOrDefault(f => f.Id == bankAccountId);
+            return result;
         }
 
         public IEnumerable<BankAccountRegisterItem> GetRegisterItemsForBankAccount(int bankAccountId)

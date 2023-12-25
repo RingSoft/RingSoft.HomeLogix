@@ -1116,7 +1116,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (newBankAccount != null)
             {
-                newBankAccount.RegisterItems = null;
+                //newBankAccount.RegisterItems = null;
                 budgetItem.BankAccount = newBankAccount;
             }
 

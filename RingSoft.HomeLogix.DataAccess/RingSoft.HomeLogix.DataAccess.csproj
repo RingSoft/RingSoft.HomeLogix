@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="8.6.1" />
+    <PackageReference Include="RingSoft.App.Library" Version="8.6.1.1" />
   </ItemGroup>
 
   <ItemGroup>
