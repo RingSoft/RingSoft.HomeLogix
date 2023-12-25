@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Tests;
@@ -11,28 +12,6 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Tests
 {
-    //public class TestBudgetItemView : TestDbMaintenanceView, IBudgetItemView
-    //{
-    //    public void SetViewType()
-    //    {
-
-    //    }
-
-    //    public void ShowMonthlyStatsControls(bool show = true)
-    //    {
-
-    //    }
-
-    //    public bool AddAdjustment(BudgetItem budgetItem)
-    //    {
-    //        return true;
-    //    }
-
-    //    public TestBudgetItemView(string ownerName) : base(ownerName)
-    //    {
-    //    }
-    //}
-
     [TestClass]
     public class BudgetItemViewModelTests
     {
@@ -79,7 +58,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            budgetItemViewModel.Processor = Globals;
             budgetItemViewModel.OnViewLoaded(
                 new BudgetView());
 
@@ -160,7 +139,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            budgetItemViewModel.Processor = Globals;
             budgetItemViewModel.OnViewLoaded(
                 new BudgetView());
 
@@ -244,7 +223,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            budgetItemViewModel.Processor = Globals;
             budgetItemViewModel.OnViewLoaded(
                 new BudgetView());
 
@@ -305,7 +284,7 @@ namespace RingSoft.HomeLogix.Tests
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            budgetItemViewModel.Processor = Globals;
             budgetItemViewModel.OnViewLoaded(new BudgetView());
 
             var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
@@ -348,73 +327,102 @@ namespace RingSoft.HomeLogix.Tests
                 nameof(TestBudgetItemIncome_Change));
         }
 
-        //    [TestMethod]
-        //    public void TestDeleteBudgetItems()
-        //    {
-        //        var dataRepository = new TestDataRepository();
-        //        AppGlobals.DataRepository = dataRepository;
+        [TestMethod]
+        public void TestDeleteBudgetItems()
+        {
+            Globals.ClearData();
+            var dataRepository = AppGlobals.DataRepository;
 
-        //        CreateAndTestBankAccounts();
+            CreateAndTestBankAccounts();
 
-        //        CreateAndTestBudgetItems();
+            CreateAndTestBudgetItems();
 
-        //        var budgetItemViewModel = new BudgetItemViewModel();
-        //        budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
-        //        budgetItemViewModel.OnViewLoaded(
-        //            new TestBudgetItemView(nameof(TestDeleteBudgetItems)));
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = Globals;
+            budgetItemViewModel.OnViewLoaded(
+                new BudgetView());
 
-        //        var janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        var oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
-        //        var oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+            var janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+            var oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
-        //        var budgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
-        //        budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+            var budgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
 
-        //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Income");
+            var budgetPk = AppGlobals
+                .LookupContext
+                .BudgetItems
+                .GetPrimaryKeyValueFromEntity(budgetItem);
+            budgetItemViewModel.OnRecordSelected(budgetPk);
 
-        //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        var newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+            //budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
 
-        //        Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
-        //            "Delete Income, Update Deposits");
+            Globals.MessageBoxResult = MessageBoxButtonsResult.Yes;
+            budgetItemViewModel.DeleteCommand.Execute(null);
 
-        //        budgetItem = dataRepository.GetBudgetItem(GroceriesBudgetItemId);
-        //        budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
 
-        //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Expense");
+            Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
+                "Delete Income, Update Deposits");
 
-        //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        var newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
+            budgetItem = dataRepository.GetBudgetItem(GroceriesBudgetItemId);
 
-        //        Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
-        //            "Delete Expense, Update Withdrawals");
+            budgetPk = AppGlobals
+                .LookupContext
+                .BudgetItems
+                .GetPrimaryKeyValueFromEntity(budgetItem);
+            budgetItemViewModel.OnRecordSelected(budgetPk);
 
-        //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+            //budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
 
-        //        var jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
-        //        var oldJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+            //Assert.AreEqual(DbMaintenanceResults.Success
+            //    , budgetItemViewModel.DoDelete(true), "Delete Expense");
+            budgetItemViewModel.DeleteCommand.Execute(null);
 
-        //        budgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
-        //        budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
-        //        Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoDelete(), "Delete Transfer");
-        //        janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-        //        jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
+                "Delete Expense, Update Withdrawals");
 
-        //        newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
-        //        Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
-        //            "Delete Transfer, Update Deposits");
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
 
-        //        var newJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
-        //        Assert.AreEqual(oldJointWithdrawals - budgetItem.MonthlyAmount, newJointWithdrawals,
-        //            "Delete Transfer, Update Withdrawals");
-        //    }
+            var jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var oldJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+
+            budgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+
+            budgetPk = AppGlobals
+                .LookupContext
+                .BudgetItems
+                .GetPrimaryKeyValueFromEntity(budgetItem);
+            budgetItemViewModel.OnRecordSelected(budgetPk);
+
+            //budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+
+            //Assert.AreEqual(DbMaintenanceResults.Success
+            //    , budgetItemViewModel.DoDelete(true)
+            //    , "Delete Transfer");
+            budgetItemViewModel.DeleteCommand.Execute(null);
+
+            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+
+            newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
+            Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
+                "Delete Transfer, Update Deposits");
+
+            var newJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
+            Assert.AreEqual(oldJointWithdrawals - budgetItem.MonthlyAmount, newJointWithdrawals,
+                "Delete Transfer, Update Withdrawals");
+        }
 
         private static void CreateAndTestBudgetItems()
         {
             var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            //budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
+            budgetItemViewModel.Processor = Globals;
             budgetItemViewModel.OnViewLoaded(new BudgetView());
 
             budgetItemViewModel.Id = JaneIncomeBudgetItemId;
@@ -629,7 +637,8 @@ namespace RingSoft.HomeLogix.Tests
         private void CreateAndTestBankAccounts()
         {
             var bankAccountViewModel = new BankAccountViewModel();
-            bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();
+            //bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();
+            bankAccountViewModel.Processor = Globals;
             bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(CreateAndTestBankAccounts)));
 
             bankAccountViewModel.Id = JaneSavingsBankAccountId;

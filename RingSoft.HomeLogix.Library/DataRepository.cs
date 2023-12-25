@@ -375,21 +375,22 @@ namespace RingSoft.HomeLogix.Library
 
         public bool DeleteBudgetItem(int budgetItemId, BankAccount dbBankAccount, BankAccount dbTransferToBankAccount)
         {
-            var context = AppGlobals.GetNewDbContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             if (dbBankAccount != null)
             {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbBankAccount, "Saving Bank Account"))
+                if (!context.SaveNoCommitEntity(dbBankAccount, "Saving Bank Account"))
                     return false;
             }
 
             if (dbTransferToBankAccount != null)
             {
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, dbTransferToBankAccount, "Saving Transfer To Bank Account"))
+                if (!context.SaveNoCommitEntity(dbTransferToBankAccount, "Saving Transfer To Bank Account"))
                     return false;
             }
 
-            var budgetItem = context.BudgetItems.FirstOrDefault(f => f.Id == budgetItemId);
-            return budgetItem != null && context.DbContext.DeleteEntity(context.BudgetItems, budgetItem, $"Deleting Budget Item '{budgetItem.Description}'");
+            var table = context.GetTable<BudgetItem>();
+            var budgetItem = table.FirstOrDefault(f => f.Id == budgetItemId);
+            return budgetItem != null && context.DeleteEntity(budgetItem, $"Deleting Budget Item '{budgetItem.Description}'");
         }
 
         public bool SaveGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> newBankRegisterItems,

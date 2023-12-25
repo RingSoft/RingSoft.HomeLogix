@@ -1304,6 +1304,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool DeleteEntity()
         {
+            var test = this;
             DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
             switch (BudgetItemType)
             {
