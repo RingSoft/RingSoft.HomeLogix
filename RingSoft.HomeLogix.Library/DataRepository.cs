@@ -297,8 +297,9 @@ namespace RingSoft.HomeLogix.Library
 
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BudgetItems.Where(w => w.BankAccountId == bankAccountId
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BudgetItem>();
+            return table.Where(w => w.BankAccountId == bankAccountId
                                                   || w.TransferToBankAccountId == bankAccountId).ToList();
         }
 
@@ -468,15 +469,15 @@ namespace RingSoft.HomeLogix.Library
 
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BudgetPeriodHistory.FirstOrDefault(f =>
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            return context.GetTable<BudgetPeriodHistory>().FirstOrDefault(f =>
                 f.BudgetItemId == budgetId && f.PeriodType == (byte) type && f.PeriodEndingDate == periodEndDate);
         }
 
         public BankAccountPeriodHistory GetBankPeriodHistory(int bankAccountId, PeriodHistoryTypes type, DateTime periodEndDate)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.BankAccountPeriodHistory.FirstOrDefault(f =>
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            return context.GetTable<BankAccountPeriodHistory>().FirstOrDefault(f =>
                 f.BankAccountId == bankAccountId && f.PeriodType == (byte)type && f.PeriodEndingDate == periodEndDate);
         }
 
@@ -647,6 +648,13 @@ namespace RingSoft.HomeLogix.Library
             //        .Where(w => w.PeriodType == (int)PeriodHistoryTypes.Monthly &&
             //                    w.PeriodEndingDate == monthEndDate && w.BankAccount.Id == bankAccountId);
 
+            if (SystemGlobals.UnitTestMode)
+            {
+                foreach (var history in table)
+                {
+                    history.UtFillOutEntity();
+                }
+            }
             var historyExpenseAmount = table
                 .Include(i => i.BankAccount)
                 .Include(p => p.BudgetItem)

@@ -82,7 +82,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             var isDirty = ViewModel.RecordDirty;
 
-            Grid.SetBulkInsertMode();
+            Grid?.SetBulkInsertMode();
             foreach (var bankAccountRegisterItem in registerItems)
             {
                 AddRowFromEntity(bankAccountRegisterItem);
@@ -96,7 +96,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 AddRow(registerGridRow);
             }
 
-            Grid.SetBulkInsertMode(false);
+            Grid?.SetBulkInsertMode(false);
 
             if (!isDirty)
                 ViewModel.RecordDirty = false;

@@ -39,7 +39,7 @@ namespace RingSoft.HomeLogix.Tests
 
         public void LoadBank(BankAccount entity)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void GenerateTransactions(DateTime generateToDate)
@@ -49,22 +49,22 @@ namespace RingSoft.HomeLogix.Tests
 
         public void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void UpdateStatus(string status)
         {
-            throw new NotImplementedException();throw new NotImplementedException();
+            
         }
 
         public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId)
         {
-            throw new NotImplementedException();
+            
         }
 
         public void RestartApp()

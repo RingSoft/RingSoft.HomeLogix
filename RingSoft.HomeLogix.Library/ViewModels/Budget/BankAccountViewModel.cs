@@ -565,6 +565,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             TablesToDelete.Add(AppGlobals.LookupContext.BankAccountRegisterItemAmountDetails);
 
             PrintProcessingHeader += BankAccountViewModel_PrintProcessingHeader;
+
+            RegisterGridManager = new BankAccountRegisterGridManager(this);
         }
 
         
@@ -600,8 +602,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BudgetItemsLookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
             BudgetItemsLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
-
-            RegisterGridManager = new BankAccountRegisterGridManager(this);
 
             base.Initialize();
         }
@@ -1027,31 +1027,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (_doProcessCompletedRows)
             {
-                var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
                 BankAccountRegisterGridRow currentRow = null;
-                if (currentRowIndex >= 0)
+                if (RegisterGridManager.Grid != null)
                 {
-                    currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
-                    while (currentRow.Completed && currentRowIndex > 0)
+                    var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
+                    
+                    if (currentRowIndex >= 0)
                     {
-                        currentRowIndex--;
                         currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
+                        while (currentRow.Completed && currentRowIndex > 0)
+                        {
+                            currentRowIndex--;
+                            currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
+                        }
                     }
                 }
+
                 foreach (var completedRow in completedRows)
                 {
                     RegisterGridManager.InternalRemoveRow(completedRow);
                 }
 
                 CalculateTotals();
+
                 if (RegisterGridManager.Rows.Any())
                 {
                     var newRowIndex = RegisterGridManager.Rows.IndexOf(currentRow);
                     if (newRowIndex < 0)
                         newRowIndex = 0;
-                    RegisterGridManager.Grid.GotoCell(
-                        RegisterGridManager.Rows[newRowIndex],
-                        RegisterGridManager.Grid.CurrentColumnId);
+                    if (RegisterGridManager.Grid != null)
+                        RegisterGridManager.Grid.GotoCell(
+                            RegisterGridManager.Rows[newRowIndex],
+                            RegisterGridManager.Grid.CurrentColumnId);
                 }
             }
 
@@ -1077,7 +1084,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
         {
-            BankAccountView.PostRegister(completedRegisterData, completedRows);
+            if (SystemGlobals.UnitTestMode)
+            {
+                PostTransactions(completedRegisterData, completedRows);
+            }
+            else
+            {
+                BankAccountView.PostRegister(completedRegisterData, completedRows);
+            }
+
             return true;
         }
 

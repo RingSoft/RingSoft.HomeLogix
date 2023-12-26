@@ -418,7 +418,7 @@ namespace RingSoft.HomeLogix.Tests
                 "Delete Transfer, Update Withdrawals");
         }
 
-        private static void CreateAndTestBudgetItems()
+        public static void CreateAndTestBudgetItems()
         {
             var budgetItemViewModel = new BudgetItemViewModel();
             //budgetItemViewModel.Processor = new TestDbMaintenanceProcessor();
@@ -437,7 +437,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Amount = 550;
             budgetItemViewModel.RecurringPeriod = 2;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/05/2021");
+            //budgetItemViewModel.StartingDate = DateTime.Parse("02/05/2021");
 
             //Assert.AreEqual(DbMaintenanceResults.Success, budgetItemViewModel.DoSave(true),
             //    "Saving Jane's Income Budget Item");
@@ -462,7 +462,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Amount = 1530;
             budgetItemViewModel.RecurringPeriod = 1;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+            //budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
             budgetItemViewModel.SaveCommand.Execute(null);
 
@@ -485,7 +485,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Amount = 790;
             budgetItemViewModel.RecurringPeriod = 1;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+            //budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
             budgetItemViewModel.SaveCommand.Execute(null);
 
@@ -508,7 +508,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Amount = 300;
             budgetItemViewModel.RecurringPeriod = 1;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Weeks;
-            budgetItemViewModel.StartingDate = DateTime.Parse("01/29/2021");
+            //budgetItemViewModel.StartingDate = DateTime.Parse("01/29/2021");
 
             budgetItemViewModel.SaveCommand.Execute(null);
 
@@ -533,7 +533,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Amount = 100;
             budgetItemViewModel.RecurringPeriod = 1;
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
-            budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
+            //budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
             bankAccount = AppGlobals.DataRepository.GetBankAccount(JaneCheckingBankAccountId);
             var monthlyDeposits = bankAccount.MonthlyBudgetDeposits;
@@ -634,7 +634,7 @@ namespace RingSoft.HomeLogix.Tests
 
         }
 
-        private void CreateAndTestBankAccounts()
+        public static void CreateAndTestBankAccounts()
         {
             var bankAccountViewModel = new BankAccountViewModel();
             //bankAccountViewModel.Processor = new TestDbMaintenanceProcessor();

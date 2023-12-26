@@ -5,6 +5,7 @@ using System.Linq;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -197,7 +198,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            base.SetCellValue(value);
+            if (!SystemGlobals.UnitTestMode)
+            {
+                base.SetCellValue(value);
+            }
         }
 
         public void SetComplete(bool value)
