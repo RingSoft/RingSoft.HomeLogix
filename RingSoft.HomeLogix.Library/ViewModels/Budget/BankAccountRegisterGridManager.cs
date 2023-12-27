@@ -266,7 +266,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override void LoadGrid(IEnumerable<BankAccountRegisterItem> entityList)
         {
-            base.LoadGrid(entityList);
+            var listToLoad = new List<BankAccountRegisterItem>(
+                entityList.OrderBy(p => p.ItemDate)
+                    .ThenByDescending(p => p.ProjectedAmount));
+            base.LoadGrid(listToLoad);
             if (ViewModel.InitRegisterId > 0)
             {
                 var registerRows = Rows.OfType<BankAccountRegisterGridRow>();

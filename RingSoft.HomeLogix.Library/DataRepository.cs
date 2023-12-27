@@ -163,8 +163,9 @@ namespace RingSoft.HomeLogix.Library
 
             if (getRelatedEntities)
             {
-                result = table.Include(i => i.RegisterItems.OrderBy(o => o.ItemDate)
-                        .ThenByDescending(t => t.ProjectedAmount))
+                //.OrderBy(o => o.ItemDate)
+                //.ThenByDescending(t => t.ProjectedAmount))
+                result = table.Include(i => i.RegisterItems)
                     .Include(i => i.RegisterItems)
                     .ThenInclude(ti => ti.AmountDetails)
                     .Include(i => i.RegisterItems)

@@ -5,6 +5,7 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DevLogix.Tests;
 using RingSoft.DevLogix.Tests.QualityAssurance;
+using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
@@ -51,10 +52,13 @@ namespace RingSoft.HomeLogix.Tests
 
             bankAccountViewModel.NewCommand.Execute(null);
             bankAccountViewModel.OnRecordSelected(bankAccount);
-            
+
+            var count = bankAccountViewModel.Entity.RegisterItems.Count;
+            var amount = bankAccountViewModel.ProjectedLowestBalanceAmount;
+
             var registerRow = bankAccountViewModel
                 .RegisterGridManager
-                .Rows[0];
+                .Rows[0] as BankAccountRegisterGridRow;
             registerRow.SetCellValue(new DataEntryGridCheckBoxCellProps(registerRow
             , BankAccountRegisterGridManager.CompletedColumnId
             , true));
@@ -62,7 +66,22 @@ namespace RingSoft.HomeLogix.Tests
             bankAccountViewModel.SaveCommand.Execute(null);
             bankAccount.UtFillOutEntity();
 
-            Assert.AreEqual(24, bankAccount.RegisterItems.Count);
+            Assert.AreEqual(count - 1, bankAccount.RegisterItems.Count);
+
+            var tranType = registerRow.TransactionType;
+            switch (tranType)
+            {
+                case TransactionTypes.Deposit:
+                    Assert.AreEqual(amount - registerRow.ProjectedAmount
+                        , bankAccountViewModel.ProjectedLowestBalanceAmount);
+                    break;
+                case TransactionTypes.Withdrawal:
+                    Assert.AreEqual(amount + registerRow.ProjectedAmount
+                        , bankAccountViewModel.ProjectedLowestBalanceAmount);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

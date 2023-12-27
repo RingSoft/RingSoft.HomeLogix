@@ -198,10 +198,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (!SystemGlobals.UnitTestMode)
-            {
-                base.SetCellValue(value);
-            }
+            base.SetCellValue(value);
         }
 
         public void SetComplete(bool value)
