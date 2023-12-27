@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -14,12 +15,12 @@ namespace RingSoft.HomeLogix.Tests
     [TestClass]
     public class BankMaintenanceTests
     {
-        public static TestGlobals<BudgetItemViewModel, BudgetView> Globals { get; } =
-            new TestGlobals<BudgetItemViewModel, BudgetView>();
+        public static TestGlobals<BankAccountViewModel, TestBankAccountView> Globals { get; } =
+            new TestGlobals<BankAccountViewModel, TestBankAccountView>();
 
         static BankMaintenanceTests()
         {
-            Globals = BudgetItemViewModelTests.Globals;
+            Globals = new TestGlobals<BankAccountViewModel, TestBankAccountView>();
         }
 
         [ClassInitialize]
@@ -31,19 +32,19 @@ namespace RingSoft.HomeLogix.Tests
         [TestMethod]
         public void TestBankAccount_GenerateDetails()
         {
-            BudgetItemViewModelTests.Globals.ClearData();
+            Globals.ClearData();
 
             var dataRepository = AppGlobals.DataRepository;
-            BudgetItemViewModelTests.CreateAndTestBankAccounts();
+            //BudgetItemViewModelTests.CreateAndTestBankAccounts();
 
-            BudgetItemViewModelTests.CreateAndTestBudgetItems();
+            //BudgetItemViewModelTests.CreateAndTestBudgetItems();
 
             var bankAccount = dataRepository.GetBankAccount(
                 BudgetItemViewModelTests.JaneCheckingBankAccountId);
 
             var bankAccountViewModel = new BankAccountViewModel();
             bankAccountViewModel.Processor = Globals;
-            bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(TestBankAccount_GenerateDetails)));
+            bankAccountViewModel.OnViewLoaded(new TestBankAccountView());
 
             bankAccountViewModel.OnRecordSelected(bankAccount);
             
@@ -56,32 +57,40 @@ namespace RingSoft.HomeLogix.Tests
             var count = bankAccountViewModel.Entity.RegisterItems.Count;
             var amount = bankAccountViewModel.ProjectedLowestBalanceAmount;
 
-            var registerRow = bankAccountViewModel
+            var depRow = bankAccountViewModel
                 .RegisterGridManager
-                .Rows[0] as BankAccountRegisterGridRow;
-            registerRow.SetCellValue(new DataEntryGridCheckBoxCellProps(registerRow
-            , BankAccountRegisterGridManager.CompletedColumnId
-            , true));
+                .Rows.OfType<BankAccountRegisterGridRow>()
+                .FirstOrDefault(p => p.TransactionType == TransactionTypes.Deposit);
+            depRow.SetCellValue(new DataEntryGridCheckBoxCellProps(depRow
+                , BankAccountRegisterGridManager.CompletedColumnId, true));
 
             bankAccountViewModel.SaveCommand.Execute(null);
             bankAccount.UtFillOutEntity();
 
             Assert.AreEqual(count - 1, bankAccount.RegisterItems.Count);
 
-            var tranType = registerRow.TransactionType;
-            switch (tranType)
-            {
-                case TransactionTypes.Deposit:
-                    Assert.AreEqual(amount - registerRow.ProjectedAmount
-                        , bankAccountViewModel.ProjectedLowestBalanceAmount);
-                    break;
-                case TransactionTypes.Withdrawal:
-                    Assert.AreEqual(amount + registerRow.ProjectedAmount
-                        , bankAccountViewModel.ProjectedLowestBalanceAmount);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            Assert.AreEqual(amount - depRow.ProjectedAmount
+                , bankAccountViewModel.ProjectedLowestBalanceAmount);
+
+            count = bankAccount.RegisterItems.Count;
+            amount = bankAccountViewModel.ProjectedLowestBalanceAmount;
+
+            var withRow = bankAccountViewModel
+                .RegisterGridManager
+                .Rows.OfType<BankAccountRegisterGridRow>()
+                .FirstOrDefault(p => p.TransactionType == TransactionTypes.Withdrawal);
+            withRow.SetCellValue(new DataEntryGridCheckBoxCellProps(withRow
+                , BankAccountRegisterGridManager.CompletedColumnId
+                , true));
+
+            bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccount.UtFillOutEntity();
+
+            Assert.AreEqual(count - 1, bankAccount.RegisterItems.Count);
+
+            Assert.AreEqual(amount + withRow.ProjectedAmount
+                , bankAccountViewModel.ProjectedLowestBalanceAmount);
+
         }
     }
 }

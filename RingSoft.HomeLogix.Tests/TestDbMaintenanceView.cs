@@ -13,10 +13,6 @@ namespace RingSoft.HomeLogix.Tests
     {
         private string _ownerName;
 
-        public TestDbMaintenanceView(string ownerName)
-        {
-            _ownerName = ownerName;
-        }
         public void OnValidationFail(FieldDefinition fieldDefinition, string text, string caption)
         {
             Debug.WriteLine($"{_ownerName} Validation Fail: {text}");

@@ -71,9 +71,5 @@ namespace RingSoft.HomeLogix.Tests
         {
             
         }
-
-        public TestBankAccountView(string ownerName) : base(ownerName)
-        {
-        }
     }
 }

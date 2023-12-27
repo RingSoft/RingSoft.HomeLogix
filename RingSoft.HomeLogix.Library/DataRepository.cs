@@ -145,14 +145,14 @@ namespace RingSoft.HomeLogix.Library
         [CanBeNull]
         public SystemMaster GetSystemMaster()
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.SystemMaster.FirstOrDefault();
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            return context.GetTable<SystemMaster>().FirstOrDefault();
         }
 
         public bool SaveSystemMaster(SystemMaster systemMaster)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.DbContext.SaveEntity(context.SystemMaster, systemMaster, "Saving System Master");
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            return context.SaveEntity(systemMaster, "Saving System Master");
         }
 
         public BankAccount GetBankAccount(int bankAccountId, bool getRelatedEntities = true)
