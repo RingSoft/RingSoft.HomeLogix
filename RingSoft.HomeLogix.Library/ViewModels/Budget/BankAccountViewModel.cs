@@ -730,7 +730,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             _loading = true;
 
-            BankAccountView.LoadBank(entity);
+            if (SystemGlobals.UnitTestMode)
+            {
+                LoadFromEntityProcedure(entity);
+            }
+            else
+            {
+                BankAccountView.LoadBank(entity);
+            }
             //LoadFromEntityProcedure(entity);
         }
 
@@ -942,7 +949,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BankAccount entity)
         {
-            var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().Where(w => w.Completed).ToList();
+            var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
+                .Where(w => w.Completed).ToList();
 
             var completedRegisterData = new CompletedRegisterData();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
@@ -38,27 +39,19 @@ namespace RingSoft.HomeLogix.Tests
 
             var bankAccount = dataRepository.GetBankAccount(
                 BudgetItemViewModelTests.JaneCheckingBankAccountId);
-            bankAccount.UtFillOutEntity();
 
             var bankAccountViewModel = new BankAccountViewModel();
             bankAccountViewModel.Processor = Globals;
             bankAccountViewModel.OnViewLoaded(new TestBankAccountView(nameof(TestBankAccount_GenerateDetails)));
 
-            var primaryKey = bankAccountViewModel
-                .TableDefinition
-                .GetPrimaryKeyValueFromEntity(bankAccount);
-
-            bankAccountViewModel.OnRecordSelected(primaryKey);
-            bankAccountViewModel.LoadFromEntityProcedure(bankAccount);
-
+            bankAccountViewModel.OnRecordSelected(bankAccount);
+            
             bankAccountViewModel.GenerateTransactions(DateTime.Today.AddMonths(3));
             bankAccountViewModel.SaveCommand.Execute(null);
-            bankAccount.UtFillOutEntity();
 
             bankAccountViewModel.NewCommand.Execute(null);
-            bankAccountViewModel.OnRecordSelected(primaryKey);
-            bankAccountViewModel.LoadFromEntityProcedure(bankAccount);
-
+            bankAccountViewModel.OnRecordSelected(bankAccount);
+            
             var registerRow = bankAccountViewModel
                 .RegisterGridManager
                 .Rows[0];
@@ -68,6 +61,8 @@ namespace RingSoft.HomeLogix.Tests
 
             bankAccountViewModel.SaveCommand.Execute(null);
             bankAccount.UtFillOutEntity();
+
+            Assert.AreEqual(24, bankAccount.RegisterItems.Count);
         }
     }
 }

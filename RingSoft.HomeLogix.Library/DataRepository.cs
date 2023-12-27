@@ -269,9 +269,9 @@ namespace RingSoft.HomeLogix.Library
 
         public bool SaveRegisterItem(BankAccountRegisterItem registerItem, List<BankAccountRegisterItemAmountDetail> amountDetails)
         {
-            var context = AppGlobals.GetNewDbContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
 
-            if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
+            if (!context.SaveNoCommitEntity(registerItem,
                 $"Saving Bank Account Register Item'{registerItem.Description}'"))
                 return false;
         
@@ -279,20 +279,21 @@ namespace RingSoft.HomeLogix.Library
             {
                 amountDetail.RegisterItem = null;
             }
-            context.BankAccountRegisterItemAmountDetails.RemoveRange(
-                context.BankAccountRegisterItemAmountDetails.Where(w => w.RegisterId == registerItem.Id).ToList());
+            context.RemoveRange(
+                context.GetTable<BankAccountRegisterItemAmountDetail>()
+                    .Where(w => w.RegisterId == registerItem.Id).ToList());
 
-           context.BankAccountRegisterItemAmountDetails.AddRange(amountDetails);
+           context.AddRange(amountDetails);
 
-            return context.DbContext.SaveEfChanges($"Saving Bank Account Register Item '{registerItem.Description}.'");
+            return context.Commit($"Saving Bank Account Register Item '{registerItem.Description}.'");
         }
 
         public bool DeleteRegisterItems(List<BankAccountRegisterItem> registerItems)
         {
-            var context = AppGlobals.GetNewDbContext();
-            context.BankAccountRegisterItems.RemoveRange(registerItems);
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            context.RemoveRange(registerItems);
 
-            return context.DbContext.SaveEfChanges("Deleting Register Items");
+            return context.Commit("Deleting Register Items");
         }
 
         public List<BudgetItem> GetBudgetItemsForBankAccount(int bankAccountId)
@@ -405,29 +406,29 @@ namespace RingSoft.HomeLogix.Library
             List<BankAccountRegisterItem> registerItemsToDelete = null,
             BankAccount bankAccount = null)
         {
-            var context = AppGlobals.GetNewDbContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
 
             if (registerItemsToDelete != null && registerItemsToDelete.Any())
-                context.DbContext.RemoveRange(registerItemsToDelete);
+                context.RemoveRange(registerItemsToDelete);
 
             if (bankAccount != null)
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccounts, bankAccount,
+                if (!context.SaveNoCommitEntity(bankAccount,
                     $"Saving Bank Account '{bankAccount.Description}'"))
                     return false;
 
             foreach (var budgetItem in budgetItems)
             {
-                if (!context.DbContext.SaveNoCommitEntity(context.BudgetItems, budgetItem,
+                if (!context.SaveNoCommitEntity(budgetItem,
                     $"Saving Budget Item '{budgetItem.Description}'"))
                     return false;
             }
 
             foreach (var bankAccountRegisterItem in newBankRegisterItems)
             {
-                context.BankAccountRegisterItems.Add(bankAccountRegisterItem);
+                context.AddNewNoCommitEntity(bankAccountRegisterItem, "Saving Register Item");
             }
 
-            var result = context.DbContext.SaveEfChanges("Saving generated Bank Account Register Items");
+            var result = context.Commit("Saving generated Bank Account Register Items");
             
             return result;
         }
