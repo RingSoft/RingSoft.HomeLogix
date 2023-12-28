@@ -18,21 +18,21 @@ namespace RingSoft.DevLogix.Tests
         where TViewModel : DbMaintenanceViewModelBase
         where TView : IDbMaintenanceView, new()
     {
-        public const int JaneSavingsBankAccountId = 1;
-        public const int JuniorSavingsBankAccountId = 2;
-        public const int JointCheckingBankAccountId = 3;
-        public const int JaneCheckingBankAccountId = 4;
-        public const int JuniorCheckingBankAccountId = 5;
-        public const int SallyCheckingBankAccountId = 6;
+        public int JaneSavingsBankAccountId { get; } = 1;
+        public int JuniorSavingsBankAccountId { get; } = 2;
+        public int JointCheckingBankAccountId { get; } = 3;
+        public int JaneCheckingBankAccountId { get; } = 4;
+        public int JuniorCheckingBankAccountId { get; } = 5;
+        public int SallyCheckingBankAccountId { get; } = 6;
 
-        public const int JohnIncomeBudgetItemId = 1;
-        public const int JaneIncomeBudgetItemId = 2;
-        public const int HousePaymentBudgetItemId = 3;
-        public const int GroceriesBudgetItemId = 4;
-        public const int TransferBudgetItemId = 5;
-        public const int JuniorIncomeBudgetItemId = 7;
-        public const int JuniorSavingsDepositBudgetItemId = 9;
-        public const int SallyAllowanceBudgetItemId = 10;
+        public int JohnIncomeBudgetItemId { get; } = 1;
+        public int JaneIncomeBudgetItemId { get; } = 2;
+        public int HousePaymentBudgetItemId { get; } = 3;
+        public int GroceriesBudgetItemId { get; } = 4;
+        public int TransferBudgetItemId { get; } = 5;
+        public int JuniorIncomeBudgetItemId { get; } = 7;
+        public int JuniorSavingsDepositBudgetItemId { get; } = 9;
+        public int SallyAllowanceBudgetItemId { get; } = 10;
 
         public new HomeLogixTestDataRepository DataRepository { get; } 
             

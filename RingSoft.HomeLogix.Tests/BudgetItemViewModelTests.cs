@@ -15,22 +15,6 @@ namespace RingSoft.HomeLogix.Tests
     [TestClass]
     public class BudgetItemViewModelTests
     {
-        public const int JaneSavingsBankAccountId = 1;
-        public const int JuniorSavingsBankAccountId = 2;
-        public const int JointCheckingBankAccountId = 3;
-        public const int JaneCheckingBankAccountId = 4;
-        public const int JuniorCheckingBankAccountId = 5;
-        public const int SallyCheckingBankAccountId = 6;
-
-        public const int JohnIncomeBudgetItemId = 1;
-        public const int JaneIncomeBudgetItemId = 2;
-        public const int HousePaymentBudgetItemId = 3;
-        public const int GroceriesBudgetItemId = 4;
-        public const int TransferBudgetItemId = 5;
-        public const int JuniorIncomeBudgetItemId = 7;
-        public const int JuniorSavingsDepositBudgetItemId = 9;
-        public const int SallyAllowanceBudgetItemId = 10;
-
         public static TestGlobals<BudgetItemViewModel, BudgetView> Globals { get; } =
             new TestGlobals<BudgetItemViewModel, BudgetView>();
 
@@ -49,36 +33,36 @@ namespace RingSoft.HomeLogix.Tests
 
             //CreateAndTestBudgetItems();
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
             var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            var budgetItemViewModel = new BudgetItemViewModel();
-            budgetItemViewModel.Processor = Globals;
-            budgetItemViewModel.OnViewLoaded(
-                new BudgetView());
+            //var budgetItemViewModel = new BudgetItemViewModel();
+            //budgetItemViewModel.Processor = Globals;
+            //budgetItemViewModel.OnViewLoaded(
+            //    new BudgetView());
 
-            var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+            var transferBudgetItem = dataRepository.GetBudgetItem(Globals.TransferBudgetItemId);
             var transferBudgetPk = AppGlobals
                 .LookupContext
                 .BudgetItems
                 .GetPrimaryKeyValueFromEntity(transferBudgetItem);
-            budgetItemViewModel.OnRecordSelected(transferBudgetPk);
-            var oldMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+            Globals.ViewModel.OnRecordSelected(transferBudgetPk);
+            var oldMonthlyAmount = Globals.ViewModel.MonthlyAmount;
 
-            budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
+            Globals.ViewModel.BankAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(janeBankAccount),
                 janeBankAccount.Description);
 
-            budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
+            Globals.ViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(jointBankAccount),
                 jointBankAccount.Description);
 
-            budgetItemViewModel.Amount = 175;
+            Globals.ViewModel.Amount = 175;
 
             //budgetItemViewModel.UnitTestGetEntityData();
             //Assert.IsNull(budgetItemViewModel.DbBankAccount,
@@ -87,14 +71,14 @@ namespace RingSoft.HomeLogix.Tests
             //Assert.IsNull(budgetItemViewModel.DbTransferToBankAccount,
             //    $"{nameof(TestBudgetItemTransfer_Swap_TransferFrom_TransferTo)} {nameof(budgetItemViewModel.DbTransferToBankAccount)} is null");
 
-            budgetItemViewModel.SaveCommand.Execute(null);
-            var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
+            Globals.ViewModel.SaveCommand.Execute(null);
+            var newMonthlyAmount = Globals.ViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
             var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
             var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
@@ -122,19 +106,19 @@ namespace RingSoft.HomeLogix.Tests
 
             //CreateAndTestBudgetItems();
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
             var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            var juniorBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+            var juniorBankAccount = dataRepository.GetBankAccount(Globals.JuniorCheckingBankAccountId);
             var oldJuniorMonthlyDeposits = juniorBankAccount.MonthlyBudgetDeposits;
             var oldJuniorMonthlyWithdrawals = juniorBankAccount.MonthlyBudgetWithdrawals;
 
-            var savingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+            var savingsBankAccount = dataRepository.GetBankAccount(Globals.JaneSavingsBankAccountId);
             var oldSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
             var oldSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
 
@@ -143,7 +127,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.OnViewLoaded(
                 new BudgetView());
 
-            var transferBudgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+            var transferBudgetItem = dataRepository.GetBudgetItem(Globals.TransferBudgetItemId);
 
             var transferBudgetPk = AppGlobals
                 .LookupContext
@@ -166,19 +150,19 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.SaveCommand.Execute(null);
             var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
             var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
             var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
-            juniorBankAccount = dataRepository.GetBankAccount(JuniorCheckingBankAccountId);
+            juniorBankAccount = dataRepository.GetBankAccount(Globals.JuniorCheckingBankAccountId);
             var newJuniorMonthlyDeposits = juniorBankAccount.MonthlyBudgetDeposits;
             var newJuniorMonthlyWithdrawals = juniorBankAccount.MonthlyBudgetWithdrawals;
 
-            savingsBankAccount = dataRepository.GetBankAccount(JaneSavingsBankAccountId);
+            savingsBankAccount = dataRepository.GetBankAccount(Globals.JaneSavingsBankAccountId);
             var newSavingsMonthlyDeposits = savingsBankAccount.MonthlyBudgetDeposits;
             var newSavingsMonthlyWithdrawals = savingsBankAccount.MonthlyBudgetWithdrawals;
 
@@ -216,10 +200,10 @@ namespace RingSoft.HomeLogix.Tests
 
             //CreateAndTestBankAccounts();
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
 
             var budgetItemViewModel = new BudgetItemViewModel();
@@ -227,10 +211,10 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.OnViewLoaded(
                 new BudgetView());
 
-            budgetItemViewModel.Id = TransferBudgetItemId;
+            budgetItemViewModel.Id = Globals.TransferBudgetItemId;
             budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Transfer Error");
 
-            var bankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var bankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
 
             budgetItemViewModel.BankAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
@@ -242,7 +226,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.RecurringType = BudgetItemRecurringTypes.Months;
             budgetItemViewModel.StartingDate = DateTime.Parse("02/03/2021");
 
-            bankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            bankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
 
             budgetItemViewModel.TransferToBankAccountAutoFillValue = new AutoFillValue(
                 AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankAccount),
@@ -252,10 +236,10 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.SaveCommand.Execute(null);
             var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
 
             Assert.AreEqual(oldJointMonthlyWithdrawals + newMonthlyAmount, newJointMonthlyWithdrawals,
@@ -275,11 +259,11 @@ namespace RingSoft.HomeLogix.Tests
 
             //CreateAndTestBudgetItems();
 
-            var jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var oldJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
             var oldJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            var janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var oldJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
             var oldJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
@@ -287,7 +271,7 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.Processor = Globals;
             budgetItemViewModel.OnViewLoaded(new BudgetView());
 
-            var janeIncomeBudgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
+            var janeIncomeBudgetItem = dataRepository.GetBudgetItem(Globals.JaneIncomeBudgetItemId);
 
             //budgetItemViewModel.UnitTestLoadFromEntity(janeIncomeBudgetItem);
             var janeBudgetPk = AppGlobals
@@ -306,11 +290,11 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.SaveCommand.Execute(null);
             var newMonthlyAmount = budgetItemViewModel.MonthlyAmount;
 
-            jointBankAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            jointBankAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var newJointMonthlyDeposits = jointBankAccount.MonthlyBudgetDeposits;
             var newJointMonthlyWithdrawals = jointBankAccount.MonthlyBudgetWithdrawals;
 
-            janeBankAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeBankAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var newJaneMonthlyDeposits = janeBankAccount.MonthlyBudgetDeposits;
             var newJaneMonthlyWithdrawals = janeBankAccount.MonthlyBudgetWithdrawals;
 
@@ -342,72 +326,48 @@ namespace RingSoft.HomeLogix.Tests
             budgetItemViewModel.OnViewLoaded(
                 new BudgetView());
 
-            var janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            var janeCheckingAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
             var oldJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
-            var budgetItem = dataRepository.GetBudgetItem(JaneIncomeBudgetItemId);
-
-            var budgetPk = AppGlobals
-                .LookupContext
-                .BudgetItems
-                .GetPrimaryKeyValueFromEntity(budgetItem);
-            budgetItemViewModel.OnRecordSelected(budgetPk);
-
-            //budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
+            var budgetItem = dataRepository.GetBudgetItem(Globals.JaneIncomeBudgetItemId);
+            budgetItemViewModel.OnRecordSelected(budgetItem);
 
             Globals.MessageBoxResult = MessageBoxButtonsResult.Yes;
             budgetItemViewModel.DeleteCommand.Execute(null);
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeCheckingAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
 
             Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,
                 "Delete Income, Update Deposits");
 
-            budgetItem = dataRepository.GetBudgetItem(GroceriesBudgetItemId);
+            budgetItem = dataRepository.GetBudgetItem(Globals.GroceriesBudgetItemId);
 
-            budgetPk = AppGlobals
-                .LookupContext
-                .BudgetItems
-                .GetPrimaryKeyValueFromEntity(budgetItem);
-            budgetItemViewModel.OnRecordSelected(budgetPk);
+            budgetItemViewModel.OnRecordSelected(budgetItem);
 
-            //budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
-
-            //Assert.AreEqual(DbMaintenanceResults.Success
-            //    , budgetItemViewModel.DoDelete(true), "Delete Expense");
             budgetItemViewModel.DeleteCommand.Execute(null);
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeCheckingAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             var newJaneWithdrawals = janeCheckingAccount.MonthlyBudgetWithdrawals;
 
             Assert.AreEqual(oldJaneWithdrawals - budgetItem.MonthlyAmount, newJaneWithdrawals,
                 "Delete Expense, Update Withdrawals");
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
+            janeCheckingAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
             oldJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
 
-            var jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            var jointCheckingAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
             var oldJointWithdrawals = jointCheckingAccount.MonthlyBudgetWithdrawals;
 
-            budgetItem = dataRepository.GetBudgetItem(TransferBudgetItemId);
+            budgetItem = dataRepository.GetBudgetItem(Globals.TransferBudgetItemId);
 
-            budgetPk = AppGlobals
-                .LookupContext
-                .BudgetItems
-                .GetPrimaryKeyValueFromEntity(budgetItem);
-            budgetItemViewModel.OnRecordSelected(budgetPk);
+            budgetItemViewModel.OnRecordSelected(budgetItem);
 
-            //budgetItemViewModel.UnitTestLoadFromEntity(budgetItem);
-
-            //Assert.AreEqual(DbMaintenanceResults.Success
-            //    , budgetItemViewModel.DoDelete(true)
-            //    , "Delete Transfer");
             budgetItemViewModel.DeleteCommand.Execute(null);
 
-            janeCheckingAccount = dataRepository.GetBankAccount(JaneCheckingBankAccountId);
-            jointCheckingAccount = dataRepository.GetBankAccount(JointCheckingBankAccountId);
+            janeCheckingAccount = dataRepository.GetBankAccount(Globals.JaneCheckingBankAccountId);
+            jointCheckingAccount = dataRepository.GetBankAccount(Globals.JointCheckingBankAccountId);
 
             newJaneDeposits = janeCheckingAccount.MonthlyBudgetDeposits;
             Assert.AreEqual(oldJaneDeposits - budgetItem.MonthlyAmount, newJaneDeposits,

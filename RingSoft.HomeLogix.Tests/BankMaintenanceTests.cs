@@ -35,16 +35,11 @@ namespace RingSoft.HomeLogix.Tests
             Globals.ClearData();
 
             var dataRepository = AppGlobals.DataRepository;
-            //BudgetItemViewModelTests.CreateAndTestBankAccounts();
-
-            //BudgetItemViewModelTests.CreateAndTestBudgetItems();
 
             var bankAccount = dataRepository.GetBankAccount(
-                BudgetItemViewModelTests.JaneCheckingBankAccountId);
+                Globals.JaneCheckingBankAccountId);
 
-            var bankAccountViewModel = new BankAccountViewModel();
-            bankAccountViewModel.Processor = Globals;
-            bankAccountViewModel.OnViewLoaded(new TestBankAccountView());
+            var bankAccountViewModel = Globals.ViewModel;
 
             bankAccountViewModel.OnRecordSelected(bankAccount);
             
