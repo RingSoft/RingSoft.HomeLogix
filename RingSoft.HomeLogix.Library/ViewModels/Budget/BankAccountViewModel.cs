@@ -1501,7 +1501,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccountId = TableDefinition.GetEntityFromPrimaryKeyValue(e.PrimaryKey).Id;
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccountId);
-            var registerItems = bankAccount.RegisterItems;
+            var registerItems = bankAccount.RegisterItems
+                .OrderBy(p => p.ItemDate)
+                .ThenBy(p => p.ItemType);
 
             var index = 0;
             var detailsChunk = new List<PrintingInputDetailsRow>();
