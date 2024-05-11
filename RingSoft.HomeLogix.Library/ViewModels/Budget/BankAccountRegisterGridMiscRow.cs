@@ -42,13 +42,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override DataEntryGridCellStyle GetCellStyle(int columnId)
         {
-            var column = (BankAccountRegisterGridColumns) columnId;
-            switch (column)
-            {
-                case BankAccountRegisterGridColumns.Amount:
-                case BankAccountRegisterGridColumns.ActualAmount:
-                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
-            }
+            //var column = (BankAccountRegisterGridColumns) columnId;
+            //switch (column)
+            //{
+            //    case BankAccountRegisterGridColumns.Amount:
+            //    case BankAccountRegisterGridColumns.ActualAmount:
+            //        return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
+            //}
             return base.GetCellStyle(columnId);
         }
 

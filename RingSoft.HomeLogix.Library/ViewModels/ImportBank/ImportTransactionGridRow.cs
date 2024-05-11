@@ -194,16 +194,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     if (budgetAutoFillCellProps != null && budgetAutoFillCellProps.AutoFillValue.IsValid())
                     {
                         BudgetItemAutoFillValue = budgetAutoFillCellProps.AutoFillValue;
-                        Manager.SetMapRowsBudget(this);
+                        if (BudgetItemAutoFillValue.IsValid())
+                        {
+                            Manager.SetMapRowsBudget(this);
+                        }
                     }
-
+                    else
+                    {
+                        BudgetItemAutoFillValue = null;
+                    }
                     break;
                 case ImportColumns.Source:
                     var autoFillCellProps = value as DataEntryGridAutoFillCellProps;
                     if (autoFillCellProps != null)
                     {
                         SourceAutoFillValue = autoFillCellProps.AutoFillValue;
-                        Manager.SetMapRowsSource(this);
+                        if (SourceAutoFillValue.IsValid())
+                        {
+                            Manager.SetMapRowsSource(this);
+                        }
                     }
                     break;
                 case ImportColumns.Amount:

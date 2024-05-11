@@ -395,7 +395,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     throw new ArgumentOutOfRangeException();
             }
 
-            var registerRows = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridBudgetItemRow>().OrderBy(p => p.ItemDate).ThenBy(p => p.ProjectedAmount);
+            var registerRows 
+                = ViewModel.BankViewModel.RegisterGridManager.Rows
+                    .OfType<BankAccountRegisterGridBudgetItemRow>()
+                    .OrderBy(p => p.ItemDate)
+                    .ThenBy(p => p.ProjectedAmount);
 
             BankAccountRegisterGridRow registerRow = null;
             
@@ -476,7 +480,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return true;
         }
 
-        private BankAccountRegisterGridRow AddNewGridRow(BudgetItem budgetItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
+        private BankAccountRegisterGridRow AddNewGridRow
+            (BudgetItem budgetItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
         {
             var bankRegisterItem = new BankAccountRegisterItem();
             bankRegisterItem.BankAccountId = gridRow.Manager.ViewModel.BankViewModel.Id;
@@ -487,11 +492,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             //bankRegisterItem.Description = $"Increase {budgetItem.Description} ";
             bankRegisterItem.Description = gridRow.Description;
 
-            //if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
-            //{
-            //    bankRegisterItem.Description = gridRow.SourceAutoFillValue.Text;
-            //    bankRegisterItem.Description += $" {budgetItem.Description} ";
-            //}
 
             bankRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
             bankRegisterItem.Completed = true;
@@ -560,14 +560,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {itemToAdd});
             var newRow = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
                 .FirstOrDefault(p => p.RegisterId == itemToAdd.Id);
+
+            if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
+            {
+                newRow.ActualAmountDetails.Add(new BankAccountRegisterItemAmountDetail()
+                {
+                    Amount = gridRow.Amount,
+                    BankText = gridRow.Description,
+                    Date = gridRow.Date,
+                    DetailId = 1,
+                    RegisterId = itemToAdd.Id,
+                    SourceId = gridRow.SourceAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
+                });
+                bankRegisterItem.Description += $" {budgetItem.Description} ";
+                if (!UpdateRegisterRow(0, newRow, bankRegisterItem, gridRow)) return null;
+            }
             return newRow;
         }
 
         public void LoadGrid()
         {
+            var rowIndex = 0;
             var transactions = AppGlobals.DataRepository.GetBankTransactions(ViewModel.BankViewModel.Id);
             foreach (var bankTransaction in transactions)
             {
+                rowIndex++;
                 var bankRow = GetNewRow() as ImportTransactionGridRow;
                 bankRow.FromBank = bankTransaction.FromBank;
                 bankRow.QifMap = bankTransaction.QifMap;
@@ -600,6 +617,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         Amount = bankTransactionBudgetItem.Amount,
                     });
                 }
+
                 AddRow(bankRow);
             }
             Grid?.RefreshGridView();
@@ -803,8 +821,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public List<ImportTransactionGridRow> GetRowsContainingText(string text)
         {
             var rows = Rows.OfType<ImportTransactionGridRow>()
-                .Where(p => p.FromBank
-                && p.Description.Contains(text));
+                .Where(p => p.FromBank 
+                            && p.Description.Contains(text));
 
             var result = rows.ToList();
             return result;
@@ -821,7 +839,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 refresh = true;
                 foreach (var importTransactionGridRow in rowsToSet)
                 {
-                    if (importTransactionGridRow != row)
+                    if (importTransactionGridRow != row && !importTransactionGridRow.SourceAutoFillValue.IsValid())
                     {
                         importTransactionGridRow.SourceAutoFillValue = row.SourceAutoFillValue;
                     }
