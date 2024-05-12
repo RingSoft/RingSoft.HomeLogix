@@ -557,7 +557,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 return null;
 
             ViewModel.BankViewModel.RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem>()
-                {itemToAdd});
+            {
+                itemToAdd
+            });
             var newRow = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
                 .FirstOrDefault(p => p.RegisterId == itemToAdd.Id);
 
