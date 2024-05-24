@@ -412,7 +412,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 registerRow = registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id
                                                                && p.ItemDate <= dateMaxValue);
             }
-
             
             if (registerRow == null)
             {
@@ -420,6 +419,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     .OfType<BankAccountRegisterGridTransferRow>().OrderBy(p => p.ItemDate).ThenBy(p => p.ProjectedAmount);
                 var transferRow = transferRows.FirstOrDefault(p => 
                     p.BudgetItemId == budgetItem.Id &&(p.ItemDate >= dateMinValue || p.ItemDate < dateMaxValue));
+             
                 registerRow = transferRow;
             }
 
