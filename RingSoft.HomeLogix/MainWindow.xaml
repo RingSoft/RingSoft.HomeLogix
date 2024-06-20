@@ -78,7 +78,7 @@
             <ac:DbMaintenanceButton x:Name="ManageBankButton" Content="Manage _Bank Accounts" ImageSource="{StaticResource ManageBankImage}"
                                     Command="{Binding ManageBankAccountsCommand}"/>
 
-		<ac:DbMaintenanceButton x:Name="SyncPhoneButton" Content="_Sync With Mobile Device" ImageSource="{StaticResource PhoneImage}" Command="{Binding SyncPhoneCommand}"/>
+		<!--<ac:DbMaintenanceButton x:Name="SyncPhoneButton" Content="_Sync With Mobile Device" ImageSource="{StaticResource PhoneImage}" Command="{Binding SyncPhoneCommand}"/>-->
 
             <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 

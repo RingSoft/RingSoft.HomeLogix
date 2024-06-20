@@ -1367,20 +1367,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public async override void OnWindowClosing(CancelEventArgs e)
         {
             base.OnWindowClosing(e);
-            if (!e.Cancel)
-            {
-                AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
-                var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
-                if (_recordSaved && !systemMaster.PhoneLogin.IsNullOrEmpty())
-                {
-                    var message = "You must restart this app to sync with mobile device.  Do you wish to restart now?";
-                    var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Restart?");
-                    if (result == MessageBoxButtonsResult.Yes)
-                    {
-                        BankAccountView.RestartApp();
-                    }
-                }
-            }
+            //if (!e.Cancel)
+            //{
+            //    AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
+            //    var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
+            //    if (_recordSaved && !systemMaster.PhoneLogin.IsNullOrEmpty())
+            //    {
+            //        var message = "You must restart this app to sync with mobile device.  Do you wish to restart now?";
+            //        var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Restart?");
+            //        if (result == MessageBoxButtonsResult.Yes)
+            //        {
+            //            BankAccountView.RestartApp();
+            //        }
+            //    }
+            //}
         }
 
         public bool IsBeingReconciled(int budgetItemId)

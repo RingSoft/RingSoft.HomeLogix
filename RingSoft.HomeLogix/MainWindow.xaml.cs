@@ -61,8 +61,8 @@ namespace RingSoft.HomeLogix
             NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
             NextMonthButton.ToolTip.DescriptionText = "See budget totals for the next month.";
 
-            SyncPhoneButton.ToolTip.HeaderText = "Sync With Mobile Device (Alt + S)";
-            SyncPhoneButton.ToolTip.DescriptionText = "Copy data to mobile device.";
+            //SyncPhoneButton.ToolTip.HeaderText = "Sync With Mobile Device (Alt + S)";
+            //SyncPhoneButton.ToolTip.DescriptionText = "Copy data to mobile device.";
 
             AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
             AdvancedFindButton.ToolTip.DescriptionText = "Show the advanced find window.";
