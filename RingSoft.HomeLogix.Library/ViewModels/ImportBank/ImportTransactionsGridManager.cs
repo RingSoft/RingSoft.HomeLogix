@@ -397,7 +397,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
             var registerRows 
                 = ViewModel.BankViewModel.RegisterGridManager.Rows
-                    .OfType<BankAccountRegisterGridBudgetItemRow>()
+                    .OfType<BankAccountRegisterGridRow>()
                     .OrderBy(p => p.ItemDate)
                     .ThenBy(p => p.ProjectedAmount);
 
