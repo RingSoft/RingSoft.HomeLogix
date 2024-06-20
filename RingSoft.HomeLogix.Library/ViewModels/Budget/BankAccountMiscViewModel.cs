@@ -300,6 +300,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 else
                     Amount = Math.Abs(_registerItem.ProjectedAmount);
 
+                var budgetItem =
+                    AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
+                BudgetItemAutoFillValue =
+                    new AutoFillValue(
+                        AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
+                        budgetItem.Description);
+                ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
+
                 if (_registerItem.TransferRegisterGuid.IsNullOrEmpty())
                 {
                     //if (_registerItem.ProjectedAmount < 0)
@@ -307,13 +315,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     //else
                     //    ItemType = BudgetItemTypes.Income;
 
-                    var budgetItem =
-                        AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
-                    BudgetItemAutoFillValue =
-                        new AutoFillValue(
-                            AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
-                            budgetItem.Description);
-                    ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
                 }
                 else
                 {
@@ -388,7 +389,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                     break;
                 case BudgetItemTypes.Transfer:
-                    BudgetItemVisible = false;
+                    BudgetItemVisible = true;
                     TransferToVisible = true;
                     break;
                 default:
@@ -400,6 +401,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
+            if (!BudgetItemAutoFillValue.IsValid())
+            {
+                var message = "Budget Item must contain a valid value.";
+                View.OnValidationFail(message, "Invalid Budget Item.",
+                    ValidationFocusControls.BudgetItem);
+                return;
+            }
+            _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
+                .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+            _registerItem.BudgetItem =
+                AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
+
             if (ItemType == BudgetItemTypes.Transfer)
             {
                 if (!TransferToBankAccountAutoFillValue.IsValid())
@@ -432,6 +445,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _transferToRegisterItem ??= new BankAccountRegisterItem();
 
                 _transferToRegisterItem.BankAccountId = transferToBankAccount.Id;
+                _transferToRegisterItem.BudgetItemId = BudgetItemAutoFillValue.GetEntity<BudgetItem>().Id;
                 _transferToRegisterItem.ProjectedAmount = Amount;
                 _transferToRegisterItem.RegisterGuid = _registerItem.TransferRegisterGuid;
                 _transferToRegisterItem.TransferRegisterGuid = _registerItem.RegisterGuid;
@@ -442,17 +456,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             else
             {
-                if (!BudgetItemAutoFillValue.IsValid())
-                {
-                    var message = "Budget Item must contain a valid value.";
-                    View.OnValidationFail(message, "Invalid Budget Item.",
-                        ValidationFocusControls.BudgetItem);
-                    return;
-                }
-                _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
-                    .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
-                _registerItem.BudgetItem =
-                    AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
 
                 //_registerItem.ProjectedAmount = Math.Abs(Amount);
                 switch (ItemType)
