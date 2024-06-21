@@ -13,11 +13,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public string TransferRegisterGuid { get; private set; }
 
+        public bool IsTransferMisc { get; private set; }
+
         public override string Description
         {
             get
             {
-                if (BudgetItemValue.IsValid())
+                if (BudgetItemValue.IsValid() || IsTransferMisc)
                     return BudgetItemValue.Text;
 
                 return TransferDescription;
@@ -34,7 +36,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             switch (column)
             {
                 case BankAccountRegisterGridColumns.Description:
-                    if (BudgetItemId == null)
+                    if (BudgetItemId == null || IsTransferMisc)
                     {
                         return new MiscCellProps(this, columnId, Description);
                     }
@@ -72,6 +74,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             TransferDescription = entity.Description;
             TransferRegisterGuid = entity.TransferRegisterGuid;
+            IsTransferMisc = entity.IsTransferMisc;
             base.LoadFromEntity(entity);
         }
 

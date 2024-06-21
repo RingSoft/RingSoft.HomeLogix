@@ -461,6 +461,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _transferToRegisterItem.Description = Description;
                 _transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
                 _registerItem.ProjectedAmount = -Amount;
+                _transferToRegisterItem.IsTransferMisc = true;
             }
             else
             {
@@ -502,6 +503,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             }
 
+            _registerItem.IsTransferMisc = true;
             _registerItem.ItemType = (int)BankAccountRegisterItemTypes.Miscellaneous;
             _registerItem.ItemDate = Date;
             _registerItem.Description = Description;
