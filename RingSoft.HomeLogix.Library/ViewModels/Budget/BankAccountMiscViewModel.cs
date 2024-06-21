@@ -302,11 +302,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 var budgetItem =
                     AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
-                BudgetItemAutoFillValue =
-                    new AutoFillValue(
-                        AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
-                        budgetItem.Description);
-                ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
+                if (budgetItem != null)
+                {
+                    BudgetItemAutoFillValue =
+                        new AutoFillValue(
+                            AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
+                            budgetItem.Description);
+
+                    ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
+                }
+                else if (!_registerItem.TransferRegisterGuid.IsNullOrEmpty())
+                {
+                    ItemType = BudgetItemTypes.Transfer;
+                }
 
                 if (_registerItem.TransferRegisterGuid.IsNullOrEmpty())
                 {

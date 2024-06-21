@@ -147,6 +147,20 @@ namespace RingSoft.HomeLogix.Budget
 
         public bool ShowBankAccountMiscWindow(BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
+            if (registerItem != null &&
+                !registerItem.TransferRegisterGuid.IsNullOrEmpty())
+            {
+                var transferRegisterItem =
+                    AppGlobals.DataRepository.GetTransferRegisterItem(registerItem.TransferRegisterGuid);
+                if (transferRegisterItem == null)
+                {
+                    var message = "Missing related Transfer Register Item.";
+                    var caption = "Missing Relation";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    return false;
+                }
+            }
+
             var bankAccountMiscWindow = new BankAccountMiscWindow(BankAccountViewModel, registerItem, viewModelInput);
             bankAccountMiscWindow.Owner = this;
             bankAccountMiscWindow.ShowInTaskbar = false;

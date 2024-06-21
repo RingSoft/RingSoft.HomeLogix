@@ -499,9 +499,12 @@ namespace RingSoft.HomeLogix.Library
 
             if (transferRegisterItem != null)
             {
+                //var oldBank = transferRegisterItem.BankAccount;
+                transferRegisterItem.BankAccount = null;
                 if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, transferRegisterItem,
                     $"Saving {transferRegisterItem.Description}"))
                     return false;
+                //transferRegisterItem.BankAccount = oldBank;
             }
 
             return context.DbContext.SaveEfChanges($"Saving {registerItem.Description}");
