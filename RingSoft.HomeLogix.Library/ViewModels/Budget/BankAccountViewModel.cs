@@ -1137,7 +1137,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     case DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem:
                         break;
                     case DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous:
-                        completedRow.ProjectedAmount = 0;
+                        //completedRow.ProjectedAmount = 0;
                         break;
                     case DataAccess.Model.BankAccountRegisterItemTypes.TransferToBankAccount:
                         if (completedRow is BankAccountRegisterGridTransferRow transferRow)
