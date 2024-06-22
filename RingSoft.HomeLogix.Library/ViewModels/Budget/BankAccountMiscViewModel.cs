@@ -252,6 +252,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public BankAccountViewModel BankViewModel { get; private set; }
 
+        public BankAccountRegisterItem RegisterItem { get; private set; }
+
         public RelayCommand OkButtonCommand { get; }
 
         public bool TransferToVisible { get; private set; }
@@ -309,7 +311,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
                             budgetItem.Description);
 
-                    ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
+                    if (_registerItem.BudgetItem != null) 
+                        ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
                 }
                 else if (!_registerItem.TransferRegisterGuid.IsNullOrEmpty())
                 {
@@ -361,6 +364,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             SetBudgetAutoFillSetup();
             _loading = false;
 
+            RegisterItem = _registerItem;
             SetViewMode();
         }
 
@@ -409,6 +413,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOkButton()
         {
+            if (ItemType == BudgetItemTypes.Transfer)
+            {
+                var test = _registerItem.BankAccountId;
+                var test1 = this;
+                if (_registerItem.BankAccountId != BankViewModel.Id)
+                {
+                    var message = $"This Miscellaneous Transfer can only be saved from the {_registerItem.BankAccount.Description} Bank Account.";
+                    var caption = "Invalid Transfer Bank Account";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                    return;
+                }
+            }
             if (!BudgetItemAutoFillValue.IsValid())
             {
                 var message = "Budget Item must contain a valid value.";

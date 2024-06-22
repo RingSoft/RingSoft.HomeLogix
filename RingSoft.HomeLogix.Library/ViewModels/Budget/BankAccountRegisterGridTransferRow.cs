@@ -19,8 +19,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             get
             {
-                if (BudgetItemValue.IsValid() || IsTransferMisc)
-                    return BudgetItemValue.Text;
+                if (IsTransferMisc)
+                {
+                    return TransferDescription;
+                }
+                else
+                {
+                    if (BudgetItemValue.IsValid())
+                        return BudgetItemValue.Text;
+                }
 
                 return TransferDescription;
             }
@@ -82,6 +89,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             entity.TransferRegisterGuid = TransferRegisterGuid;
             entity.Description = TransferDescription;
+            entity.IsTransferMisc = IsTransferMisc;
             base.SaveToEntity(entity, rowIndex);
         }
     }

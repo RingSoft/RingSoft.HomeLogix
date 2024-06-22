@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -11,12 +12,35 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMiscWindow : IBankAccountMiscView
     {
+        private BankAccountViewModel _bankAccountViewModel;
+        private BankAccountRegisterItem _registerItem;
         public BankAccountMiscWindow(BankAccountViewModel bankAccountViewModel, BankAccountRegisterItem registerItem, ViewModelInput viewModelInput)
         {
+            _bankAccountViewModel = bankAccountViewModel;
+            _registerItem = registerItem;
             InitializeComponent();
 
             ViewModel.OnViewLoaded(this, bankAccountViewModel, registerItem, viewModelInput);
             CancelButton.Click += (sender, args) => Close();
+            Loaded += (sender, args) =>
+            {
+                if (ViewModel.ItemType == BudgetItemTypes.Transfer)
+                {
+                    if (ViewModel.RegisterItem.BankAccountId != _bankAccountViewModel.Id)
+                    {
+                        SetReadOnlyMode(true);
+                    }
+                }
+            };
+        }
+
+        public override void SetControlReadOnlyMode(Control control, bool readOnlyValue)
+        {
+            if (control == CancelButton && readOnlyValue == true)
+            {
+                return;
+            }
+            base.SetControlReadOnlyMode(control, readOnlyValue);
         }
 
         public void SetViewType()
