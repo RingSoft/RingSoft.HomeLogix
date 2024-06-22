@@ -66,7 +66,6 @@ namespace RingSoft.HomeLogix.Budget
                 ImportButton.ToolTip.DescriptionText = "Import new transactions from the bank website.";
             }
 
-
             base.OnApplyTemplate();
         }
     }

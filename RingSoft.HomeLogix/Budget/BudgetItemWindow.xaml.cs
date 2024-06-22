@@ -32,6 +32,7 @@ namespace RingSoft.HomeLogix.Budget
                 if (TopHeaderControl.CustomPanel is BudgetCustomPanel budgetCustomPanel)
                 {
                     budgetCustomPanel.AddButton.Command = BudgetItemViewModel.AddAdjustmentCommand;
+                    budgetCustomPanel.ClearRecurButton.Command = BudgetItemViewModel.ClearRecurringCommand;
                 }
             };
 

@@ -536,6 +536,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public RelayCommand AddAdjustmentCommand { get; }
 
+        public RelayCommand ClearRecurringCommand { get; }
+
         private IBudgetItemView _view;
         private bool _loading;
         private double _dbMonthlyAmount;
@@ -556,6 +558,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DateControlsEnabled = BudgetItemTypeEnabled = true;
 
             AddAdjustmentCommand = new RelayCommand(AddAdjustment);
+
+            ClearRecurringCommand = new RelayCommand(OnClearRecurring);
 
             //_periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.PeriodEndingDate, p => p.PeriodEndingDate);
             //_periodHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.ProjectedAmount, p => p.ProjectedAmount);
@@ -1354,6 +1358,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnWindowClosing(e);
             if (!e.Cancel)
                 AppGlobals.MainViewModel.BudgetItemViewModels.Remove(this);
+        }
+
+        private void OnClearRecurring()
+        {
+            StartingDate = null;
+            EndingDate = DateTime.Today.AddMonths(-1);
+            Amount = 0;
+            RecurringType = BudgetItemRecurringTypes.Years;
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)

@@ -33,9 +33,14 @@ namespace RingSoft.HomeLogix.Budget
     ///
     /// </summary>
     [TemplatePart(Name = "AddButton", Type = typeof(DbMaintenanceButton))]
+    [TemplatePart(Name = "ClearRecurButton", Type = typeof(DbMaintenanceButton))]
+
     public class BudgetCustomPanel : DbMaintenanceCustomPanel
     {
         public DbMaintenanceButton AddButton { get; set; }
+
+        public DbMaintenanceButton ClearRecurButton { get; set; }
+
 
         static BudgetCustomPanel()
         {
@@ -45,12 +50,21 @@ namespace RingSoft.HomeLogix.Budget
         public override void OnApplyTemplate()
         {
             AddButton = GetTemplateChild(nameof(AddButton)) as DbMaintenanceButton;
+            ClearRecurButton = GetTemplateChild(nameof(ClearRecurButton)) as DbMaintenanceButton;
+
 
             if (AddButton != null)
             {
                 AddButton.ToolTip.HeaderText = "Add New Adjustment (Alt + A)";
                 AddButton.ToolTip.DescriptionText = "Add an adjustment to history and the statistics.";
             }
+
+            if (ClearRecurButton != null)
+            {
+                ClearRecurButton.ToolTip.HeaderText = "Clear Recurring (Alt + R)";
+                ClearRecurButton.ToolTip.DescriptionText = "Clear recurring values.";
+            }
+
 
             base.OnApplyTemplate();
         }
