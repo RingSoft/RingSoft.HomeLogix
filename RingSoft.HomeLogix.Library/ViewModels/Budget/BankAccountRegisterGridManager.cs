@@ -255,6 +255,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var bankAccountRegisterGridRow in rows)
             {
                 bankAccountRegisterGridRow.SetComplete(value);
+                if (!value)
+                {
+                    bankAccountRegisterGridRow.ActualAmount = null;
+                }
                 var registerItem = new BankAccountRegisterItem();
                 bankAccountRegisterGridRow.SaveToEntity(registerItem, 0);
                 registerItems.Add(registerItem);
