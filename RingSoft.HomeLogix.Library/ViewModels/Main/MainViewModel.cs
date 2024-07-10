@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using RingSoft.DataEntryControls.Engine;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.App.Library;
-using RingSoft.DbLookup.DataProcessor;
-using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
+using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
-using RingSoft.DbLookup.QueryBuilder;
-using RingSoft.DbLookup.TableProcessing;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
