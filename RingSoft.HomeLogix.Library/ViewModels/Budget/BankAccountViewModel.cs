@@ -19,6 +19,7 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.Sqlite.Migrations;
 using System.Globalization;
+using RingSoft.DbLookup.TableProcessing;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.Printing.Interop;
 using RingSoft.HomeLogix.MobileInterop.PhoneModel;
@@ -886,6 +887,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             SetTotals(bankAccount);
             AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
                 budgetItems, null, bankAccount);
+
+            //Peter Ringering - 07/10/2024 04:15:16 PM - E-67
+            var bankAccount1 = AppGlobals.DataRepository.GetBankAccount(Id);
+            RegisterGridManager.LoadGrid(bankAccount1.RegisterItems);
         }
 
         private void SetTotals(BankAccount bankAccount)
@@ -1343,6 +1348,43 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 });
                 detailId++;
             }
+        }
+
+        protected override DbMaintenanceResults OnPreDeleteChildren()
+        {
+            var context = AppGlobals.DataRepository.GetDataContext();
+
+            var table = context.GetTable<BankAccountRegisterItemAmountDetail>();
+            var filter = new TableFilterDefinition<BankAccountRegisterItemAmountDetail>(AppGlobals.LookupContext.BankAccountRegisterItemAmountDetails);
+            filter.Include(p => p.RegisterItem)
+                .AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
+
+            var param = GblMethods.GetParameterExpression<BankAccountRegisterItemAmountDetail>();
+            var expr = filter.GetWhereExpresssion<BankAccountRegisterItemAmountDetail>(param);
+            var query = FieldFilterDefinition.FilterQuery(table, param, expr);
+            if (query.Any())
+            {
+                context.RemoveRange(query);
+            }
+
+            var table1 = context.GetTable<BankAccountRegisterItem>();
+
+            var filter1 = new TableFilterDefinition<BankAccountRegisterItem>(AppGlobals.LookupContext.BankAccountRegisterItems);
+            filter1.AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
+
+            var param1 = GblMethods.GetParameterExpression<BankAccountRegisterItem>();
+            var expr1 = filter1.GetWhereExpresssion<BankAccountRegisterItem>(param1);
+            var query1 = FieldFilterDefinition.FilterQuery(table1, param1, expr1);
+            if (query1.Any())
+            {
+                context.RemoveRange(query1);
+            }
+
+            if (!context.Commit("Deleting Register"))
+            {
+                return DbMaintenanceResults.ValidationError;
+            }
+            return base.OnPreDeleteChildren();
         }
 
         protected override bool DeleteEntity()
