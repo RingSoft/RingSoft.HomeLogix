@@ -106,6 +106,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             if (Manager.Rows.FirstOrDefault(p => p.IsNew == false) != null)
             {
+                Manager.Grid.CommitCellEdit();
                 var message = "Do you wish to post the transactions to the register?";
                 var caption = "Post To Register?";
                 var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption, true);
@@ -115,7 +116,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     View.ShowPostProcedure();
                     return;
                 }
-
                 if (Manager.SaveTransactions())
                 {
                     View.CloseWindow(true);
