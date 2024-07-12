@@ -66,6 +66,8 @@
             <Style TargetType="lc:GenericReportFilterWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <Style TargetType="lc:ListWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
+            
+            <Style TargetType="dec:TwoTierProcessingWindow" BasedOn="{StaticResource BaseWindowStyle}"/>
 
             <dec:DataEntryCustomContentTemplate x:Key="RegisterLineType">
 
