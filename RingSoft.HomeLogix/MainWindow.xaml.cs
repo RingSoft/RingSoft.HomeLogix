@@ -12,6 +12,7 @@ using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.HistoryMaintenance;
@@ -139,16 +140,12 @@ namespace RingSoft.HomeLogix
 
         public void ManageBudget()
         {
-            var budgetItemWindow = new BudgetItemWindow { Owner = this };
-            budgetItemWindow.Closed += (sender, args) => Activate();
-            budgetItemWindow.Show();
+            LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(AppGlobals.LookupContext.BudgetItems);
         }
 
         public void ManageBankAccounts()
         {
-            var bankAccountMaintenanceWindow = new BankAccountMaintenanceWindow { Owner = this };
-            bankAccountMaintenanceWindow.Closed += (sender, args) => Activate();
-            bankAccountMaintenanceWindow.Show();
+            LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(AppGlobals.LookupContext.BankAccounts);
         }
 
         public void LaunchAdvancedFind()

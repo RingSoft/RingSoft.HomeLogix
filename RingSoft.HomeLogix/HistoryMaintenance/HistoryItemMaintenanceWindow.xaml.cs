@@ -22,6 +22,7 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
     /// </summary>
     public partial class HistoryItemMaintenanceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public HistoryItemMaintenanceWindow()
         {
             InitializeComponent();

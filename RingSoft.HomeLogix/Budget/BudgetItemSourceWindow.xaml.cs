@@ -25,6 +25,7 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BudgetItemSourceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Budget Item Source";
         public override DbMaintenanceViewModelBase ViewModel => BudgetItemSourceViewModel;

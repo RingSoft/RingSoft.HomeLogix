@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using RingSoft.App.Controls;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -23,6 +24,7 @@ namespace RingSoft.HomeLogix.Budget
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Bank Account";
         public override DbMaintenanceViewModelBase ViewModel => BankAccountViewModel;
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
         private BankProcedure _bankProcedure;

@@ -1,4 +1,5 @@
-﻿using RingSoft.App.Controls;
+﻿using System.Windows.Controls;
+using RingSoft.App.Controls;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbMaintenance;
@@ -11,6 +12,7 @@ namespace RingSoft.HomeLogix.ImportBank
     /// </summary>
     public partial class QifMapMaintenanceWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceTopHeaderControl DbMaintenanceTopHeaderControl => TopHeaderControl;
         public override string ItemText => "Qif Map";
         public override DbMaintenanceViewModelBase ViewModel => LocalViewModel;

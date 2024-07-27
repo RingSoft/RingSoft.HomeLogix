@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.DbLookup.Controls.WPF;
@@ -12,6 +13,7 @@ namespace RingSoft.HomeLogix.HistoryMaintenance
     /// </summary>
     public partial class BankPeriodHistoryWindow
     {
+        public override Control MaintenanceButtonsControl => TopHeaderControl;
         public BankPeriodHistoryWindow()
         {
             InitializeComponent();
