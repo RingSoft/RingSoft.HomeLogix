@@ -52,6 +52,17 @@ namespace RingSoft.HomeLogix.DataAccess
         {
             if (entity is BudgetPeriodHistory budgetPeriodHistory)
             {
+                if (budgetPeriodHistory.BudgetItem == null)
+                {
+                    var context = SystemGlobals.DataRepository.GetDataContext();
+                    var table = context.GetTable<BudgetPeriodHistory>()
+                        .Include(p => p.BudgetItem);
+                    budgetPeriodHistory = table.FirstOrDefault(
+                        p => p.BudgetItemId == budgetPeriodHistory.BudgetItemId
+                        && p.PeriodType == budgetPeriodHistory.PeriodType
+                        && p.PeriodEndingDate == budgetPeriodHistory.PeriodEndingDate);
+                }
+
                 switch ((BudgetItemTypes)budgetPeriodHistory.BudgetItem.Type)
                 {
                     case BudgetItemTypes.Income:
