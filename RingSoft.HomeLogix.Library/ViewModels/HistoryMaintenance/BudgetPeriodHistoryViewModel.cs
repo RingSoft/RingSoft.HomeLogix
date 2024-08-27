@@ -159,10 +159,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 MakeFilters(FindButtonLookupDefinition);
             }
 
-            if (Processor is IAppDbMaintenanceProcessor appDbMaintenanceProcessor)
-            {
-                appDbMaintenanceProcessor.WindowReadOnlyMode = true;
-            }
+            ReadOnlyMode = true;
 
             FindButtonLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
