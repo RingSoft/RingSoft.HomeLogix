@@ -805,7 +805,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
         }
 
-        private void RefreshBudgetTotals()
+        public void RefreshBudgetTotals()
         {
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
 
@@ -829,6 +829,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> {registerItem});
                 CalculateTotals();
+                AppGlobals.MainViewModel.RefreshView();
             }
 
             if (!keyDown)
@@ -1469,7 +1470,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
             if (BankAccountView.ImportFromBank(this))
             {
-                
+                CalculateTotals();
+                AppGlobals.MainViewModel.RefreshView();
             }
 
             if (!keyDown)

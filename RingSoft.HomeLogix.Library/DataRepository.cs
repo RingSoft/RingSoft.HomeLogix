@@ -88,7 +88,7 @@ namespace RingSoft.HomeLogix.Library
 
         BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding, DateTime nextMonthEnding);
 
-        BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId);
+        BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId, bool includeTransfers = false);
 
         History GetHistoryItem(int historyId);
 
@@ -641,7 +641,7 @@ namespace RingSoft.HomeLogix.Library
             return result;
         }
 
-        public BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId)
+        public BudgetTotals GetBankBudgetTotals(DateTime monthEndDate, int bankAccountId, bool includeTransfers = false)
         {
             var result =new BudgetTotals();
             var context = SystemGlobals.DataRepository.GetDataContext();
@@ -669,6 +669,20 @@ namespace RingSoft.HomeLogix.Library
                             p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
                             p.BudgetItem.Type == (byte)BudgetItemTypes.Expense).ToList().Sum(p => p.ProjectedAmount);
 
+            if (includeTransfers)
+            {
+                var transferWithd = table
+                    .Include(p => p.BankAccount)
+                    .Include(p => p.BudgetItem)
+                    .Where(p => p.BankAccountId == bankAccountId
+                                && p.Date.Year == monthEndDate.Year
+                                && p.Date.Month == monthEndDate.Month
+                                && p.ItemType == (byte)BankAccountRegisterItemTypes.TransferToBankAccount
+                                && p.TransferToBankAccountId != null)
+                    .ToList()
+                    .Sum(p => p.ProjectedAmount);
+                historyExpenseAmount += transferWithd;
+            }
             var historyIncomeAmount = table
                 .Include(i => i.BankAccount)
                 .Include(p => p.BudgetItem)
@@ -677,6 +691,21 @@ namespace RingSoft.HomeLogix.Library
                             p.Date.Month == monthEndDate.Month &&
                             p.ItemType == (int)DataAccess.Model.BankAccountRegisterItemTypes.BudgetItem &&
                             p.BudgetItem.Type == (byte)BudgetItemTypes.Income).ToList().Sum(p => p.ProjectedAmount);
+
+            if (includeTransfers)
+            {
+                var transferDeposit = table
+                    .Include(p => p.BankAccount)
+                    .Include(p => p.BudgetItem)
+                    .Where(p => p.BankAccountId == bankAccountId
+                                && p.Date.Year == monthEndDate.Year
+                                && p.Date.Month == monthEndDate.Month
+                                && p.ItemType == (byte)BankAccountRegisterItemTypes.TransferToBankAccount
+                                && p.TransferToBankAccountId == null)
+                    .ToList()
+                    .Sum(p => p.ProjectedAmount);
+                historyIncomeAmount += transferDeposit;
+            }
 
             result.TotalProjectedMonthlyIncome = historyIncomeAmount;
             result.TotalProjectedMonthlyExpenses = historyExpenseAmount;

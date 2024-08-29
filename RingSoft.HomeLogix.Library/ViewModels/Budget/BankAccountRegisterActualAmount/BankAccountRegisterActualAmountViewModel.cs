@@ -193,7 +193,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerItem.ActualAmount = TotalActualAmount;
 
             if (AppGlobals.DataRepository.SaveRegisterItem(registerItem, amountDetails))
+            {
                 View.OnOkButtonCloseWindow();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

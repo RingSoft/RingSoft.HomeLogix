@@ -129,7 +129,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var bankTotals =
                 AppGlobals.DataRepository.GetBankBudgetTotals(AppGlobals.MainViewModel.CurrentMonthEnding,
-                    ViewModel.Id);
+                    ViewModel.Id, true);
 
             var monthBudgetDeposits = rows
                 .Where(w => w.ProjectedAmount > 0 &&
@@ -209,6 +209,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ViewModel.NewProjectedEndingBalance = newBalance;
             ViewModel.ProjectedLowestBalanceAmount = lowestBalance;
             ViewModel.ProjectedLowestBalanceDate = lowestBalanceDate;
+            ViewModel.MonthlyBudgetDeposits = MonthlyBudgetDeposits;
+            ViewModel.MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals;
 
             foreach (var row in Rows)
             {
