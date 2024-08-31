@@ -1407,9 +1407,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.AddModify);
         }
 
-        public async override void OnWindowClosing(CancelEventArgs e)
+        public override void OnWindowClosing(CancelEventArgs e)
         {
             base.OnWindowClosing(e);
+            if (!e.Cancel)
+                AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
             //if (!e.Cancel)
             //{
             //    AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);

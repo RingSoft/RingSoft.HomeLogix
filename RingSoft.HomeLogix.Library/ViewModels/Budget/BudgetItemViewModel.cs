@@ -1223,7 +1223,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
                 {
-                    bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems, StartingDate);
+                    if (bankAccountViewModel.Id == entity.BankAccountId)
+                    {
+                        bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems,
+                            StartingDate);
+                    }
                 }
 
                 if (entity.BankAccountId != DbBankAccountId && LookupAddViewArgs != null)
