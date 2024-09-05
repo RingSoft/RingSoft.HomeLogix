@@ -188,7 +188,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     break;
                 case BankAccountRegisterGridColumns.ActualAmount:
                     var actualAmountCellProps = (DataEntryGridDecimalCellProps) value;
-                    ActualAmount = (double)actualAmountCellProps.Value;
+                    ActualAmount = actualAmountCellProps.Value;
                     Manager.ViewModel.CalculateTotals();
                     SaveToDbOnTheFly();
                     break;
@@ -227,10 +227,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ItemDate = entity.ItemDate;
 
             BudgetItemId = entity.BudgetItemId;  //Must default to null or completed Escrow rows won't save.
-            if (entity.BudgetItem != null)
-                BudgetItemValue =
-                    new AutoFillValue(AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),
-                        entity.BudgetItem.Description);
+            BudgetItemValue = entity.BudgetItem.GetAutoFillValue();
 
             BankText = entity.BankText;
 

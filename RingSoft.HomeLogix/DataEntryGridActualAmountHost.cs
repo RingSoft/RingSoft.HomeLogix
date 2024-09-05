@@ -21,7 +21,7 @@ namespace RingSoft.HomeLogix
         public override DataEntryGridEditingCellProps GetCellValue()
         {
             return new ActualAmountCellProps(Row, ColumnId,
-                ActualAmountCellProps.NumericEditSetup, (double)Control.Value.GetValueOrDefault());
+                ActualAmountCellProps.NumericEditSetup, Control.Value);
         }
 
         public override bool HasDataChanged()

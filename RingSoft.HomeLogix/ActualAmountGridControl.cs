@@ -100,6 +100,14 @@ namespace RingSoft.HomeLogix
             }
         }
 
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+            }
+            base.OnPreviewKeyDown(e);
+        }
+
         protected override bool ProcessKeyChar(char keyChar)
         {
             switch (AmountMode)
@@ -121,10 +129,7 @@ namespace RingSoft.HomeLogix
                         case '9':
                         case '-':
                         case '.':
-                            SystemSounds.Exclamation.Play();
-                            if (MessageBox.Show("This contains multiple values.  Would you like to edit?", "Multiple Details",
-                                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) 
-                                OnDetailsButtonClick();
+                            HandleMultiValuesEdit();
                             return false;
                     }
                     break;
@@ -134,14 +139,36 @@ namespace RingSoft.HomeLogix
             return base.ProcessKeyChar(keyChar);
         }
 
-        protected override bool ProcessKey(Key key)
+        private void HandleMultiValuesEdit()
         {
-            if (key == Key.F5)
+            SystemSounds.Exclamation.Play();
+            if (MessageBox.Show("This contains multiple values.  Would you like to edit?", "Multiple Details",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 OnDetailsButtonClick();
-                return false;
             }
+        }
 
+        protected override bool ProcessKey(Key key)
+        {
+            switch (key)
+            {
+                case Key.Delete:
+                    switch (AmountMode)
+                    {
+                        case ActualAmountMode.Value:
+                            break;
+                        case ActualAmountMode.Details:
+                            HandleMultiValuesEdit();
+                            return false;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+                case Key.F5:
+                    OnDetailsButtonClick();
+                    return false;
+            }
             return base.ProcessKey(key);
         }
 
