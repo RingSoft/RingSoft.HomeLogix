@@ -17,6 +17,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
     public class BankAccountRegisterActualAmountViewModel : INotifyPropertyChanged
     {
+        #region Properties
+
         private DateTime _date;
 
         public DateTime Date
@@ -125,6 +127,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        #endregion
 
         public IBankAccountRegisterActualAmountView View { get; private set; }
         public ActualAmountCellProps ActualAmountCellProps { get; private set; }
@@ -177,7 +180,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void OnOkButton()
         {
             var invalidSources = GridManager.Rows.OfType<ActualAmountGridRow>()
-                .Where(p => p.IsNew == false && (p.Source == null || !p.Source.IsValid())).ToList();
+                .Where(p => p.IsNew == false && (p.SourceAutoFillValue == null || !p.SourceAutoFillValue.IsValid())).ToList();
             if (invalidSources.Any())
             {
                 var message = "You must select a valid source.";

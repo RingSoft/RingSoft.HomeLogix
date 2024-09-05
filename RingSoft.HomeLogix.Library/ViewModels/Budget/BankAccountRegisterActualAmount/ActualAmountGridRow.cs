@@ -16,7 +16,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public DateTime Date { get; set; } = DateTime.Today;
 
-        public AutoFillValue Source { get; set; }
+        public AutoFillValue SourceAutoFillValue { get; set; }
 
         public double Amount { get; set; }
 
@@ -64,7 +64,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return new DataEntryGridDateCellProps(this, columnId, _dateSetup, Date);
                 case ActualAmountGridColumns.Source:
                     _sourceAutoFillSetup.AddViewParameter = new ViewModelInput() {SourceHistoryIsIncome = IsIncome};
-                    return new DataEntryGridAutoFillCellProps(this, columnId, _sourceAutoFillSetup, Source);
+                    return new DataEntryGridAutoFillCellProps(this, columnId, _sourceAutoFillSetup, SourceAutoFillValue);
                 case ActualAmountGridColumns.Amount:
                     return new DataEntryGridDecimalCellProps(this, columnId, _amountSetup, Amount);
                 case ActualAmountGridColumns.BankText:
@@ -120,7 +120,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         //    }
                         //}
                         //else 
-                        Source = autoFillCellProps.AutoFillValue;
+                        SourceAutoFillValue = autoFillCellProps.AutoFillValue;
                     }
 
                     break;
@@ -141,15 +141,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public void LoadFromEntity(BankAccountRegisterItemAmountDetail amountDetail)
         {
             Date = amountDetail.Date;
-            Source = new AutoFillValue(AppGlobals.LookupContext.BudgetItemSources.GetPrimaryKeyValueFromEntity(amountDetail.Source),
-                amountDetail.Source.Name);
+            SourceAutoFillValue = amountDetail.Source.GetAutoFillValue();
             Amount = amountDetail.Amount;
             BankText = amountDetail.BankText;
-        }
-
-        public bool ValidateRow()
-        {
-            return true;
         }
 
         public void SaveToEntity(BankAccountRegisterItemAmountDetail entity, int rowIndex)
@@ -157,8 +151,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.RegisterId = Manager.ViewModel.ActualAmountCellProps.RegisterGridRow.RegisterId;
             entity.DetailId = rowIndex;
             entity.Date = Date;
-            var source = AppGlobals.LookupContext.BudgetItemSources.GetEntityFromPrimaryKeyValue(Source.PrimaryKeyValue);
-            entity.SourceId = source.Id;
+            entity.SourceId = SourceAutoFillValue.GetEntity<BudgetItemSource>().Id;
             entity.Amount = Amount;
             entity.BankText = BankText;
         }

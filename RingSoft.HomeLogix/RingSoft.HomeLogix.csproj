@@ -39,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
   </ItemGroup>

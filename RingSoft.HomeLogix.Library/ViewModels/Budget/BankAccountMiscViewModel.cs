@@ -29,6 +29,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
     }
     public class BankAccountMiscViewModel : INotifyPropertyChanged
     {
+        #region Properties
+
         private int _registerId;
 
         public int RegisterId
@@ -248,6 +250,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        #endregion
+
         public IBankAccountMiscView View { get; private set; }
 
         public BankAccountViewModel BankViewModel { get; private set; }
@@ -306,10 +310,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
                 if (budgetItem != null)
                 {
-                    BudgetItemAutoFillValue =
-                        new AutoFillValue(
-                            AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(budgetItem),
-                            budgetItem.Description);
+                    BudgetItemAutoFillValue = budgetItem.GetAutoFillValue();
 
                     if (_registerItem.BudgetItem != null) 
                         ItemType = (BudgetItemTypes)_registerItem.BudgetItem.Type;
@@ -336,9 +337,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             AppGlobals.DataRepository.GetTransferRegisterItem(_registerItem.TransferRegisterGuid);
                         var transferToBankAccount =
                             AppGlobals.DataRepository.GetBankAccount(_transferToRegisterItem.BankAccountId, false);
-                        TransferToBankAccountAutoFillValue = new AutoFillValue(
-                            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(transferToBankAccount),
-                            transferToBankAccount.Description);
+                        TransferToBankAccountAutoFillValue = transferToBankAccount.GetAutoFillValue();
 
                         TransferFromDescription = AppGlobals.DataRepository
                             .GetBankAccount(_registerItem.BankAccountId, false).Description;
@@ -347,9 +346,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         var transferToBankAccount =
                             AppGlobals.DataRepository.GetBankAccount(_registerItem.BankAccountId, false);
-                        TransferToBankAccountAutoFillValue = new AutoFillValue(
-                            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(transferToBankAccount),
-                            transferToBankAccount.Description);
+                        TransferToBankAccountAutoFillValue = transferToBankAccount.GetAutoFillValue();
 
                         _transferToRegisterItem = _registerItem;
                         _registerItem =
@@ -432,8 +429,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     ValidationFocusControls.BudgetItem);
                 return;
             }
-            _registerItem.BudgetItemId = AppGlobals.LookupContext.BudgetItems
-                .GetEntityFromPrimaryKeyValue(BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+            _registerItem.BudgetItemId = BudgetItemAutoFillValue.GetEntity<BudgetItem>().Id;
             _registerItem.BudgetItem =
                 AppGlobals.DataRepository.GetBudgetItem(_registerItem.BudgetItemId);
 
@@ -447,8 +443,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
                 }
 
-                var transferToBankAccount = AppGlobals.LookupContext.BankAccounts
-                    .GetEntityFromPrimaryKeyValue(TransferToBankAccountAutoFillValue.PrimaryKeyValue);
+                var transferToBankAccount = TransferToBankAccountAutoFillValue
+                    .GetEntity<BankAccount>();
                 if (transferToBankAccount.Id == _registerItem.BankAccountId)
                 {
                     var message = "Transfer To Bank Account cannot be the same as the Bank Account.";

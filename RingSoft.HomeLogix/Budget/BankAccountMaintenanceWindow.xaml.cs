@@ -43,6 +43,7 @@ namespace RingSoft.HomeLogix.Budget
         {
             _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading){BankAccount = entity};
             _bankProcedure.Start();
+            Activate();
         }
 
         public void GenerateTransactions(DateTime generateToDate)
