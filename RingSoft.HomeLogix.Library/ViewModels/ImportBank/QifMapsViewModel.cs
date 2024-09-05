@@ -4,14 +4,13 @@ using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
-    public class QifMapsViewModel : AppDbMaintenanceViewModel<QifMap>
+    public class QifMapsViewModel : DbMaintenanceViewModel<QifMap>
     {
-        public override TableDefinition<QifMap> TableDefinition => AppGlobals.LookupContext.QifMaps;
-
         private int _id;
 
         public int Id

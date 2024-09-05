@@ -8,8 +8,6 @@
                   xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
                   xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Main;assembly=RingSoft.HomeLogix.Library"
                   xmlns:da="clr-namespace:RingSoft.HomeLogix.DataAccess.Model;assembly=RingSoft.HomeLogix.DataAccess"
-                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-                  xmlns:sp="clr-namespace:ScottPlot;assembly=ScottPlot.WPF"
                   mc:Ignorable="d"
                   Style="{StaticResource BaseWindowStyle}"
                   CloseOnEscape="False"
@@ -138,9 +136,9 @@
 
             <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
 
-                <ac:RSChart x:Name="BudgetChart" Width="400" Height="200" Items="{Binding BudgetChartData}"/>
+                <ac:RSChart x:Name="BudgetChart" Width="400" Height="200" Items="{Binding BudgetChartData}" IsTabStop="False"/>
 
-                <ac:RSChart x:Name="ActualChart" Width="400" Height="200" Items="{Binding ActualChartData}" Margin="5,0,0,0"/>
+                <ac:RSChart x:Name="ActualChart" Width="400" Height="200" Items="{Binding ActualChartData}" Margin="5,0,0,0" IsTabStop="False"/>
 
             </StackPanel>
 
@@ -159,7 +157,7 @@
             </lc:LookupControl>
 
             
-            <GroupBox Grid.Row="3" Grid.Column="0" Header="Monthly Totals" HorizontalAlignment="Center">
+            <GroupBox Grid.Row="3" Grid.Column="0" Header="Monthly Totals" HorizontalAlignment="Center" IsTabStop="False">
 
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
@@ -224,7 +222,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Row="5" Grid.Column="0" Header="Yearly Totals" HorizontalAlignment="Center">
+            <GroupBox Grid.Row="5" Grid.Column="0" Header="Yearly Totals" HorizontalAlignment="Center" IsTabStop="False">
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

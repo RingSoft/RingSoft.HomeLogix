@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using RingSoft.HomeLogix.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System.Windows.Input;

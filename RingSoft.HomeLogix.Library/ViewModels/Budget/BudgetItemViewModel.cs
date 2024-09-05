@@ -33,10 +33,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public ViewModelInput ViewModelInput { get; set; }
     }
 
-    public class BudgetItemViewModel : AppDbMaintenanceViewModel<BudgetItem>
+    public class BudgetItemViewModel : DbMaintenanceViewModel<BudgetItem>
     {
-        public override TableDefinition<BudgetItem> TableDefinition => AppGlobals.LookupContext.BudgetItems;
-
         #region Properties
 
         private int _id;

@@ -9,13 +9,14 @@ using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
-    public class BudgetPeriodHistoryViewModel : AppDbMaintenanceViewModel<BudgetPeriodHistory>
+    public class BudgetPeriodHistoryViewModel : DbMaintenanceViewModel<BudgetPeriodHistory>
     {
 
         private string _budgetItem;
@@ -129,9 +130,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         }
 
         public ViewModelInput ViewModelInput { get; set; }
-
-        public override TableDefinition<BudgetPeriodHistory> TableDefinition =>
-            AppGlobals.LookupContext.BudgetPeriodHistory;
 
         private PeriodHistoryTypes _mode;
         private BudgetPeriodHistory _budgetPeriodHistory;

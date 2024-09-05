@@ -1,29 +1,22 @@
-﻿using RingSoft.App.Library;
+﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbLookup.TableProcessing;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.MobileInterop.PhoneModel;
+using RingSoft.Printing.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DbLookup.DataProcessor;
-using RingSoft.DbLookup.EfCore;
-using RingSoft.HomeLogix.Sqlite.Migrations;
 using System.Globalization;
-using RingSoft.DbLookup.TableProcessing;
-using RingSoft.HomeLogix.DataAccess;
-using RingSoft.Printing.Interop;
-using RingSoft.HomeLogix.MobileInterop.PhoneModel;
-using RingSoft.HomeLogix.Library.PhoneModel;
+using System.Linq;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -79,10 +72,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             new List<BankAccountPeriodHistory>();
     }
 
-    public class BankAccountViewModel : AppDbMaintenanceViewModel<BankAccount>
+    public class BankAccountViewModel : DbMaintenanceViewModel<BankAccount>
     {
-        public override TableDefinition<BankAccount> TableDefinition => AppGlobals.LookupContext.BankAccounts;
-
         public IBankAccountView BankAccountView { get; private set; }
 
         #region Properties
@@ -329,21 +320,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private LookupCommand _budgetItemsLookupCommand;
-
-        public LookupCommand BudgetItemsLookupCommand
-        {
-            get => _budgetItemsLookupCommand;
-            set
-            {
-                if (_budgetItemsLookupCommand == value)
-                    return;
-
-                _budgetItemsLookupCommand = value;
-                OnPropertyChanged(nameof(BudgetItemsLookupCommand), false);
-            }
-        }
-
         private LookupDataSourceChanged _budgetItemsDataSourceChanged;
 
         public LookupDataSourceChanged BudgetItemsDataSourceChanged
@@ -411,21 +387,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private LookupCommand _monthlyLookupCommand;
-
-        public LookupCommand MonthlyLookupCommand
-        {
-            get => _monthlyLookupCommand;
-            set
-            {
-                if (_monthlyLookupCommand == value)
-                    return;
-
-                _monthlyLookupCommand = value;
-                OnPropertyChanged(nameof(MonthlyLookupCommand), false);
-            }
-        }
-
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _yearlyLookupDefinition;
 
         public LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> YearlyLookupDefinition
@@ -438,21 +399,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _yearlyLookupDefinition = value;
                 OnPropertyChanged(nameof(YearlyLookupDefinition), false);
-            }
-        }
-
-        private LookupCommand _yearlyLookupCommand;
-
-        public LookupCommand YearlyLookupCommand
-        {
-            get => _yearlyLookupCommand;
-            set
-            {
-                if (_yearlyLookupCommand == value)
-                    return;
-
-                _yearlyLookupCommand = value;
-                OnPropertyChanged(nameof(YearlyLookupCommand), false);
             }
         }
 
@@ -470,23 +416,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 OnPropertyChanged(nameof(HistoryLookupDefinition), false);
             }
         }
-
-        private LookupCommand _historyLookupCommand;
-
-        public LookupCommand HistoryLookupCommand
-        {
-            get => _historyLookupCommand;
-            set
-            {
-                if (_historyLookupCommand == value)
-                    return;
-
-                _historyLookupCommand = value;
-                OnPropertyChanged(nameof(HistoryLookupCommand), false);
-            }
-        }
-
-        #endregion
 
         private bool _completeAll;
         
@@ -521,6 +450,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 OnPropertyChanged();
             }
         }
+
+        #endregion
 
         public int InitRegisterId { get; private set; }
 
@@ -599,8 +530,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
             YearlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
+            
             HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
-
+            
             BudgetItemsLookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
             BudgetItemsLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
 
@@ -634,10 +566,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CompleteAll = false;
             _completeGrid = true;
 
-            MonthlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            YearlyLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
-            BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            MonthlyLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
+            YearlyLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
+            BudgetItemsLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
+            HistoryLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
 
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
                 ImportTransactionsCommand.IsEnabled = false;
@@ -659,7 +591,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, 
                 Conditions.Equals, Id);
 
-            MonthlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            MonthlyLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
 
             YearlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType,
@@ -667,20 +599,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId,
                 Conditions.Equals, Id);
 
-            YearlyLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, _yearlyHistoryFilter);
+            YearlyLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, _yearlyHistoryFilter));
 
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
-            
+            HistoryLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
+
             BudgetItemsLookupDefinition.FilterDefinition.ClearFixedFilters();
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, Conditions.Equals,
                 Id).SetEndLogic(EndLogics.Or).SetLeftParenthesesCount(1);
             BudgetItemsLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
                 Conditions.Equals, Id).SetRightParenthesesCount(1);
 
-            BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            BudgetItemsLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
             
             CompleteAll = false;
             TypeEnabled = false;
@@ -1404,7 +1339,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public void OnAddModifyBudgetItems()
         {
             if (ExecuteAddModifyCommand() == DbMaintenanceResults.Success)
-                BudgetItemsLookupCommand = GetLookupCommand(LookupCommands.AddModify);
+                BudgetItemsLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.AddModify));
         }
 
         public override void OnWindowClosing(CancelEventArgs e)
@@ -1412,20 +1347,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnWindowClosing(e);
             if (!e.Cancel)
                 AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
-            //if (!e.Cancel)
-            //{
-            //    AppGlobals.MainViewModel.BankAccountViewModels.Remove(this);
-            //    var systemMaster = AppGlobals.DataRepository.GetSystemMaster();
-            //    if (_recordSaved && !systemMaster.PhoneLogin.IsNullOrEmpty())
-            //    {
-            //        var message = "You must restart this app to sync with mobile device.  Do you wish to restart now?";
-            //        var result = await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Restart?");
-            //        if (result == MessageBoxButtonsResult.Yes)
-            //        {
-            //            BankAccountView.RestartApp();
-            //        }
-            //    }
-            //}
         }
 
         public bool IsBeingReconciled(int budgetItemId)

@@ -48,7 +48,7 @@ namespace RingSoft.HomeLogix.Budget
             if (BudgetItemViewModel.FromRegisterGrid)
                 TopHeaderControl.SaveSelectButton.Visibility = Visibility.Collapsed;
 
-            DbMaintenanceTopHeaderControl.SaveSelectButton.Command = BudgetItemViewModel.SaveSelectButtonCommand;
+            //DbMaintenanceTopHeaderControl.SaveSelectButton.Command = BudgetItemViewModel.SaveSelectButtonCommand;
 
             DescriptionControl.SetReadOnlyMode(false);
         }

@@ -7,12 +7,13 @@ using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
-    public class HistoryItemMaintenanceViewModel : AppDbMaintenanceViewModel<History>
+    public class HistoryItemMaintenanceViewModel : DbMaintenanceViewModel<History>
     {
         private int _id;
 
@@ -240,8 +241,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
 
         public ViewModelInput ViewModelInput { get; set; }
-
-        public override TableDefinition<History> TableDefinition => AppGlobals.LookupContext.History;
 
         private BudgetItem _budgetItemFilter;
         private BudgetPeriodHistory _budgetPeriodHistoryFilter;

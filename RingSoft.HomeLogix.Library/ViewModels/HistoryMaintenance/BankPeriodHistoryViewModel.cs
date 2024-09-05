@@ -6,13 +6,14 @@ using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
-    public class BankPeriodHistoryViewModel : AppDbMaintenanceViewModel<BankAccountPeriodHistory>
+    public class BankPeriodHistoryViewModel : DbMaintenanceViewModel<BankAccountPeriodHistory>
     {
 
         private string _bankAccount;
@@ -305,9 +306,5 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             AppGlobals.MainViewModel.View.ShowHistoryPrintFilterWindow(callBack);
         }
-
-
-        public override TableDefinition<BankAccountPeriodHistory> TableDefinition =>
-            AppGlobals.LookupContext.BankAccountPeriodHistory;
     }
 }

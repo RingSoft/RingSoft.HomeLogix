@@ -13,10 +13,8 @@ using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-    public class BudgetItemSourceViewModel : AppDbMaintenanceViewModel<BudgetItemSource>
+    public class BudgetItemSourceViewModel : DbMaintenanceViewModel<BudgetItemSource>
     {
-        public override TableDefinition<BudgetItemSource> TableDefinition => AppGlobals.LookupContext.BudgetItemSources;
-
         private int _id;
 
         public int Id
