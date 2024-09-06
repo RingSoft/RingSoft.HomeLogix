@@ -225,7 +225,7 @@ namespace RingSoft.HomeLogix.DataAccess
             MainBudgetLookup.Include(p => p.BudgetItem)
                 .AddVisibleColumnDefinition(p => p.BudgetItem
                     , "Budget Item",
-                p => p.Description, 35);
+                p => p.Description, 20);
             MainBudgetLookup.Include(p => p.BudgetItem)
                 .AddHiddenColumn(p => p.BudgetItemId
                     , p => p.Id);

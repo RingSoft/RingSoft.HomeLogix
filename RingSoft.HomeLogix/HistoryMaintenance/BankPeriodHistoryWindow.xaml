@@ -64,7 +64,7 @@
 
             </Grid>
             <Label Content="History" HorizontalAlignment="Left"/>
-            <lc:LookupControl x:Name="LookupControl" Height="300" LookupDefinition="{Binding HistoryLookupDefinition}" Command="{Binding HistoryLookupCommand}">
+            <lc:LookupControl x:Name="LookupControl" Height="300" LookupDefinition="{Binding HistoryLookupDefinition}">
                 <lc:LookupControl.LookupColumns>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>

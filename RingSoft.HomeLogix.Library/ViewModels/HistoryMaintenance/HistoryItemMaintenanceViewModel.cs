@@ -1,20 +1,19 @@
-﻿using System;
-using RingSoft.App.Library;
+﻿using RingSoft.App.Library;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.DataProcessor;
-using RingSoft.DbLookup.DataProcessor.SelectSqlGenerator;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
+using System;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
     public class HistoryItemMaintenanceViewModel : DbMaintenanceViewModel<History>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -223,22 +222,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private LookupCommand _sourceHistoryLookupCommand;
-
-        public LookupCommand SourceHistoryLookupCommand
-        {
-            get => _sourceHistoryLookupCommand;
-            set
-            {
-                if (_sourceHistoryLookupCommand == value)
-                {
-                    return;
-                }
-                _sourceHistoryLookupCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
+        #endregion
 
         public ViewModelInput ViewModelInput { get; set; }
 
@@ -249,8 +233,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         protected override void Initialize()
         {
-            //FindButtonLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
-            //FindButtonLookupDefinition.ReadOnlyMode = false;
             if (LookupAddViewArgs != null && LookupAddViewArgs.InputParameter is ViewModelInput viewModelInput)
             {
                 ViewModelInput = viewModelInput;
@@ -265,11 +247,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             _bankAccountFilter = ViewModelInput.HistoryFilterBankAccount;
             _bankAccountPeriodHistoryFilter = ViewModelInput.HistoryFilterBankAccountPeriod;
 
-            //ViewModelInput.HistoryFilterBudgetItem = null;
-            //ViewModelInput.HistoryFilterBudgetPeriodItem = null;
-            //ViewModelInput.HistoryFilterBankAccount = null;
-            //ViewModelInput.HistoryFilterBankAccountPeriod = null;
-
             ReadOnlyMode = true;
 
             var sourceHistoryLookupDefinition = new LookupDefinition<SourceHistoryLookup, SourceHistory>(AppGlobals.LookupContext.SourceHistory);
@@ -282,13 +259,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.BankText, p => p.BankText);
             SourceHistoryLookupDefinition = sourceHistoryLookupDefinition;
 
-            //BudgetAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup);
-            //BudgetAutoFillSetup.LookupDefinition.ReadOnlyMode = true;
-            
             BudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.BudgetItemId))
             {
                 AddViewParameter = ViewModelInput,
-                //AllowLookupAdd = false
             };
 
             BankAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup)
@@ -305,14 +278,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         {
             Id = newEntity.Id;
 
-            //DbDataProcessor.ShowSqlStatementWindow();
             MakeFilters(ViewLookupDefinition);
 
             SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             SourceHistoryLookupDefinition.FilterDefinition
                 .AddFixedFilter(p => p.HistoryId, Conditions.Equals, Id);
 
-            SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            SourceHistoryLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
         }
 
         protected override History GetEntityFromDb(History newEntity, PrimaryKeyValue primaryKeyValue)
@@ -345,16 +318,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 filterDate = _budgetPeriodHistoryFilter.PeriodEndingDate;
 
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                //formula += $"'{filterDate.Month:D2}'";
 
                 lookupDefinition.FilterDefinition.AddFixedFilter("Month",
                     Conditions.Equals, $"{filterDate.Month:D2}", formula);
 
-                //formula =
-                //    $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
                 formula = $"{GetDateFormula(false)} {sqlGenerator.FormatSqlObject(table.TableName)}.";
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                //formula += $"'{filterDate.Year:D4}'";
 
                 lookupDefinition.FilterDefinition.AddFixedFilter("Year",
                     Conditions.Equals, $"{filterDate.Year:D4}", formula);
@@ -368,11 +337,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 lookupDefinition.FilterDefinition.AddFixedFilter("Month",
                     Conditions.Equals, $"{filterDate.Month:D2}", formula);
 
-                //formula =
-                //    $"strftime('%Y', {sqlGenerator.FormatSqlObject(table.TableName)}.";
                 formula = $"{GetDateFormula(false)} {sqlGenerator.FormatSqlObject(table.TableName)}.";
                 formula += $"{sqlGenerator.FormatSqlObject(table.GetFieldDefinition(p => p.Date).FieldName)})";
-                //formula += $"'{filterDate.Year:D4}'";
 
                 lookupDefinition.FilterDefinition.AddFixedFilter("Year",
                     Conditions.Equals, $"{filterDate.Year:D4}", formula);
@@ -445,21 +411,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 Difference = ProjectedAmount - ActualAmount;
             }
 
-            if (entity.BudgetItem != null)
-            {
-                BudgetAutoFillValue =
-                    new AutoFillValue(
-                        AppGlobals.LookupContext.BudgetItems.GetPrimaryKeyValueFromEntity(entity.BudgetItem),
-                        entity.BudgetItem.Description);
-            }
-
-            if (entity.BankAccount != null)
-            {
-                BankAutoFillValue =
-                    new AutoFillValue(
-                        AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
-                        entity.BankAccount.Description);
-            }
+            BudgetAutoFillValue = entity.BudgetItem.GetAutoFillValue();
+            BankAutoFillValue = entity.BankAccount.GetAutoFillValue();
         }
 
         protected override History GetEntityData()
@@ -475,7 +428,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             BudgetAutoFillValue = null;
             ProjectedAmount = ActualAmount = Difference = 0;
 
-            SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            SourceHistoryLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
         }
 
         protected override bool SaveEntity(History entity)

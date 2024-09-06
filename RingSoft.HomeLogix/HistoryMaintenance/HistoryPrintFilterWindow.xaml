@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;assembly=RingSoft.HomeLogix.Library"
-        xmlns:local="clr-namespace:RingSoft.HomeLogix.HistoryMaintenance"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="History Filter Window" SizeToContent="WidthAndHeight">

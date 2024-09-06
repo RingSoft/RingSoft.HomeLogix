@@ -1,13 +1,10 @@
-﻿using System;
+﻿using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using RingSoft.DataEntryControls.Engine;
-using RingSoft.DataEntryControls.Engine.DataEntryGrid;
-using RingSoft.DbLookup;
-using RingSoft.HomeLogix.Library.ViewModels.Budget;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {

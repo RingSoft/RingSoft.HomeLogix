@@ -48,7 +48,7 @@
 
             <Label Grid.Row="3" Grid.Column="0" Content="History" HorizontalAlignment="Left"/>
 
-            <lc:LookupControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" LookupDefinition="{Binding SourceHistoryLookupDefinition}" Command="{Binding SourceHistoryLookupCommand}">
+            <lc:LookupControl Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" LookupDefinition="{Binding SourceHistoryLookupDefinition}">
                 <lc:LookupControl.LookupColumns>
 
                     <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:SourceHistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="120"/>

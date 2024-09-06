@@ -13,6 +13,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
     public class ImportBankTransactionsBudgetsViewModel : INotifyPropertyChanged
     {
+        #region Properties
+
         private string _bankText;
 
         public string BankText
@@ -94,6 +96,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
+        #endregion
 
         public ImportTransactionGridRow Row { get; set; }
 

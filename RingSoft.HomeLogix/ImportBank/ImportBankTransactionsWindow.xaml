@@ -3,11 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RingSoft.HomeLogix.ImportBank"
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.ImportBank;assembly=RingSoft.HomeLogix.Library"
-
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="ImportBankTransactionsWindow" Height="450" Width="1000" SizeToContent="WidthAndHeight">
@@ -32,7 +30,7 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Left">
 
-            <Button Content="_Import From Quicken/Microsoft Money .QIF File" Command="{Binding ImportQifCommand}"/>
+            <Button Content="_Import From Quicken/Microsoft Money .QIF File" Command="{Binding ImportQifCommand}" Height="30"/>
 
             <Button Content="_QIF Maintenance" Command="{Binding ShowQifMaintenanceCommand}"/>
 
@@ -66,7 +64,7 @@
 
         <StackPanel Grid.Row="4" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
 
-            <Button Command="{Binding OkCommand}" Content="_OK" HorizontalAlignment="Left" Width="75" IsDefault="True"/>
+            <Button Command="{Binding OkCommand}" Content="_OK" HorizontalAlignment="Left" Width="75" IsDefault="True" Height="30"/>
 
             <Button x:Name="CancelButton" Content="_Cancel" HorizontalAlignment="Left" Width="75" Margin="5,0,0,0"/>
         </StackPanel>

@@ -6,7 +6,6 @@
         xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
         xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.ImportBank;assembly=RingSoft.HomeLogix.Library"
-        xmlns:local="clr-namespace:RingSoft.HomeLogix.ImportBank"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
         Title="ImportBankTransactionsBudgetsWindow" Height="450" Width="800"

@@ -74,7 +74,7 @@
 
         <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
 
-            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0"/>
+            <Button Content="_OK" Command="{Binding OkButtonCommand}" Width="50" Margin="0,0,5,0" IsDefault="True"/>
             <Button x:Name="CancelButton" Content="_Cancel" Width="50"/>
 
         </StackPanel>

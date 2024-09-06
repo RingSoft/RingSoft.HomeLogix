@@ -50,6 +50,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
     {
+        #region Properties
+
         private DateTime _currentMonthEnding;
 
         public DateTime CurrentMonthEnding
@@ -95,21 +97,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        private LookupCommand _budgetLookupCommand;
-
-        public LookupCommand BudgetLookupCommand
-        {
-            get => _budgetLookupCommand;
-            set
-            {
-                if (_budgetLookupCommand == value)
-                    return;
-
-                _budgetLookupCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
         private LookupDefinition<MainBankLookup, BankAccount> _bankLookupDefinition;
 
         public LookupDefinition<MainBankLookup, BankAccount> BankLookupDefinition
@@ -126,23 +113,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 OnPropertyChanged();
             }
         }
-
-        private LookupCommand _bankLookupCommand;
-
-        public LookupCommand BankLookupCommand
-        {
-            get => _bankLookupCommand;
-            set
-            {
-                if (_bankLookupCommand == value)
-                {
-                    return;
-                }
-                _bankLookupCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
 
 
         private double _totalProjectedMonthlyIncome;
@@ -355,6 +325,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
+        #endregion
+
         public IMainView View { get; private set; }
 
         public RelayCommand CloseAppCommand { get; private set; }
@@ -435,6 +407,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (loadVm)
             {
                 BankLookupDefinition = CreateBankLookupDefinition();
+                BudgetLookupDefinition = AppGlobals.LookupContext.MainBudgetLookup.Clone();
                 SetStartupView();
             }
         }
@@ -450,7 +423,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
                 SetCurrentMonthEnding(date, false);
                 CurrentMonth = date;
-                BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
+                //BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
             else
@@ -458,7 +431,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 SetCurrentMonthEnding(currentBudgetMonth.PeriodEndingDate, false);
                 CurrentMonth = currentBudgetMonth.PeriodEndingDate;
                 //BankLookupDefinition = CreateBankLookupDefinition();
-                BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
+                //BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
         }
@@ -483,9 +456,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             return bankLookupDefinition;
         }
 
-        private LookupDefinition<MainBudgetLookup, MainBudget> CreateBudgetLookupDefinition(bool createColumns)
-        {
-            return AppGlobals.LookupContext.MainBudgetLookup.Clone();
+        //private LookupDefinition<MainBudgetLookup, MainBudget> CreateBudgetLookupDefinition()
+        //{
+        //    return AppGlobals.LookupContext.MainBudgetLookup.Clone();
         //    var budgetLookupDefinition = BudgetLookupDefinition;
             
         //    if (createColumns)
@@ -519,7 +492,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         //    budgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             
         //    return budgetLookupDefinition;
-        }
+        //}
 
 
 
@@ -749,8 +722,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 context.AddRange(budgetItems);
                 context.Commit("Adding Main Budgets");
             }
-            BudgetLookupCommand = new LookupCommand(LookupCommands.Refresh);
-            BankLookupCommand = new LookupCommand(LookupCommands.Refresh);
+            BudgetLookupDefinition.SetCommand(new LookupCommand(LookupCommands.Refresh));
+            BankLookupDefinition.SetCommand(new LookupCommand(LookupCommands.Refresh));
 
             var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(CurrentMonthEnding,
                 GetPeriodEndDate(CurrentMonthEnding.AddMonths(-1)), 
@@ -1039,7 +1012,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             CurrentMonthEnding = GetPeriodEndDate(month);
             //var budgetItems = new List<int>();
 
-            var budgetLookupDefinition = CreateBudgetLookupDefinition(true);
             //var lookupData = new LookupData<MainBudgetLookup, MainBudget>(budgetLookupDefinition, this);
             var context = AppGlobals.DataRepository.GetDataContext();
             var budgetItems = GetBudgetItems(context);
