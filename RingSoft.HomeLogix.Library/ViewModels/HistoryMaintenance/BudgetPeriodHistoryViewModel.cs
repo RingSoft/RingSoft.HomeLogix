@@ -1,40 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using RingSoft.App.Library;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
-using RingSoft.DbLookup.DataProcessor;
+﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
+using System;
+using System.ComponentModel;
+using RingSoft.DbLookup.AutoFill;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
     public class BudgetPeriodHistoryViewModel : DbMaintenanceViewModel<BudgetPeriodHistory>
     {
+        #region Properties
 
-        private string _budgetItem;
+        private AutoFillSetup _budgetAutoFillSetup;
 
-        public string BudgetItem
+        public AutoFillSetup BudgetAutoFillSetup
         {
-            get => _budgetItem;
+            get { return _budgetAutoFillSetup; }
             set
             {
-                if (_budgetItem == value)
+                if (_budgetAutoFillSetup == value)
                 {
                     return;
                 }
-                _budgetItem = value;
-
+                _budgetAutoFillSetup = value;
                 OnPropertyChanged();
             }
         }
+
+        private AutoFillValue _budgetAutoFillValue;
+
+        public AutoFillValue BudgetAutoFillValue
+        {
+            get { return _budgetAutoFillValue; }
+            set
+            {
+                if (_budgetAutoFillValue == value)
+                    return;
+
+                _budgetAutoFillValue = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private DateTime _periodEndingDate;
 
@@ -114,20 +125,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private LookupCommand _historyLookupCommand;
-
-        public LookupCommand HistoryLookupCommand
-        {
-            get => _historyLookupCommand;
-            set
-            {
-                if (_historyLookupCommand == value)
-                    return;
-
-                _historyLookupCommand = value;
-                OnPropertyChanged(nameof(HistoryLookupCommand), false);
-            }
-        }
+        #endregion
 
         public ViewModelInput ViewModelInput { get; set; }
 
@@ -135,6 +133,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         private BudgetPeriodHistory _budgetPeriodHistory;
         private bool _noFilters;
 
+        public BudgetPeriodHistoryViewModel()
+        {
+            BudgetAutoFillSetup = new AutoFillSetup(TableDefinition
+                .GetFieldDefinition(p => p.BudgetItemId));
+        }
         protected override void Initialize()
         {
             if (LookupAddViewArgs != null && LookupAddViewArgs.InputParameter is ViewModelInput viewModelInput)
@@ -172,7 +175,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
         {
             FindButtonLookupDefinition.ReadOnlyMode = false;
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            PeriodEndingDate = newEntity.PeriodEndingDate;
         }
 
         protected override BudgetPeriodHistory GetEntityFromDb(BudgetPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
@@ -180,32 +183,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             _budgetPeriodHistory = AppGlobals.DataRepository.GetBudgetPeriodHistory(newEntity.BudgetItemId,
                 (PeriodHistoryTypes)newEntity.PeriodType, newEntity.PeriodEndingDate);
 
-            var budgetItem = AppGlobals.DataRepository.GetBudgetItem(_budgetPeriodHistory.BudgetItemId);
+            return _budgetPeriodHistory;
+        }
 
-            BudgetItem = budgetItem.Description;
-
-            PeriodEndingDate = _budgetPeriodHistory.PeriodEndingDate;
-
+        protected override void LoadFromEntity(BudgetPeriodHistory entity)
+        {
             HistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
             HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BudgetItemId, Conditions.Equals,
-                _budgetPeriodHistory.BudgetItemId);
-
-            var table = AppGlobals.LookupContext.History;
+                entity.BudgetItemId);
 
             if (_mode == PeriodHistoryTypes.Monthly)
             {
-                var beginDate = new DateTime(_budgetPeriodHistory.PeriodEndingDate.Year
-                    , _budgetPeriodHistory.PeriodEndingDate.Month, 1);
+                var beginDate = new DateTime(entity.PeriodEndingDate.Year
+                    , entity.PeriodEndingDate.Month, 1);
                 HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
                     , Conditions.GreaterThanEquals, beginDate);
                 HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
-                    , Conditions.LessThanEquals, _budgetPeriodHistory.PeriodEndingDate);
+                    , Conditions.LessThanEquals, entity.PeriodEndingDate);
             }
             else
             {
-                var beginDate = new DateTime(_budgetPeriodHistory.PeriodEndingDate.Year
+                var beginDate = new DateTime(entity.PeriodEndingDate.Year
                     , 1, 1);
-                var endDate = new DateTime(_budgetPeriodHistory.PeriodEndingDate.Year
+                var endDate = new DateTime(entity.PeriodEndingDate.Year
                     , 12, 31);
 
                 HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
@@ -213,12 +213,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
                 HistoryLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Date
                     , Conditions.LessThanEquals, endDate);
             }
+            HistoryLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh
+                    , TableDefinition.GetPrimaryKeyValueFromEntity(entity)
+                    , ViewModelInput));
 
-            return _budgetPeriodHistory;
-        }
-
-        protected override void LoadFromEntity(BudgetPeriodHistory entity)
-        {
+            BudgetAutoFillValue = entity.BudgetItem.GetAutoFillValue();
             ProjectedAmount = entity.ProjectedAmount;
             ActualAmount = entity.ActualAmount;
             var budgetItem = AppGlobals.DataRepository.GetBudgetItem(entity.BudgetItemId);
@@ -240,11 +240,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         protected override void ClearData()
         {
-            BudgetItem = string.Empty;
+            BudgetAutoFillValue = null;
             PeriodEndingDate = DateTime.Today;
             ProjectedAmount = ActualAmount = Difference = 0;
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            HistoryLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Clear));
         }
 
         protected override bool SaveEntity(BudgetPeriodHistory entity)

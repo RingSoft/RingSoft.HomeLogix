@@ -472,7 +472,9 @@ namespace RingSoft.HomeLogix.Library
         public BudgetPeriodHistory GetBudgetPeriodHistory(int budgetId, PeriodHistoryTypes type, DateTime periodEndDate)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
-            return context.GetTable<BudgetPeriodHistory>().FirstOrDefault(f =>
+            return context.GetTable<BudgetPeriodHistory>()
+                .Include(p => p.BudgetItem)
+                .FirstOrDefault(f =>
                 f.BudgetItemId == budgetId && f.PeriodType == (byte) type && f.PeriodEndingDate == periodEndDate);
         }
 

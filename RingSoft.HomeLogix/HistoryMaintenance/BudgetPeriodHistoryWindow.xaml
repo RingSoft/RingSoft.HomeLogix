@@ -45,7 +45,7 @@
 
                 <Label Grid.Row="0" Grid.Column="0" Content="Budget Item"/>
                
-                <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding BudgetItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                <lc:AutoFillReadOnlyControl Grid.Row="0" Grid.Column="1" Setup="{Binding BudgetAutoFillSetup}" Value="{Binding BudgetAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" HorizontalAlignment="Left"/>
 
                 <Label Grid.Row="0" Grid.Column="2" Content="Period End Date"/>
 
