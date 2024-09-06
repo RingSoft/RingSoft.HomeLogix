@@ -15,20 +15,35 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 {
     public class BankPeriodHistoryViewModel : DbMaintenanceViewModel<BankAccountPeriodHistory>
     {
+        #region Properties
 
-        private string _bankAccount;
+        private AutoFillSetup _bankAutoFillSetup;
 
-        public string BankAccount
+        public AutoFillSetup BankAutoFillSetup
         {
-            get => _bankAccount;
+            get { return _bankAutoFillSetup; }
             set
             {
-                if (_bankAccount == value)
+                if (_bankAutoFillSetup == value)
                 {
                     return;
                 }
+                _bankAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
 
-                _bankAccount = value;
+        private AutoFillValue _bankAutoFillValue;
+
+        public AutoFillValue BankAutoFillValue
+        {
+            get { return _bankAutoFillValue; }
+            set
+            {
+                if (_bankAutoFillValue == value)
+                    return;
+
+                _bankAutoFillValue = value;
                 OnPropertyChanged();
             }
         }
@@ -115,26 +130,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
             }
         }
 
-        private LookupCommand _historyLookupCommand;
-
-        public LookupCommand HistoryLookupCommand
-        {
-            get => _historyLookupCommand;
-            set
-            {
-                if (_historyLookupCommand == value)
-                    return;
-
-                _historyLookupCommand = value;
-                OnPropertyChanged(nameof(HistoryLookupCommand), false);
-            }
-        }
+        #endregion
 
         public ViewModelInput ViewModelInput { get; set; }
 
         private PeriodHistoryTypes _mode;
         private bool _noFilters;
         private BankAccountPeriodHistory _bankPeriodHistory;
+
+        public BankPeriodHistoryViewModel()
+        {
+            BankAutoFillSetup = new AutoFillSetup(
+                TableDefinition.GetFieldDefinition(p => p.BankAccountId));
+        }
 
         protected override void Initialize()
         {
@@ -207,15 +215,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
             ViewModelInput.HistoryFilterBankAccountPeriod = _bankPeriodHistory;
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput);
+            HistoryLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
 
         }
 
         protected override BankAccountPeriodHistory GetEntityFromDb(BankAccountPeriodHistory newEntity, PrimaryKeyValue primaryKeyValue)
         {
             var bankItem = AppGlobals.DataRepository.GetBankAccount(_bankPeriodHistory.BankAccountId);
-
-            BankAccount = bankItem.Description;
+            BankAutoFillValue = bankItem.GetAutoFillValue();
 
             return _bankPeriodHistory;
         }
@@ -234,11 +242,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance
 
         protected override void ClearData()
         {
-            BankAccount = string.Empty;
+            BankAutoFillValue = null;
             PeriodEndingDate = DateTime.Today;
             TotalDeposits = TotalWithdrawals = Difference = 0;
 
-            HistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
+            HistoryLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Clear));
         }
 
         protected override bool SaveEntity(BankAccountPeriodHistory entity)

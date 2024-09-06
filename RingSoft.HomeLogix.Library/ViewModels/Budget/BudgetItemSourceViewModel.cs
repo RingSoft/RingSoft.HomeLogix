@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RingSoft.App.Library;
-using RingSoft.DbLookup;
-using RingSoft.DbLookup.AutoFill;
+﻿using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
@@ -15,6 +9,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
     public class BudgetItemSourceViewModel : DbMaintenanceViewModel<BudgetItemSource>
     {
+        #region Properties
+
         private int _id;
 
         public int Id
@@ -62,21 +58,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private LookupCommand _sourceHistoryLookupCommand;
-
-        public LookupCommand SourceHistoryLookupCommand
-        {
-            get => _sourceHistoryLookupCommand;
-            set
-            {
-                if (_sourceHistoryLookupCommand == value)
-                    return;
-
-                _sourceHistoryLookupCommand = value;
-                OnPropertyChanged();
-            }
-        }
-
         private double _totalAmount;
 
         public double TotalAmount
@@ -93,6 +74,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        #endregion
 
         private bool _isIncome;
 
@@ -112,26 +94,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             sourceHistoryLookupDefinition.InitialOrderByType = OrderByTypes.Descending;
 
             SourceHistoryLookupDefinition = sourceHistoryLookupDefinition;
+            RegisterLookup(SourceHistoryLookupDefinition);
 
             base.Initialize();
         }
 
-
         protected override void PopulatePrimaryKeyControls(BudgetItemSource newEntity, PrimaryKeyValue primaryKeyValue)
         {
             Id = newEntity.Id;
-
-            SourceHistoryLookupDefinition.FilterDefinition.ClearFixedFilters();
-            SourceHistoryLookupDefinition
-                .FilterDefinition
-                .AddFixedFilter(p => p.SourceId, Conditions.Equals, Id);
-            SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Refresh, primaryKeyValue);
-        }
-
-        protected override BudgetItemSource GetEntityFromDb(BudgetItemSource newEntity, PrimaryKeyValue primaryKeyValue)
-        {
-            var budgetItemSource = AppGlobals.DataRepository.GetBudgetItemSource(Id);
-            return budgetItemSource;
         }
 
         protected override void LoadFromEntity(BudgetItemSource entity)
@@ -152,18 +122,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override void ClearData()
         {
             Id = 0;
-            SourceHistoryLookupCommand = GetLookupCommand(LookupCommands.Clear);
             TotalAmount = 0;
-        }
-
-        protected override bool SaveEntity(BudgetItemSource entity)
-        {
-            return AppGlobals.DataRepository.SaveBudgetItemSource(entity);
-        }
-
-        protected override bool DeleteEntity()
-        {
-            return AppGlobals.DataRepository.DeleteBudgetItemSource(Id);
         }
 
         protected override PrimaryKeyValue GetAddViewPrimaryKeyValue(PrimaryKeyValue addViewPrimaryKeyValue)

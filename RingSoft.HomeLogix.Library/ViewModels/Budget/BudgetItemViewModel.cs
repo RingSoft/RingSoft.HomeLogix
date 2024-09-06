@@ -1,10 +1,8 @@
-﻿using RingSoft.App.Library;
+﻿using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbLookup.Lookup;
-using RingSoft.DbLookup.ModelDefinition;
-using RingSoft.DbLookup.ModelDefinition.FieldDefinitions;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
@@ -13,9 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using RingSoft.DbLookup.EfCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -652,8 +647,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             .ParentWindowPrimaryKeyValue);
                     bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccount.Id, false);
 
-                    BankAutoFillValue =
-                        new AutoFillValue(LookupAddViewArgs.ParentWindowPrimaryKeyValue, bankAccount.Description);
+                    BankAutoFillValue = bankAccount.GetAutoFillValue();
                 }
             }
 
@@ -861,10 +855,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = true;
 
             BudgetItemType = (BudgetItemTypes)entity.Type;
-            BankAutoFillValue =
-                new AutoFillValue(
-                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.BankAccount),
-                    entity.BankAccount.Description);
+            BankAutoFillValue = entity.BankAccount.GetAutoFillValue();
 
             RecurringPeriod = entity.RecurringPeriod;
             RecurringType = (BudgetItemRecurringTypes)entity.RecurringType;
@@ -874,13 +865,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CurrentMonthEnding = entity.CurrentMonthEnding;
             Notes = entity.Notes;
             LastCompletedDate = entity.LastCompletedDate;
-
-            if (entity.TransferToBankAccount != null)
-            {
-                TransferToBankAccountAutoFillValue = new AutoFillValue(
-                    AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(entity.TransferToBankAccount),
-                    entity.TransferToBankAccount.Description);
-            }
+            TransferToBankAccountAutoFillValue = entity.TransferToBankAccount.GetAutoFillValue();
 
             _loading = false;
             SetViewMode();
