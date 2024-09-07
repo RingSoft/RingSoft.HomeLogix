@@ -951,6 +951,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                         foreach (var budgetPeriodHistoryRecord in completedRegisterData.BudgetPeriodHistoryRecords)
                         {
+                            budgetPeriodHistoryRecord.BudgetItem = null;
                             if (!AppGlobals.DataRepository.SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord)) return false;
                         }
 
