@@ -684,6 +684,18 @@ namespace RingSoft.HomeLogix.Library
                     .ToList()
                     .Sum(p => p.ProjectedAmount);
                 historyExpenseAmount += transferWithd;
+
+                transferWithd = table
+                    .Include(p => p.BankAccount)
+                    .Include(p => p.BudgetItem)
+                    .Where(p => p.BankAccountId == bankAccountId
+                                && p.Date.Year == monthEndDate.Year
+                                && p.Date.Month == monthEndDate.Month
+                                && p.ItemType == (byte)BankAccountRegisterItemTypes.Miscellaneous
+                                && p.BudgetItem.Type == (byte)BudgetItemTypes.Transfer)
+                    .ToList()
+                    .Sum(p => p.ProjectedAmount);
+                historyExpenseAmount += transferWithd;
             }
             var historyIncomeAmount = table
                 .Include(i => i.BankAccount)
