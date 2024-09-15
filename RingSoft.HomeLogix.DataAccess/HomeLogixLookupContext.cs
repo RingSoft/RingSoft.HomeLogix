@@ -181,9 +181,9 @@ namespace RingSoft.HomeLogix.DataAccess
 
         public DbPlatforms DbPlatform { get; set; }
         
-        protected override DbContext DbContext => LocalDbContext;
+        //protected override DbContext DbContext => LocalDbContext;
 
-        public DbContext LocalDbContext { get; set; }
+        //public DbContext LocalDbContext { get; set; }
 
         private bool _initialized;
 
@@ -196,7 +196,7 @@ namespace RingSoft.HomeLogix.DataAccess
         public void Initialize(IHomeLogixDbContext dbContext, DbPlatforms platform)
         {
             DbPlatform = platform;
-            LocalDbContext = dbContext.DbContext;
+            SetDbContext(dbContext.DbContext);
             if (_initialized)
                 return;
             //SystemGlobals.AdvancedFindLookupContext = this;

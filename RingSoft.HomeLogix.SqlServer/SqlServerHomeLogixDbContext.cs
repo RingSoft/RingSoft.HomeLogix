@@ -84,7 +84,7 @@ namespace RingSoft.HomeLogix.SqlServer
         public void SetLookupContext(HomeLogixLookupContext lookupContext)
         {
             _lookupContext = lookupContext;
-            _lookupContext.LocalDbContext = this;
+            //_lookupContext.LocalDbContext = this;
             DbConstants.ConstantGenerator = new SqlServerDbConstants();
 
         }
