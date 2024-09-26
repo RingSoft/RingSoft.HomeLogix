@@ -678,6 +678,11 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
+                    b.Property<string>("AppGuid")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar");
+
                     b.Property<string>("PhoneLogin")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");

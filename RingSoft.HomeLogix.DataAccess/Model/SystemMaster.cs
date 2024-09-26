@@ -14,5 +14,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         [MaxLength(250)]
         public string PhonePassword { get; set; }
+
+        [MaxLength(50)]
+        [Required]
+        public string AppGuid { get; set; }
+
     }
 }

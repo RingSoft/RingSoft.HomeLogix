@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using RingSoft.App.Library;
 using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -85,5 +86,10 @@ namespace RingSoft.HomeLogix.DataAccess
             return DbContext.DeleteNoCommitEntity(DbContext.Set<TEntity>(), entity, message);
         }
 
+        public static void MigrateAppGuid(MigrationBuilder migrationBuilder)
+        {
+            var sql = $"UPDATE SystemMaster SET AppGuid = '{RingSoftAppGlobals.AppGuid}'";
+            migrationBuilder.Sql(sql);
+        }
     }
 }

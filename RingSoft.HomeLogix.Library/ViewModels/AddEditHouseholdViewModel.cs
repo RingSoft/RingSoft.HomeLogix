@@ -17,6 +17,7 @@ using RingSoft.DbLookup.EfCore;
 using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.Sqlite;
 using RingSoft.HomeLogix.SqlServer;
+using RingSoft.HomeLogix.DataAccess.Model;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -191,6 +192,58 @@ namespace RingSoft.HomeLogix.Library.ViewModels
                 return false;
             }
             return true;
+        }
+
+        public override bool TestConnectToDb()
+        {
+            DbDataProcessor activeProcessor = null;
+            AppGlobals.DbPlatform = DbPlatform;
+            switch (DbPlatform)
+            {
+                case DbPlatforms.Sqlite:
+                    AppGlobals.LookupContext.SqliteDataProcessor.FilePath = SqliteLoginViewModel.FilePath;
+                    AppGlobals.LookupContext.SqliteDataProcessor.FileName = SqliteLoginViewModel.FileName;
+                    activeProcessor = AppGlobals.LookupContext.SqliteDataProcessor;
+                    break;
+                case DbPlatforms.SqlServer:
+                    AppGlobals.LookupContext.SqlServerDataProcessor.Server = SqlServerLoginViewModel.Server;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.Database = SqlServerLoginViewModel.Database;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.SecurityType = SqlServerLoginViewModel.SecurityType;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.UserName = SqlServerLoginViewModel.UserName;
+                    AppGlobals.LookupContext.SqlServerDataProcessor.Password = SqlServerLoginViewModel.Password;
+                    activeProcessor = AppGlobals.LookupContext.SqlServerDataProcessor;
+                    break;
+                case DbPlatforms.MySql:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            var context = SystemGlobals.DataRepository.GetDataContext(activeProcessor);
+
+            try
+            {
+                var table = context.GetTable<SystemMaster>();
+                var masterRecord = table.FirstOrDefault();
+                if (masterRecord.AppGuid != RingSoftAppGlobals.AppGuid)
+                {
+                    ShowInvalidDataBaseMsg();
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                ShowInvalidDataBaseMsg();
+                return false;
+            }
+            return true;
+        }
+
+        private void ShowInvalidDataBaseMsg()
+        {
+            var message = $"Not a valid HomeLogix database.";
+            var caption = "Invalid Database";
+            ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
         }
     }
 }

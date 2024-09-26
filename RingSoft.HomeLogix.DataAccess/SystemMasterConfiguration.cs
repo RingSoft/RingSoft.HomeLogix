@@ -12,6 +12,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.HouseholdName).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.PhoneLogin).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.PhonePassword).HasColumnType(DbConstants.StringColumnType);
+            builder.Property(p => p.AppGuid).HasColumnType(DbConstants.StringColumnType);
         }
     }
 }

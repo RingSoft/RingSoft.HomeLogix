@@ -337,7 +337,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
 
         public async Task<bool> DoCancelClose()
         {
-            if (AppGlobals.LoggedInHousehold == null && !DialogResult)
+            if (!DialogResult)
             {
                 var message = "Application will shut down if you do not login.  Do you wish to continue?";
                 if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Login Failure") ==

@@ -201,7 +201,11 @@ namespace RingSoft.HomeLogix.Library
                         {
                             return migrateResult;
                         }
-                        systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        systemMaster = new SystemMaster
+                        {
+                            HouseholdName = household.Name,
+                            AppGuid = RingSoftAppGlobals.AppGuid,
+                        };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
 
                     }
@@ -224,7 +228,11 @@ namespace RingSoft.HomeLogix.Library
 
                     if (systemMaster == null)
                     {
-                        systemMaster = new SystemMaster { HouseholdName = household.Name };
+                        systemMaster = new SystemMaster
+                        {
+                            HouseholdName = household.Name,
+                            AppGuid = RingSoftAppGlobals.AppGuid,
+                        };
                         context.DbContext.AddNewEntity(context.SystemMaster, systemMaster, "Saving SystemMaster");
                     }
                     LookupContext.Initialize(context, DbPlatform);
