@@ -63,6 +63,9 @@ namespace RingSoft.HomeLogix
             NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
             NextMonthButton.ToolTip.DescriptionText = "See budget totals for the next month.";
 
+            ChangeDateButton.ToolTip.HeaderText = "Change Budget Date (Alt + D)";
+            ChangeDateButton.ToolTip.DescriptionText = "See budget totals for an explicit month.";
+
             //SyncPhoneButton.ToolTip.HeaderText = "Sync With Mobile Device (Alt + S)";
             //SyncPhoneButton.ToolTip.DescriptionText = "Copy data to mobile device.";
 
@@ -218,6 +221,14 @@ namespace RingSoft.HomeLogix
             splashWindow.Owner = this;
             splashWindow.ShowInTaskbar = false;
             splashWindow.ShowDialog();
+        }
+
+        public void GetChangeDate(ChangeDateData data)
+        {
+            var win = new GetNewDateWindow(data);
+            win.Owner = this;
+            win.ShowInTaskbar = false;
+            win.ShowDialog();
         }
 
         public void ShutDownApp()

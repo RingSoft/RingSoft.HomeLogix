@@ -1,0 +1,40 @@
+﻿<dec:BaseWindow x:Class="RingSoft.HomeLogix.GetNewDateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+        xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels;assembly=RingSoft.HomeLogix.Library"
+        xmlns:local="clr-namespace:RingSoft.HomeLogix"
+        mc:Ignorable="d"
+        Style="{StaticResource BaseWindowStyle}"
+        Title="Get New Date" SizeToContent="WidthAndHeight">
+
+    <Window.DataContext>
+        <vm:GetNewDateViewModel x:Name="ViewModel"/>
+    </Window.DataContext>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition  Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="New Date"/>
+
+        <dec:DateEditControl Grid.Row="0" Grid.Column="1" x:Name="DateEditControl" Value="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left"/>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Orientation="Horizontal">
+
+            <Button Content="_OK" Command="{Binding OkCommand}" Width="50" IsDefault="True"/>
+
+            <Button Content="_Cancel" Command="{Binding CancelCommand}" Width="50" IsCancel="True" Margin="5, 0, 0, 0"/>
+
+        </StackPanel>
+    </Grid>
+</dec:BaseWindow>

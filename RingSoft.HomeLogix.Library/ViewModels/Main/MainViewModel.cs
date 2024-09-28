@@ -21,6 +21,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         public string Description { get; set; }
     }
+
+    public class ChangeDateData
+    {
+        public DateTime NewDate { get; set; }
+
+        public bool DialogResult { get; set; }
+    }
     public interface IMainView
     {
         bool ChangeHousehold();
@@ -46,6 +53,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack);
 
         void ShowAbout();
+
+        void GetChangeDate(ChangeDateData data);
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -339,6 +348,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public RelayCommand AdvancedFindCommand { get; }
         public RelayCommand UpgradeCommand { get; }
         public RelayCommand AboutCommand { get; }
+        public RelayCommand ChangeDateCommand { get; }
 
         public void SetLookupIndex(int index)
         {
@@ -374,6 +384,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             ChangeHouseholdCommand = new RelayCommand(ChangeHousehold);
             ManageBudgetCommand = new RelayCommand(ManageBudget);
             ManageBankAccountsCommand = new RelayCommand(ManageBankAccounts);
+            ChangeDateCommand = new RelayCommand(ChangeDate);
             AdvancedFindCommand = new RelayCommand(LaunchAdvancedFind);
             CloseAppCommand = new RelayCommand(CloseApp);
             SyncPhoneCommand = new RelayCommand(SyncPhone);
@@ -1125,6 +1136,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             budgetStats.YtdIncome = budgetTotals.YearToDateIncome;
             budgetStats.YtdExpenses = budgetTotals.YearToDateExpenses;
             return budgetStats;
+        }
+
+        private void ChangeDate()
+        {
+            var newDate = new DateTime(
+                CurrentMonthEnding.Year
+                , CurrentMonthEnding.Month
+                , CurrentMonthEnding.Day);
+
+            var changeDateData = new ChangeDateData();
+            changeDateData.NewDate = newDate;
+            View.GetChangeDate(changeDateData);
+            if (changeDateData.DialogResult)
+            {
+                SetCurrentMonthEnding(changeDateData.NewDate);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
