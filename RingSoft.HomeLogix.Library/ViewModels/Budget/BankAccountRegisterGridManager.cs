@@ -127,9 +127,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var rows = Rows.OfType<BankAccountRegisterGridRow>();
 
-            var bankTotals =
-                AppGlobals.DataRepository.GetBankBudgetTotals(AppGlobals.MainViewModel.CurrentMonthEnding,
-                    ViewModel.Id, true);
+            //09/30/2024
+            //var bankTotals =
+            //    AppGlobals.DataRepository.GetBankBudgetTotals(AppGlobals.MainViewModel.CurrentMonthEnding,
+            //        ViewModel.Id, true);
+            var bankTotals = new BudgetTotals();
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountPeriodHistory>();
+            var periodTotals = table.FirstOrDefault(
+                p => p.BankAccountId == ViewModel.Id
+                     && p.PeriodEndingDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year
+                     && p.PeriodEndingDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month
+                     && p.PeriodType == (byte)PeriodHistoryTypes.Monthly);
+            bankTotals.TotalProjectedMonthlyIncome = periodTotals.TotalDeposits;
+            bankTotals.TotalProjectedMonthlyExpenses = periodTotals.TotalWithdrawals;
 
             var monthBudgetDeposits = rows
                 .Where(w => w.ProjectedAmount > 0 &&
