@@ -139,8 +139,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                      && p.PeriodEndingDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year
                      && p.PeriodEndingDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month
                      && p.PeriodType == (byte)PeriodHistoryTypes.Monthly);
-            bankTotals.TotalProjectedMonthlyIncome = periodTotals.TotalDeposits;
-            bankTotals.TotalProjectedMonthlyExpenses = periodTotals.TotalWithdrawals;
+            if (periodTotals != null)
+            {
+                bankTotals.TotalProjectedMonthlyIncome = periodTotals.TotalDeposits;
+                bankTotals.TotalProjectedMonthlyExpenses = periodTotals.TotalWithdrawals;
+            }
 
             var monthBudgetDeposits = rows
                 .Where(w => w.ProjectedAmount > 0 &&

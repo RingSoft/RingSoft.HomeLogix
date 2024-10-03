@@ -534,6 +534,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (_loading)
                 return;
 
+            if (_registerItem.Id != 0)
+            {
+                return;
+            }
+
             var adjust = "Decrease";
             if (Amount >= 0)
                 adjust = "Increase";
