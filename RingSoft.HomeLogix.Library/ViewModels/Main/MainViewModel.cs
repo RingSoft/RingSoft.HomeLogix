@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.DbLookup;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
@@ -30,7 +31,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
     }
     public interface IMainView
     {
-        bool ChangeHousehold();
+        bool ChangeHousehold(bool firstTime);
 
         void ManageBudget();
 
@@ -55,6 +56,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ShowAbout();
 
         void GetChangeDate(ChangeDateData data);
+
+        void ShowStatsTab(bool show, bool setFocus);
+
+        bool StatsTabExists();
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -171,13 +176,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (AppGlobals.LoggedInHousehold == null)
             {
                 View.ShowChart(false);
-                loadVm = View.ChangeHousehold();
+                loadVm = View.ChangeHousehold(true);
             }
 
             if (loadVm)
             {
                 SetStartupView();
+                //if (StatsDataExists())
+                //{
+                //    ShowStats(true);
+                //}
             }
+        }
+
+        public void ShowStats(bool setFocus)
+        {
+            var exists = StatsDataExists();
+            if (exists)
+            {
+                View.ShowStatsTab(true, setFocus);
+            }
+            else
+            {
+                View.ShowStatsTab(false, false);
+                StatsViewModel = null;
+            }
+        }
+
+        public bool StatsDataExists()
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var regTable = context.GetTable<BankAccountRegisterItem>();
+            var historyTable = context.GetTable<History>();
+            var exists = regTable.Any() || historyTable.Any();
+            return exists;
         }
 
         private void SetStartupView()
@@ -208,8 +240,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private void ChangeHousehold()
         {
             View.ShowChart(false);
-            if (View.ChangeHousehold())
+            if (View.ChangeHousehold(false))
             {
+                StatsViewModel = null;
                 SetStartupView();
             }
             else
@@ -228,9 +261,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
 
-            if (StatsViewModel != null)
+            if (StatsViewModel == null)
             {
-                StatsViewModel.RefreshView();
+                if (StatsDataExists())
+                {
+                    View.ShowStatsTab(true, false);
+                }
+            }
+            else
+            {
+                if (StatsDataExists())
+                {
+                    StatsViewModel.RefreshView();
+                }
+                else
+                {
+                    View.ShowStatsTab(false, false);
+                    StatsViewModel = null;
+                }
             }
             //BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(CurrentMonthEnding,

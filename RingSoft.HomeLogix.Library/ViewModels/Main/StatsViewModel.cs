@@ -491,8 +491,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

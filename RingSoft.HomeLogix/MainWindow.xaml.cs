@@ -29,8 +29,6 @@ namespace RingSoft.HomeLogix
             ContentRendered += (sender, args) =>
             {
                 ViewModel.OnViewLoaded(this);
-                var statsUserControl = new StatsUserControl();
-                TabControl.ShowUserControl(statsUserControl, "Statistics and Graphs");
             };
 
             PreviewKeyDown += MainWindow_PreviewKeyDown;
@@ -123,8 +121,12 @@ namespace RingSoft.HomeLogix
             }
         }
 
-        public bool ChangeHousehold()
+        public bool ChangeHousehold(bool firstTime)
         {
+            if (!TabControl.CloseAllTabs())
+            {
+                return false;
+            }
             var loginWindow = new LoginWindow { Owner = this };
 
             var result = false;
@@ -133,6 +135,11 @@ namespace RingSoft.HomeLogix
             if (loginResult != null && loginResult.Value == true)
                 result = (bool)loginResult;
 
+
+            if (result && !firstTime)
+            {
+
+            }
             return result;
         }
 
@@ -225,10 +232,64 @@ namespace RingSoft.HomeLogix
             win.ShowDialog();
         }
 
+        public void ShowStatsTab(bool show, bool setFocus)
+        {
+            if (show)
+            {
+                if (TabControl.Items.Count == 0)
+                {
+                    setFocus = true;
+                }
+
+                var statsUserControl = new StatsUserControl();
+                TabControl.ShowUserControl(
+                    statsUserControl
+                    , "Statistics and Graphs"
+                    , true
+                    , setFocus);
+            }
+            else
+            {
+                var userControlTabItem = GetStatsTabItem();
+                if (userControlTabItem != null)
+                {
+                    userControlTabItem.CloseTab(TabControl);
+                }
+            }
+        }
+
         public void ShutDownApp()
         {
             Application.Current.Shutdown();
             Environment.Exit(0);
+        }
+
+        public bool StatsTabExists()
+        {
+            var result = false;
+
+            if (GetStatsTabItem() != null)
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public UserControlTabItem GetStatsTabItem()
+        {
+            UserControlTabItem result = null;
+            var exists = TabControl.Items.Count > 0;
+            if (exists)
+            {
+                if (TabControl.Items[0] is UserControlTabItem userControlTabItem)
+                {
+                    if (userControlTabItem.UserControl is StatsUserControl)
+                    {
+                        result = userControlTabItem;
+                    }
+                }
+            }
+            return result;
         }
     }
 }

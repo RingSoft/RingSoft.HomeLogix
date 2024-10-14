@@ -32,12 +32,14 @@ namespace RingSoft.HomeLogix
                     BudgetChart.Loaded += (o, eventArgs) =>
                     {
                         ViewModel.OnViewLoaded();
+                        ViewModel.RefreshView();
                         BudgetLookupControl.Focus();
                     };
                 }
                 else
                 {
                     ViewModel.OnViewLoaded();
+                    ViewModel.RefreshView();
                     BudgetLookupControl.Focus();
                 }
 
