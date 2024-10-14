@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.HomeLogix.Library.PhoneModel;
@@ -10,82 +11,38 @@ namespace RingSoft.HomeLogix
     /// <summary>
     /// Interaction logic for StatsUserControl.xaml
     /// </summary>
-    public partial class StatsUserControl : IMainView
+    public partial class StatsUserControl
     {
+        private bool _loaded;
+
         public StatsUserControl()
         {
             InitializeComponent();
             Loaded += (sender, args) =>
             {
-                BudgetLookupControl.Focus();
-                ShowChart(true);
-                ViewModel.OnViewLoaded(this);
+                if (_loaded)
+                {
+                    return;
+                }
+
+                var h = BudgetChart.ActualHeight;
+
+                if (h <= 0)
+                {
+                    BudgetChart.Loaded += (o, eventArgs) =>
+                    {
+                        ViewModel.OnViewLoaded();
+                        BudgetLookupControl.Focus();
+                    };
+                }
+                else
+                {
+                    ViewModel.OnViewLoaded();
+                    BudgetLookupControl.Focus();
+                }
+
+                _loaded = true;
             };
-        }
-
-        public bool ChangeHousehold()
-        {
-            return true;
-        }
-
-        public void ManageBudget()
-        {
-            
-        }
-
-        public void ManageBankAccounts()
-        {
-            
-        }
-
-        public void LaunchAdvancedFind()
-        {
-            
-        }
-
-        public void CloseApp()
-        {
-            
-        }
-
-        public void ShowChart(bool show = true)
-        {
-            BudgetChart.Visibility = ActualChart.Visibility = Visibility.Visible;
-        }
-
-        public Login ShowPhoneSync(Login input)
-        {
-            return null;
-        }
-
-        public void ShowRichMessageBox(string message, string caption, RsMessageBoxIcons icon, List<HyperlinkData> hyperLinks = null)
-        {
-            
-        }
-
-        public string GetWriteablePath()
-        {
-            return string.Empty;
-        }
-
-        public bool UpgradeVersion()
-        {
-            return true;
-        }
-
-        public void ShowHistoryPrintFilterWindow(HistoryPrintFilterCallBack callBack)
-        {
-            
-        }
-
-        public void ShowAbout()
-        {
-            
-        }
-
-        public void GetChangeDate(ChangeDateData data)
-        {
-            
         }
     }
 }

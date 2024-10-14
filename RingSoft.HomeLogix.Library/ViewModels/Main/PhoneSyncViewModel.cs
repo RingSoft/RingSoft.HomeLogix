@@ -308,40 +308,40 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void ProcessFiles(ITwoTierProcedure procedure, int maxSteps)
         {
-            procedure.UpdateTopTier("Processing Current Month Budget", maxSteps, 1);
-            var monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Current, procedure);
-            var content = JsonConvert.SerializeObject(monthBudgetData);
-            ProcessFile("CurrentMonthBudget.json", content);
+            //procedure.UpdateTopTier("Processing Current Month Budget", maxSteps, 1);
+            //var monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Current, procedure);
+            //var content = JsonConvert.SerializeObject(monthBudgetData);
+            //ProcessFile("CurrentMonthBudget.json", content);
 
-            procedure.UpdateTopTier("Processing Past Month Budget", maxSteps, 2);
-            monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Previous, procedure);
-            content = JsonConvert.SerializeObject(monthBudgetData);
-            ProcessFile("PreviousMonthBudget.json", content);
+            //procedure.UpdateTopTier("Processing Past Month Budget", maxSteps, 2);
+            //monthBudgetData = AppGlobals.MainViewModel.GetBudgetData(StatisticsType.Previous, procedure);
+            //content = JsonConvert.SerializeObject(monthBudgetData);
+            //ProcessFile("PreviousMonthBudget.json", content);
 
-            procedure.UpdateTopTier("Processing Budget Statistics", maxSteps, 3);
-            var budgetStatistics = AppGlobals.MainViewModel.GetBudgetStatistics();
-            content = JsonConvert.SerializeObject(budgetStatistics);
-            ProcessFile("BudgetStats.json", content);
+            //procedure.UpdateTopTier("Processing Budget Statistics", maxSteps, 3);
+            //var budgetStatistics = AppGlobals.MainViewModel.GetBudgetStatistics();
+            //content = JsonConvert.SerializeObject(budgetStatistics);
+            //ProcessFile("BudgetStats.json", content);
 
-            procedure.UpdateTopTier("Processing Banks", maxSteps, 4);
-            var bankData = AppGlobals.MainViewModel.GetBankData(procedure);
-            content = JsonConvert.SerializeObject(bankData);
-            ProcessFile("BankData.json", content);
+            //procedure.UpdateTopTier("Processing Banks", maxSteps, 4);
+            //var bankData = AppGlobals.MainViewModel.GetBankData(procedure);
+            //content = JsonConvert.SerializeObject(bankData);
+            //ProcessFile("BankData.json", content);
 
-            procedure.UpdateTopTier("Processing Register", maxSteps, 5);
-            var registerData = GetRegister(procedure);
-            content = JsonConvert.SerializeObject(registerData);
-            ProcessFile("RegisterData.json", content);
+            //procedure.UpdateTopTier("Processing Register", maxSteps, 5);
+            //var registerData = GetRegister(procedure);
+            //content = JsonConvert.SerializeObject(registerData);
+            //ProcessFile("RegisterData.json", content);
 
-            procedure.UpdateTopTier("Processing History", maxSteps, 6);
-            var phoneHistory = GetPhoneHistoryData(procedure);
-            content = JsonConvert.SerializeObject(phoneHistory);
-            ProcessFile("HistoryData.json", content);
+            //procedure.UpdateTopTier("Processing History", maxSteps, 6);
+            //var phoneHistory = GetPhoneHistoryData(procedure);
+            //content = JsonConvert.SerializeObject(phoneHistory);
+            //ProcessFile("HistoryData.json", content);
 
-            procedure.UpdateTopTier("Processing Source History", maxSteps, 7);
-            var phoneSourceHistory = GetPhoneSourceHistoryData(procedure);
-            content = JsonConvert.SerializeObject(phoneSourceHistory);
-            ProcessFile("SourceHistoryData.json", content);
+            //procedure.UpdateTopTier("Processing Source History", maxSteps, 7);
+            //var phoneSourceHistory = GetPhoneSourceHistoryData(procedure);
+            //content = JsonConvert.SerializeObject(phoneSourceHistory);
+            //ProcessFile("SourceHistoryData.json", content);
         }
 
         private void ProcessFile(string file, string content)
