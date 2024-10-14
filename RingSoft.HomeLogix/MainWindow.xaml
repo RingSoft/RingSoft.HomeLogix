@@ -87,7 +87,21 @@
             <ac:DbMaintenanceButton  Content="About _HomeLogix" ImageSource="{StaticResource HomeImage}" Command="{Binding AboutCommand}"/>
 
         </StackPanel>
-        <Grid>
+        <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal" HorizontalAlignment="Center">
+
+            <ac:DbMaintenanceButton x:Name="PreviousMonthButton" Style="{StaticResource BigButton}" ImageSource="{StaticResource LeftImage}"
+                                    Command="{Binding PreviousMonthCommand}" BorderThickness="0" />
+
+            <TextBlock Text="{Binding CurrentMonthEndingText}" Margin="5" HorizontalAlignment="Center"
+                       VerticalAlignment="Center" FontWeight="Bold" />
+
+            <ac:DbMaintenanceButton x:Name="NextMonthButton" Style="{StaticResource BigButton}" ImageSource="{StaticResource RightImage}" Command="{Binding NextMonthCommand}" BorderThickness="0" />
+
+        </StackPanel>
+
+        <lc:DbMaintenanceTabControl x:Name="TabControl" VerticalAlignment="Stretch"/>
+
+        <Grid Visibility="Collapsed">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -100,17 +114,6 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Row="0" Grid.Column="0"  Orientation="Horizontal" HorizontalAlignment="Center">
-
-                <ac:DbMaintenanceButton x:Name="PreviousMonthButton" Style="{StaticResource BigButton}" ImageSource="{StaticResource LeftImage}"
-                                        Command="{Binding PreviousMonthCommand}" BorderThickness="0" />
-
-                <TextBlock Text="{Binding CurrentMonthEndingText}" Margin="5" HorizontalAlignment="Center"
-                           VerticalAlignment="Center" FontWeight="Bold" />
-
-                <ac:DbMaintenanceButton x:Name="NextMonthButton" Style="{StaticResource BigButton}" ImageSource="{StaticResource RightImage}" Command="{Binding NextMonthCommand}" BorderThickness="0" />
-
-            </StackPanel>
 
             <lc:LookupControl Grid.Row="1" Grid.Column="0" x:Name="BudgetLookupControl"
                               LookupDefinition="{Binding BudgetLookupDefinition}"

@@ -1,27 +1,19 @@
 ﻿
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using RingSoft.HomeLogix.Budget;
-using RingSoft.HomeLogix.Library.ViewModels.Main;
-using System.Windows.Input;
-using System.Windows.Media;
 using RingSoft.App.Controls;
 using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DataEntryControls.WPF;
-using RingSoft.DbLookup;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
-using RingSoft.DbLookup.Lookup;
 using RingSoft.HomeLogix.HistoryMaintenance;
 using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;
-using ScottPlot;
-using Color = System.Drawing.Color;
+using RingSoft.HomeLogix.Library.ViewModels.Main;
+using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Input;
 
 namespace RingSoft.HomeLogix
 {
@@ -33,18 +25,20 @@ namespace RingSoft.HomeLogix
         public MainWindow()
         {
             InitializeComponent();
-
+            LookupControlsGlobals.SetTabSwitcherWindow(this, TabControl);
             ContentRendered += (sender, args) =>
             {
                 ViewModel.OnViewLoaded(this);
+                var statsUserControl = new StatsUserControl();
+                TabControl.ShowUserControl(statsUserControl, "Statistics and Graphs");
             };
 
             PreviewKeyDown += MainWindow_PreviewKeyDown;
 
             Loaded += (sender, args) =>
             {
-                BudgetLookupControl.Focus();
-                ShowChart(false);
+                //BudgetLookupControl.Focus();
+                //ShowChart(false);
                 //ViewModel.OnViewLoaded(this);
             };
 
