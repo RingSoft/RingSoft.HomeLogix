@@ -60,6 +60,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         void ShowStatsTab(bool show, bool setFocus);
 
         bool StatsTabExists();
+
+        void SetTabDestination(LookupDefinitionBase lookup);
     }
 
     public class MainViewModel : INotifyPropertyChanged, IMainViewModel, ILookupControl
@@ -374,6 +376,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             {
                 SetCurrentMonthEnding(changeDateData.NewDate);
             }
+        }
+
+        public void SetTabDestination(LookupDefinitionBase lookup)
+        {
+            View.SetTabDestination(lookup);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

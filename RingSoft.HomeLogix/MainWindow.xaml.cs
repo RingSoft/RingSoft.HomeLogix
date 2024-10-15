@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using RingSoft.DbLookup.Lookup;
 
 namespace RingSoft.HomeLogix
 {
@@ -26,6 +27,7 @@ namespace RingSoft.HomeLogix
         {
             InitializeComponent();
             LookupControlsGlobals.SetTabSwitcherWindow(this, TabControl);
+            TabControl.SetDestionationAsFirstTab = false;
             ContentRendered += (sender, args) =>
             {
                 ViewModel.OnViewLoaded(this);
@@ -274,6 +276,11 @@ namespace RingSoft.HomeLogix
                 result = true;
             }
             return result;
+        }
+
+        public void SetTabDestination(LookupDefinitionBase lookup)
+        {
+            lookup.Destination = TabControl;
         }
 
         public UserControlTabItem GetStatsTabItem()

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.HomeLogix.Library;
 using RingSoft.HomeLogix.Library.PhoneModel;
 using RingSoft.HomeLogix.Library.ViewModels.HistoryMaintenance;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
@@ -31,20 +32,24 @@ namespace RingSoft.HomeLogix
                 {
                     BudgetChart.Loaded += (o, eventArgs) =>
                     {
-                        ViewModel.OnViewLoaded();
-                        ViewModel.RefreshView();
-                        BudgetLookupControl.Focus();
+                        Init();
                     };
                 }
                 else
                 {
-                    ViewModel.OnViewLoaded();
-                    ViewModel.RefreshView();
-                    BudgetLookupControl.Focus();
+                    Init();
                 }
 
                 _loaded = true;
             };
+        }
+
+        private void Init()
+        {
+            ViewModel.OnViewLoaded();
+            ViewModel.RefreshView();
+            BudgetLookupControl.Focus();
+            AppGlobals.MainViewModel.SetTabDestination(ViewModel.BankLookupDefinition);
         }
     }
 }
