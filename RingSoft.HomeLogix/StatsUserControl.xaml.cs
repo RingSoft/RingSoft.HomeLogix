@@ -54,6 +54,7 @@ namespace RingSoft.HomeLogix
             ViewModel.RefreshView();
             BudgetLookupControl.Focus();
             AppGlobals.MainViewModel.SetTabDestination(ViewModel.BankLookupDefinition);
+            AppGlobals.MainViewModel.SetTabDestination(ViewModel.BudgetLookupDefinition);
             _chartLoaded = true;
         }
     }

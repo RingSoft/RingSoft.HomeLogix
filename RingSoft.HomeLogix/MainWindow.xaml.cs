@@ -148,7 +148,8 @@ namespace RingSoft.HomeLogix
 
         public void ManageBudget()
         {
-            LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(AppGlobals.LookupContext.BudgetItems);
+            //LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(AppGlobals.LookupContext.BudgetItems);
+            TabControl.ShowTableControl(AppGlobals.LookupContext.BudgetItems, false);
         }
 
         public void ManageBankAccounts()
