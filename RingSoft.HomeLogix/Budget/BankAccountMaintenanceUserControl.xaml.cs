@@ -24,6 +24,16 @@ namespace RingSoft.HomeLogix.Budget
         public BankAccountMaintenanceUserControl()
         {
             InitializeComponent();
+            TopHeaderControl.Loaded += (sender, args) =>
+            {
+                if (TopHeaderControl.CustomPanel is BankCustomPanel bankCustomPanel)
+                {
+                    bankCustomPanel.GenerateButton.Command =
+                        BankAccountViewModel.GenerateRegisterItemsFromBudgetCommand;
+                    bankCustomPanel.AddButton.Command = BankAccountViewModel.AddNewRegisterItemCommand;
+                    bankCustomPanel.ImportButton.Command = BankAccountViewModel.ImportTransactionsCommand;
+                }
+            };
             RegisterFormKeyControl(BankAccountControl);
         }
 
