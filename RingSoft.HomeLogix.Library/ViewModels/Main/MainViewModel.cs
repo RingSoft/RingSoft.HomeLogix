@@ -263,7 +263,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
 
-            if (StatsViewModel == null)
+            if (StatsViewModel == null && !View.StatsTabExists())
             {
                 if (StatsDataExists())
                 {
@@ -274,7 +274,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             {
                 if (StatsDataExists())
                 {
-                    StatsViewModel.RefreshView();
+                    if (StatsViewModel != null) 
+                        StatsViewModel.RefreshView();
                 }
                 else
                 {
@@ -290,6 +291,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             PreviousMonthCommand.IsEnabled = budgetTotals.PreviousMonthHasValues;
             NextMonthCommand.IsEnabled = budgetTotals.NextMonthHasValues;
+
+            foreach (var bankAccountViewModel in BankAccountViewModels)
+            {
+                bankAccountViewModel.CalculateTotals();
+            }
         }
 
 

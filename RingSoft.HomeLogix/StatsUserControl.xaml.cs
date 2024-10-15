@@ -15,6 +15,7 @@ namespace RingSoft.HomeLogix
     public partial class StatsUserControl
     {
         private bool _loaded;
+        private bool _chartLoaded;
 
         public StatsUserControl()
         {
@@ -32,7 +33,10 @@ namespace RingSoft.HomeLogix
                 {
                     BudgetChart.Loaded += (o, eventArgs) =>
                     {
-                        Init();
+                        if (!_chartLoaded)
+                        {
+                            Init();
+                        }
                     };
                 }
                 else
@@ -50,6 +54,7 @@ namespace RingSoft.HomeLogix
             ViewModel.RefreshView();
             BudgetLookupControl.Focus();
             AppGlobals.MainViewModel.SetTabDestination(ViewModel.BankLookupDefinition);
+            _chartLoaded = true;
         }
     }
 }
