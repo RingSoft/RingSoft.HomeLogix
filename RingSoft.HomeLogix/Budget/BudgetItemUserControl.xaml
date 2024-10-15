@@ -117,9 +117,9 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Monthly Totals" VerticalAlignment="Stretch">
+                <TabItem Header="Monthly Totals">
                     <DockPanel>
-                        <lc:LookupControl LookupDefinition="{Binding MonthlyLookupDefinition}" MinHeight="350">
+                        <lc:LookupControl LookupDefinition="{Binding MonthlyLookupDefinition}">
                             <lc:LookupControl.LookupColumns>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Month Ending" DesignText="01/01/1980" Width="100"/>
@@ -134,9 +134,9 @@
                         </lc:LookupControl>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="Yearly Totals" VerticalAlignment="Stretch">
+                <TabItem Header="Yearly Totals">
                     <DockPanel>
-                        <lc:LookupControl LookupDefinition="{Binding YearlyLookupDefinition}" MinHeight="350" VerticalAlignment="Stretch">
+                        <lc:LookupControl LookupDefinition="{Binding YearlyLookupDefinition}">
                             <lc:LookupControl.LookupColumns>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BudgetPeriodHistoryLookup}}" Header="Year Ending" DesignText="01/01/1980" Width="100"/>
@@ -151,9 +151,9 @@
                         </lc:LookupControl>
                     </DockPanel>
                 </TabItem>
-                <TabItem Header="History" Height="16" VerticalAlignment="Stretch" >
+                <TabItem Header="History">
                     <DockPanel>
-                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}" MinHeight="350">
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}">
                             <lc:LookupControl.LookupColumns>
 
                                 <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="90"/>
