@@ -150,7 +150,8 @@ namespace RingSoft.HomeLogix
 
         public void ManageBankAccounts()
         {
-            LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(AppGlobals.LookupContext.BankAccounts);
+            //LookupControlsGlobals.WindowRegistry.ShowDbMaintenanceWindow(AppGlobals.LookupContext.BankAccounts);
+            TabControl.ShowTableControl(AppGlobals.LookupContext.BankAccounts, false);
         }
 
         public void LaunchAdvancedFind()

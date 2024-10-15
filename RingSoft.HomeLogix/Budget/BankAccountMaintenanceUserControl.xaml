@@ -1,0 +1,284 @@
+﻿<lc:DbMaintenanceUserControl x:Class="RingSoft.HomeLogix.Budget.BankAccountMaintenanceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:deg="clr-namespace:RingSoft.DataEntryControls.WPF.DataEntryGrid;assembly=RingSoft.DataEntryControls.WPF"
+             xmlns:lc="clr-namespace:RingSoft.DbLookup.Controls.WPF;assembly=RingSoft.DbLookup.Controls.WPF"
+             xmlns:ac="clr-namespace:RingSoft.App.Controls;assembly=RingSoft.App.Controls"
+             xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
+             xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
+             xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
+             xmlns:local="clr-namespace:RingSoft.HomeLogix.Budget"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="pack://application:,,,/Budget/BankAccountWindowHeaderTemplate.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style TargetType="dec:DecimalReadOnlyBox" BasedOn="{StaticResource {x:Type dec:DecimalReadOnlyBox}}">
+                <Setter Property="DesignText" Value="$123,456,789.00"/>
+                <Setter Property="Width" Value="100"/>
+                <Setter Property="FormatType" Value="Currency"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <DockPanel>
+        <ac:DbMaintenanceTopHeaderControl x:Name="TopHeaderControl" DockPanel.Dock="Top"/>
+        <lc:DbMaintenanceStatusBar x:Name="StatusBar" DockPanel.Dock="Bottom"/>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="Bank Account ID"/>
+
+                <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" DesignText="123456" Width="50"/>
+
+                <Label Grid.Row="0" Grid.Column="2" Content="Bank Account Name"/>
+
+                <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
+
+                <Label Grid.Row="0" Grid.Column="4" Content="Account Type"/>
+
+                <dec:TextComboBoxControl Grid.Row="0" Grid.Column="5" Setup="{Binding TypeSetup}" SelectedItem="{Binding TypeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" IsEnabled="{Binding TypeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Bank Balance"/>
+
+                <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left" ReadOnlyMode="True"/>
+
+                <CheckBox Grid.Row="1" Grid.Column="2" Content="Completed" IsChecked="{Binding Path=CompleteAll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center"/>
+
+                <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
+                    <Label Content="Last Transaction Date" HorizontalAlignment="Left"/>
+                    <dec:DateReadOnlyBox Value="{Binding LastCompleteDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Width="100"></dec:DateReadOnlyBox>
+                </StackPanel>
+                <Label Grid.Row="1" Grid.Column="4" Content="Last Register Generate To Date"/>
+
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="5" Value="{Binding LastGenerationDate}" DesignText="01/01/1980" Width="100" HorizontalAlignment="Left"/>
+
+            </Grid>
+
+            <TabControl Grid.Row="1" x:Name="TabControl">
+
+                <TabItem Header="Register">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <deg:DataEntryGrid x:Name="RegisterGrid" DataEntryCanUserAddRows="False" Manager="{Binding RegisterGridManager}">
+                            <deg:DataEntryGrid.Columns>
+
+                                <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ItemTypeColumnId}" ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="{x:Static lib:AppGlobals.MiscellaneousLineTypeId}" Width="110"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DateColumnId}" Header="Date" DesignText="01/01/2020" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DescriptionColumnId}" Header="Description" DesignText="Transfer To Joe's Checking Account" Width="225"/>
+
+                                <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.TransactionTypeColumnId}" ContentTemplate="{StaticResource BankRegisterTransactionType}" Header="Transaction&#10;Type" DesignerSelectedId="{x:Static lib:AppGlobals.BankTransactionWithdrawalId}" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.AmountColumnId}" Header="Budget&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="100"/>
+
+                                <deg:DataEntryGridCheckBoxColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.CompletedColumnId}" Header="Completed" Width="75"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.BalanceColumnId}" Header="Balance" DesignText="$123,456.78" Alignment="Right" Width="100"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.ActualAmountColumnId}" Header="Actual&#10;Amount" DesignText="$123,456.78" Alignment="Right" Width="150"/>
+
+                                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:BankAccountRegisterGridManager.DifferenceColumnId}" Header="Difference" DesignText="$1,234.56" Alignment="Right" Width="70"/>
+
+                            </deg:DataEntryGrid.Columns>
+                            <deg:DataEntryGrid.DisplayStyles>
+                                <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:BankAccountRegisterGridManager.NegativeDisplayId}" ForegroundBrush="Red"/>
+
+                                <deg:DataEntryGridDisplayStyle DisplayId="{x:Static vm:BankAccountRegisterGridManager.PositiveDisplayId}" ForegroundBrush="Green"/>
+
+                            </deg:DataEntryGrid.DisplayStyles>
+                        </deg:DataEntryGrid>
+
+                    </Grid>
+
+                </TabItem>
+                <TabItem Header="Statistics" Height="16" VerticalAlignment="Bottom">
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Monthly Totals" HorizontalAlignment="Left"/>
+
+                        <lc:LookupControl Grid.Row="1" LookupDefinition="{Binding MonthlyLookupDefinition}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Month Ending" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf TotalDeposits, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Total Deposits" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf TotalWithdrawals, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Total Withdrawals" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Difference" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+
+                        <Label Grid.Row="2" Content="Yearly Totals" HorizontalAlignment="Left"/>
+
+                        <lc:LookupControl Grid.Row="3" LookupDefinition="{Binding YearlyLookupDefinition}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf PeriodEndingDate, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Year Ending" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf TotalDeposits, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Total Deposits" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf TotalWithdrawals, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Total Withdrawals" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:BankAccountPeriodHistoryLookup}}" Header="Difference" TextAlignment="Right" DesignText="$123,456,789.00" Width="120"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+
+                    </Grid>
+                </TabItem>
+                <TabItem Header="History" Height="16" VerticalAlignment="Bottom">
+                    <DockPanel>
+                        <lc:LookupControl LookupDefinition="{Binding HistoryLookupDefinition}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Date, Type={x:Type lm:HistoryLookup}}" Header="Date" DesignText="01/01/1980" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:HistoryLookup}}" Header="Description" DesignText="A Very Long Description" Width="350"/>
+
+                                <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:HistoryLookup}}"
+                                                              ContentTemplate="{StaticResource RegisterLineType}" Header="Item Type" DesignerSelectedId="3" Width="110"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ProjectedAmount, Type={x:Type lm:HistoryLookup}}" Header="Budget Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf ActualAmount, Type={x:Type lm:HistoryLookup}}" Header="Actual Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Difference, Type={x:Type lm:HistoryLookup}}" Header="Difference" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Budget">
+                    <DockPanel>
+                        <Button Content="_Add/Modify" Command="{Binding BudgetItemsAddModifyCommand}" Height="20"  DockPanel.Dock="Left" VerticalAlignment="Top"/>
+
+                        <lc:LookupControl LookupDefinition="{Binding BudgetItemsLookupDefinition}" DataSourceChanged="{Binding Path=BudgetItemsDataSourceChanged, Mode=OneWayToSource}">
+                            <lc:LookupControl.LookupColumns>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type lm:BudgetItemLookup}}" Header="Budget Item" DesignText="Very Large Description" Width="300"/>
+
+                                <lc:LookupCustomContentColumn PropertyName="{lc:NameOf ItemType, Type={x:Type lm:BudgetItemLookup}}"
+                                                              ContentTemplate="{StaticResource BudgetItemType}" Header="Item&#10;Type" DesignerSelectedId="3" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf RecurringPeriod, Type={x:Type lm:BudgetItemLookup}}" Header="Recurs&#10;Every" DesignText="100" Width="100" TextAlignment="Center"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf RecurringType, Type={x:Type lm:BudgetItemLookup}}" Header="Recurring&#10;Type" DesignText="Months(s) xxx" Width="100"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf Amount, Type={x:Type lm:BudgetItemLookup}}" Header="Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                                <lc:LookupColumn PropertyName="{lc:NameOf MonthlyAmount, Type={x:Type lm:BudgetItemLookup}}" Header="Monthly&#10;Amount" DesignText="$123,456,789.00" Width="120" TextAlignment="Right"/>
+
+                            </lc:LookupControl.LookupColumns>
+                        </lc:LookupControl>
+                    </DockPanel>
+                </TabItem>
+
+                <dec:DataEntryMemoTabItem Header="Notes">
+                    <Grid>
+                        <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    </Grid>
+                </dec:DataEntryMemoTabItem>
+            </TabControl>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Current Projected Ending Balance"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+
+                <Label Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+
+                <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
+
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100"/>
+
+                <Label Grid.Row="1" Grid.Column="2" Content="Projected Lowest Balance Amount"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=ProjectedLowestBalanceAmount}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Monthly Budget Deposits"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Path=MonthlyBudgetDeposits}"/>
+
+                <Label Grid.Row="2" Grid.Column="2" Content="Monthly Budget Withdrawals"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding Path=MonthlyBudgetWithdrawals}"/>
+
+                <Label Grid.Row="2" Grid.Column="4" Content="Monthly Budget Difference"/>
+
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="4" Value="{Binding Path=MonthlyBudgetDifference}" Margin="198,3,0,3" Grid.ColumnSpan="2" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+
+            </Grid>
+        </Grid>
+    </DockPanel>
+</lc:DbMaintenanceUserControl>

@@ -53,6 +53,8 @@ namespace RingSoft.HomeLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetItemSourceWindow, BudgetItemSource>();
             LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetItemSourceWindow, SourceHistory>();
 
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl<BankAccountMaintenanceUserControl, BankAccount>();
+
             AppGlobals.AppSplashProgress -= AppGlobals_AppSplashProgress;
 
             return base.DoProcess();
