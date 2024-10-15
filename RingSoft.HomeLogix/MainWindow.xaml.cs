@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using RingSoft.DbLookup.Lookup;
+using System.ComponentModel;
 
 namespace RingSoft.HomeLogix
 {
@@ -298,6 +299,16 @@ namespace RingSoft.HomeLogix
                 }
             }
             return result;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (!TabControl.CloseAllTabs())
+            {
+                e.Cancel = true;
+            }
+
+            base.OnClosing(e);
         }
     }
 }

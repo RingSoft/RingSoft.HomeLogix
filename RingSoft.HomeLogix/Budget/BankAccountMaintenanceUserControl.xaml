@@ -41,7 +41,7 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
@@ -87,7 +87,7 @@
 
             </Grid>
 
-            <TabControl Grid.Row="1" x:Name="TabControl">
+            <TabControl Grid.Row="1" x:Name="TabControl" Height="550">
 
                 <TabItem Header="Register">
 
