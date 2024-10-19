@@ -41,8 +41,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         void CloseApp();
 
-        void ShowChart(bool show = true);
-
         Login ShowPhoneSync(Login input);
 
         void ShowRichMessageBox(string message, string caption, RsMessageBoxIcons icon, List<HyperlinkData> hyperLinks = null);
@@ -177,7 +175,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var loadVm = true;
             if (AppGlobals.LoggedInHousehold == null)
             {
-                View.ShowChart(false);
+                //View.ShowChart(false);
                 loadVm = View.ChangeHousehold(true);
             }
 
@@ -241,18 +239,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
         private void ChangeHousehold()
         {
-            View.ShowChart(false);
+            //View.ShowChart(false);
             if (View.ChangeHousehold(false))
             {
                 StatsViewModel = null;
                 SetStartupView();
-            }
-            else
-            {
-                if (_activeChartData.Items.Any())
-                {
-                    View.ShowChart(true);
-                }
             }
         }
 

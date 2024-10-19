@@ -12,7 +12,7 @@
              xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
              xmlns:local="clr-namespace:RingSoft.HomeLogix.Budget"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800" WindowWidth="1200" WindowHeight="800">
 
     <UserControl.DataContext>
         <vm:BankAccountViewModel x:Name="BankAccountViewModel"/>
@@ -41,9 +41,14 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
             <Grid>
                 <Grid.RowDefinitions>
@@ -87,7 +92,7 @@
 
             </Grid>
 
-            <TabControl Grid.Row="1" x:Name="TabControl" Height="550">
+            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="TabControl">
 
                 <TabItem Header="Register">
 
@@ -229,7 +234,7 @@
                 </dec:DataEntryMemoTabItem>
             </TabControl>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

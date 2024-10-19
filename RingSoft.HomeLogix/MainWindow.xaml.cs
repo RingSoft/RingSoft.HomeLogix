@@ -172,17 +172,6 @@ namespace RingSoft.HomeLogix
             Close();
         }
 
-        public void ShowChart(bool show = true)
-        {
-            var visibleSetting = Visibility.Collapsed;
-            if (show)
-            {
-                visibleSetting = Visibility.Visible;
-            }
-
-            BudgetChart.Visibility = ActualChart.Visibility = visibleSetting;
-        }
-
         public Login ShowPhoneSync(Login input)
         {
             var phoneSyncWindow = new PhoneSyncWindow(input)
