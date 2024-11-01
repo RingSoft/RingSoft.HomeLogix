@@ -49,6 +49,10 @@ namespace RingSoft.HomeLogix
 
             TextBox.PreviewTextInput += (sender, args) =>
             {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    return;
+                }
                 args.Handled = true;
                 ShowLookupWindow();
             };

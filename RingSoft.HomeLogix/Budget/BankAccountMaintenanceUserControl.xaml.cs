@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 
 namespace RingSoft.HomeLogix.Budget
 {
@@ -34,6 +36,21 @@ namespace RingSoft.HomeLogix.Budget
                     bankCustomPanel.ImportButton.Command = BankAccountViewModel.ImportTransactionsCommand;
                 }
             };
+            var hotKey = new HotKey(BankAccountViewModel.ImportTransactionsCommand);
+            hotKey.AddKey(Key.B);
+            hotKey.AddKey(Key.I);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(BankAccountViewModel.AddNewRegisterItemCommand);
+            hotKey.AddKey(Key.B);
+            hotKey.AddKey(Key.A);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(BankAccountViewModel.GenerateRegisterItemsFromBudgetCommand);
+            hotKey.AddKey(Key.B);
+            hotKey.AddKey(Key.G);
+            AddHotKey(hotKey);
+
             RegisterFormKeyControl(BankAccountControl);
         }
 

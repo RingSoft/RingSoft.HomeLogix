@@ -92,7 +92,7 @@
 
             </Grid>
 
-            <TabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="TabControl">
+            <dec:DataEntryTabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="TabControl">
 
                 <TabItem Header="Register">
 
@@ -232,7 +232,7 @@
 
                     </Grid>
                 </dec:DataEntryMemoTabItem>
-            </TabControl>
+            </dec:DataEntryTabControl>
 
             <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>

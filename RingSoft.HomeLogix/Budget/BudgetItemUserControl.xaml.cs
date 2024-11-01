@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -25,6 +27,16 @@ namespace RingSoft.HomeLogix.Budget
                     budgetCustomPanel.ClearRecurButton.Command = BudgetItemViewModel.ClearRecurringCommand;
                 }
             };
+
+            var hotKey = new HotKey(BudgetItemViewModel.AddAdjustmentCommand);
+            hotKey.AddKey(Key.B);
+            hotKey.AddKey(Key.A);
+            AddHotKey(hotKey);
+
+            hotKey = new HotKey(BudgetItemViewModel.ClearRecurringCommand);
+            hotKey.AddKey(Key.B);
+            hotKey.AddKey(Key.C);
+            AddHotKey(hotKey);
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()

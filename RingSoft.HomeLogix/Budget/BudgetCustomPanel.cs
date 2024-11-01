@@ -55,13 +55,13 @@ namespace RingSoft.HomeLogix.Budget
 
             if (AddButton != null)
             {
-                AddButton.ToolTip.HeaderText = "Add New Adjustment (Alt + A)";
+                AddButton.ToolTip.HeaderText = "Add New Adjustment (Ctrl + B, Ctrl + A)";
                 AddButton.ToolTip.DescriptionText = "Add an adjustment to history and the statistics.";
             }
 
             if (ClearRecurButton != null)
             {
-                ClearRecurButton.ToolTip.HeaderText = "Clear Recurring (Alt + R)";
+                ClearRecurButton.ToolTip.HeaderText = "Clear Recurring (Ctrl + B, Ctrl + C)";
                 ClearRecurButton.ToolTip.DescriptionText = "Clear recurring values.";
             }
 

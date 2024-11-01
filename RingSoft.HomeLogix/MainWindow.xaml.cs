@@ -34,7 +34,7 @@ namespace RingSoft.HomeLogix
                 ViewModel.OnViewLoaded(this);
             };
 
-            PreviewKeyDown += MainWindow_PreviewKeyDown;
+            //PreviewKeyDown += MainWindow_PreviewKeyDown;
 
             Loaded += (sender, args) =>
             {
@@ -52,10 +52,10 @@ namespace RingSoft.HomeLogix
             ManageBankButton.ToolTip.HeaderText = "Manage Bank Accounts (Alt + B)";
             ManageBankButton.ToolTip.DescriptionText = "Manage and reconcile bank accounts.";
 
-            PreviousMonthButton.ToolTip.HeaderText = "Goto Previous Month (Ctrl + <--)";
+            PreviousMonthButton.ToolTip.HeaderText = "Goto Previous Month";
             PreviousMonthButton.ToolTip.DescriptionText = "See budget totals for the previous month.";
 
-            NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + --)";
+            NextMonthButton.ToolTip.HeaderText = "Goto Next Month";
             NextMonthButton.ToolTip.DescriptionText = "See budget totals for the next month.";
 
             ChangeDateButton.ToolTip.HeaderText = "Change Budget Date (Alt + D)";
@@ -92,37 +92,37 @@ namespace RingSoft.HomeLogix
             //WpfPlot.Render();
         }
 
-        private void MainWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                switch (e.Key)
-                {
-                    case Key.Left:
-                        if (ViewModel.PreviousMonthCommand.IsEnabled)
-                        {
-                            ViewModel.PreviousMonthCommand.Execute(null);
-                            e.Handled = true;
-                        }
-                        else
-                        {
-                            System.Media.SystemSounds.Exclamation.Play();
-                        }
-                        break;
-                    case Key.Right:
-                        if (ViewModel.NextMonthCommand.IsEnabled)
-                        {
-                            ViewModel.NextMonthCommand.Execute(null);
-                            e.Handled = true;
-                        }
-                        else
-                        {
-                            System.Media.SystemSounds.Exclamation.Play();
-                        }
-                        break;
-                }
-            }
-        }
+        //private void MainWindow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        //{
+        //    if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+        //    {
+        //        switch (e.Key)
+        //        {
+        //            case Key.Left:
+        //                if (ViewModel.PreviousMonthCommand.IsEnabled)
+        //                {
+        //                    ViewModel.PreviousMonthCommand.Execute(null);
+        //                    e.Handled = true;
+        //                }
+        //                else
+        //                {
+        //                    System.Media.SystemSounds.Exclamation.Play();
+        //                }
+        //                break;
+        //            case Key.Right:
+        //                if (ViewModel.NextMonthCommand.IsEnabled)
+        //                {
+        //                    ViewModel.NextMonthCommand.Execute(null);
+        //                    e.Handled = true;
+        //                }
+        //                else
+        //                {
+        //                    System.Media.SystemSounds.Exclamation.Play();
+        //                }
+        //                break;
+        //        }
+        //    }
+        //}
 
         public bool ChangeHousehold(bool firstTime)
         {

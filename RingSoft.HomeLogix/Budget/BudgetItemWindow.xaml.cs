@@ -6,7 +6,9 @@ using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DataEntryControls.WPF;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.DbLookup.Controls.WPF;
 
@@ -36,7 +38,6 @@ namespace RingSoft.HomeLogix.Budget
                     budgetCustomPanel.ClearRecurButton.Command = BudgetItemViewModel.ClearRecurringCommand;
                 }
             };
-
         }
 
         protected override void OnLoaded()

@@ -27,11 +27,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="GenerateButton" Content="Generate _Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
+                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="GenerateButton" Content="Generate Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
 
-                            <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="AddButton" Content="Add Register _Item" ImageSource="{StaticResource AddImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+                            <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="AddButton" Content="Add Register Item" ImageSource="{StaticResource AddImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
-                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="ImportButton" Content="I_mport Bank Transactions" ImageSource="{StaticResource ImportImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
+                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" x:Name="ImportButton" Content="Import Bank Transactions" ImageSource="{StaticResource ImportImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 
                         </Grid>
 

@@ -60,7 +60,7 @@
                                     DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left" />
             </StackPanel>
 
-            <TabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
+            <dec:DataEntryTabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
                 <TabItem Header="Details">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -178,7 +178,7 @@
                     <dec:DataEntryMemoEditor Text="{Binding Path=Notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MinHeight="250"/>
 
                 </dec:DataEntryMemoTabItem>
-            </TabControl>
+            </dec:DataEntryTabControl>
 
             <Grid Grid.Row="2" Grid.Column="0">
                 <Grid.RowDefinitions>
