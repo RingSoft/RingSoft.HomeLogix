@@ -1,25 +1,22 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using RingSoft.App.Library;
-using RingSoft.DbLookup.QueryBuilder;
-using RingSoft.HomeLogix.DataAccess;
-using RingSoft.HomeLogix.MasterData;
-using RingSoft.HomeLogix.Sqlite;
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using RingSoft.App.Interop;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.DataProcessor;
 using RingSoft.DbLookup.EfCore;
+using RingSoft.HomeLogix.DataAccess;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using RingSoft.HomeLogix.Library.ViewModels.Main;
+using RingSoft.HomeLogix.MasterData;
+using RingSoft.HomeLogix.Sqlite;
 using RingSoft.HomeLogix.SqlServer;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
 
 namespace RingSoft.HomeLogix.Library
 {
@@ -71,7 +68,7 @@ namespace RingSoft.HomeLogix.Library
             RingSoftAppGlobals.AppTitle = "HomeLogix";
             RingSoftAppGlobals.AppCopyright = "©2024 by Peter Ringering";
             RingSoftAppGlobals.AppGuid = "7b811d4b-e39a-4316-a1dd-ba58eeafede7";
-            RingSoftAppGlobals.AppVersion = 310;
+            RingSoftAppGlobals.AppVersion = 311;
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
