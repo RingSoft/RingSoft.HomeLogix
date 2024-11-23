@@ -1156,8 +1156,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     if (bankAccountViewModel.Id == entity.BankAccountId)
                     {
-                        bankAccountViewModel.RefreshAfterBudgetItemSave(entity, _newBankAccountRegisterItems,
-                            StartingDate);
+                        bankAccountViewModel.RefreshAfterBudgetItemSave();
+                    }
+                }
+
+                //Peter Ringering - 11/22/2024 05:09:51 PM - E-74
+                var transferToId = TransferToBankAccountAutoFillValue.GetEntity<BankAccount>().Id;
+                if (transferToId != 0)
+                {
+                    var transferToViewModels
+                        = AppGlobals
+                            .MainViewModel
+                            .BankAccountViewModels
+                            .Where(p => p.Id == transferToId);
+                    foreach (var transferToViewModel in transferToViewModels)
+                    {
+                        transferToViewModel.RefreshAfterBudgetItemSave();
                     }
                 }
 

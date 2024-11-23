@@ -1367,8 +1367,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 && a.LineType != HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous);
         }
 
-        public void RefreshAfterBudgetItemSave(BudgetItem budgetItem,
-            List<BankAccountRegisterItem> newRegisterItems, DateTime? startDate)
+        public void RefreshAfterBudgetItemSave()
         {
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);

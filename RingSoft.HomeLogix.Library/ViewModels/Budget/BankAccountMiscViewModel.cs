@@ -5,6 +5,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.QueryBuilder;
@@ -524,9 +525,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (_registerItem.ActualAmount != null)
                 _registerItem.ActualAmount = _registerItem.ProjectedAmount;
-            
+
             if (AppGlobals.DataRepository.SaveNewRegisterItem(_registerItem, _transferToRegisterItem))
+            {
+                //Peter Ringering - 11/22/2024 04:55:34 PM - E-74
+                if (_transferToRegisterItem != null && _transferToRegisterItem.BankAccountId > 0)
+                {
+                    var transferToViewModels
+                        = AppGlobals
+                            .MainViewModel
+                            .BankAccountViewModels
+                            .Where(p => p.Id == _transferToRegisterItem.BankAccountId);
+                    foreach (var transferToViewModel in transferToViewModels)
+                    {
+                        transferToViewModel.RefreshAfterBudgetItemSave();
+                    }
+                }
+
                 View.OnOkButtonCloseWindow();
+            }
         }
 
         private void AutofillDescription()
