@@ -95,6 +95,11 @@ namespace RingSoft.HomeLogix.Budget
             Process.Start(path);
         }
 
+        public void RefreshGrid(BankAccount bankAccount)
+        {
+            
+        }
+
         public BankAccountMaintenanceWindow()
         {
             InitializeComponent();

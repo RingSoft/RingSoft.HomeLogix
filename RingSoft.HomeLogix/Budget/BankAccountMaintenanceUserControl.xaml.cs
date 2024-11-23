@@ -184,5 +184,13 @@ namespace RingSoft.HomeLogix.Budget
             Application.Current.Shutdown(0);
             Process.Start(path);
         }
+
+        public void RefreshGrid(BankAccount bankAccount)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                BankAccountViewModel.LoadFromEntityProcedure(bankAccount);
+            });
+        }
     }
 }

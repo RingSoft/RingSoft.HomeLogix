@@ -71,5 +71,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             
         }
+
+        public void RefreshGrid(BankAccount bankAccount)
+        {
+            
+        }
     }
 }

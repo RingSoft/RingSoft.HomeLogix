@@ -54,6 +54,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId);
 
         void RestartApp();
+
+        void RefreshGrid(BankAccount bankAccount);
     }
 
     public class CompletedRegisterData
@@ -682,7 +684,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             if (bankAccount != null)
             {
-                LoadFromEntityProcedure(bankAccount);
+                BankAccountView.RefreshGrid(bankAccount);
             }
         }
 

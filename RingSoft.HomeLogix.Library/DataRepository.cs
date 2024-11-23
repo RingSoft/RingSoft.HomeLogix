@@ -319,9 +319,17 @@ namespace RingSoft.HomeLogix.Library
             BankAccount dbTransferToBankAccount, List<BankAccountRegisterItem> newBankRegisterItems,
             List<BankAccountRegisterItem> registerItemsToDelete)
         {
+            var bankAccount = budgetItem.BankAccount;
+            var transferBankAcct = budgetItem.TransferToBankAccount;
+            budgetItem.BankAccount = null;
+            budgetItem.TransferToBankAccount = null;
+
             var context = SystemGlobals.DataRepository.GetDataContext();
             if (!context.SaveNoCommitEntity(budgetItem, "Saving Budget Item"))
                 return false;
+
+            budgetItem.BankAccount = bankAccount;
+            budgetItem.TransferToBankAccount = transferBankAcct;
 
             if (dbBankAccount != null)
             {
