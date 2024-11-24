@@ -829,6 +829,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //Peter Ringering - 07/10/2024 04:15:16 PM - E-67
             var bankAccount1 = AppGlobals.DataRepository.GetBankAccount(Id);
             RegisterGridManager.LoadGrid(bankAccount1.RegisterItems);
+
+            //Peter Ringering - 11/23/2024 05:02:40 PM - E-79
+            RegisterGridManager.CalculateProjectedBalanceData();
         }
 
         private void SetTotals(BankAccount bankAccount)
