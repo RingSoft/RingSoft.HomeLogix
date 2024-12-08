@@ -7,6 +7,7 @@ using RingSoft.HomeLogix.Library;
 using System.Windows;
 using RingSoft.App.Library;
 using RingSoft.DbLookup.Controls.WPF;
+using RingSoft.DbLookup.Controls.WPF.AdvancedFind;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.HistoryMaintenance;
 using RingSoft.HomeLogix.Library.ViewModels;
@@ -52,6 +53,9 @@ namespace RingSoft.HomeLogix
             LookupControlsGlobals.WindowRegistry.RegisterWindow<HistoryItemMaintenanceWindow, History>();
             LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetItemSourceWindow, BudgetItemSource>();
             LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetItemSourceWindow, SourceHistory>();
+
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <AdvancedFindUserControl>(AppGlobals.LookupContext.AdvancedFinds);
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl<BankAccountMaintenanceUserControl, BankAccount>();
             LookupControlsGlobals .WindowRegistry.RegisterUserControl<BudgetItemUserControl, BudgetItem>();

@@ -160,11 +160,12 @@ namespace RingSoft.HomeLogix
 
         public void LaunchAdvancedFind()
         {
-            var window = new AdvancedFindWindow();
+            //var window = new AdvancedFindWindow();
             //window.Owner = this;
             //window.Closed += (sender, args) => Activate();
-            
-            window.ShowDialog();
+
+            //window.ShowDialog();
+            TabControl.ShowTableControl(AppGlobals.LookupContext.AdvancedFinds, false);
         }
 
         public void CloseApp()
