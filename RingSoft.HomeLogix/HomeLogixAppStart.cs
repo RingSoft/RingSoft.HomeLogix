@@ -58,6 +58,9 @@ namespace RingSoft.HomeLogix
                 <AdvancedFindUserControl>(AppGlobals.LookupContext.AdvancedFinds);
 
             LookupControlsGlobals.WindowRegistry.RegisterUserControl<BankAccountMaintenanceUserControl, BankAccount>();
+            LookupControlsGlobals.WindowRegistry.RegisterUserControl
+                <BankAccountMaintenanceUserControl, BankAccountRegisterItem>();
+
             LookupControlsGlobals .WindowRegistry.RegisterUserControl<BudgetItemUserControl, BudgetItem>();
             LookupControlsGlobals .WindowRegistry.RegisterUserControl<BudgetItemUserControl, MainBudget>();
 
