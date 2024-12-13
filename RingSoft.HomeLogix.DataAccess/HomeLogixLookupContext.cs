@@ -473,6 +473,12 @@ namespace RingSoft.HomeLogix.DataAccess
             SourceHistory.GetFieldDefinition(p => p.Amount).HasDecimalFieldType(DecimalFieldTypes.Currency);
 
             BankAccountRegisterItems.GetFieldDefinition(p => p.ItemType).IsEnum<BankAccountRegisterItemTypes>();
+
+            BankTransactions.PriorityLevel = 300;
+            BankTransactions.ShowInAdvFind(false);
+
+            BankAccountRegisterItemAmountDetails.PriorityLevel = 300;
+            BankAccountRegisterItemAmountDetails.ShowInAdvFind(false);
         }
     }
 }
