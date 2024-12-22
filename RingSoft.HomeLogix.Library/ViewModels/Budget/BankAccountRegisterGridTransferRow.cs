@@ -59,7 +59,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 case BankAccountRegisterGridColumns.Amount:
                 case BankAccountRegisterGridColumns.ActualAmount:
-                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.Disabled};
+                    return new DataEntryGridCellStyle {State = DataEntryGridCellStates.ReadOnly };
             }
             return base.GetCellStyle(columnId);
         }

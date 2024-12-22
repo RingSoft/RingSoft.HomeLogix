@@ -50,7 +50,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     if (!TransferRegisterGuid.IsNullOrEmpty())
                     {
-                        return new DataEntryGridCellStyle { State = DataEntryGridCellStates.Disabled };
+                        return new DataEntryGridCellStyle { State = DataEntryGridCellStates.ReadOnly };
                     }
                     break;
                 }
