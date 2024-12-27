@@ -16,7 +16,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
     public interface IBudgetItemView : IDbMaintenanceView
     {
-        void SetViewType();
+        void SetViewType(bool isCC = false);
 
         void ShowMonthlyStatsControls(bool show = true);
 
@@ -263,6 +263,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return;
 
                 _transferToBankAccountAutoFillValue = value;
+                SetViewMode();
                 OnPropertyChanged(null, false);
             }
         }
@@ -465,6 +466,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private bool _payCCBalance;
+
+        public bool PayCCBalance
+        {
+            get { return _payCCBalance; }
+            set
+            {
+                if (_payCCBalance == value)
+                    return;
+
+                _payCCBalance = value;
+                SetViewMode();
+                OnPropertyChanged();
+            }
+        }
+
 
         #endregion
 
@@ -598,6 +615,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             StartingDate = _dbStartDate = DateTime.Today;
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
+            PayCCBalance = false;
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
@@ -644,7 +662,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            _view.SetViewType();
+            var isCC = false;
+            if (TransferToBankAccountAutoFillValue.IsValid())
+            {
+                var transferToBank = TransferToBankAccountAutoFillValue.GetEntity<BankAccount>();
+                if (transferToBank != null)
+                {
+                    transferToBank = transferToBank.FillOutProperties(false);
+                    isCC = (DataAccess.Model.BankAccountTypes)transferToBank.AccountType ==
+                           DataAccess.Model.BankAccountTypes.CreditCard;
+                }
+            }
+
+            if (isCC == false)
+            {
+                PayCCBalance = false;
+            }
+
+            if (PayCCBalance)
+            {
+                Amount = 0;
+            }
+
+            _view.SetViewType(isCC);
 
             switch (RecurringType)
             {
@@ -814,6 +854,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Notes = entity.Notes;
             LastCompletedDate = entity.LastCompletedDate;
             TransferToBankAccountAutoFillValue = entity.TransferToBankAccount.GetAutoFillValue();
+            PayCCBalance = entity.PayCCBalance;
 
             _loading = false;
             SetViewMode();
@@ -1076,7 +1117,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 CurrentMonthAmount = CurrentMonthAmount,
                 CurrentMonthEnding = CurrentMonthEnding,
                 Notes = Notes,
-                LastCompletedDate = LastCompletedDate
+                LastCompletedDate = LastCompletedDate,
+                PayCCBalance = PayCCBalance,
             };
             return budgetItem;
         }

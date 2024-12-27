@@ -87,7 +87,7 @@
 
                         <Label Grid.Row="1" Grid.Column="0" Content="Amount"/>
 
-                        <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
+                        <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" x:Name="AmountControl" Value="{Binding Path=Amount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" DesignText="$123,456,789.00" Width="120" TextAlignment="Left" HorizontalAlignment="Left" AllowNullValue="False"/>
 
                         <Label Grid.Row="1" Grid.Column="2" Content="Recurs Every"/>
 
@@ -115,6 +115,7 @@
 
                         </StackPanel>
 
+                        <CheckBox Grid.Row="4" Grid.Column="0" x:Name="PayCCBalanceCheckBox" HorizontalAlignment="Left" Content="Pay Off Credit Card Balance" IsChecked="{Binding PayCCBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Monthly Totals" VerticalAlignment="Stretch">

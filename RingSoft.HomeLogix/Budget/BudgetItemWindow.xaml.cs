@@ -54,7 +54,7 @@ namespace RingSoft.HomeLogix.Budget
             DescriptionControl.SetReadOnlyMode(false);
         }
 
-        public void SetViewType()
+        public void SetViewType(bool isCC = false)
         {
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;

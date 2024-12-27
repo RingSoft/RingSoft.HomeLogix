@@ -8,7 +8,7 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
 {
     public class BudgetView : TestDbMaintenanceView, IBudgetItemView
     {
-        public void SetViewType()
+        public void SetViewType(bool isCC = false)
         {
             
         }
