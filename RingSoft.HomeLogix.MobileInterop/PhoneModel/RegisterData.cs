@@ -13,6 +13,13 @@
         Withdrawal = 1
     }
 
+    public enum MobileRegisterPayCCTypes
+    {
+        None = 0,
+        FromBank = 1,
+        ToCC = 2,
+    }
+
 
     public class RegisterData
     {
@@ -39,5 +46,7 @@
         public BankAccountRegisterItemTypes RegisterItemType { get; set; }
 
         public string TransactionTypeText { get; set; }
+
+        public MobileRegisterPayCCTypes RegisterPayCCType { get; set; } = MobileRegisterPayCCTypes.None;
     }
 }

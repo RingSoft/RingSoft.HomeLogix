@@ -15,6 +15,13 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         TransferToBankAccount = 2,
     }
 
+    public enum RegisterPayCCTypes
+    {
+        None = 0,
+        FromBank = 1,
+        ToCC =2,
+    }
+
     public class BankAccountRegisterItem
     {
         [Required]
@@ -61,6 +68,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(false)]
         [Required]
         public bool IsTransferMisc { get; set; }
+
+        [DefaultValue(0)]
+        [Required]
+        public byte PayCCType { get; set; }
 
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 

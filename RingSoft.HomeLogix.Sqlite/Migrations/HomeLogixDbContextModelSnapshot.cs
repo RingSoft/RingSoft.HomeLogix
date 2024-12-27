@@ -309,6 +309,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
+                    b.Property<byte>("PayCCType")
+                        .HasColumnType("smallint");
+
                     b.Property<double>("ProjectedAmount")
                         .HasColumnType("numeric");
 

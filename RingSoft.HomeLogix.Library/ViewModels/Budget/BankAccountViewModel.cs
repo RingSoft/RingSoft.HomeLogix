@@ -1475,7 +1475,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(bankAccountId);
             var registerItems = bankAccount.RegisterItems
                 .OrderBy(p => p.ItemDate)
-                .ThenBy(p => p.ItemType);
+                .ThenByDescending(p => p.ProjectedAmount);
 
             var index = 0;
             var detailsChunk = new List<PrintingInputDetailsRow>();
@@ -1554,6 +1554,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.ProjectedAmount = Math.Abs(register.ProjectedAmount);
             registerData.ItemDate = register.ItemDate;
             registerData.IsNegative = register.IsNegative;
+
+            var registerPayCCType = (RegisterPayCCTypes)register.PayCCType;
+            switch (registerPayCCType)
+            {
+                case RegisterPayCCTypes.None:
+                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.None;
+                    break;
+                case RegisterPayCCTypes.FromBank:
+                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.FromBank;
+                    break;
+                case RegisterPayCCTypes.ToCC:
+                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.ToCC;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             //registerData.RegisterItemType =
             //    (MobileInterop.PhoneModel.BankAccountRegisterItemTypes)register.ItemType;
             registerData.RegisterItemType = MobileInterop.PhoneModel.BankAccountRegisterItemTypes.BudgetItem;
@@ -1601,6 +1618,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public static double CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, double balance)
         {
+            switch (registerData.RegisterPayCCType)
+            {
+                case MobileRegisterPayCCTypes.None:
+                    break;
+                case MobileRegisterPayCCTypes.FromBank:
+                    break;
+                case MobileRegisterPayCCTypes.ToCC:
+                    registerData.ProjectedAmount = balance;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             if (registerData.Completed)
             {
                 return balance;

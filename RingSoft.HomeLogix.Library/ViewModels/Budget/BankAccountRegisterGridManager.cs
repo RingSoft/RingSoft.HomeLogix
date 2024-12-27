@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbMaintenance;
@@ -161,11 +162,50 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyBudgetDeposits = monthBudgetDeposits;
             MonthlyBudgetWithdrawals = monthBudgetWithdrawals;
+            var banksToRefresh = new List<int>();
 
             foreach (var bankAccountRegisterGridRow in rows)
             {
                 var registerData = bankAccountRegisterGridRow.GetRegisterData();
                 newBalance = BankAccountViewModel.CalcNewBalance(ViewModel.AccountType, registerData, newBalance);
+
+                if (registerData.ProjectedAmount.CompareTo(bankAccountRegisterGridRow.ProjectedAmount) != 0)
+                {
+                    bankAccountRegisterGridRow.ProjectedAmount = registerData.ProjectedAmount;
+                    switch (bankAccountRegisterGridRow.LineType)
+                    {
+                        case BankAccountRegisterItemTypes.BudgetItem:
+                            break;
+                        case BankAccountRegisterItemTypes.Miscellaneous:
+                            break;
+                        case BankAccountRegisterItemTypes.TransferToBankAccount:
+                            if (bankAccountRegisterGridRow 
+                                is BankAccountRegisterGridTransferRow transferRow)
+                            {
+                                var fromBankGuid = transferRow.TransferRegisterGuid;
+                                var registerTable
+                                    = context.GetTable<BankAccountRegisterItem>()
+                                        .Include(p => p.BankAccount);
+                                var fromBankRegisterItem =
+                                    registerTable.FirstOrDefault(p => p.RegisterGuid
+                                                                      == transferRow.TransferRegisterGuid);
+
+                                if (fromBankRegisterItem != null)
+                                {
+                                    fromBankRegisterItem.ProjectedAmount = -bankAccountRegisterGridRow.ProjectedAmount;
+                                    context.SaveEntity(fromBankRegisterItem, "");
+
+                                    if (!banksToRefresh.Contains(fromBankRegisterItem.BankAccountId))
+                                    {
+                                        banksToRefresh.Add(fromBankRegisterItem.BankAccountId);
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
 
                 if (lowestBalanceDate == null)
                     lowestBalanceDate = bankAccountRegisterGridRow.ItemDate.AddDays(-1);
@@ -176,40 +216,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 else
                 {
-                    //switch (bankAccountRegisterGridRow.TransactionType)
-                    //{
-                    //    case TransactionTypes.Deposit:
-                    //        switch (ViewModel.AccountType)
-                    //        {
-                    //            case BankAccountTypes.Checking:
-                    //            case BankAccountTypes.Savings:
-                    //                newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                    //                break;
-                    //            case BankAccountTypes.CreditCard:
-                    //                newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                    //                break;
-                    //            default:
-                    //                throw new ArgumentOutOfRangeException();
-                    //        }
-                    //        break;
-                    //    case TransactionTypes.Withdrawal:
-                    //        switch (ViewModel.AccountType)
-                    //        {
-                    //            case BankAccountTypes.Checking:
-                    //            case BankAccountTypes.Savings:
-                    //                newBalance -= bankAccountRegisterGridRow.ProjectedAmount;
-                    //                break;
-                    //            case BankAccountTypes.CreditCard:
-                    //                newBalance += bankAccountRegisterGridRow.ProjectedAmount;
-                    //                break;
-                    //            default:
-                    //                throw new ArgumentOutOfRangeException();
-                    //        }
-                    //        break;
-                    //    default:
-                    //        throw new ArgumentOutOfRangeException();
-                    //}
-
                     bankAccountRegisterGridRow.Balance = newBalance;
                 }
 
@@ -229,6 +235,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var row in Rows)
             {
                 Grid?.UpdateRow(row);
+            }
+
+            if (banksToRefresh.Any())
+            {
+                foreach (var bankId in banksToRefresh)
+                {
+                    foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
+                    {
+                        if (bankAccountViewModel.Id == bankId)
+                        {
+                            bankAccountViewModel.RefreshAfterBudgetItemSave();
+                        }
+                    }
+                }
             }
         }
 
