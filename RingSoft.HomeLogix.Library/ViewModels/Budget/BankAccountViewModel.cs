@@ -1625,7 +1625,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case MobileRegisterPayCCTypes.FromBank:
                     break;
                 case MobileRegisterPayCCTypes.ToCC:
-                    registerData.ProjectedAmount = balance;
+                    if (!registerData.Completed)
+                    {
+                        registerData.ProjectedAmount = balance;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

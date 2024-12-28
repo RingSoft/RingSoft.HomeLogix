@@ -204,7 +204,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
                     var amount = ProcessAmount(gridRow.Amount, gridRow, budgetItem);
                     var row = PostBudgetItem(budgetItem, amount, gridRow, false);
-                    if (row != null) bankBalance = UpdateBankBalance(row, bankBalance, amount);
+                    if (row != null) 
+                        bankBalance = UpdateBankBalance(row, bankBalance, amount);
                 }
             }
 
@@ -238,7 +239,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (rows.Any())
                 {
                     SaveQifMaps();
-                    if (ViewModel.BankViewModel.LastCompleteDate.Value.Year != 1980)
+                    //if (ViewModel.BankViewModel.LastCompleteDate.Value.Year != 1980)
                     {
                         ViewModel.BankViewModel.CurrentBalance = bankBalance;
                     }
