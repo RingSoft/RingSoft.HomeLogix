@@ -1200,6 +1200,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         bankAccountViewModel.RefreshAfterBudgetItemSave();
                     }
+
+                    if (DbBankAccount != null && bankAccountViewModel.Id == DbBankAccount.Id)
+                    {
+                        bankAccountViewModel.RefreshAfterBudgetItemSave();
+                    }
                 }
 
                 //Peter Ringering - 11/22/2024 05:09:51 PM - E-74
