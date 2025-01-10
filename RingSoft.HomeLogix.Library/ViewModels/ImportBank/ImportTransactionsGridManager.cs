@@ -298,6 +298,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         break;
                 }
             }
+
+            result = Math.Round(result, 2);
             return result;
         }
 
@@ -355,6 +357,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     throw new ArgumentOutOfRangeException();
             }
 
+            bankBalance = Math.Round(bankBalance, 2);
             return bankBalance;
         }
 
