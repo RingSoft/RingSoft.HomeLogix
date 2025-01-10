@@ -220,6 +220,7 @@ namespace RingSoft.HomeLogix.Library
         public bool SaveBudgetPeriodRecord(IDbContext context, BudgetPeriodHistory budgetPeriodHistoryRecord)
         {
             var budgetPeriodHistory = context.GetTable<BudgetPeriodHistory>();
+            budgetPeriodHistoryRecord.BudgetItem = null;
             if (budgetPeriodHistory.Any(a => a.PeriodType == budgetPeriodHistoryRecord.PeriodType &&
                                                      a.BudgetItemId == budgetPeriodHistoryRecord.BudgetItemId &&
                                                      a.PeriodEndingDate == budgetPeriodHistoryRecord.PeriodEndingDate))
