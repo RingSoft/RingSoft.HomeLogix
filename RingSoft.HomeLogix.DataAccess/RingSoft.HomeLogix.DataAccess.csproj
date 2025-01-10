@@ -3,6 +3,6 @@
     <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="9.3.5" />
+    <PackageReference Include="RingSoft.App.Library" Version="9.4.0" />
   </ItemGroup>
 </Project>
