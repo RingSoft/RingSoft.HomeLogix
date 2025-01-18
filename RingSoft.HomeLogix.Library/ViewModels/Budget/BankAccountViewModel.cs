@@ -1551,7 +1551,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.BankAccountId = register.BankAccountId;
             registerData.Description = register.Description;
             registerData.Completed = register.Completed;
-            registerData.ProjectedAmount = Math.Abs(register.ProjectedAmount);
+            registerData.ProjectedAmount = register.ProjectedAmount;
             registerData.ItemDate = register.ItemDate;
             registerData.IsNegative = register.IsNegative;
 
@@ -1618,6 +1618,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public static double CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, double balance)
         {
+            balance = Math.Round(balance);
             switch (registerData.RegisterPayCCType)
             {
                 case MobileRegisterPayCCTypes.None:
@@ -1627,7 +1628,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case MobileRegisterPayCCTypes.ToCC:
                     if (!registerData.Completed)
                     {
-                        registerData.ProjectedAmount = balance;
+                        if (balance > 0)
+                        {
+                            registerData.ProjectedAmount = balance;
+                        }
+                        else
+                        {
+                            registerData.ProjectedAmount = 0;
+                        }
                     }
                     break;
                 default:
