@@ -1618,7 +1618,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public static double CalcNewBalance(BankAccountTypes accountType, RegisterData registerData, double balance)
         {
-            balance = Math.Round(balance);
+            balance = Math.Round(balance, 2);
             switch (registerData.RegisterPayCCType)
             {
                 case MobileRegisterPayCCTypes.None:
