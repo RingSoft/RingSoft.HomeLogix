@@ -330,6 +330,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         private double UpdateBankBalance(BankAccountRegisterGridRow row, double bankBalance, double amount)
         {
+            amount = Math.Abs(amount);
             switch (row.TransactionType)
             {
                 case TransactionTypes.Deposit:
@@ -503,6 +504,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             bankRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
             bankRegisterItem.Completed = true;
             bankRegisterItem.ProjectedAmount = amount;
+            if (budgetItem != null)
+            {
+                if (gridRow.Manager.ViewModel.BankViewModel.AccountType == BankAccountTypes.CreditCard)
+                {
+                    if ((BudgetItemTypes)budgetItem.Type == BudgetItemTypes.Expense)
+                    {
+                        if (amount < 0)
+                        {
+                            bankRegisterItem.IsNegative = true;
+                        }
+                    }
+                }
+            }
             bankRegisterItem.ActualAmount = amount;
             bankRegisterItem.BankText = gridRow.Description;
             BankAccountRegisterItem transferToRegisterItem = null;

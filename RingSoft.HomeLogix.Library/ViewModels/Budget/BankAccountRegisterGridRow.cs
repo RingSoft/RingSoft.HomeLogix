@@ -245,9 +245,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         switch ((BudgetItemTypes)entity.BudgetItem.Type)
                         {
                             case BudgetItemTypes.Income:
-                                TransactionType = entity.IsNegative
-                                    ? TransactionTypes.Withdrawal
-                                    : TransactionTypes.Deposit;
+                                switch (Manager.ViewModel.AccountType)
+                                {
+                                    case BankAccountTypes.Checking:
+                                    case BankAccountTypes.Savings:
+                                        TransactionType = entity.IsNegative
+                                            ? TransactionTypes.Withdrawal
+                                            : TransactionTypes.Deposit;
+                                        break;
+                                    case BankAccountTypes.CreditCard:
+                                        TransactionType = entity.IsNegative
+                                            ? TransactionTypes.Deposit
+                                            : TransactionTypes.Withdrawal;
+                                        break;
+                                    default:
+                                        throw new ArgumentOutOfRangeException();
+                                }
                                 break;
                             case BudgetItemTypes.Expense:
                                 TransactionType = entity.IsNegative
