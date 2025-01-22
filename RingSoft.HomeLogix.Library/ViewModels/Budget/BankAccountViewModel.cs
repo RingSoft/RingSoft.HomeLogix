@@ -1492,6 +1492,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var bankAccountRegisterItem in registerItems)
             {
+                if (bankAccountRegisterItem.Completed)
+                {
+                    continue;
+                }
                 if (lowestDate == null)
                 {
                     lowestDate = bankAccountRegisterItem.ItemDate;
@@ -1551,7 +1555,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.BankAccountId = register.BankAccountId;
             registerData.Description = register.Description;
             registerData.Completed = register.Completed;
-            registerData.ProjectedAmount = register.ProjectedAmount;
+            registerData.ProjectedAmount = Math.Abs(register.ProjectedAmount);
             registerData.ItemDate = register.ItemDate;
             registerData.IsNegative = register.IsNegative;
 
