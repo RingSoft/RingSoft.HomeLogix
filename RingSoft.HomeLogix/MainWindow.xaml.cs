@@ -24,8 +24,12 @@ namespace RingSoft.HomeLogix
     /// </summary>
     public partial class MainWindow : IMainView, ICheckVersionView
     {
+        public HotKeyProcessor HotKeyProcessor { get; } = new HotKeyProcessor();
+
         public MainWindow()
         {
+            HotKeyProcessor.TopLevel = true;
+
             InitializeComponent();
             LookupControlsGlobals.SetTabSwitcherWindow(this, TabControl);
             TabControl.SetDestionationAsFirstTab = false;
@@ -43,6 +47,16 @@ namespace RingSoft.HomeLogix
                 //ViewModel.OnViewLoaded(this);
             };
 
+            var hotKey = new HotKey(ViewModel.PreviousMonthCommand);
+            hotKey.AddKey(Key.M);
+            hotKey.AddKey(Key.Left);
+            HotKeyProcessor.AddHotKey(hotKey);
+
+            hotKey = new HotKey(ViewModel.NextMonthCommand);
+            hotKey.AddKey(Key.M);
+            hotKey.AddKey(Key.Right);
+            HotKeyProcessor.AddHotKey(hotKey);
+
             ChangeHouseholdButton.ToolTip.HeaderText = "Change Household (Alt + T)";
             ChangeHouseholdButton.ToolTip.DescriptionText = "Login to a different household.";
 
@@ -52,10 +66,10 @@ namespace RingSoft.HomeLogix
             ManageBankButton.ToolTip.HeaderText = "Manage Bank Accounts (Alt + B)";
             ManageBankButton.ToolTip.DescriptionText = "Manage and reconcile bank accounts.";
 
-            PreviousMonthButton.ToolTip.HeaderText = "Goto Previous Month";
+            PreviousMonthButton.ToolTip.HeaderText = "Goto Previous Month (Ctrl + M, Ctrl + <--)";
             PreviousMonthButton.ToolTip.DescriptionText = "See budget totals for the previous month.";
 
-            NextMonthButton.ToolTip.HeaderText = "Goto Next Month";
+            NextMonthButton.ToolTip.HeaderText = "Goto Next Month (Ctrl + M, Ctrl + -->)";
             NextMonthButton.ToolTip.DescriptionText = "See budget totals for the next month.";
 
             ChangeDateButton.ToolTip.HeaderText = "Change Budget Date (Alt + D)";
@@ -68,6 +82,13 @@ namespace RingSoft.HomeLogix
             AdvancedFindButton.ToolTip.DescriptionText = "Show the advanced find window.";
 
             Loaded += MainWindow_Loaded;
+        }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            HotKeyProcessor.OnKeyPressed(e);
+
+            base.OnPreviewKeyDown(e);
         }
 
         private void MainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
