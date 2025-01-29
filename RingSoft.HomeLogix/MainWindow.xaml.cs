@@ -248,7 +248,7 @@ namespace RingSoft.HomeLogix
                 var userControlTabItem = GetStatsTabItem();
                 if (userControlTabItem != null)
                 {
-                    userControlTabItem.CloseTab(TabControl);
+                    userControlTabItem.CloseTab();
                 }
             }
         }
