@@ -76,6 +76,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(false)]
         public bool PayCCBalance { get; set; }
 
+        public int? MonthOnDay { get; set; }
+
         public ICollection<BankTransaction> Transactions { get; set; }
 
         //public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }

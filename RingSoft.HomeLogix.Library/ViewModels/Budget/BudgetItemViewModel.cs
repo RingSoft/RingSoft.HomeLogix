@@ -205,6 +205,38 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             set => RecurringTypeComboBoxItem = RecurringTypeComboBoxControlSetup.GetItem((int)value);
         }
 
+        private bool _onDay;
+
+        public bool OnDay
+        {
+            get { return _onDay; }
+            set
+            {
+                if (_onDay == value) 
+                    return;
+
+                _onDay = value;
+                OnPropertyChanged();
+                _view.SetViewType();
+            }
+        }
+
+        private int? _onDayValue;
+
+        public int? OnDayValue
+        {
+            get { return _onDayValue; }
+            set
+            {
+                if (_onDayValue == value)
+                    return;
+
+                _onDayValue = value;
+                OnPropertyChanged();
+            }
+        }
+
+
         private DateTime? _startingDate;
 
         public DateTime? StartingDate
@@ -607,7 +639,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
-
+            OnDayValue = null;
+            OnDay = false;
             DbBankAccountId = 0;
             Amount = 0;
             RecurringPeriod = 1;
@@ -847,6 +880,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             RecurringPeriod = entity.RecurringPeriod;
             RecurringType = (BudgetItemRecurringTypes)entity.RecurringType;
+            OnDay = entity.MonthOnDay != null;
+            OnDayValue = entity.MonthOnDay;
             EndingDate = entity.EndingDate;
             MonthlyAmount = entity.MonthlyAmount;
             CurrentMonthAmount = entity.CurrentMonthAmount;
@@ -1119,6 +1154,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 Notes = Notes,
                 LastCompletedDate = LastCompletedDate,
                 PayCCBalance = PayCCBalance,
+                MonthOnDay = OnDayValue,
             };
             return budgetItem;
         }

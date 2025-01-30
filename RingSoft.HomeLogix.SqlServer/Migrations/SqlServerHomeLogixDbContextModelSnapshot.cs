@@ -480,6 +480,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<DateTime?>("LastCompletedDate")
                         .HasColumnType("datetime");
 
+                    b.Property<int?>("MonthOnDay")
+                        .HasColumnType("integer");
+
                     b.Property<decimal>("MonthlyAmount")
                         .HasColumnType("numeric");
 

@@ -18,6 +18,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.EndingDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Id).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.LastCompletedDate).HasColumnType(DbConstants.DateColumnType);
+            builder.Property(p => p.MonthOnDay).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.MonthlyAmount).HasColumnType(DbConstants.DecimalColumnType);          
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
             builder.Property(p => p.PayCCBalance).HasColumnType(DbConstants.BoolColumnType);

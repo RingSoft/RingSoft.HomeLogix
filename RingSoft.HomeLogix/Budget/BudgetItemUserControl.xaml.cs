@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using RingSoft.DataEntryControls.WPF;
@@ -61,6 +62,20 @@ namespace RingSoft.HomeLogix.Budget
 
         public void SetViewType(bool isCC = false)
         {
+            switch (BudgetItemViewModel.RecurringType)
+            {
+                case BudgetItemRecurringTypes.Months:
+                    OnDayCheckbox.Visibility = Visibility.Visible;
+                    OnDayEditControl.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    OnDayCheckbox.Visibility = Visibility.Collapsed;
+                    OnDayEditControl.Visibility = Visibility.Collapsed;
+                    break;
+            }
+
+            OnDayEditControl.IsEnabled = BudgetItemViewModel.OnDay;
+            
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;
 

@@ -97,6 +97,10 @@
 
                             <dec:TextComboBoxControl Setup="{Binding RecurringTypeComboBoxControlSetup}" SelectedItem="{Binding RecurringTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Month(s)xxx" Width="100"/>
 
+                            <CheckBox x:Name="OnDayCheckbox" Content="On Day" VerticalAlignment="Center" Margin="5,0" IsChecked="{Binding OnDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <dec:IntegerEditControl x:Name="OnDayEditControl" MaximumValue="31" Width="50" Value="{Binding OnDayValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowNullValue="True"/>
+
                         </StackPanel>
 
                         <Label Grid.Row="2" Grid.Column="0" Content="Next Generated&#10;Transaction Date"/>
