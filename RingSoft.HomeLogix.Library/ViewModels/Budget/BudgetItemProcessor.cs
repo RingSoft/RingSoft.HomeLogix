@@ -155,11 +155,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (budgetItem.EndingDate != null && budgetItem.EndingDate < budgetItem.StartingDate)
                     break;
 
+                var itemDate = budgetItem.StartingDate.GetValueOrDefault();
+                var lastDayOfMonth = new DateTime(itemDate.Year, itemDate.Month, 1);
+                lastDayOfMonth = lastDayOfMonth.AddMonths(1)
+                    .AddDays(-1);
+
+                if (budgetItem.MonthOnDay.HasValue 
+                    && (BudgetItemRecurringTypes)budgetItem.RecurringType == BudgetItemRecurringTypes.Months)
+                {
+                    if (budgetItem.MonthOnDay.Value > lastDayOfMonth.Day)
+                    {
+                        itemDate = lastDayOfMonth;
+                    }
+                    else
+                    {
+                        itemDate = new DateTime(itemDate.Year, itemDate.Month, budgetItem.MonthOnDay.Value);
+                    }
+                }
+
                 var registerItem = new BankAccountRegisterItem
                 {
                     BankAccountId = budgetItem.BankAccountId,
                     ItemType = (int)BankAccountRegisterItemTypes.BudgetItem,
-                    ItemDate = budgetItem.StartingDate.Value,
+                    ItemDate = itemDate,
                     BudgetItemId = budgetItem.Id,
                     Description = budgetItem.Description,
                     ProjectedAmount = amount
@@ -185,7 +203,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         RegisterGuid = transferToRegisterId,
                         BankAccountId = budgetItem.TransferToBankAccountId.Value,
                         ItemType = (int)BankAccountRegisterItemTypes.TransferToBankAccount,
-                        ItemDate = budgetItem.StartingDate.Value,
+                        ItemDate = itemDate,
                         BudgetItemId = budgetItem.Id,
                         Description = budgetItem.Description,
                         ProjectedAmount = -amount,
@@ -200,24 +218,39 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     result.Add(registerItem);
                 }
 
-                AdvanceBudgetItemStartingDate(budgetItem);
+                AdvanceBudgetItemStartingDate(budgetItem, itemDate);
             }
             return result;
         }
 
-        private static void AdvanceBudgetItemStartingDate(BudgetItem budgetItem)
+        private static void AdvanceBudgetItemStartingDate(BudgetItem budgetItem, DateTime itemDate)
         {
             if (budgetItem.StartingDate == null)
                 return;
 
-            budgetItem.StartingDate = (BudgetItemRecurringTypes)budgetItem.RecurringType switch
+            var newDate = (BudgetItemRecurringTypes)budgetItem.RecurringType switch
             {
-                BudgetItemRecurringTypes.Days => budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod),
-                BudgetItemRecurringTypes.Weeks => budgetItem.StartingDate.Value.AddDays(budgetItem.RecurringPeriod * 7),
-                BudgetItemRecurringTypes.Months => budgetItem.StartingDate.Value.AddMonths(budgetItem.RecurringPeriod),
-                BudgetItemRecurringTypes.Years => budgetItem.StartingDate.Value.AddYears(budgetItem.RecurringPeriod),
+                BudgetItemRecurringTypes.Days => itemDate.AddDays(budgetItem.RecurringPeriod),
+                BudgetItemRecurringTypes.Weeks => itemDate.AddDays(budgetItem.RecurringPeriod * 7),
+                BudgetItemRecurringTypes.Months => itemDate.AddMonths(budgetItem.RecurringPeriod),
+                BudgetItemRecurringTypes.Years => itemDate.AddYears(budgetItem.RecurringPeriod),
                 _ => throw new ArgumentOutOfRangeException()
             };
+
+            if (budgetItem.MonthOnDay.HasValue)
+            {
+                var lastDayOfMonth = new DateTime(newDate.Year, newDate.Month, 1);
+                lastDayOfMonth = lastDayOfMonth.AddMonths(1)
+                    .AddDays(-1);
+
+                if (newDate.Day != budgetItem.MonthOnDay.Value
+                    && budgetItem.MonthOnDay.Value < lastDayOfMonth.Day)
+                {
+                    newDate = new DateTime(newDate.Year, newDate.Month, budgetItem.MonthOnDay.Value);
+                }
+            }
+
+            budgetItem.StartingDate = newDate;
         }
     }
 }
