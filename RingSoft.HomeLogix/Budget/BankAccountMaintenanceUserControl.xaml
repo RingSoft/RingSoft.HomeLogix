@@ -249,39 +249,40 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Grid.Column="0" Content="Current Projected Ending Balance"/>
+                <Label x:Name="CurProjEndBalLabel" Grid.Row="0" Grid.Column="0" Content="Current Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="1" Value="{Binding CurrentProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}" UiCommand="{Binding CurProjEndBalUiCommand}" UiLabel="{Binding ElementName=CurProjEndBalLabel}"/>
 
-                <Label Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance"/>
+                <Label x:Name="NewProjEndBalLabel" Grid.Row="0" Grid.Column="2" Content="New Projected Ending Balance"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="3" Value="{Binding NewProjectedEndingBalance}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}" UiCommand="{Binding NewProjEndBalUiCommand}" UiLabel="{Binding ElementName=NewProjEndBalLabel}"/>
 
-                <Label Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
+                <Label x:Name="ProjEndBalDiffLabel" Grid.Row="0" Grid.Column="4" Content="Projected Ending Balance Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="0" Grid.Column="5" Value="{Binding Path=ProjectedEndingBalanceDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}" HorizontalAlignment="Left" UiCommand="{Binding ProjEndBalDiffUiCommand}" UiLabel="{Binding ElementName=ProjEndBalDiffLabel}"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
+                <Label x:Name="ProjLowBalDateLabel" Grid.Row="1" Grid.Column="0" Content="Projected Lowest Balance Date"/>
 
-                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100"/>
+                <dec:DateReadOnlyBox Grid.Row="1" Grid.Column="1" Value="{Binding ProjectedLowestBalanceDate}" DateFormatType="DateOnly" DesignText="01/01/2020" HorizontalAlignment="Left" Width="100" UiCommand="{Binding ProjLowBalDateUiCommand}" UiLabel="{Binding ElementName=ProjLowBalDateLabel}"/>
 
-                <Label Grid.Row="1" Grid.Column="2" Content="Projected Lowest Balance Amount"/>
+                <Label x:Name="ProjLowBalAmountLabel" Grid.Row="1" Grid.Column="2" Content="Projected Lowest Balance Amount"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=ProjectedLowestBalanceAmount}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="1" Grid.Column="3" Value="{Binding Path=ProjectedLowestBalanceAmount}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource ShowNegativeValuesInRed}}" UiCommand="{Binding ProjLowBalAmountUiCommand}" UiLabel="{Binding ElementName=ProjLowBalAmountLabel}"/>
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Monthly Budget Deposits"/>
+                <Label Grid.Row="2" Grid.Column="0" Content="Monthly Deposits"/>
 
                 <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="1" Value="{Binding Path=MonthlyBudgetDeposits}"/>
 
-                <Label Grid.Row="2" Grid.Column="2" Content="Monthly Budget Withdrawals"/>
+                <Label Grid.Row="2" Grid.Column="2" Content="Monthly Withdrawals"/>
 
                 <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="3" Value="{Binding Path=MonthlyBudgetWithdrawals}"/>
 
-                <Label Grid.Row="2" Grid.Column="4" Content="Monthly Budget Difference"/>
+                <Label Grid.Row="2" Grid.Column="4" Content="Monthly Difference"/>
 
-                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="4" Value="{Binding Path=MonthlyBudgetDifference}" Margin="198,3,0,3" Grid.ColumnSpan="2" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}"/>
+                <dec:DecimalReadOnlyBox Grid.Row="2" Grid.Column="5" Value="{Binding Path=MonthlyBudgetDifference}" Foreground="{Binding RelativeSource={RelativeSource Self}, Path=Value, Converter={StaticResource ValueToForeground}, ConverterParameter={StaticResource NegativeRedPositiveGreen}}" HorizontalAlignment="Left"/>
 
             </Grid>
         </Grid>

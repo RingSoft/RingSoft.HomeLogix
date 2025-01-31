@@ -106,6 +106,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _typeSetup = value;
                 OnPropertyChanged();
             }
@@ -122,16 +123,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _typeItem = value;
                 CalculateTotals();
+                SetProjVisibility();
                 OnPropertyChanged();
             }
         }
 
         public BankAccountTypes AccountType
         {
-            get => (BankAccountTypes) TypeItem.NumericValue;
-            set => TypeItem = TypeSetup.GetItem((int) value);
+            get => (BankAccountTypes)TypeItem.NumericValue;
+            set => TypeItem = TypeSetup.GetItem((int)value);
         }
 
         private bool _typeEnabled;
@@ -145,6 +148,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _typeEnabled = value;
                 OnPropertyChanged();
             }
@@ -370,6 +374,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     _lastGenerationDate = value;
                 }
+
                 OnPropertyChanged(nameof(LastGenerationDate), false);
             }
         }
@@ -420,7 +425,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         private bool _completeAll;
-        
+
         public bool CompleteAll
         {
             get => _completeAll;
@@ -448,6 +453,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _lastCompletedDate = value;
                 OnPropertyChanged();
             }
@@ -470,6 +476,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public List<BankAccountRegisterItemAmountDetail> RegisterDetails { get; } =
             new List<BankAccountRegisterItemAmountDetail>();
 
+        public UiCommand CurProjEndBalUiCommand { get; } = new UiCommand();
+
+        public UiCommand NewProjEndBalUiCommand { get; } = new UiCommand();
+
+        public UiCommand ProjEndBalDiffUiCommand { get; } = new UiCommand();
+
+        public UiCommand ProjLowBalDateUiCommand { get; } = new UiCommand();
+
+        public UiCommand ProjLowBalAmountUiCommand { get; } = new UiCommand();
+
         private bool _loading;
         private double _dbCurrentBalance;
         private bool _completeGrid = true;
@@ -480,7 +496,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private bool _saveEntity = true;
         private bool _doProcessCompletedRows;
 
-        private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory> _periodHistoryLookupDefinition;
+        private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>
+            _periodHistoryLookupDefinition;
 
         public BankAccountViewModel()
         {
@@ -503,7 +520,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RegisterGridManager = new BankAccountRegisterGridManager(this);
         }
 
-        
+
         protected override void Initialize()
         {
             BankAccountView = View as IBankAccountView;
@@ -520,6 +537,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 ViewModelInput = new ViewModelInput();
             }
+
             _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
             AppGlobals.MainViewModel.BankAccountViewModels.Add(this);
 
@@ -532,9 +550,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
             YearlyLookupDefinition = _periodHistoryLookupDefinition.Clone();
-            
+
             HistoryLookupDefinition = AppGlobals.LookupContext.HistoryLookup.Clone();
-            
+
             BudgetItemsLookupDefinition = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
             BudgetItemsLookupDefinition.AddVisibleColumnDefinition(p => p.MonthlyAmount, p => p.MonthlyAmount);
 
@@ -553,11 +571,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ProjectedEndingBalanceDifference = 0;
             ProjectedLowestBalanceDate = null;
             ProjectedLowestBalanceAmount = 0;
-            
+
             MonthlyBudgetDeposits = 0;
             MonthlyBudgetWithdrawals = 0;
             MonthlyBudgetDifference = 0;
-            
+
             Notes = string.Empty;
             LastGenerationDate = null;
 
@@ -588,12 +606,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
 
             MonthlyLookupDefinition.FilterDefinition.ClearFixedFilters();
-            MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType, 
-                Conditions.Equals, (int) PeriodHistoryTypes.Monthly);
-            MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId, 
+            MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType,
+                Conditions.Equals, (int)PeriodHistoryTypes.Monthly);
+            MonthlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.BankAccountId,
                 Conditions.Equals, Id);
 
-            MonthlyLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
+            MonthlyLookupDefinition.SetCommand(
+                GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
 
             YearlyLookupDefinition.FilterDefinition.ClearFixedFilters();
             YearlyLookupDefinition.FilterDefinition.AddFixedFilter(p => p.PeriodType,
@@ -618,7 +637,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BudgetItemsLookupDefinition.SetCommand(
                 GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
-            
+
             CompleteAll = false;
             TypeEnabled = false;
         }
@@ -638,7 +657,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             ViewModelInput.HistoryFilterBankAccount = bankAccount;
 
-            CurrentProjectedEndingBalance = bankAccount.ProjectedEndingBalance;
+            CurrentProjectedEndingBalance = Math.Round(bankAccount.ProjectedEndingBalance, 2);
 
             if (_processCompletedRows)
             {
@@ -690,7 +709,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void LoadFromEntityProcedure(BankAccount entity)
         {
-            AccountType = (BankAccountTypes) entity.AccountType;
+            AccountType = (BankAccountTypes)entity.AccountType;
             CurrentBalance = entity.CurrentBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;
             MonthlyBudgetWithdrawals = entity.MonthlyBudgetWithdrawals;
@@ -706,6 +725,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);
                 _firstRegisterDate = rows.FirstOrDefault().ItemDate;
             }
+
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
             _loading = false;
@@ -725,7 +745,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (ReadOnlyMode)
                 BankAccountView.ShowMessageBox(
-                    "This Bank Account is being modified in another window.  Editing not allowed.", "Editing not allowed",
+                    "This Bank Account is being modified in another window.  Editing not allowed.",
+                    "Editing not allowed",
                     RsMessageBoxIcons.Exclamation);
         }
 
@@ -738,7 +759,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 RegisterGridManager.CalculateProjectedBalanceData();
 
             ProjectedEndingBalanceDifference = NewProjectedEndingBalance - CurrentProjectedEndingBalance;
-            
+
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
         }
 
@@ -761,10 +782,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void AddNewRegisterItem()
         {
             var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
-            var registerItem = new BankAccountRegisterItem{BankAccountId = Id};
+            var registerItem = new BankAccountRegisterItem { BankAccountId = Id };
             if (BankAccountView.ShowBankAccountMiscWindow(registerItem, ViewModelInput))
             {
-                RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> {registerItem});
+                RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> { registerItem });
                 CalculateTotals();
                 AppGlobals.MainViewModel.RefreshView();
             }
@@ -783,6 +804,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 lastGenerationDate = DateTime.Today;
             }
+
             var generateToDate = BankAccountView.GetGenerateToDate(lastGenerationDate.Value.AddMonths(1));
 
             //GenerateTransactions(generateToDate);
@@ -876,7 +898,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         private async void CheckProcessCompletedData(List<BankAccountRegisterGridRow> completedRows
-        , CompletedRegisterData completedRegisterData)
+            , CompletedRegisterData completedRegisterData)
         {
             _saveEntity = true;
             _doProcessCompletedRows = false;
@@ -913,7 +935,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return false;
                 if (completedRegisterData != null)
                 {
-                    foreach (var bankAccountPeriodHistoryRecord in completedRegisterData.BankAccountPeriodHistoryRecords)
+                    foreach (var bankAccountPeriodHistoryRecord in
+                             completedRegisterData.BankAccountPeriodHistoryRecords)
                     {
                         var bankAccountPeriodHistory = context.GetTable<BankAccountPeriodHistory>();
                         if (bankAccountPeriodHistory.Any(a =>
@@ -957,7 +980,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         foreach (var budgetPeriodHistoryRecord in completedRegisterData.BudgetPeriodHistoryRecords)
                         {
                             budgetPeriodHistoryRecord.BudgetItem = null;
-                            if (!AppGlobals.DataRepository.SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord)) return false;
+                            if (!AppGlobals.DataRepository.SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord))
+                                return false;
                         }
 
                         context.RemoveRange<BankAccountRegisterItem>(completedRegisterData.CompletedRegisterItems);
@@ -974,6 +998,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
 
             }
+
             var result = context.Commit($"Saving Bank Account '{entity.Description}");
             if (result)
             {
@@ -986,7 +1011,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (RegisterGridManager.Grid != null)
                 {
                     var currentRowIndex = RegisterGridManager.Grid.CurrentRowIndex;
-                    
+
                     if (currentRowIndex >= 0)
                     {
                         currentRow = (BankAccountRegisterGridRow)RegisterGridManager.Rows[currentRowIndex];
@@ -1021,6 +1046,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 budgetItemViewModel.RecalculateBudgetItem();
             }
+
             if (AppGlobals.MainViewModel != null)
                 AppGlobals.MainViewModel.RefreshView();
             result = true;
@@ -1034,10 +1060,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     AppGlobals.MainViewModel.SetCurrentMonthEnding(newFirstDate);
                 }
             }
+
             return result;
         }
 
-        private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
+        private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData,
+            List<BankAccountRegisterGridRow> completedRows)
         {
             if (SystemGlobals.UnitTestMode)
             {
@@ -1051,7 +1079,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return true;
         }
 
-        public void PostTransactions(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
+        public void PostTransactions(CompletedRegisterData completedRegisterData,
+            List<BankAccountRegisterGridRow> completedRows)
         {
             var count = completedRows.Count;
             var rowIndex = 0;
@@ -1072,7 +1101,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     DateTime.DaysInMonth(registerItem.ItemDate.Year, registerItem.ItemDate.Month));
                 var yearEndDate = new DateTime(registerItem.ItemDate.Year, 12, 31);
 
-                ProcessCompletedBankPeriod(completedRegisterData, monthEndDate, completedRow, PeriodHistoryTypes.Monthly);
+                ProcessCompletedBankPeriod(completedRegisterData, monthEndDate, completedRow,
+                    PeriodHistoryTypes.Monthly);
 
                 ProcessCompletedBankPeriod(completedRegisterData, yearEndDate, completedRow, PeriodHistoryTypes.Yearly);
 
@@ -1155,11 +1185,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 ProcessCompletedBudgetMonth(completedRegisterData, budgetItem, monthEndDate, completedRow);
 
-                ProcessCompletedBudgetPeriod(completedRegisterData, budgetItem, yearEndDate, completedRow, PeriodHistoryTypes.Yearly);
+                ProcessCompletedBudgetPeriod(completedRegisterData, budgetItem, yearEndDate, completedRow,
+                    PeriodHistoryTypes.Yearly);
             }
         }
 
-        private static void ProcessCompletedBudgetMonth(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
+        private static void ProcessCompletedBudgetMonth(CompletedRegisterData completedRegisterData,
+            BudgetItem budgetItem,
             DateTime monthEndDate, BankAccountRegisterGridRow completedRow)
         {
             if (budgetItem == null)
@@ -1179,10 +1211,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 budgetItem.LastCompletedDate = completedRow.ItemDate;
             }
 
-            ProcessCompletedBudgetPeriod(completedRegisterData, budgetItem, monthEndDate, completedRow, PeriodHistoryTypes.Monthly);
+            ProcessCompletedBudgetPeriod(completedRegisterData, budgetItem, monthEndDate, completedRow,
+                PeriodHistoryTypes.Monthly);
         }
 
-        private static void ProcessCompletedBudgetPeriod(CompletedRegisterData completedRegisterData, BudgetItem budgetItem,
+        private static void ProcessCompletedBudgetPeriod(CompletedRegisterData completedRegisterData,
+            BudgetItem budgetItem,
             DateTime periodEndDate, BankAccountRegisterGridRow completedRow, PeriodHistoryTypes periodHistoryType)
         {
             if (budgetItem == null)
@@ -1250,8 +1284,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private void AddCompletedToHistory(CompletedRegisterData completedRegisterData, BankAccountRegisterItem registerItem,
-            int? transferToBankAccountId, BankAccountRegisterGridRow completedRow, List<BankAccountRegisterItemAmountDetail> amountDetails, bool addToBudgetHistory)
+        private void AddCompletedToHistory(CompletedRegisterData completedRegisterData,
+            BankAccountRegisterItem registerItem,
+            int? transferToBankAccountId, BankAccountRegisterGridRow completedRow,
+            List<BankAccountRegisterItemAmountDetail> amountDetails, bool addToBudgetHistory)
         {
             var historyItem = new History
             {
@@ -1269,6 +1305,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 historyItem.BudgetItemId = null;
             }
+
             if (registerItem.IsNegative)
             {
                 historyItem.ProjectedAmount = -historyItem.ProjectedAmount;
@@ -1297,7 +1334,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var context = AppGlobals.DataRepository.GetDataContext();
 
             var table = context.GetTable<BankAccountRegisterItemAmountDetail>();
-            var filter = new TableFilterDefinition<BankAccountRegisterItemAmountDetail>(AppGlobals.LookupContext.BankAccountRegisterItemAmountDetails);
+            var filter =
+                new TableFilterDefinition<BankAccountRegisterItemAmountDetail>(AppGlobals.LookupContext
+                    .BankAccountRegisterItemAmountDetails);
             filter.Include(p => p.RegisterItem)
                 .AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
 
@@ -1311,7 +1350,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var table1 = context.GetTable<BankAccountRegisterItem>();
 
-            var filter1 = new TableFilterDefinition<BankAccountRegisterItem>(AppGlobals.LookupContext.BankAccountRegisterItems);
+            var filter1 =
+                new TableFilterDefinition<BankAccountRegisterItem>(AppGlobals.LookupContext.BankAccountRegisterItems);
             filter1.AddFixedFilter(p => p.BankAccountId, Conditions.Equals, Id);
 
             var param1 = GblMethods.GetParameterExpression<BankAccountRegisterItem>();
@@ -1326,6 +1366,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 return DbMaintenanceResults.ValidationError;
             }
+
             return base.OnPreDeleteChildren();
         }
 
@@ -1334,11 +1375,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var context = AppGlobals.DataRepository.GetDataContext();
             var query = context.GetTable<BankAccount>();
             var bankAccount = query.FirstOrDefault(p => p.Id == Id);
-            var result = bankAccount != null && context.DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
+            var result = bankAccount != null &&
+                         context.DeleteEntity(bankAccount, $"Deleting Bank Account '{bankAccount.Description}'");
             if (result)
             {
                 AppGlobals.MainViewModel.RefreshView();
             }
+
             return result;
         }
 
@@ -1369,7 +1412,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             return RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
                 .Any(a => a.BudgetItemId == budgetItemId
-                && a.LineType != HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous);
+                          && a.LineType != HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes.Miscellaneous);
         }
 
         public void RefreshAfterBudgetItemSave()
@@ -1414,6 +1457,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
 
             }
+
             base.OnPropertyChanged(propertyName, raiseDirtyFlag);
         }
 
@@ -1429,7 +1473,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (addViewPrimaryKeyValue.TableDefinition == AppGlobals.LookupContext.BankAccountRegisterItems)
             {
                 var bankRegisterItem =
-                    AppGlobals.LookupContext.BankAccountRegisterItems.GetEntityFromPrimaryKeyValue(addViewPrimaryKeyValue);
+                    AppGlobals.LookupContext.BankAccountRegisterItems.GetEntityFromPrimaryKeyValue(
+                        addViewPrimaryKeyValue);
 
                 var context = AppGlobals.DataRepository.GetDataContext();
                 bankRegisterItem = context.GetTable<BankAccountRegisterItem>()
@@ -1446,7 +1491,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return base.GetAddViewPrimaryKeyValue(addViewPrimaryKeyValue);
         }
 
-        protected override void SetupPrinterArgs(PrinterSetupArgs printerSetupArgs, int stringFieldIndex = 1, int numericFieldIndex = 1,
+        protected override void SetupPrinterArgs(PrinterSetupArgs printerSetupArgs, int stringFieldIndex = 1,
+            int numericFieldIndex = 1,
             int memoFieldIndex = 1)
         {
             printerSetupArgs.PrintingProperties.ReportType = ReportTypes.Custom;
@@ -1496,17 +1542,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     continue;
                 }
+
                 if (lowestDate == null)
                 {
                     lowestDate = bankAccountRegisterItem.ItemDate;
                 }
+
                 var detailsRow = new PrintingInputDetailsRow();
                 detailsRow.HeaderRowKey = e.HeaderRow.RowKey;
                 detailsRow.TablelId = 1;
 
                 detailsRow.StringField01 =
                     bankAccountRegisterItem.ItemDate.FormatDateValue(DbDateTypes.DateOnly, false);
-                
+
                 var registerData = GetRegisterData(bankAccountRegisterItem);
 
                 detailsRow.StringField02 = registerData.Description;
@@ -1543,6 +1591,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 lowestDate = DateTime.Now;
             }
+
             e.HeaderRow.StringField03 = lowestDate.Value.FormatDateValue(DbDateTypes.DateOnly);
 
             e.HeaderRow.NumberField03 = lowestBalance.ToString(numFormat);
@@ -1641,14 +1690,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             registerData.ProjectedAmount = 0;
                         }
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
             if (registerData.Completed)
             {
                 return balance;
             }
+
             var amount = registerData.ProjectedAmount;
             if (registerData.ActualAmount > 0)
             {
@@ -1661,6 +1713,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return balance;
                 }
             }
+
             switch (accountType)
             {
                 case BankAccountTypes.Checking:
@@ -1697,6 +1750,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return balance;
+        }
+
+        private void SetProjVisibility()
+        {
+            var visibility = UiVisibilityTypes.Visible;
+
+            switch (AccountType)
+            {
+                case BankAccountTypes.CreditCard:
+                    visibility = UiVisibilityTypes.Collapsed;
+                    break;
+            }
+
+            CurProjEndBalUiCommand.Visibility = visibility;
+
+            NewProjEndBalUiCommand.Visibility = visibility;
+
+            ProjEndBalDiffUiCommand.Visibility = visibility;
+
+            ProjLowBalDateUiCommand.Visibility = visibility;
+
+            ProjLowBalAmountUiCommand.Visibility = visibility;
         }
     }
 }

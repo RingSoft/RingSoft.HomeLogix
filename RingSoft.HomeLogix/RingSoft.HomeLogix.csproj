@@ -35,6 +35,7 @@
     <PackageReference Include="RingSoft.App.Controls" Version="9.6.3" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\RingSoft.DataEntryControls\RingSoft.DataEntryControls.WPF\RingSoft.DataEntryControls.WPF.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
   </ItemGroup>
