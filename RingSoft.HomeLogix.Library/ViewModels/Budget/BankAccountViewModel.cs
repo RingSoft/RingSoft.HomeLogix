@@ -1749,6 +1749,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
+            balance = Math.Round(balance, 2);
             return balance;
         }
 

@@ -683,6 +683,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                             {
                                 break;
                             }
+
                             foundMap = true;
                         }
                         else
@@ -725,6 +726,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
                 else if (query.Count() == 0)
                 {
+                    if (!importTransactionGridRow.BudgetItemAutoFillValue.IsValid())
+                    {
+                        importTransactionGridRow.MapTransaction = true;
+                    }
+
                     return false;
                 }
             }

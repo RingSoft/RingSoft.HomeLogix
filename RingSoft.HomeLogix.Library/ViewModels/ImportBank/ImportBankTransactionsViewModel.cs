@@ -272,7 +272,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 row.Amount = amount;
                 row.Date = rowDate;
                 row.Description = text;
-                row.MapTransaction = true;
+                row.MapTransaction = false;
                 return row;
             }
             else
