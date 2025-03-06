@@ -88,6 +88,17 @@ namespace RingSoft.HomeLogix.Budget
                 PayCCBalanceCheckBox.Visibility = Visibility.Collapsed;
             }
 
+            if (BudgetItemViewModel.PayCCBalance && PayCCBalanceCheckBox.Visibility == Visibility.Visible)
+            {
+                PayCCDayLabel.Visibility = Visibility.Visible;
+                PayCCDatControl.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                PayCCDayLabel.Visibility = Visibility.Collapsed;
+                PayCCDatControl.Visibility = Visibility.Collapsed;
+            }
+
             if (BudgetItemViewModel.PayCCBalance)
             {
                 AmountControl.IsEnabled = false;

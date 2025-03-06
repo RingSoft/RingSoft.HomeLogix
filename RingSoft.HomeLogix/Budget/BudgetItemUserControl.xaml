@@ -119,7 +119,14 @@
 
                         </StackPanel>
 
-                        <CheckBox Grid.Row="4" Grid.Column="0" x:Name="PayCCBalanceCheckBox" HorizontalAlignment="Left" Content="Pay Off Credit Card Balance" IsChecked="{Binding PayCCBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed"/>
+                        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+                            <CheckBox x:Name="PayCCBalanceCheckBox" HorizontalAlignment="Left" Content="Pay Off Credit Card Balance" IsChecked="{Binding PayCCBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed" VerticalAlignment="Center"/>
+
+                            <TextBlock x:Name="PayCCDayLabel" Text=" as of Day of the Previous Month " VerticalAlignment="Center"/>
+
+                            <dec:IntegerEditControl x:Name="PayCCDatControl" Value="{Binding PayCCDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="50"/>
+
+                        </StackPanel>
                     </Grid>
                 </TabItem>
                 <TabItem Header="Monthly Totals" VerticalAlignment="Stretch">

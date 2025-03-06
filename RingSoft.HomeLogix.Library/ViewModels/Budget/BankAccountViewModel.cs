@@ -1607,6 +1607,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.ProjectedAmount = Math.Abs(register.ProjectedAmount);
             registerData.ItemDate = register.ItemDate;
             registerData.IsNegative = register.IsNegative;
+            registerData.PayCCDay = register.BudgetItem.PayCCDay;
 
             var registerPayCCType = (RegisterPayCCTypes)register.PayCCType;
             switch (registerPayCCType)
@@ -1679,7 +1680,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case MobileRegisterPayCCTypes.FromBank:
                     break;
                 case MobileRegisterPayCCTypes.ToCC:
-                    if (!registerData.Completed)
+                    if (!registerData.Completed
+                        && registerData.PayCCDay == 0)
                     {
                         if (balance > 0)
                         {

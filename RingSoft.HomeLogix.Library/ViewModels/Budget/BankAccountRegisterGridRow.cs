@@ -415,6 +415,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
+            registerData.PayCCDay = BudgetItemValue.GetEntity<BudgetItem>().FillOutProperties(false).PayCCDay;
             return registerData;
         }
 

@@ -489,8 +489,11 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
-                    b.Property<bool>("PayCCBalance")
-                        .HasColumnType("bit");
+                    b.Property<byte>("PayCCBalance")
+                        .HasColumnType("tinyint");
+
+                    b.Property<byte>("PayCCDay")
+                        .HasColumnType("tinyint");
 
                     b.Property<int>("RecurringPeriod")
                         .HasColumnType("integer");

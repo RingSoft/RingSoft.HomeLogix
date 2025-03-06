@@ -48,5 +48,7 @@
         public string TransactionTypeText { get; set; }
 
         public MobileRegisterPayCCTypes RegisterPayCCType { get; set; } = MobileRegisterPayCCTypes.None;
+
+        public byte PayCCDay { get; set; }
     }
 }

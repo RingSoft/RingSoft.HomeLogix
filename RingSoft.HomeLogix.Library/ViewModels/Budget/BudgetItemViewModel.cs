@@ -514,6 +514,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private byte _payCCDay;
+
+        public byte PayCCDay
+        {
+            get { return _payCCDay; }
+            set
+            {
+                if (_payCCDay == value)
+                    return;
+
+                _payCCDay = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         #endregion
 
@@ -669,6 +684,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 GetLookupCommand(LookupCommands.Clear));
 
             AddAdjustmentCommand.IsEnabled = false;
+            PayCCDay = 0;
 
             _loading = false;
 
@@ -890,6 +906,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             LastCompletedDate = entity.LastCompletedDate;
             TransferToBankAccountAutoFillValue = entity.TransferToBankAccount.GetAutoFillValue();
             PayCCBalance = entity.PayCCBalance;
+            PayCCDay = entity.PayCCDay;
 
             _loading = false;
             SetViewMode();
@@ -1155,6 +1172,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastCompletedDate = LastCompletedDate,
                 PayCCBalance = PayCCBalance,
                 MonthOnDay = OnDayValue,
+                PayCCDay = PayCCDay,
             };
             return budgetItem;
         }
