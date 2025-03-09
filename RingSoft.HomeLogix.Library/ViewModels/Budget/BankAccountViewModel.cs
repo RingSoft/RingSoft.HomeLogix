@@ -664,7 +664,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _dbCurrentBalance = bankAccount.CurrentBalance;
             }
 
-            CalculateTotals();
+            //CalculateTotals();
 
             //ReadOnlyMode = AppGlobals.MainViewModel.BankAccountViewModels.Any(a => a != this && a.Id == Id);
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
@@ -807,8 +807,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var generateToDate = BankAccountView.GetGenerateToDate(lastGenerationDate.Value.AddMonths(1));
 
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountRegisterItem>()
+                .Where(p => p.BankAccountId == Id);
+
             //GenerateTransactions(generateToDate);
-            if (generateToDate != null) BankAccountView.GenerateTransactions(generateToDate.Value);
+            if (generateToDate != null)
+            {
+                BankAccountView.GenerateTransactions(generateToDate.Value);
+
+                var table1 = context.GetTable<BankAccountRegisterItem>()
+                    .Where(p => p.BankAccountId == Id);
+            }
             if (!keyDown)
             {
                 View.ResetViewForNewRecord();
@@ -843,6 +853,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             RegisterGridManager.AddGeneratedRegisterItems(registerItems.Where(w => w.BankAccountId == Id));
+
+            var test = RegisterGridManager.Rows;
             CalculateTotals();
             SetTotals(bankAccount);
             AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,

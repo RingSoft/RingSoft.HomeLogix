@@ -132,44 +132,50 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //var bankTotals =
             //    AppGlobals.DataRepository.GetBankBudgetTotals(AppGlobals.MainViewModel.CurrentMonthEnding,
             //        ViewModel.Id, true);
-            var bankTotals = new BudgetTotals();
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var table = context.GetTable<BankAccountPeriodHistory>();
-            var periodTotals = table.FirstOrDefault(
-                p => p.BankAccountId == ViewModel.Id
-                     && p.PeriodEndingDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year
-                     && p.PeriodEndingDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month
-                     && p.PeriodType == (byte)PeriodHistoryTypes.Monthly);
-            if (periodTotals != null)
-            {
-                bankTotals.TotalProjectedMonthlyIncome = periodTotals.TotalDeposits;
-                bankTotals.TotalProjectedMonthlyExpenses = periodTotals.TotalWithdrawals;
-            }
-
-            var monthBudgetDeposits = rows
-                .Where(w => w.ProjectedAmount > 0 &&
-                            w.ItemDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month && w.ItemDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year && w.TransactionType == TransactionTypes.Deposit)
-                .Sum(s => s.ProjectedAmount);
-
-            monthBudgetDeposits += bankTotals.TotalProjectedMonthlyIncome;
-
-            var monthBudgetWithdrawals = rows
-                .Where(w => w.ProjectedAmount > 0 &&
-                            w.ItemDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month && w.ItemDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year && w.TransactionType == TransactionTypes.Withdrawal)
-                .Sum(s => s.ProjectedAmount);
-
-            monthBudgetWithdrawals += bankTotals.TotalProjectedMonthlyExpenses;
-
-            MonthlyBudgetDeposits = monthBudgetDeposits;
-            MonthlyBudgetWithdrawals = monthBudgetWithdrawals;
             var banksToRefresh = new List<int>();
+            var context = SystemGlobals.DataRepository.GetDataContext();
 
             foreach (var bankAccountRegisterGridRow in rows)
             {
+                var calcPrevBalance = false;
+                if (bankAccountRegisterGridRow.BudgetItem.PayCCBalance
+                    && bankAccountRegisterGridRow.BudgetItem.PayCCDay > 0
+                    && ViewModel.AccountType == BankAccountTypes.CreditCard)
+                {
+                    var balanceDay = new DateTime(bankAccountRegisterGridRow.ItemDate.Year
+                        , bankAccountRegisterGridRow.ItemDate.Month
+                        , bankAccountRegisterGridRow.BudgetItem.PayCCDay);
+
+                    var balanceRow = rows.FirstOrDefault(
+                        p => !p.BudgetItem.PayCCBalance
+                             && p.ItemDate >= balanceDay.AddMonths(-1)
+                             && !p.Completed);
+
+                    if (balanceRow != null)
+                    {
+                        var prevPayCCRow = rows.FirstOrDefault(p => p.BudgetItem.PayCCBalance
+                                                                    && p.ItemDate < bankAccountRegisterGridRow
+                                                                        .ItemDate
+                                                                    && !p.Completed);
+
+                        calcPrevBalance = true;
+                        if (prevPayCCRow != null)
+                        {
+                            bankAccountRegisterGridRow.ProjectedAmount = balanceRow.Balance.GetValueOrDefault()
+                                                                         - balanceRow.ProjectedAmount;
+                            bankAccountRegisterGridRow.SaveToDbOnTheFly();
+                        }
+                        else
+                        {
+                            bankAccountRegisterGridRow.PayCCAllowEdit = true;
+                        }
+                    }
+                }
                 var registerData = bankAccountRegisterGridRow.GetRegisterData();
                 newBalance = BankAccountViewModel.CalcNewBalance(ViewModel.AccountType, registerData, newBalance);
 
-                if (registerData.ProjectedAmount.CompareTo(bankAccountRegisterGridRow.ProjectedAmount) != 0)
+                if (registerData.ProjectedAmount.CompareTo(bankAccountRegisterGridRow.ProjectedAmount) != 0
+                    || calcPrevBalance)
                 {
                     bankAccountRegisterGridRow.ProjectedAmount = registerData.ProjectedAmount;
                     switch (bankAccountRegisterGridRow.LineType)
@@ -207,6 +213,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
+                calcPrevBalance = false;
+
                 if (lowestBalanceDate == null)
                     lowestBalanceDate = bankAccountRegisterGridRow.ItemDate.AddDays(-1);
 
@@ -225,6 +233,37 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     lowestBalanceDate = bankAccountRegisterGridRow.ItemDate;
                 }
             }
+
+            var bankTotals = new BudgetTotals();
+            var table = context.GetTable<BankAccountPeriodHistory>();
+            var periodTotals = table.FirstOrDefault(
+                p => p.BankAccountId == ViewModel.Id
+                     && p.PeriodEndingDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year
+                     && p.PeriodEndingDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month
+                     && p.PeriodType == (byte)PeriodHistoryTypes.Monthly);
+            if (periodTotals != null)
+            {
+                bankTotals.TotalProjectedMonthlyIncome = periodTotals.TotalDeposits;
+                bankTotals.TotalProjectedMonthlyExpenses = periodTotals.TotalWithdrawals;
+            }
+
+            var monthBudgetDeposits = rows
+                .Where(w => w.ProjectedAmount > 0 &&
+                            w.ItemDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month && w.ItemDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year && w.TransactionType == TransactionTypes.Deposit)
+                .Sum(s => s.ProjectedAmount);
+
+            monthBudgetDeposits += bankTotals.TotalProjectedMonthlyIncome;
+
+            var monthBudgetWithdrawals = rows
+                .Where(w => w.ProjectedAmount > 0 &&
+                            w.ItemDate.Month == AppGlobals.MainViewModel.CurrentMonthEnding.Month && w.ItemDate.Year == AppGlobals.MainViewModel.CurrentMonthEnding.Year && w.TransactionType == TransactionTypes.Withdrawal)
+                .Sum(s => s.ProjectedAmount);
+
+            monthBudgetWithdrawals += bankTotals.TotalProjectedMonthlyExpenses;
+
+            MonthlyBudgetDeposits = monthBudgetDeposits;
+            MonthlyBudgetWithdrawals = monthBudgetWithdrawals;
+
 
             ViewModel.NewProjectedEndingBalance = newBalance;
             ViewModel.ProjectedLowestBalanceAmount = lowestBalance;

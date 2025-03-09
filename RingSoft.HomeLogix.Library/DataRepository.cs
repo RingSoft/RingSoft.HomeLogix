@@ -417,6 +417,8 @@ namespace RingSoft.HomeLogix.Library
             BankAccount bankAccount = null)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountRegisterItem>()
+                .Where(p => p.BankAccountId == bankAccount.Id);
 
             if (registerItemsToDelete != null && registerItemsToDelete.Any())
                 context.RemoveRange(registerItemsToDelete);

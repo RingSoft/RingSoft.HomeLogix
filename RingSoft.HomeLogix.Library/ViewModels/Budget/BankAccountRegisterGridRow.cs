@@ -29,6 +29,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         
         public AutoFillValue BudgetItemValue { get; private set; }
 
+        public BudgetItem BudgetItem { get; private set; }
+
         public virtual string Description => BudgetItemValue?.Text;
 
         public TransactionTypes TransactionType { get; private set; }
@@ -58,6 +60,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         public bool IsNegative { get; set; }
+
+        public bool PayCCAllowEdit { get; set; }
 
         public List<BankAccountRegisterItemAmountDetail> ActualAmountDetails { get; private set; }
 
@@ -212,8 +216,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        protected void SaveToDbOnTheFly()
+        public void SaveToDbOnTheFly(bool updateOnly = true)
         {
+            if (updateOnly)
+            {
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                if (context != null)
+                {
+                    var table = context.GetTable<BankAccountRegisterItem>();
+                    if (table != null)
+                    {
+                        if (!table.Any(p => p.RegisterGuid == RegisterGuid))
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
             var registerItem = new BankAccountRegisterItem();
             SaveToEntity(registerItem, 0);
             AppGlobals.DataRepository.SaveRegisterItem(registerItem);
@@ -231,6 +250,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             BudgetItemId = entity.BudgetItemId;  //Must default to null or completed Escrow rows won't save.
             BudgetItemValue = entity.BudgetItem.GetAutoFillValue();
+            BudgetItem = entity.BudgetItem;
 
             BankText = entity.BankText;
 
@@ -415,7 +435,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            registerData.PayCCDay = BudgetItemValue.GetEntity<BudgetItem>().FillOutProperties(false).PayCCDay;
+            registerData.PayCCDay = BudgetItem.PayCCDay;
             return registerData;
         }
 

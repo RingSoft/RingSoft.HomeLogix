@@ -58,6 +58,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             switch (column)
             {
                 case BankAccountRegisterGridColumns.Amount:
+                    if (!PayCCAllowEdit)
+                    {
+                        return new DataEntryGridCellStyle { State = DataEntryGridCellStates.ReadOnly };
+                    }
+                    break;
                 case BankAccountRegisterGridColumns.ActualAmount:
                     return new DataEntryGridCellStyle {State = DataEntryGridCellStates.ReadOnly };
             }
