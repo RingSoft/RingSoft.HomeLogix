@@ -4,6 +4,8 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid;
 using RingSoft.DataEntryControls.WPF.DataEntryGrid.EditingControlHost;
+using RingSoft.DbLookup;
+using RingSoft.DbLookup.Controls.WPF;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library;
@@ -58,27 +60,34 @@ namespace RingSoft.HomeLogix
 
 
                 var currentRowIndex = Grid.CurrentRowIndex;
-                lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,
-                    _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput, _cellProps.Row.BudgetItemValue.PrimaryKeyValue);
 
-                var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
-                if (window != null)
-                {
-                    window.Closed += (sender, args) =>
-                    {
-                        if (currentRowIndex > Grid.Manager.Rows.Count - 1)
-                            currentRowIndex = Grid.Manager.Rows.Count - 1;
+                //lookupDefinition.ShowAddOnTheFlyWindow(_cellProps.Text,
+                //    _cellProps.Row.Manager.ViewModel.BankAccountView.OwnerWindow, null, viewModelInput, _cellProps.Row.BudgetItemValue.PrimaryKeyValue);
 
-                        var registerRow = Grid.Manager.Rows.OfType<BankAccountRegisterGridRow>()
-                            .FirstOrDefault(f => f.RegisterId == _cellProps.Row.RegisterId);
+                SystemGlobals.TableRegistry.ShowEditAddOnTheFly(_cellProps.Row.BudgetItemValue
+                    .PrimaryKeyValue);
 
-                        if (registerRow != null)
-                            currentRowIndex = Grid.Manager.Rows.IndexOf(registerRow);
+                Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
+                
+                //var window = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
+                //if (window != null)
+                //{
+                //    window.Closed += (sender, args) =>
+                //    {
+                //        if (currentRowIndex > Grid.Manager.Rows.Count - 1)
+                //            currentRowIndex = Grid.Manager.Rows.Count - 1;
 
-                        Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
-                    };
-                }
-                Grid.DataEntryGridCancelEdit();
+                //        var registerRow = Grid.Manager.Rows.OfType<BankAccountRegisterGridRow>()
+                //            .FirstOrDefault(f => f.RegisterId == _cellProps.Row.RegisterId);
+
+                //        if (registerRow != null)
+                //            currentRowIndex = Grid.Manager.Rows.IndexOf(registerRow);
+
+                //        Grid.GotoCell(Grid.Manager.Rows[currentRowIndex], _cellProps.ColumnId);
+                //    };
+                //}
+
+                //Grid.DataEntryGridCancelEdit();
             };
         }
     }

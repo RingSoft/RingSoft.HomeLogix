@@ -816,12 +816,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 BankAccountView.GenerateTransactions(generateToDate.Value);
 
-                var table1 = context.GetTable<BankAccountRegisterItem>()
-                    .Where(p => p.BankAccountId == Id);
-            }
-            if (!keyDown)
-            {
-                View.ResetViewForNewRecord();
+                KeyAutoFillUiCommand.SetFocus();
             }
         }
 
