@@ -480,6 +480,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             registerRow.ActualAmount = actualAmount + amount;
             registerRow.BankText = importTransactionGridRow.Description;
             registerRow.Completed = true;
+            registerRow.ItemDate = importTransactionGridRow.Date;
 
             registerRow.SaveToEntity(registerItem, 0, registerRow.ActualAmountDetails.ToList());
             if (!AppGlobals.DataRepository.SaveRegisterItem(registerItem, registerRow.ActualAmountDetails))

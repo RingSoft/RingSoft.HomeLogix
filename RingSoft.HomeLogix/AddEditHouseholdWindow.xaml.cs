@@ -19,17 +19,17 @@ namespace RingSoft.HomeLogix
         public HouseholdProcesses HouseholdProcess { get; set; }
         public bool DataCopied { get; set; }
 
-        private TwoTierProcedure _procedure;
-        public bool DoCopyProcedure()
-        {
-            _procedure = new TwoTierProcedure();
-            _procedure.DoProcedure += (sender, args) =>
-            {
-                args.Result = ViewModel.CopyData(_procedure);
-            };
-            var result = _procedure.Start();
-            return result;
-        }
+        //private TwoTierProcedure _procedure;
+        //public bool DoCopyProcedure()
+        //{
+        //    _procedure = new TwoTierProcedure();
+        //    _procedure.DoProcedure += (sender, args) =>
+        //    {
+        //        args.Result = ViewModel.CopyData(_procedure);
+        //    };
+        //    var result = _procedure.Start();
+        //    return result;
+        //}
 
         public AddEditHouseholdWindow(DbLoginProcesses loginProcess, Household household = null)
         {
