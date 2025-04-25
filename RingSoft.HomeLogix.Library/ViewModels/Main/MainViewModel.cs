@@ -218,8 +218,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var currentBudgetMonth = AppGlobals.DataRepository.GetMaxMonthBudgetPeriodHistory();
             if (currentBudgetMonth == null)
             {
-                var date = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
-                    DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<BankAccountRegisterItem>();
+                var regItem = table.OrderBy(o => o.ItemDate)
+                    .FirstOrDefault();
+
+                DateTime date = DateTime.MinValue;
+                if (regItem != null)
+                {
+                    date = regItem.ItemDate;
+                }
+                else
+                {
+                    date = new DateTime(DateTime.Today.Year, DateTime.Today.Month,
+                        DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+                }
 
                 SetCurrentMonthEnding(date, false);
                 CurrentMonth = date;

@@ -526,9 +526,11 @@ namespace RingSoft.HomeLogix.Library
         public BudgetPeriodHistory GetMaxMonthBudgetPeriodHistory()
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BudgetPeriodHistory.OrderByDescending(o => o.PeriodEndingDate)
+            var result = context.BudgetPeriodHistory.OrderByDescending(o => o.PeriodEndingDate)
                 .FirstOrDefault(f => f.PeriodType == (int)PeriodHistoryTypes.Monthly
                 && f.ActualAmount > 0);
+
+            return result;
         }
 
         public BudgetTotals GetBudgetTotals(DateTime monthEndDate, DateTime previousMonthEnding,

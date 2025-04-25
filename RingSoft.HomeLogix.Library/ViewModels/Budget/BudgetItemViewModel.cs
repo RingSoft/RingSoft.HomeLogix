@@ -128,6 +128,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _bankAutoFillValue = value;
                 OnPropertyChanged();
+
+                SetGenTranProps();
             }
         }
 
@@ -529,6 +531,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private bool _genTran;
+
+        public bool GenTran
+        {
+            get { return _genTran; }
+            set
+            {
+                if (_genTran == value)
+                    return;
+
+                _genTran = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         #endregion
 
@@ -549,6 +566,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public RelayCommand AddAdjustmentCommand { get; }
 
         public RelayCommand ClearRecurringCommand { get; }
+
+        public UiCommand GenTranUiCommand { get; } = new UiCommand();
 
         private IBudgetItemView _view;
         private bool _loading;
@@ -622,6 +641,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.Initialize();
         }
 
+        private void SetGenTranProps()
+        {
+            if (BankAutoFillValue.IsValid())
+            {
+                var bankAccount = BankAutoFillValue.GetEntity<BankAccount>();
+                bankAccount = bankAccount.FillOutProperties(false);
+                if (bankAccount.PendingGeneration)
+                {
+                    GenTranUiCommand.Visibility = UiVisibilityTypes.Visible;
+                    GenTran = true;
+                }
+                else
+                {
+                    GenTranUiCommand.Visibility = UiVisibilityTypes.Collapsed;
+                    GenTran = false;
+                }
+            }
+        }
+
         protected override void ClearData()
         {
             _loading = true;
@@ -685,11 +723,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             AddAdjustmentCommand.IsEnabled = false;
             PayCCDay = 0;
+            GenTran = false;
 
             _loading = false;
 
             SetViewMode();
             _registerAffected = false;
+            GenTranUiCommand.Visibility = UiVisibilityTypes.Collapsed;
         }
 
         private void SetViewMode()
@@ -1127,6 +1167,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             StartingDate = budgetItem.StartingDate;
                         }
                     }
+
+                    if (GenTran && MaintenanceMode == DbMaintenanceModes.AddMode)
+                    {
+                        ProcessGenTran(budgetItem);
+                    }
                 }
             }
 
@@ -1147,6 +1192,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return budgetItem;
+        }
+
+        private void ProcessGenTran(BudgetItem budgetItem)
+        {
+            if (GenTran && StartingDate != null)
+            {
+                var startDate = StartingDate.GetValueOrDefault();
+                _newBankAccountRegisterItems = BudgetItemProcessor
+                    .GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem, startDate)
+                    .ToList();
+            }
         }
 
         private BudgetItem GetBudgetItem()

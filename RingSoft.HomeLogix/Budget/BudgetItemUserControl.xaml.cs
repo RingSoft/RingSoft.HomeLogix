@@ -15,10 +15,14 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BudgetItemUserControl : IBudgetItemView
     {
+
+        private VmUiControl _genTranControl;
         public BudgetItemUserControl()
         {
             InitializeComponent();
             RegisterFormKeyControl(DescriptionControl);
+
+            _genTranControl = new VmUiControl(GenTranCheckBox, BudgetItemViewModel.GenTranUiCommand);
 
             TopHeaderControl.Loaded += (sender, args) =>
             {
