@@ -60,6 +60,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [DefaultValue(true)]
         public bool ShowInGraph { get; set; }
 
+        [Required]
+        [DefaultValue(false)]
+        public bool PendingGeneration { get; set; }
+
         public DateTime? LastCompletedDate { get; set; }
 
         public virtual ICollection<BudgetItem> BudgetItems { get; set; }

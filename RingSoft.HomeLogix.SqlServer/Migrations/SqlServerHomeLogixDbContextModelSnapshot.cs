@@ -241,6 +241,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
+                    b.Property<bool>("PendingGeneration")
+                        .HasColumnType("bit");
+
                     b.Property<decimal>("ProjectedEndingBalance")
                         .HasColumnType("numeric");
 

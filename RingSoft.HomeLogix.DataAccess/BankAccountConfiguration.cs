@@ -19,6 +19,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.MonthlyBudgetDeposits).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.MonthlyBudgetWithdrawals).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
+            builder.Property(p => p.PendingGeneration).HasColumnType(DbConstants.BoolColumnType);
             builder.Property(p => p.ProjectedEndingBalance).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceAmount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceDate).HasColumnType(DbConstants.DateColumnType);
