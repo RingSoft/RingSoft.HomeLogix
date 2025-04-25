@@ -840,6 +840,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
+
+            if (registerItems.Any())
+            {
+                bankAccount.PendingGeneration = false;
+            }
+
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
 
             foreach (var registerItem in registerItems)
@@ -891,6 +897,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastGenerationDate = (DateTime)LastGenerationDate,
                 LastCompletedDate = LastCompleteDate
             };
+
+            if (MaintenanceMode == DbMaintenanceModes.AddMode)
+            {
+                bankAccount.PendingGeneration = true;
+            }
 
             if (_processCompletedRows)
             {
