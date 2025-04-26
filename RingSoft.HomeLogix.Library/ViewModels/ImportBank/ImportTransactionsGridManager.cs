@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using RingSoft.App.Library;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.TableProcessing;
 
@@ -132,7 +133,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return true;
         }
 
-        public bool PostTransactions()
+        public bool PostTransactions(ISplashWindow splashWindow)
         {
             var bankBalance = ViewModel.BankViewModel.CurrentBalance;
             var rows = Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false);
@@ -146,7 +147,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             foreach (var gridRow in rows)
             {
                 rowIndex++;
-                ViewModel.View.UpdateStatus($"Validating Row {rowIndex} of {count}");
+                splashWindow.SetProgress($"Validating Row {rowIndex} of {count}");
                 if (!ValidateTransactionRow(gridRow, true)) return false;
 
                 if (gridRow.BudgetItemSplits.Any())
@@ -173,7 +174,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var message =
                     "Some Budget Items in these transactions were not found in the Registered Grid of this Bank Account. Are you sure you are importing these transactions into the right Bank Account?";
                 var caption = "Bank Account Validation";
-                if (!ViewModel.View.ShowYesNoMessage(message, caption))
+                if (!splashWindow.ShowYesNoMessageBox(message, caption))
                 {
                     return false;
                 }
@@ -183,7 +184,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             foreach (var gridRow in rows)
             {
                 rowIndex++;
-                ViewModel.View.UpdateStatus($"Posting Row {rowIndex} of {count}");
+                splashWindow.SetProgress($"Posting Row {rowIndex} of {count}");
                 if (gridRow.BudgetItemSplits.Any())
                 {
                     foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
@@ -647,7 +648,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             Grid?.RefreshGridView();
         }
 
-        public void ImportFromQif(List<ImportTransactionGridRow> rows)
+        public void ImportFromQif(List<ImportTransactionGridRow> rows, ISplashWindow splashWindow)
         {
             var existingRows = Rows.OfType<ImportTransactionGridRow>().Where(p => !p.IsNew).ToList();
             rows.AddRange(existingRows);
@@ -659,7 +660,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             foreach (var importTransactionGridRow in rows)
             {
                 rowIndex++;
-                ViewModel.View.UpdateStatus($"Loading Row {rowIndex} of {count}");
+                splashWindow.SetProgress($"Loading Row {rowIndex} of {count}");
                 if (!importTransactionGridRow.Description.IsNullOrEmpty())
                 {
                     var filter = new TableFilterDefinition<QifMap>(AppGlobals.LookupContext.QifMaps);

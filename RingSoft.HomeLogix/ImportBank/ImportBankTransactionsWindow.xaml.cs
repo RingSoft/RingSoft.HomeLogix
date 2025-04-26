@@ -18,7 +18,6 @@ namespace RingSoft.HomeLogix.ImportBank
     /// </summary>
     public partial class ImportBankTransactionsWindow : BaseWindow , IImportTransactionView
     {
-        private ImportQifProcedure _importProcedure;
         public ImportBankTransactionsWindow(BankAccountViewModel bankAccountViewModel)
         {
             InitializeComponent();
@@ -61,18 +60,6 @@ namespace RingSoft.HomeLogix.ImportBank
             return window.DialogResult != null && window.DialogResult.Value;
         }
 
-        public void ShowImportQifProcedure(string qifText)
-        {
-            _importProcedure = new ImportQifProcedure(ViewModel, ImportProcedures.ImportingQif){QifFile = qifText};
-            _importProcedure.Start();
-        }
-
-        public void ShowPostProcedure()
-        {
-            _importProcedure = new ImportQifProcedure(ViewModel, ImportProcedures.PostingQif);
-            _importProcedure.Start();
-        }
-
         public void CloseWindow(bool dialogResult)
         {
             DialogResult = dialogResult;
@@ -113,33 +100,15 @@ namespace RingSoft.HomeLogix.ImportBank
             window.ShowDialog();
         }
 
-        public void UpdateStatus(string status)
-        {
-            _importProcedure.SplashWindow.SetProgress(status);
-        }
-
-        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
-        {
-            _importProcedure.SplashWindow.ShowMessageBox(message, caption, icon);
-        }
-
-        public bool ShowYesNoMessage(string message, string caption)
-        {
-            return _importProcedure.ShowYesNoMessageBox(message, caption);
-        }
-
         public void ShowExpiredWindow(List<BankAccountRegisterGridRow> expiredItems)
         {
-            if (_importProcedure.SplashWindow is ProcessingSplashWindow procedureSplash)
+            var window = new ImportExpiredWindow(expiredItems);
+            window.Owner = this;
+            window.ContentRendered += (sender, args) =>
             {
-                var window = new ImportExpiredWindow(expiredItems);
-                window.Owner = this;
-                window.ContentRendered += (sender, args) =>
-                {
-                    window.Activate();
-                };
-                window.ShowDialog();
-            }
+                window.Activate();
+            };
+            window.ShowDialog();
         }
 
         public static string OpenTextFile(string fileName)

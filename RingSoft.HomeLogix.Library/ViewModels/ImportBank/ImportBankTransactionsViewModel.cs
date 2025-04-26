@@ -5,33 +5,19 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 {
-    public enum ImportProcedures
-    {
-        ImportingQif = 0,
-        PostingQif = 1,
-    }
     public interface IImportTransactionView
     {
         bool ShowImportBankBudgetWindow(ImportTransactionGridRow row);
-
-        void ShowImportQifProcedure(string qifText);
-
-        void ShowPostProcedure();
 
         void CloseWindow(bool dialogResult);
 
         string GetQifFile();
 
         void ShowQifMaintenanceWindow();
-
-        void UpdateStatus(string status);
-
-        void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
-
-        bool ShowYesNoMessage(string message, string caption);
 
         void ShowExpiredWindow(List<BankAccountRegisterGridRow> expiredItems);
     }
@@ -110,7 +96,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (result == MessageBoxButtonsResult.Yes)
                 {
                     //Manager.PostTransactions();
-                    View.ShowPostProcedure();
+                    //View.ShowPostProcedure();
+                    var procedure = RingSoftAppGlobals.CreateAppProcedure();
+                    procedure.DoAppProcedure += (sender, args) =>
+                    {
+                        Manager.PostTransactions(procedure.SplashWindow);
+                    };
+                    procedure.Start("Posting Transactions to Register");
                     return;
                 }
                 if (Manager.SaveTransactions())
@@ -134,10 +126,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
 
             //ImportQifFile(qifText);
-            View.ShowImportQifProcedure(qifText);
+            //View.ShowImportQifProcedure(qifText);
+            var procedure = RingSoftAppGlobals.CreateAppProcedure();
+            procedure.DoAppProcedure += (sender, args) =>
+            {
+                ImportQifFile(qifText, procedure.SplashWindow);
+            };
+            procedure.Start("Importing QIF File");
         }
 
-        public void ImportQifFile(string qifText)
+        public void ImportQifFile(string qifText, ISplashWindow splashWindow)
         {
             var registerStartDate = DateTime.MinValue;
             var startDate = DateTime.MinValue;
@@ -176,12 +174,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var row = GetRowValue(qifText, columnPos, startDate);
                 if (row == null)
                 {
-                    FinishImport(importRows);
+                    FinishImport(importRows, splashWindow);
                     return;
                 }
                 else
                 {
-                    View.UpdateStatus($"Processing {row.Description}");
+                    splashWindow.SetProgress($"Processing {row.Description}");
                 }
                 row.FromBank = true;
                 importRows.Add(row);
@@ -195,19 +193,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 columnPos = newColumnPos;
             }
 
-            FinishImport(importRows);
+            FinishImport(importRows, splashWindow);
         }
 
-        private void FinishImport(List<ImportTransactionGridRow> importRows)
+        private void FinishImport(List<ImportTransactionGridRow> importRows, ISplashWindow splashWindow)
         {
             importRows = importRows.OrderBy(p => p.Date).ToList();
             if (importRows.Any())
             {
-                Manager.ImportFromQif(importRows);
+                Manager.ImportFromQif(importRows, splashWindow);
             }
             else
             {
-                ShowNothingToDo();
+                ShowNothingToDo(splashWindow);
 
             }
 
@@ -218,12 +216,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
-        private void ShowNothingToDo()
+        private void ShowNothingToDo(ISplashWindow splashWindow)
         {
             var message = "Nothing was found to import.";
             var caption = "Nothing To Do";
             
-            View.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+            splashWindow.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
         }
 
         private ImportTransactionGridRow GetRowValue(string qifText, int columnPos, DateTime startDate)
