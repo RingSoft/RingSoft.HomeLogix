@@ -45,8 +45,6 @@ namespace RingSoft.HomeLogix
 
             var homeLogixGridEditHostFactory = new HomeLogixGridEditHostFactory();
             
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetItemWindow, BudgetItem>();
-            LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetItemWindow, MainBudget>();
             LookupControlsGlobals.WindowRegistry.RegisterWindow<BankPeriodHistoryWindow, BankAccountPeriodHistory>();
             LookupControlsGlobals.WindowRegistry.RegisterWindow<BudgetPeriodHistoryWindow, BudgetPeriodHistory>();
             LookupControlsGlobals.WindowRegistry.RegisterWindow<HistoryItemMaintenanceWindow, History>();
