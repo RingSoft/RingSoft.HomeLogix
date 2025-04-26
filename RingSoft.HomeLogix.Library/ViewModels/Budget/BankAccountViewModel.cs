@@ -486,6 +486,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public UiCommand ProjLowBalAmountUiCommand { get; } = new UiCommand();
 
+        public bool PendingGeneration { get; private set; }
+
         private bool _loading;
         private double _dbCurrentBalance;
         private bool _completeGrid = true;
@@ -495,6 +497,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private DateTime _firstRegisterDate = DateTime.Now;
         private bool _saveEntity = true;
         private bool _doProcessCompletedRows;
+        private BankAccount _existBankAccount;
 
         private LookupDefinition<BankAccountPeriodHistoryLookup, BankAccountPeriodHistory>
             _periodHistoryLookupDefinition;
@@ -566,6 +569,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Id = 0;
             AccountType = BankAccountTypes.Checking;
             CurrentProjectedEndingBalance = 0;
+            _existBankAccount = null;
             _dbCurrentBalance = CurrentBalance = 0;
             NewProjectedEndingBalance = 0;
             ProjectedEndingBalanceDifference = 0;
@@ -595,6 +599,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ImportTransactionsCommand.IsEnabled = false;
 
             TypeEnabled = true;
+
+            PendingGeneration = true;
 
             _loading = false;
         }
@@ -679,6 +685,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 LastCompleteDate = new DateTime().MinDate();
             }
 
+            _existBankAccount = bankAccount;
             return bankAccount;
 
         }
@@ -725,6 +732,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);
                 _firstRegisterDate = rows.FirstOrDefault().ItemDate;
             }
+
+            PendingGeneration = entity.PendingGeneration;
 
             BankAccountView.EnableRegisterGrid(RegisterGridManager.Rows.Any());
 
@@ -843,7 +852,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (registerItems.Any())
             {
-                bankAccount.PendingGeneration = false;
+                bankAccount.PendingGeneration = PendingGeneration = false;
             }
 
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
@@ -895,13 +904,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 MonthlyBudgetWithdrawals = MonthlyBudgetWithdrawals,
                 Notes = Notes,
                 LastGenerationDate = (DateTime)LastGenerationDate,
-                LastCompletedDate = LastCompleteDate
+                LastCompletedDate = LastCompleteDate,
+                PendingGeneration = PendingGeneration
             };
-
-            if (MaintenanceMode == DbMaintenanceModes.AddMode)
-            {
-                bankAccount.PendingGeneration = true;
-            }
 
             if (_processCompletedRows)
             {

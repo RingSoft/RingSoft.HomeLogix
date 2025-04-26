@@ -234,10 +234,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                         DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
                 }
 
-                SetCurrentMonthEnding(date, false);
-                CurrentMonth = date;
-                //BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
-                RefreshView();
+                ChangeCurrentDate(date);
             }
             else
             {
@@ -247,6 +244,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 //BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
+        }
+
+        public void ChangeCurrentDate(DateTime date)
+        {
+            SetCurrentMonthEnding(date, false);
+            CurrentMonth = date;
+            //BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
+            RefreshView();
         }
 
 

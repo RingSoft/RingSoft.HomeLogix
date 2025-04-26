@@ -412,7 +412,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private void MakeBudgetChartData()
         {
             _initialBudgetChartData = new ChartData();
-            _initialBudgetChartData.Title = "Budget";
+            _initialBudgetChartData.Title = "Budget Expenses";
 
             var lookupDefinition = BudgetLookupDefinition.Clone();
             lookupDefinition.InitialSortColumnDefinition =
@@ -428,7 +428,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         private void MakeActualChartData()
         {
             _initialActualChartData = new ChartData();
-            _initialActualChartData.Title = "Actual";
+            _initialActualChartData.Title = "Actual Expenses";
 
             var lookupDefinition = BudgetLookupDefinition.Clone();
             lookupDefinition.InitialSortColumnDefinition =

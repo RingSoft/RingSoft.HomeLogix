@@ -1168,7 +1168,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         }
                     }
 
-                    if (GenTran && MaintenanceMode == DbMaintenanceModes.AddMode)
+                    if (GenTran && RecordDirty)
                     {
                         ProcessGenTran(budgetItem);
                     }
@@ -1199,9 +1199,32 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (GenTran && StartingDate != null)
             {
                 var startDate = StartingDate.GetValueOrDefault();
+
+                var updateMainDate = false;
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<BankAccountRegisterItem>()
+                    .Include(p => p.BudgetItem);
+                if (table.Any())
+                {
+                    if (!table.Where(p => p.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
+                        .Any() && BudgetItemType == BudgetItemTypes.Expense)
+                    {
+                        updateMainDate = true;
+                    }
+                }
+                else
+                {
+                    updateMainDate = true;
+                }
+
                 _newBankAccountRegisterItems = BudgetItemProcessor
                     .GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem, startDate)
                     .ToList();
+
+                if (updateMainDate)
+                {
+                    AppGlobals.MainViewModel.ChangeCurrentDate(startDate);
+                }
             }
         }
 
