@@ -20,13 +20,6 @@ using System.Linq;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
-    public enum BankProcesses
-    {
-        Loading = 0,
-        Posting = 1,
-        Generating = 2,
-    }
-
     public interface IBankAccountView : IDbMaintenanceView
     {
         void EnableRegisterGrid(bool value);
@@ -40,16 +33,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         object OwnerWindow { get; }
 
         bool ImportFromBank(BankAccountViewModel bankAccountViewModel);
-
-        void LoadBank(BankAccount entity);
-
-        void GenerateTransactions(DateTime generateToDate);
-
-        void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows);
-
-        void UpdateStatus(string status);
-
-        void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon);
 
         void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId);
 
@@ -700,7 +683,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             else
             {
-                BankAccountView.LoadBank(entity);
+                //BankAccountView.LoadBank(entity);
+                var procedure = RingSoftAppGlobals.CreateAppProcedure();
+                procedure.DoAppProcedure += (sender, args) =>
+                {
+                    LoadFromEntityProcedure(entity);
+                };
+                procedure.Start("Loading Bank Account");
             }
             //LoadFromEntityProcedure(entity);
         }
@@ -752,11 +741,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             MonthlyBudgetDifference = MonthlyBudgetDeposits - MonthlyBudgetWithdrawals;
 
-            if (ReadOnlyMode)
-                BankAccountView.ShowMessageBox(
-                    "This Bank Account is being modified in another window.  Editing not allowed.",
-                    "Editing not allowed",
-                    RsMessageBoxIcons.Exclamation);
+            //if (ReadOnlyMode)
+            //    BankAccountView.ShowMessageBox(
+            //        "This Bank Account is being modified in another window.  Editing not allowed.",
+            //        "Editing not allowed",
+            //        RsMessageBoxIcons.Exclamation);
         }
 
         public void CalculateTotals(bool calculateProjectedBalanceData = true)
@@ -823,7 +812,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //GenerateTransactions(generateToDate);
             if (generateToDate != null)
             {
-                BankAccountView.GenerateTransactions(generateToDate.Value);
+                //BankAccountView.GenerateTransactions(generateToDate.Value);
+                var procedure = RingSoftAppGlobals.CreateAppProcedure();
+                procedure.DoAppProcedure += (sender, args) =>
+                {
+                    GenerateTransactions(generateToDate);
+                };
+                procedure.Start("Generating Register Items");
 
                 KeyAutoFillUiCommand.SetFocus();
             }
@@ -1096,21 +1091,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             else
             {
-                BankAccountView.PostRegister(completedRegisterData, completedRows);
+                //BankAccountView.PostRegister(completedRegisterData, completedRows);
+                var procedure = RingSoftAppGlobals.CreateAppProcedure();
+                procedure.DoAppProcedure += (sender, args) =>
+                {
+                    PostTransactions(completedRegisterData, completedRows, procedure.SplashWindow);
+                };
+                procedure.Start("Posting Register");
             }
 
             return true;
         }
 
         public void PostTransactions(CompletedRegisterData completedRegisterData,
-            List<BankAccountRegisterGridRow> completedRows)
+            List<BankAccountRegisterGridRow> completedRows, ISplashWindow splashWindow = null)
         {
             var count = completedRows.Count;
             var rowIndex = 0;
             foreach (var completedRow in completedRows)
             {
                 rowIndex++;
-                BankAccountView.UpdateStatus($"Processing Row {rowIndex} of {count}");
+                if (splashWindow != null)
+                {
+                    splashWindow.SetProgress($"Processing Row {rowIndex} of {count}");
+                }
                 var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
                 var registerItem = new BankAccountRegisterItem();
                 completedRow.SaveToEntity(registerItem, 0, amountDetails);

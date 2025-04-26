@@ -21,8 +21,6 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMaintenanceUserControl : IBankAccountView
     {
-        private BankProcedure _bankProcedure;
-
         public BankAccountMaintenanceUserControl()
         {
             InitializeComponent();
@@ -128,47 +126,6 @@ namespace RingSoft.HomeLogix.Budget
             importTransactionsWindow.ShowInTaskbar = false;
             importTransactionsWindow.ShowDialog();
             return importTransactionsWindow.DialogResult != null && importTransactionsWindow.DialogResult.Value;
-        }
-
-        public void LoadBank(BankAccount entity)
-        {
-            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading) { BankAccount = entity };
-            _bankProcedure.Start();
-            base.OwnerWindow.Activate();
-        }
-
-        public void GenerateTransactions(DateTime generateToDate)
-        {
-            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Generating)
-                { GenerateToDate = generateToDate };
-            _bankProcedure.Start();
-        }
-
-        public void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
-        {
-            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Posting)
-            {
-                CompletedRegisterData = completedRegisterData,
-                CompletedRows = completedRows
-            };
-            _bankProcedure.Start();
-        }
-
-        public void UpdateStatus(string status)
-        {
-            _bankProcedure.SplashWindow.SetProgress(status);
-        }
-
-        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
-        {
-            if (_bankProcedure != null)
-            {
-                _bankProcedure.ShowMessageBox(message, caption, icon);
-            }
-            else
-            {
-                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, icon);
-            }
         }
 
         public void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId)

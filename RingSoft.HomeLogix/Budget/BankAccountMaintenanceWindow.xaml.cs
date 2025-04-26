@@ -28,7 +28,7 @@ namespace RingSoft.HomeLogix.Budget
         public override Control MaintenanceButtonsControl => TopHeaderControl;
         public override DbMaintenanceStatusBar DbStatusBar => StatusBar;
 
-        private BankProcedure _bankProcedure;
+        //private BankProcedure _bankProcedure;
 
         public object OwnerWindow => this;
         public bool ImportFromBank(BankAccountViewModel bankAccountViewModel)
@@ -40,46 +40,46 @@ namespace RingSoft.HomeLogix.Budget
             return importTransactionsWindow.DialogResult != null && importTransactionsWindow.DialogResult.Value;
         }
 
-        public void LoadBank(BankAccount entity)
-        {
-            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading){BankAccount = entity};
-            _bankProcedure.Start();
-            Activate();
-        }
+        //public void LoadBank(BankAccount entity)
+        //{
+        //    _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Loading){BankAccount = entity};
+        //    _bankProcedure.Start();
+        //    Activate();
+        //}
 
-        public void GenerateTransactions(DateTime generateToDate)
-        {
-            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Generating)
-                {GenerateToDate = generateToDate};
-            _bankProcedure.Start();
-        }
+        //public void GenerateTransactions(DateTime generateToDate)
+        //{
+        //    _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Generating)
+        //        {GenerateToDate = generateToDate};
+        //    _bankProcedure.Start();
+        //}
 
-        public void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
-        {
-            _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Posting)
-            {
-                CompletedRegisterData = completedRegisterData,
-                CompletedRows = completedRows
-            };
-            _bankProcedure.Start();
-        }
+        //public void PostRegister(CompletedRegisterData completedRegisterData, List<BankAccountRegisterGridRow> completedRows)
+        //{
+        //    _bankProcedure = new BankProcedure(BankAccountViewModel, BankProcesses.Posting)
+        //    {
+        //        CompletedRegisterData = completedRegisterData,
+        //        CompletedRows = completedRows
+        //    };
+        //    _bankProcedure.Start();
+        //}
 
-        public void UpdateStatus(string status)
-        {
-            _bankProcedure.SplashWindow.SetProgress(status);
-        }
+        //public void UpdateStatus(string status)
+        //{
+        //    _bankProcedure.SplashWindow.SetProgress(status);
+        //}
 
-        public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
-        {
-            if (_bankProcedure != null)
-            {
-                _bankProcedure.ShowMessageBox(message, caption, icon);
-            }
-            else
-            {
-                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, icon);
-            }
-        }
+        //public void ShowMessageBox(string message, string caption, RsMessageBoxIcons icon)
+        //{
+        //    if (_bankProcedure != null)
+        //    {
+        //        _bankProcedure.ShowMessageBox(message, caption, icon);
+        //    }
+        //    else
+        //    {
+        //        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, icon);
+        //    }
+        //}
 
         public void SetInitGridFocus(BankAccountRegisterGridRow row, int columnId)
         {
