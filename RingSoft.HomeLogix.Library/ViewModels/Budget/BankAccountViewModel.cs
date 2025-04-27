@@ -660,7 +660,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
                 ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
 
-            CheckAllowGenTran(bankAccount);
+            SetAllowGen(bankAccount);
 
             if (bankAccount.LastCompletedDate.HasValue)
             {
@@ -676,13 +676,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         }
 
-        private void CheckAllowGenTran(BankAccount bankAccount)
+        private bool CheckAllowGenTran(BankAccount bankAccount)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<BudgetItem>();
 
             if (!table.Any(p => p.BankAccountId == Id
                 && p.StartingDate != null))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void SetAllowGen(BankAccount bankAccount)
+        {
+            if (!CheckAllowGenTran(bankAccount))
             {
                 GenerateRegisterItemsFromBudgetCommand.IsEnabled = false;
             }
@@ -705,6 +715,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     LoadFromEntityProcedure(entity);
                 };
                 procedure.Start("Loading Bank Account");
+                if (CheckAllowGenTran(entity) && PendingGeneration)
+                {
+                    var message = "Click Generate Register Items From Budget to see what your bank balance will be in the future.";
+                    var caption = "Future Forecast";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                }
             }
             //LoadFromEntityProcedure(entity);
         }
@@ -1466,7 +1482,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             RegisterGridManager.LoadGrid(bankAccount.RegisterItems);
-            CheckAllowGenTran(bankAccount);
+            SetAllowGen(bankAccount);
             RefreshBudgetTotals();
             CalculateTotals();
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
