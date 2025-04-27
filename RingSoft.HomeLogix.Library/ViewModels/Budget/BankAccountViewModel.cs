@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using BankAccountRegisterItemTypes = RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -659,6 +660,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             AddNewRegisterItemCommand.IsEnabled = GenerateRegisterItemsFromBudgetCommand.IsEnabled =
                 ImportTransactionsCommand.IsEnabled = !ReadOnlyMode;
 
+            CheckAllowGenTran(bankAccount);
+
             if (bankAccount.LastCompletedDate.HasValue)
             {
                 LastCompleteDate = bankAccount.LastCompletedDate.Value;
@@ -671,6 +674,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _existBankAccount = bankAccount;
             return bankAccount;
 
+        }
+
+        private void CheckAllowGenTran(BankAccount bankAccount)
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BudgetItem>();
+
+            if (!table.Any(p => p.BankAccountId == Id
+                && p.StartingDate != null))
+            {
+                GenerateRegisterItemsFromBudgetCommand.IsEnabled = false;
+            }
         }
 
         protected override void LoadFromEntity(BankAccount entity)
@@ -848,6 +863,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (registerItems.Any())
             {
                 bankAccount.PendingGeneration = PendingGeneration = false;
+                if (ViewModelInput.BudgetRefresh != null)
+                {
+                    ViewModelInput.BudgetRefresh.RefreshAfterGenTran();
+                }
             }
 
             LastGenerationDate = bankAccount.LastGenerationDate = generateToDate.Value;
@@ -1447,6 +1466,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             RegisterGridManager.LoadGrid(bankAccount.RegisterItems);
+            CheckAllowGenTran(bankAccount);
             RefreshBudgetTotals();
             CalculateTotals();
             ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);

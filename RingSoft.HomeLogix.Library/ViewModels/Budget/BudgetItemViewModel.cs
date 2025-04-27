@@ -613,6 +613,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 ViewModelInput = new ViewModelInput();
             }
 
+            ViewModelInput.BudgetRefresh = this;
+
             _yearlyHistoryFilter.ViewModelInput = ViewModelInput;
             
             AppGlobals.MainViewModel.BudgetItemViewModels.Add(this);
@@ -639,6 +641,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _loading = false;
 
             base.Initialize();
+        }
+
+        public void RefreshAfterGenTran()
+        {
+            GenTran = false;
+            GenTranUiCommand.Visibility = UiVisibilityTypes.Collapsed;
         }
 
         private void SetGenTranProps()

@@ -19,5 +19,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public BankAccount HistoryFilterBankAccount { get; set; }
 
         public  BankAccountPeriodHistory HistoryFilterBankAccountPeriod { get; set; }
+
+        public BudgetItemViewModel BudgetRefresh { get; set; }
     }
 }
