@@ -182,10 +182,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (loadVm)
             {
                 SetStartupView();
+                CheckNewStartup();
                 //if (StatsDataExists())
                 //{
                 //    ShowStats(true);
                 //}
+            }
+        }
+
+        private void CheckNewStartup()
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountRegisterItem>();
+            if (!table.Any())
+            {
+                var message = "Welcome to RingSoft HomeLogix!  Start by creating Budget Items.  When you're done creating all your Budget Items, you can click Manage Bank Accounts and generate bank account register items from your budget to see what your future bank account balances will be.";
+                var caption = "Welcome to RingSoft HomeLogix!";
+                ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                ManageBudget();
             }
         }
 
@@ -262,6 +276,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             {
                 StatsViewModel = null;
                 SetStartupView();
+                CheckNewStartup();
             }
         }
 
