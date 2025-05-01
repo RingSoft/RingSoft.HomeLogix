@@ -439,7 +439,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
 
                 _lastCompletedDate = value;
-                OnPropertyChanged();
+                OnPropertyChanged(null, false);
             }
         }
 
@@ -569,6 +569,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             RegisterGridManager.SetupForNewRecord();
             BankAccountView.EnableRegisterGrid(false);
+            LastCompleteDate = new DateTime(1980, 1, 1);
 
             _completeGrid = false;
             CompleteAll = false;
@@ -715,10 +716,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     LoadFromEntityProcedure(entity);
                 };
                 procedure.Start("Loading Bank Account");
+
                 if (CheckAllowGenTran(entity) && PendingGeneration)
                 {
                     var message = "Click Generate Register Items From Budget to see what your bank balance will be in the future.";
                     var caption = "Future Forecast";
+                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                }
+
+                if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any())
+                {
+                    var message =
+                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Register Items and update the Current Balance.";
+
+                    var caption = "Import Bank Transactions";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
                 }
             }
@@ -1767,17 +1778,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             var amount = registerData.ProjectedAmount;
-            if (registerData.ActualAmount > 0)
-            {
-                if (registerData.ProjectedAmount > registerData.ActualAmount)
-                {
-                    amount = registerData.ProjectedAmount - registerData.ActualAmount;
-                }
-                else
-                {
-                    return balance;
-                }
-            }
+            //if (registerData.ActualAmount > 0)
+            //{
+            //    if (registerData.ProjectedAmount > registerData.ActualAmount)
+            //    {
+            //        amount = registerData.ProjectedAmount - registerData.ActualAmount;
+            //    }
+            //    else
+            //    {
+            //        return balance;
+            //    }
+            //}
 
             switch (accountType)
             {
