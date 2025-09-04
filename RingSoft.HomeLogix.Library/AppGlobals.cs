@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.Library
             RingSoftAppGlobals.AppTitle = "HomeLogix";
             RingSoftAppGlobals.AppCopyright = "©2024 by Peter Ringering";
             RingSoftAppGlobals.AppGuid = "7b811d4b-e39a-4316-a1dd-ba58eeafede7";
-            RingSoftAppGlobals.AppVersion = 360;
+            RingSoftAppGlobals.AppVersion = 387;
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
@@ -369,16 +369,16 @@ namespace RingSoft.HomeLogix.Library
             File.Delete(filePath);
         }
 
-        public static void UploadFile(string fileName, string guid = "")
-        {
-            var folder = "/public_html/HomeLogixData/";
-            if (!guid.IsNullOrEmpty())
-            {
-                folder += guid + "/";
-            }
-            RingSoftAppGlobals
-                .UploadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
-        }
+        //public static void UploadFile(string fileName, string guid = "")
+        //{
+        //    var folder = "/public_html/HomeLogixData/";
+        //    if (!guid.IsNullOrEmpty())
+        //    {
+        //        folder += guid + "/";
+        //    }
+        //    RingSoftAppGlobals
+        //        .UploadFile($"{folder}{fileName}", MasterDbContext.ProgramDataFolder + $"\\{fileName}");
+        //}
 
         //public static void DownloadFile(string fileName, string guid = "")
         //{

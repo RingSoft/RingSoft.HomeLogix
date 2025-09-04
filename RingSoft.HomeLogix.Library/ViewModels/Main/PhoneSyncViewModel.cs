@@ -228,7 +228,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             try
             {
-                AppGlobals.UploadFile("Logins.json");
+                //AppGlobals.UploadFile("Logins.json");
                 procedure.UpdateBottomTier("Deleting File Logins.", loginSteps, loginStep);
                 AppGlobals.DeleteFile("Logins.json");
             }
@@ -284,7 +284,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 foreach (var file in _filesToProcess)
                 {
                     procedure.UpdateBottomTier($"Uploading File {file}", _filesToProcess.Count, fileUploadIndex);
-                    AppGlobals.UploadFile(file, DialogResult.Guid);
+                    //AppGlobals.UploadFile(file, DialogResult.Guid);
                     fileUploadIndex++;
                 }
 
