@@ -6,6 +6,7 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.Budget;
@@ -52,6 +53,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public TextComboBoxItem TransactionTypeItem { get; set; }
         public AutoFillSetup RegisterItemAutoFillSetup { get; set; }
         public AutoFillValue RegisterItemAutoFillValue { get; set; }
+        public DateTime? RegisterDate { get; set; }
         public AutoFillSetup SourceAutoFillSetup { get; set; }
         public AutoFillValue SourceAutoFillValue { get; set; }
         public double Amount { get; set; }
@@ -122,6 +124,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
                     return new DataEntryGridAutoFillCellProps(this, columnId, RegisterItemAutoFillSetup,
                         RegisterItemAutoFillValue);
+                case ImportColumns.RegisterDate:
+                    return new DataEntryGridDateCellProps(this, columnId
+                    , new DateEditControlSetup
+                    {
+                        DateFormatType = DateFormatTypes.DateOnly,
+                        AllowNullValue = true,
+                    }, RegisterDate);
                 case ImportColumns.Source:
                     return new DataEntryGridAutoFillCellProps(this, columnId, SourceAutoFillSetup,
                         SourceAutoFillValue);
@@ -146,6 +155,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                     }
                     return new DataEntryGridControlCellStyle();
+                case ImportColumns.RegisterDate:
+                    return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
                     return new DataEntryGridControlCellStyle();
@@ -198,12 +209,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     TransactionTypes = (TransactionTypes) comboProps.SelectedItemId;
                     break;
                 case ImportColumns.RegisterItem:
-                    var budgetAutoFillCellProps = value as DataEntryGridAutoFillCellProps;
-                    if (budgetAutoFillCellProps != null && budgetAutoFillCellProps.AutoFillValue.IsValid())
+                    var registerAutoFillCellProps = value as DataEntryGridAutoFillCellProps;
+                    if (registerAutoFillCellProps != null && registerAutoFillCellProps.AutoFillValue.IsValid())
                     {
-                        RegisterItemAutoFillValue = budgetAutoFillCellProps.AutoFillValue;
+                        RegisterItemAutoFillValue = registerAutoFillCellProps.AutoFillValue;
                         if (RegisterItemAutoFillValue.IsValid())
                         {
+                            var entity = RegisterItemAutoFillValue.GetEntity<BankAccountRegisterItem>();
+                            if (entity != null)
+                            {
+                                entity = entity.FillOutProperties(new List<TableDefinitionBase>());
+                                RegisterDate = entity.ItemDate;
+                            }
                             Manager.SetMapRowsBudget(this);
                         }
                     }

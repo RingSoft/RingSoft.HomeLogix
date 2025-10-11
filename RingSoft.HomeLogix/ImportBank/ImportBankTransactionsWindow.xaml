@@ -42,7 +42,7 @@
 
         <Label Grid.Row="2" Grid.Column="0" Content="Transactions"/>
 
-        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="1000" Height="300" HorizontalAlignment="Left" EnterToTab="False">
+        <deg:DataEntryGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="DataEntryGrid"  Manager="{Binding Manager, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}" Width="1100" Height="300" HorizontalAlignment="Left" EnterToTab="False">
             <deg:DataEntryGrid.Columns>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date" Width="100" DesignText="01/01/1980"/>
@@ -51,7 +51,9 @@
 
                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:ImportTransactionGridRow.TransactionTypeColumnId}" Header="Transaction&#10;Type" Width="150" ContentTemplate="{StaticResource BankRegisterTransactionType}" />
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.RegisterItemColumnId}" Header="Budget Item" Width="150"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.RegisterItemColumnId}" Header="Register Item" Width="150"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.RegisterDateColumnId}" Header="Register Item&#10;Date" Width="100"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.SourceColumnId}" Header="Source" Width="150"/>
 
