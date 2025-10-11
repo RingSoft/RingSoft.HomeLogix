@@ -15,6 +15,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.TransactionDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.Description).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.BudgetId).HasColumnType(DbConstants.IntegerColumnType).IsNullable();
+            builder.Property(p => p.RegisterId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.SourceId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Amount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.QifMapId).HasColumnType(DbConstants.IntegerColumnType).IsNullable();
@@ -33,6 +34,11 @@ namespace RingSoft.HomeLogix.DataAccess
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(p => p.BudgetId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(p => p.RegisterItem)
+                .WithMany(p => p.BankTransactions)
+                .HasForeignKey(p => p.RegisterId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(p => p.Source)
                 .WithMany(p => p.Transactions)

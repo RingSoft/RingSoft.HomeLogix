@@ -75,9 +75,12 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
+        public virtual ICollection<BankTransaction> BankTransactions { get; set; }
+
         public BankAccountRegisterItem()
         {
             AmountDetails = new HashSet<BankAccountRegisterItemAmountDetail>();
+            BankTransactions = new HashSet<BankTransaction>();
         }
     }
 }

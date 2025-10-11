@@ -395,6 +395,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("QifMapId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("RegisterId")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("SourceId")
                         .HasColumnType("integer");
 
@@ -409,6 +412,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasIndex("BudgetId");
 
                     b.HasIndex("QifMapId");
+
+                    b.HasIndex("RegisterId");
 
                     b.HasIndex("SourceId");
 
@@ -786,6 +791,11 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasForeignKey("QifMapId")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", "RegisterItem")
+                        .WithMany("BankTransactions")
+                        .HasForeignKey("RegisterId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", "Source")
                         .WithMany("Transactions")
                         .HasForeignKey("SourceId")
@@ -800,6 +810,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Navigation("BudgetItem");
 
                     b.Navigation("QifMap");
+
+                    b.Navigation("RegisterItem");
 
                     b.Navigation("Source");
                 });
@@ -953,6 +965,8 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", b =>
                 {
                     b.Navigation("AmountDetails");
+
+                    b.Navigation("BankTransactions");
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItemAmountDetail", b =>

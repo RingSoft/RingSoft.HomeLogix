@@ -280,8 +280,8 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankRegisterLookup =
                 new LookupDefinition<BankAccountRegisterLookup, BankAccountRegisterItem>(BankAccountRegisterItems);
-            BankRegisterLookup.AddVisibleColumnDefinition(p => p.RegisterDate, "Register Date", p => p.ItemDate, 50);
             BankRegisterLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 50);
+            BankRegisterLookup.AddVisibleColumnDefinition(p => p.RegisterDate, "Register Date", p => p.ItemDate, 50);
             BankAccountRegisterItems.HasLookupDefinition(BankRegisterLookup);
 
             BankTransactionsLookup = new LookupDefinition<BudgetItemLookup, BankTransaction>(BankTransactions);
