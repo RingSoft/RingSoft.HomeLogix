@@ -20,9 +20,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         TransactionType = 2,
         RegisterItem = 3,
         RegisterDate = 4,
-        Source = 5,
-        Amount = 6,
-        Map = 7
+        AddRegItem = 5,
+        Source = 6,
+        Amount = 7,
+        Map = 8
     }
 
     public class BudgetSplit
@@ -37,6 +38,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public const int TransactionTypeColumnId = (int) ImportColumns.TransactionType;
         public const int RegisterItemColumnId = (int) ImportColumns.RegisterItem;
         public const int RegisterDateColumnId = (int) ImportColumns.RegisterDate;
+        public const int AddNewColumnId = (int)ImportColumns.AddRegItem;
         public const int SourceColumnId = (int) ImportColumns.Source;
         public const int AmountColumnId = (int) ImportColumns.Amount;
         public const int MapColumnId = (int) ImportColumns.Map;
@@ -75,6 +77,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             TransactionTypes = TransactionTypes.Withdrawal;
             RegisterItemAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankRegisterLookup.Clone());
+            RegisterItemAutoFillSetup.AllowLookupAdd = false;
+            RegisterItemAutoFillSetup.AllowLookupView = false;
             SourceAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }
@@ -131,6 +135,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         DateFormatType = DateFormatTypes.DateOnly,
                         AllowNullValue = true,
                     }, RegisterDate);
+                case ImportColumns.AddRegItem:
+                    return new DataEntryGridButtonCellProps(this, columnId);
                 case ImportColumns.Source:
                     return new DataEntryGridAutoFillCellProps(this, columnId, SourceAutoFillSetup,
                         SourceAutoFillValue);
@@ -157,6 +163,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return new DataEntryGridControlCellStyle();
                 case ImportColumns.RegisterDate:
                     return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
+                case ImportColumns.AddRegItem:
+                    return new DataEntryGridButtonCellStyle() { Content = "Add" };
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
                     return new DataEntryGridControlCellStyle();
