@@ -99,10 +99,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             if (splits == null || !splits.Any())
             {
-                if (ViewModel.Row.BudgetItemAutoFillValue != null && ViewModel.Row.BudgetItemAutoFillValue.IsValid())
+                if (ViewModel.Row.RegisterItemAutoFillValue != null && ViewModel.Row.RegisterItemAutoFillValue.IsValid())
                 {
                     var row = GetNewRow() as ImportBankTransactionsBudgetsGridRow;
-                    row.BudgetAutoFillValue = ViewModel.Row.BudgetItemAutoFillValue;
+                    row.BudgetAutoFillValue = ViewModel.Row.RegisterItemAutoFillValue;
                     row.BudgetAmount = ViewModel.Row.Amount;
                     AddRow(row);
                 }

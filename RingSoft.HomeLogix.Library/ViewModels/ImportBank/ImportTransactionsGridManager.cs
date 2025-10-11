@@ -54,10 +54,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         bankTransaction.MapTransaction = row.MapTransaction;
                         bankTransaction.FromBank = row.FromBank;
                         bankTransaction.TransactionType = (byte) row.TransactionTypes;
-                        if (row.BudgetItemAutoFillValue != null && row.BudgetItemAutoFillValue.IsValid())
+                        if (row.RegisterItemAutoFillValue != null && row.RegisterItemAutoFillValue.IsValid())
                         {
                             bankTransaction.BudgetId =
-                                row.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt();
+                                row.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt();
                         }
 
                         if (row.SourceAutoFillValue != null && row.SourceAutoFillValue.IsValid())
@@ -97,13 +97,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 if (post)
                 {
-                    if (row.BudgetItemAutoFillValue == null || !row.BudgetItemAutoFillValue.IsValid())
+                    if (row.RegisterItemAutoFillValue == null || !row.RegisterItemAutoFillValue.IsValid())
                     {
                         var message = "You must select a budget item for this transaction.";
                         var caption = "Invalid Budget Item";
                         ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
                             RsMessageBoxIcons.Exclamation);
-                        Grid.GotoCell(row, ImportTransactionGridRow.BudgetItemColumnId);
+                        Grid.GotoCell(row, ImportTransactionGridRow.RegisterItemColumnId);
                         return false;
                     }
                 }
@@ -162,7 +162,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
                 else
                 {
-                    if (registerRows != null && !BudgetItemFoundInRegister(gridRow.BudgetItemAutoFillValue, registerRows))
+                    if (registerRows != null && !BudgetItemFoundInRegister(gridRow.RegisterItemAutoFillValue, registerRows))
                     {
                         budgetItemsFound = false;
                     }
@@ -200,7 +200,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
                 else
                 {
-                    var budgetItemId = gridRow.BudgetItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
+                    var budgetItemId = gridRow.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
                         .ToInt();
                     var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
                     var amount = ProcessAmount(gridRow.Amount, gridRow, budgetItem);
@@ -308,7 +308,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             foreach (var gridRow in Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false && p.MapTransaction == true && !p.Description.IsNullOrEmpty()))
             {
-                if (gridRow.BudgetItemAutoFillValue != null && gridRow.BudgetItemAutoFillValue.IsValid())
+                if (gridRow.RegisterItemAutoFillValue != null && gridRow.RegisterItemAutoFillValue.IsValid())
                 {
                     var qifMap = AppGlobals.DataRepository.GetQifMap(gridRow.Description);
                     if (qifMap == null)
@@ -316,7 +316,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         qifMap = new QifMap();
                         qifMap.BankText = gridRow.Description;
                         qifMap.BudgetId = AppGlobals.LookupContext.BudgetItems
-                            .GetEntityFromPrimaryKeyValue(gridRow.BudgetItemAutoFillValue.PrimaryKeyValue).Id;
+                            .GetEntityFromPrimaryKeyValue(gridRow.RegisterItemAutoFillValue.PrimaryKeyValue).Id;
                         if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
                         {
                             qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
@@ -620,7 +620,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 bankRow.FromBank = bankTransaction.FromBank;
                 if (bankTransaction.BudgetItem != null)
                 {
-                    bankRow.BudgetItemAutoFillValue =
+                    bankRow.RegisterItemAutoFillValue =
                         AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.BudgetItems,
                             bankTransaction.BudgetId.ToString());
                 }
@@ -728,7 +728,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 }
                 else if (query.Count() == 0)
                 {
-                    if (!importTransactionGridRow.BudgetItemAutoFillValue.IsValid())
+                    if (!importTransactionGridRow.RegisterItemAutoFillValue.IsValid())
                     {
                         importTransactionGridRow.MapTransaction = true;
                     }
@@ -777,7 +777,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         {
             if (qifMap.BudgetItem != null)
             {
-                importTransactionGridRow.BudgetItemAutoFillValue =
+                importTransactionGridRow.RegisterItemAutoFillValue =
                     AppGlobals.LookupContext.OnAutoFillTextRequest(
                         AppGlobals.LookupContext.BudgetItems,
                         qifMap.BudgetId.ToString());
@@ -796,9 +796,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 foreach (var importTransactionGridRow in rowsToSet)
                 {
                     if (importTransactionGridRow != row
-                        && !importTransactionGridRow.BudgetItemAutoFillValue.IsValid())
+                        && !importTransactionGridRow.RegisterItemAutoFillValue.IsValid())
                     {
-                        importTransactionGridRow.BudgetItemAutoFillValue = row.BudgetItemAutoFillValue;
+                        importTransactionGridRow.RegisterItemAutoFillValue = row.RegisterItemAutoFillValue;
                         importTransactionGridRow.MapTransaction = false;
                     }
                 }

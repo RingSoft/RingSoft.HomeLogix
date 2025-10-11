@@ -51,7 +51,7 @@
 
                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:ImportTransactionGridRow.TransactionTypeColumnId}" Header="Transaction&#10;Type" Width="150" ContentTemplate="{StaticResource BankRegisterTransactionType}" />
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.BudgetItemColumnId}" Header="Budget Item" Width="150"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.RegisterItemColumnId}" Header="Budget Item" Width="150"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.SourceColumnId}" Header="Source" Width="150"/>
 

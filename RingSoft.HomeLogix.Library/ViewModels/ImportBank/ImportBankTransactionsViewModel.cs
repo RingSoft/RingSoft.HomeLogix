@@ -218,7 +218,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var newRows = Manager.Rows.OfType<ImportTransactionGridRow>().OrderBy(p => p.Date).ToList();
             if (newRows.Any())
             {
-                Manager.Grid?.GotoCell(newRows[0], ImportTransactionGridRow.BudgetItemColumnId);
+                Manager.Grid?.GotoCell(newRows[0], ImportTransactionGridRow.RegisterItemColumnId);
             }
         }
 

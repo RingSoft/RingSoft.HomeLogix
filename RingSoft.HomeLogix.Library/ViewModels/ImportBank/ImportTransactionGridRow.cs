@@ -17,10 +17,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         Date = 0,
         Description = 1,
         TransactionType = 2,
-        BudgetItem = 3,
-        Source = 4,
-        Amount = 5,
-        Map = 6
+        RegisterItem = 3,
+        RegisterDate = 4,
+        Source = 5,
+        Amount = 6,
+        Map = 7
     }
 
     public class BudgetSplit
@@ -33,7 +34,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public const int DateColumnId = (int) ImportColumns.Date;
         public const int DescriptionColumnId = (int) ImportColumns.Description;
         public const int TransactionTypeColumnId = (int) ImportColumns.TransactionType;
-        public const int BudgetItemColumnId = (int) ImportColumns.BudgetItem;
+        public const int RegisterItemColumnId = (int) ImportColumns.RegisterItem;
+        public const int RegisterDateColumnId = (int) ImportColumns.RegisterDate;
         public const int SourceColumnId = (int) ImportColumns.Source;
         public const int AmountColumnId = (int) ImportColumns.Amount;
         public const int MapColumnId = (int) ImportColumns.Map;
@@ -48,8 +50,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         }
         public TextComboBoxControlSetup TransactionTypeComboBoxControlSetup { get; set; }
         public TextComboBoxItem TransactionTypeItem { get; set; }
-        public AutoFillSetup BudgetItemAutoFillSetup { get; set; }
-        public AutoFillValue BudgetItemAutoFillValue { get; set; }
+        public AutoFillSetup RegisterItemAutoFillSetup { get; set; }
+        public AutoFillValue RegisterItemAutoFillValue { get; set; }
         public AutoFillSetup SourceAutoFillSetup { get; set; }
         public AutoFillValue SourceAutoFillValue { get; set; }
         public double Amount { get; set; }
@@ -69,8 +71,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             TransactionTypeComboBoxControlSetup = new TextComboBoxControlSetup();
             TransactionTypeComboBoxControlSetup.LoadFromEnum<TransactionTypes>();
             TransactionTypes = TransactionTypes.Withdrawal;
-            BudgetItemAutoFillSetup =
-                new AutoFillSetup(AppGlobals.LookupContext.BudgetItemsLookup.Clone());
+            RegisterItemAutoFillSetup =
+                new AutoFillSetup(AppGlobals.LookupContext.BankRegisterLookup.Clone());
             SourceAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }
@@ -93,27 +95,33 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return new DataEntryGridTextCellProps(this, columnId, Description);
                 case ImportColumns.TransactionType:
                     return new DataEntryGridCustomControlCellProps(this, columnId, (int)TransactionTypes);
-                case ImportColumns.BudgetItem:
-                    BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
+                case ImportColumns.RegisterItem:
+                    RegisterItemAutoFillSetup.LookupDefinition.FilterDefinition.ClearFixedFilters();
                     if (TransactionTypes == TransactionTypes.Withdrawal)
                     {
-                        BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
-                            .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int) p.Type),
-                                Conditions.Equals, (int) BudgetItemTypes.Expense).SetEndLogic(EndLogics.Or)
-                            .SetLeftParenthesesCount(1);
+                        RegisterItemAutoFillSetup.LookupDefinition.FilterDefinition
+                            .AddFixedFilter(
+                                AppGlobals.LookupContext.BankAccountRegisterItems.GetFieldDefinition(p =>
+                                    p.ProjectedAmount),
+                                Conditions.LessThan, 0);
                     }
                     if (TransactionTypes == TransactionTypes.Deposit)
                     {
-                        BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
-                            .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int)p.Type),
-                                Conditions.Equals, (int)BudgetItemTypes.Income).SetEndLogic(EndLogics.Or).SetLeftParenthesesCount(1);
+                        RegisterItemAutoFillSetup.LookupDefinition.FilterDefinition
+                            .AddFixedFilter(
+                                AppGlobals.LookupContext.BankAccountRegisterItems.GetFieldDefinition(p =>
+                                    p.ProjectedAmount),
+                                Conditions.GreaterThan, 0);
                     }
-                    BudgetItemAutoFillSetup.LookupDefinition.FilterDefinition
-                        .AddFixedFilter(AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => (int)p.Type),
-                            Conditions.Equals, (int)BudgetItemTypes.Transfer).SetRightParenthesesCount(1);
 
-                    return new DataEntryGridAutoFillCellProps(this, columnId, BudgetItemAutoFillSetup,
-                        BudgetItemAutoFillValue);
+                    RegisterItemAutoFillSetup.LookupDefinition.FilterDefinition
+                        .AddFixedFilter(
+                            AppGlobals.LookupContext.BankAccountRegisterItems.GetFieldDefinition(p =>
+                                (int)p.BankAccountId),
+                            Conditions.Equals, this.Manager.ViewModel.BankViewModel.Id);
+
+                    return new DataEntryGridAutoFillCellProps(this, columnId, RegisterItemAutoFillSetup,
+                        RegisterItemAutoFillValue);
                 case ImportColumns.Source:
                     return new DataEntryGridAutoFillCellProps(this, columnId, SourceAutoFillSetup,
                         SourceAutoFillValue);
@@ -132,7 +140,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var column = (ImportColumns)columnId;
             switch (column)
             {
-                case ImportColumns.BudgetItem:
+                case ImportColumns.RegisterItem:
                     if (BudgetItemSplits.Any())
                     {
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
@@ -189,19 +197,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var comboProps = value as DataEntryGridCustomControlCellProps;
                     TransactionTypes = (TransactionTypes) comboProps.SelectedItemId;
                     break;
-                case ImportColumns.BudgetItem:
+                case ImportColumns.RegisterItem:
                     var budgetAutoFillCellProps = value as DataEntryGridAutoFillCellProps;
                     if (budgetAutoFillCellProps != null && budgetAutoFillCellProps.AutoFillValue.IsValid())
                     {
-                        BudgetItemAutoFillValue = budgetAutoFillCellProps.AutoFillValue;
-                        if (BudgetItemAutoFillValue.IsValid())
+                        RegisterItemAutoFillValue = budgetAutoFillCellProps.AutoFillValue;
+                        if (RegisterItemAutoFillValue.IsValid())
                         {
                             Manager.SetMapRowsBudget(this);
                         }
                     }
                     else
                     {
-                        BudgetItemAutoFillValue = null;
+                        RegisterItemAutoFillValue = null;
                     }
                     break;
                 case ImportColumns.Source:
