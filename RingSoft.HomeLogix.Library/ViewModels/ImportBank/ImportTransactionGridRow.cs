@@ -97,20 +97,46 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     .GetEntityFromPrimaryKeyValue(e.SelectedPrimaryKeyValue);
 
             registerItem = registerItem.FillOutProperties(true);
-            if (registerItem.ItemType == (int)BankAccountRegisterItemTypes.BudgetItem)
+            var itemType = (BankAccountRegisterItemTypes)registerItem.ItemType;
+            switch (itemType)
+            {
+                case BankAccountRegisterItemTypes.BudgetItem:
+                    ShowBudgetRegister(e);
+                    break;
+                case BankAccountRegisterItemTypes.Miscellaneous:
+                    ShowMiscRegister(e, registerItem);
+                    break;
+                case BankAccountRegisterItemTypes.TransferToBankAccount:
+                    if (registerItem.IsTransferMisc)
+                    {
+                        ShowMiscRegister(e, registerItem);
+                    }
+                    else
+                    {
+                        ShowBudgetRegister(e);
+                        
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static void ShowBudgetRegister(LookupAddViewArgs e)
+        {
+            SystemGlobals.TableRegistry.ShowEditAddOnTheFly(e.SelectedPrimaryKeyValue);
+            e.CallBackToken.OnRefreshData();
+        }
+
+        private void ShowMiscRegister(LookupAddViewArgs e, BankAccountRegisterItem registerItem)
+        {
+            if (Manager
+                .ViewModel
+                .BankViewModel
+                .BankAccountView
+                .ShowBankAccountMiscWindow(registerItem, new ViewModelInput()))
             {
                 e.CallBackToken.OnRefreshData();
-            }
-            else
-            {
-                if (Manager
-                    .ViewModel
-                    .BankViewModel
-                    .BankAccountView
-                    .ShowBankAccountMiscWindow(registerItem, new ViewModelInput()))
-                {
-                    e.CallBackToken.OnRefreshData();
-                }
             }
         }
 
