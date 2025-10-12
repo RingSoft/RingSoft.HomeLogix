@@ -95,8 +95,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
             if (registerItem.Id > 0)
             {
-                RegisterItemAutoFillValue = registerItem.GetAutoFillValue();
+                var newAutoFill = registerItem.GetAutoFillValue();
+                e.NewRecordPrimaryKeyValue = newAutoFill.PrimaryKeyValue;
+                e.CloseLookupWindow = true;
+                e.CallBackToken.RefreshMode = AutoFillRefreshModes.DbSelect;
+                e.CallBackToken.OnRefreshData();
+                RegisterItemAutoFillValue = newAutoFill;
                 RegisterDate = registerItem.ItemDate;
+                Manager.Grid?.RefreshGridView();
             }
             e.Handled = true;
         }
