@@ -6,6 +6,7 @@ using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid.CellProps;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
+using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.Model;
@@ -67,6 +68,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         public bool FromBank { get; set; }
 
+        private AutoFillValue _newRegisterAutoFillValue;
+
         public ImportTransactionGridRow(ImportTransactionsGridManager manager) : base(manager)
         {
             Manager = manager;
@@ -87,24 +90,62 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
         private void RegisterItemAutoFillSetup_LookupView(object sender, DbLookup.Lookup.LookupAddViewArgs e)
         {
-            
+            e.Handled = true;
+            var registerItem =
+                AppGlobals.LookupContext
+                    .BankAccountRegisterItems
+                    .GetEntityFromPrimaryKeyValue(e.SelectedPrimaryKeyValue);
+
+            registerItem = registerItem.FillOutProperties(true);
+            if (registerItem.ItemType == (int)BankAccountRegisterItemTypes.BudgetItem)
+            {
+                e.CallBackToken.OnRefreshData();
+            }
+            else
+            {
+                if (Manager
+                    .ViewModel
+                    .BankViewModel
+                    .BankAccountView
+                    .ShowBankAccountMiscWindow(registerItem, new ViewModelInput()))
+                {
+                    e.CallBackToken.OnRefreshData();
+                }
+            }
         }
 
         private void RegisterItemAutoFillSetup_LookupAdd(object sender, DbLookup.Lookup.LookupAddViewArgs e)
         {
+            if (Manager.ViewModel.BankViewModel.ViewModelInput != null)
+                Manager.ViewModel.BankViewModel.ViewModelInput.RefreshImportRow = this;
             var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
             if (registerItem.Id > 0)
             {
-                var newAutoFill = registerItem.GetAutoFillValue();
-                e.NewRecordPrimaryKeyValue = newAutoFill.PrimaryKeyValue;
-                e.CloseLookupWindow = true;
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
+                e.NewRecordPrimaryKeyValue = _newRegisterAutoFillValue.PrimaryKeyValue;
+                e.CallBackToken.OnCloseLookupWindow();
                 e.CallBackToken.RefreshMode = AutoFillRefreshModes.DbSelect;
                 e.CallBackToken.OnRefreshData();
-                RegisterItemAutoFillValue = newAutoFill;
+                RegisterItemAutoFillValue = _newRegisterAutoFillValue;
                 RegisterDate = registerItem.ItemDate;
                 Manager.Grid?.RefreshGridView();
+                _newRegisterAutoFillValue = null;
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
             }
+
             e.Handled = true;
+            if (Manager.ViewModel.BankViewModel.ViewModelInput != null)
+                Manager.ViewModel.BankViewModel.ViewModelInput.RefreshImportRow = null;
+            _newRegisterAutoFillValue = null;
+        }
+
+        internal void RefreshMiscBeforeClose(BankAccountRegisterItem registerItem)
+        {
+            if (registerItem.Id > 0)
+            {
+                _newRegisterAutoFillValue = registerItem.GetAutoFillValue();
+            }
+
         }
 
         public override string ToString()

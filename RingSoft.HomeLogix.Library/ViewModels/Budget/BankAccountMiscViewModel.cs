@@ -542,6 +542,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
+                if (_viewModelInput != null)
+                {
+                    if (_viewModelInput.RefreshImportRow != null)
+                    {
+                        _viewModelInput.RefreshImportRow.RefreshMiscBeforeClose(_registerItem);
+                    }
+                }
                 View.OnOkButtonCloseWindow();
             }
         }

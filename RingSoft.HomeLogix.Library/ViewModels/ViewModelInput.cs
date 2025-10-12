@@ -1,6 +1,7 @@
 ﻿using RingSoft.HomeLogix.Library.ViewModels.Budget;
 using System.Collections.Generic;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -21,5 +22,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public  BankAccountPeriodHistory HistoryFilterBankAccountPeriod { get; set; }
 
         public BudgetItemViewModel BudgetRefresh { get; set; }
+
+        public ImportTransactionGridRow RefreshImportRow { get; set; }
     }
 }
