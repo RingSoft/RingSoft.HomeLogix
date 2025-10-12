@@ -20,10 +20,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         TransactionType = 2,
         RegisterItem = 3,
         RegisterDate = 4,
-        AddRegItem = 5,
-        Source = 6,
-        Amount = 7,
-        Map = 8
+        Source = 5,
+        Amount = 6,
+        Map = 7
     }
 
     public class BudgetSplit
@@ -38,7 +37,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public const int TransactionTypeColumnId = (int) ImportColumns.TransactionType;
         public const int RegisterItemColumnId = (int) ImportColumns.RegisterItem;
         public const int RegisterDateColumnId = (int) ImportColumns.RegisterDate;
-        public const int AddNewColumnId = (int)ImportColumns.AddRegItem;
+        //public const int AddNewColumnId = (int)ImportColumns.AddRegItem;
         public const int SourceColumnId = (int) ImportColumns.Source;
         public const int AmountColumnId = (int) ImportColumns.Amount;
         public const int MapColumnId = (int) ImportColumns.Map;
@@ -77,10 +76,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             TransactionTypes = TransactionTypes.Withdrawal;
             RegisterItemAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankRegisterLookup.Clone());
-            RegisterItemAutoFillSetup.AllowLookupAdd = false;
-            RegisterItemAutoFillSetup.AllowLookupView = false;
+
+            RegisterItemAutoFillSetup.LookupAdd += RegisterItemAutoFillSetup_LookupAdd;
+            RegisterItemAutoFillSetup.LookupView += RegisterItemAutoFillSetup_LookupView;
+            //RegisterItemAutoFillSetup.AllowLookupAdd = false;
+            //RegisterItemAutoFillSetup.AllowLookupView = false;
             SourceAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
+        }
+
+        private void RegisterItemAutoFillSetup_LookupView(object sender, DbLookup.Lookup.LookupAddViewArgs e)
+        {
+            
+        }
+
+        private void RegisterItemAutoFillSetup_LookupAdd(object sender, DbLookup.Lookup.LookupAddViewArgs e)
+        {
+            var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
+            if (registerItem.Id > 0)
+            {
+                RegisterItemAutoFillValue = registerItem.GetAutoFillValue();
+                RegisterDate = registerItem.ItemDate;
+            }
+            e.Handled = true;
         }
 
         public override string ToString()
@@ -135,8 +153,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         DateFormatType = DateFormatTypes.DateOnly,
                         AllowNullValue = true,
                     }, RegisterDate);
-                case ImportColumns.AddRegItem:
-                    return new DataEntryGridButtonCellProps(this, columnId);
+                //case ImportColumns.AddRegItem:
+                //    return new DataEntryGridButtonCellProps(this, columnId);
                 case ImportColumns.Source:
                     return new DataEntryGridAutoFillCellProps(this, columnId, SourceAutoFillSetup,
                         SourceAutoFillValue);
@@ -163,8 +181,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return new DataEntryGridControlCellStyle();
                 case ImportColumns.RegisterDate:
                     return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
-                case ImportColumns.AddRegItem:
-                    return new DataEntryGridButtonCellStyle() { Content = "Add" };
+                //case ImportColumns.AddRegItem:
+                //    return new DataEntryGridButtonCellStyle() { Content = "Add" };
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
                     return new DataEntryGridControlCellStyle();
@@ -259,14 +277,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var checkBoxProps = value as DataEntryGridCheckBoxCellProps;
                     MapTransaction = checkBoxProps.Value;
                     break;
-                case ImportColumns.AddRegItem:
-                    var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
-                    if (registerItem.Id > 0)
-                    {
-                        RegisterItemAutoFillValue = registerItem.GetAutoFillValue();
-                        RegisterDate = registerItem.ItemDate;
-                    }
-                    break;
+                //case ImportColumns.AddRegItem:
+                //    var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
+                //    if (registerItem.Id > 0)
+                //    {
+                //        RegisterItemAutoFillValue = registerItem.GetAutoFillValue();
+                //        RegisterDate = registerItem.ItemDate;
+                //    }
+                //    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
