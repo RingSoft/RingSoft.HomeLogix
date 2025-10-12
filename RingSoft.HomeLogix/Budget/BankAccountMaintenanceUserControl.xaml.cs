@@ -112,7 +112,7 @@ namespace RingSoft.HomeLogix.Budget
             }
 
             var bankAccountMiscWindow = new BankAccountMiscWindow(BankAccountViewModel, registerItem, viewModelInput);
-            bankAccountMiscWindow.Owner = base.OwnerWindow;
+            bankAccountMiscWindow.Owner = WPFControlsGlobals.ActiveWindow;
             bankAccountMiscWindow.ShowInTaskbar = false;
             return bankAccountMiscWindow.ShowDialog().GetValueOrDefault(false);
         }

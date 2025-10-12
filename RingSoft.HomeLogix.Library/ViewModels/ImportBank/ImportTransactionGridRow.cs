@@ -259,6 +259,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var checkBoxProps = value as DataEntryGridCheckBoxCellProps;
                     MapTransaction = checkBoxProps.Value;
                     break;
+                case ImportColumns.AddRegItem:
+                    var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
+                    if (registerItem.Id > 0)
+                    {
+                        RegisterItemAutoFillValue = registerItem.GetAutoFillValue();
+                        RegisterDate = registerItem.ItemDate;
+                    }
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

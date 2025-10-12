@@ -821,7 +821,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void AddNewRegisterItem()
         {
-            var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
+            GetNewRegisterItem();
+        }
+
+        public BankAccountRegisterItem GetNewRegisterItem()
+        {
+            //var keyDown = Processor.IsMaintenanceKeyDown(MaintenanceKey.Alt);
             var registerItem = new BankAccountRegisterItem { BankAccountId = Id };
             if (BankAccountView.ShowBankAccountMiscWindow(registerItem, ViewModelInput))
             {
@@ -830,10 +835,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 AppGlobals.MainViewModel.RefreshView();
             }
 
-            if (!keyDown)
-            {
-                View.ResetViewForNewRecord();
-            }
+            //if (!keyDown)
+            //{
+            //    View.ResetViewForNewRecord();
+            //}
+            return registerItem;
         }
 
         private void GenerateRegisterItemsFromBudget()
