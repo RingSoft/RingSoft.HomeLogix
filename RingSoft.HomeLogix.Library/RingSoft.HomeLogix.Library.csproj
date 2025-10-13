@@ -6,7 +6,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.MasterData\RingSoft.HomeLogix.MasterData.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.MobileInterop\RingSoft.HomeLogix.MobileInterop.csproj" />
