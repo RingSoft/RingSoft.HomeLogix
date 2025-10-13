@@ -38,7 +38,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         public const int TransactionTypeColumnId = (int) ImportColumns.TransactionType;
         public const int RegisterItemColumnId = (int) ImportColumns.RegisterItem;
         public const int RegisterDateColumnId = (int) ImportColumns.RegisterDate;
-        //public const int AddNewColumnId = (int)ImportColumns.AddRegItem;
         public const int SourceColumnId = (int) ImportColumns.Source;
         public const int AmountColumnId = (int) ImportColumns.Amount;
         public const int MapColumnId = (int) ImportColumns.Map;
@@ -82,8 +81,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
             RegisterItemAutoFillSetup.LookupAdd += RegisterItemAutoFillSetup_LookupAdd;
             RegisterItemAutoFillSetup.LookupView += RegisterItemAutoFillSetup_LookupView;
-            //RegisterItemAutoFillSetup.AllowLookupAdd = false;
-            //RegisterItemAutoFillSetup.AllowLookupView = false;
+
             SourceAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }
@@ -95,55 +93,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 Manager.ViewModel.BankViewModel.RefreshFromDb();
             };
-            //    e.Handled = true;
-            //    var registerItem =
-            //        AppGlobals.LookupContext
-            //            .BankAccountRegisterItems
-            //            .GetEntityFromPrimaryKeyValue(e.SelectedPrimaryKeyValue);
-
-            //    registerItem = registerItem.FillOutProperties(true);
-            //    var itemType = (BankAccountRegisterItemTypes)registerItem.ItemType;
-            //    switch (itemType)
-            //    {
-            //        case BankAccountRegisterItemTypes.BudgetItem:
-            //            ShowBudgetRegister(e);
-            //            break;
-            //        case BankAccountRegisterItemTypes.Miscellaneous:
-            //            ShowMiscRegister(e, registerItem);
-            //            break;
-            //        case BankAccountRegisterItemTypes.TransferToBankAccount:
-            //            if (registerItem.IsTransferMisc)
-            //            {
-            //                ShowMiscRegister(e, registerItem);
-            //            }
-            //            else
-            //            {
-            //                ShowBudgetRegister(e);
-
-            //            }
-            //            break;
-            //        default:
-            //            throw new ArgumentOutOfRangeException();
-            //    }
         }
-
-        //private static void ShowBudgetRegister(LookupAddViewArgs e)
-        //{
-        //    SystemGlobals.TableRegistry.ShowEditAddOnTheFly(e.SelectedPrimaryKeyValue);
-        //    e.CallBackToken.OnRefreshData();
-        //}
-
-        //private void ShowMiscRegister(LookupAddViewArgs e, BankAccountRegisterItem registerItem)
-        //{
-        //    if (Manager
-        //        .ViewModel
-        //        .BankViewModel
-        //        .BankAccountView
-        //        .ShowBankAccountMiscWindow(registerItem, new ViewModelInput()))
-        //    {
-        //        e.CallBackToken.OnRefreshData();
-        //    }
-        //}
 
         private void RegisterItemAutoFillSetup_LookupAdd(object sender, DbLookup.Lookup.LookupAddViewArgs e)
         {
@@ -231,8 +181,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         DateFormatType = DateFormatTypes.DateOnly,
                         AllowNullValue = true,
                     }, RegisterDate);
-                //case ImportColumns.AddRegItem:
-                //    return new DataEntryGridButtonCellProps(this, columnId);
                 case ImportColumns.Source:
                     return new DataEntryGridAutoFillCellProps(this, columnId, SourceAutoFillSetup,
                         SourceAutoFillValue);
@@ -259,8 +207,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return new DataEntryGridControlCellStyle();
                 case ImportColumns.RegisterDate:
                     return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
-                //case ImportColumns.AddRegItem:
-                //    return new DataEntryGridButtonCellStyle() { Content = "Add" };
                 case ImportColumns.Source:
                 case ImportColumns.Amount:
                     return new DataEntryGridControlCellStyle();
@@ -355,14 +301,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var checkBoxProps = value as DataEntryGridCheckBoxCellProps;
                     MapTransaction = checkBoxProps.Value;
                     break;
-                //case ImportColumns.AddRegItem:
-                //    var registerItem = Manager.ViewModel.BankViewModel.GetNewRegisterItem();
-                //    if (registerItem.Id > 0)
-                //    {
-                //        RegisterItemAutoFillValue = registerItem.GetAutoFillValue();
-                //        RegisterDate = registerItem.ItemDate;
-                //    }
-                //    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
