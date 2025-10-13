@@ -447,12 +447,25 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("BudgetItemId")
+                    b.Property<int?>("BankTransactionBankAccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("BankTransactionTransactionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("BudgetItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RegisterItemId")
                         .HasColumnType("integer");
 
                     b.HasKey("BankId", "TransactionId", "RowId");
 
                     b.HasIndex("BudgetItemId");
+
+                    b.HasIndex("RegisterItemId");
+
+                    b.HasIndex("BankTransactionBankAccountId", "BankTransactionTransactionId");
 
                     b.ToTable("BankTransactionBudget");
                 });
@@ -837,21 +850,23 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankTransactionBudget", b =>
                 {
-                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
+                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", null)
                         .WithMany("TransactionBudgets")
-                        .HasForeignKey("BudgetItemId")
+                        .HasForeignKey("BudgetItemId");
+
+                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", "RegisterItem")
+                        .WithMany("BankTransactionBudgets")
+                        .HasForeignKey("RegisterItemId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankTransaction", "BankTransaction")
                         .WithMany("BudgetItems")
-                        .HasForeignKey("BankId", "TransactionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("BankTransactionBankAccountId", "BankTransactionTransactionId");
 
                     b.Navigation("BankTransaction");
 
-                    b.Navigation("BudgetItem");
+                    b.Navigation("RegisterItem");
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", b =>
@@ -984,6 +999,8 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", b =>
                 {
                     b.Navigation("AmountDetails");
+
+                    b.Navigation("BankTransactionBudgets");
 
                     b.Navigation("BankTransactions");
                 });

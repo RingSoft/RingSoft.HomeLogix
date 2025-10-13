@@ -74,7 +74,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                                 BankId = bankTransaction.BankAccountId,
                                 TransactionId = bankTransaction.TransactionId,
                                 RowId = budgetRowId,
-                                BudgetItemId =
+                                RegisterItemId =
                                     rowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
                                 Amount = rowBudgetItemSplit.Amount
                             });
@@ -638,7 +638,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         BudgetItem = AppGlobals.LookupContext.OnAutoFillTextRequest(
                             AppGlobals.LookupContext.BudgetItems,
-                            bankTransactionBudgetItem.BudgetItemId.ToString()),
+                            bankTransactionBudgetItem.RegisterItemId.ToString()),
                         Amount = bankTransactionBudgetItem.Amount,
                     });
                 }

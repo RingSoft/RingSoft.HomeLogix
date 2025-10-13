@@ -11,19 +11,14 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.BankId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.TransactionId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.RowId).HasColumnType(DbConstants.IntegerColumnType);
-            builder.Property(p => p.BudgetItemId).HasColumnType(DbConstants.IntegerColumnType);
+            builder.Property(p => p.RegisterItemId).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.Amount).HasColumnType(DbConstants.DecimalColumnType);
 
             builder.HasKey(p => new { p.BankId, p.TransactionId, p.RowId });
 
-            builder.HasOne(p => p.BankTransaction)
-                .WithMany(p => p.BudgetItems)
-                .HasForeignKey(p => new {p.BankId, p.TransactionId})
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasOne(p => p.BudgetItem)
-                .WithMany(p => p.TransactionBudgets)
-                .HasForeignKey(p => p.BudgetItemId)
+            builder.HasOne(p => p.RegisterItem)
+                .WithMany(p => p.BankTransactionBudgets)
+                .HasForeignKey(p => p.RegisterItemId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

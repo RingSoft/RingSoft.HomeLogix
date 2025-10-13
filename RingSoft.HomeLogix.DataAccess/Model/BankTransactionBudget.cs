@@ -16,9 +16,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         public int RowId { get; set; }
 
         [Required]
-        public int BudgetItemId { get; set; }
+        public int RegisterItemId { get; set; }
 
-        public virtual BudgetItem BudgetItem { get; set; }
+        public virtual BankAccountRegisterItem RegisterItem { get; set; }
 
         [Required]
         public double Amount { get; set; }

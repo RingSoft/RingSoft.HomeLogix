@@ -762,7 +762,7 @@ namespace RingSoft.HomeLogix.Library
         {
             var context = AppGlobals.GetNewDbContext();
             return context.BankTransactions.Include(p => p.BudgetItems)
-                .ThenInclude(p => p.BudgetItem)
+                .ThenInclude(p => p.RegisterItem)
                 .Include(p => p.BankAccount)
                 .Include(p => p.BudgetItem)
                 .Include(p => p.Source)
