@@ -56,7 +56,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         bankTransaction.TransactionType = (byte) row.TransactionTypes;
                         if (row.RegisterItemAutoFillValue != null && row.RegisterItemAutoFillValue.IsValid())
                         {
-                            bankTransaction.BudgetId =
+                            bankTransaction.RegisterId =
                                 row.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt();
                         }
 
@@ -99,8 +99,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     if (row.RegisterItemAutoFillValue == null || !row.RegisterItemAutoFillValue.IsValid())
                     {
-                        var message = "You must select a budget item for this transaction.";
-                        var caption = "Invalid Budget Item";
+                        var message = "You must select a register item for this transaction.";
+                        var caption = "Invalid Register Item";
                         ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
                             RsMessageBoxIcons.Exclamation);
                         Grid.GotoCell(row, ImportTransactionGridRow.RegisterItemColumnId);
@@ -313,10 +313,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     var qifMap = AppGlobals.DataRepository.GetQifMap(gridRow.Description);
                     if (qifMap == null)
                     {
+                        var registerItem = gridRow.RegisterItemAutoFillValue.GetEntity<BankAccountRegisterItem>();
+                        registerItem = registerItem.FillOutProperties(true);
                         qifMap = new QifMap();
                         qifMap.BankText = gridRow.Description;
-                        qifMap.BudgetId = AppGlobals.LookupContext.BudgetItems
-                            .GetEntityFromPrimaryKeyValue(gridRow.RegisterItemAutoFillValue.PrimaryKeyValue).Id;
+                        qifMap.BudgetId = registerItem.BudgetItemId.GetValueOrDefault();
                         if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
                         {
                             qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
@@ -618,11 +619,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 bankRow.MapTransaction = bankTransaction.MapTransaction;
                 bankRow.TransactionTypes = (TransactionTypes) bankTransaction.TransactionType;
                 bankRow.FromBank = bankTransaction.FromBank;
-                if (bankTransaction.BudgetItem != null)
+                if (bankTransaction.RegisterItem != null)
                 {
-                    bankRow.RegisterItemAutoFillValue =
-                        AppGlobals.LookupContext.OnAutoFillTextRequest(AppGlobals.LookupContext.BudgetItems,
-                            bankTransaction.BudgetId.ToString());
+                    bankRow.RegisterItemAutoFillValue = bankTransaction.RegisterItem.GetAutoFillValue();
+                    bankRow.RegisterDate = bankTransaction.RegisterItem.ItemDate;
                 }
                 if (bankTransaction.Source != null)
                 {
@@ -636,9 +636,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     bankRow.BudgetItemSplits.Add(new BudgetSplit
                     {
-                        RegisterItemAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(
-                            AppGlobals.LookupContext.BudgetItems,
-                            bankTransactionBudgetItem.RegisterItemId.ToString()),
+                        RegisterItemAutoFillValue = bankTransactionBudgetItem.RegisterItem.GetAutoFillValue(),
+                        RegisterDate = bankTransactionBudgetItem.RegisterItem.ItemDate,
                         Amount = bankTransactionBudgetItem.Amount,
                     });
                 }

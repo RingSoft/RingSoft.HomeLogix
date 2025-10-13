@@ -219,7 +219,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     }
                     return new DataEntryGridControlCellStyle() {State = state};
                 case ImportColumns.Map:
-                    if (!FromBank)
+                    if (!FromBank || (BudgetItemSplits != null && BudgetItemSplits.Any()))
                     {
                         return new DataEntryGridControlCellStyle() { State = DataEntryGridCellStates.Disabled };
                     }

@@ -761,13 +761,15 @@ namespace RingSoft.HomeLogix.Library
         public List<BankTransaction> GetBankTransactions(int bankAccountId)
         {
             var context = AppGlobals.GetNewDbContext();
-            return context.BankTransactions.Include(p => p.BudgetItems)
+            var result = context.BankTransactions.Include(p => p.BudgetItems)
                 .ThenInclude(p => p.RegisterItem)
                 .Include(p => p.BankAccount)
-                .Include(p => p.BudgetItem)
+                .Include(p => p.RegisterItem)
                 .Include(p => p.Source)
                 .Include(p => p.QifMap)
                 .Where(p => p.BankAccountId == bankAccountId).ToList();
+
+            return result;
         }
 
         public bool SaveBankTransactions(List<BankTransaction> transactions, List<BankTransactionBudget> splits,

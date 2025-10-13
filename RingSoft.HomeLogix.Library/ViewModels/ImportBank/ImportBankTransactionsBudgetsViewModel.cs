@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
@@ -129,6 +130,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             if (splitList != null)
             {
                 Row.BudgetItemSplits = splitList;
+                if (splitList.Any())
+                {
+                    Row.MapTransaction = false;
+                }
                 Row.RegisterItemAutoFillValue = null;
                 Row.RegisterDate = null;
                 Row.Manager.Grid?.RefreshGridView();

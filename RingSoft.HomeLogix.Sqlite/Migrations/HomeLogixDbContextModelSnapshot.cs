@@ -436,12 +436,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("BankTransactionBankAccountId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("BankTransactionTransactionId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("BudgetItemId")
                         .HasColumnType("integer");
 
@@ -453,8 +447,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasIndex("BudgetItemId");
 
                     b.HasIndex("RegisterItemId");
-
-                    b.HasIndex("BankTransactionBankAccountId", "BankTransactionTransactionId");
 
                     b.ToTable("BankTransactionBudget");
                 });
@@ -843,7 +835,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankTransaction", "BankTransaction")
                         .WithMany("BudgetItems")
-                        .HasForeignKey("BankTransactionBankAccountId", "BankTransactionTransactionId");
+                        .HasForeignKey("BankId", "TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BankTransaction");
 
