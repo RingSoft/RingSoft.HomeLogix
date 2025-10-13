@@ -130,6 +130,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 Row.BudgetItemSplits = splitList;
                 Row.RegisterItemAutoFillValue = null;
+                Row.RegisterDate = null;
                 Row.Manager.Grid?.RefreshGridView();
                 View.CloseWindow(true);
             }

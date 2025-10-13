@@ -657,6 +657,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             PreLoadGridFromEntity();
             var rowIndex = 0;
             var count = rows.Count;
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var bankRegisterTable = context.GetTable<BankAccountRegisterItem>();
             foreach (var importTransactionGridRow in rows)
             {
                 rowIndex++;
@@ -671,7 +673,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         text = importTransactionGridRow.Description.MidStr(0, spacePos).Trim();
                     while (foundMap == false)
                     {
-                        var checkResult = CheckQuery(filter, text, importTransactionGridRow, out var newFoundMap);
+                        var checkResult = CheckQuery(filter
+                            , text
+                            , importTransactionGridRow
+                            , out var newFoundMap
+                            , bankRegisterTable);
                         foundMap = newFoundMap;
                         if (!checkResult)
                         {
@@ -680,7 +686,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         spacePos = importTransactionGridRow.Description.IndexOf(" ", spacePos + 1);
                         if (spacePos == -1)
                         {
-                            checkResult = CheckQuery(filter, importTransactionGridRow.Description, importTransactionGridRow, out var newCheckFoundMap);
+                            checkResult = CheckQuery(filter
+                                , importTransactionGridRow.Description
+                                , importTransactionGridRow
+                                , out var newCheckFoundMap
+                                , bankRegisterTable);
                             if (!checkResult)
                             {
                                 break;
@@ -706,7 +716,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         }
 
         private bool CheckQuery(TableFilterDefinition<QifMap> filter, string text, ImportTransactionGridRow importTransactionGridRow,
-            out bool foundMap)
+            out bool foundMap
+            , IQueryable<BankAccountRegisterItem> bankRegisterTable)
         {
             ProcessQifQuery(filter, text);
 
@@ -724,7 +735,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (query.Count() == 1)
                 {
                     foundMap = true;
-                    ProcessFoundQif(query.FirstOrDefault(), importTransactionGridRow);
+                    ProcessFoundQif(query.FirstOrDefault(), importTransactionGridRow, bankRegisterTable);
                 }
                 else if (query.Count() == 0)
                 {
@@ -751,13 +762,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 Conditions.Contains, text);
         }
 
-        private static void ProcessFoundQif(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow)
+        private static void ProcessFoundQif(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow
+            , IQueryable<BankAccountRegisterItem> bankRegisterTable)
         {
             qifMap = AppGlobals.DataRepository.GetQifMap(qifMap.Id);
 
             importTransactionGridRow.MapTransaction = false;
             importTransactionGridRow.QifMap = qifMap;
-            ProcessFoundBudgetItem(qifMap, importTransactionGridRow);
+            ProcessFoundBudgetItem(qifMap, importTransactionGridRow, bankRegisterTable);
 
             ProcessFoundSource(qifMap, importTransactionGridRow);
         }
@@ -773,14 +785,45 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             }
         }
 
-        private static void ProcessFoundBudgetItem(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow)
+        private static void ProcessFoundBudgetItem(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow
+        , IQueryable<BankAccountRegisterItem> bankRegisterTable)
         {
             if (qifMap.BudgetItem != null)
             {
-                importTransactionGridRow.RegisterItemAutoFillValue =
-                    AppGlobals.LookupContext.OnAutoFillTextRequest(
-                        AppGlobals.LookupContext.BudgetItems,
-                        qifMap.BudgetId.ToString());
+                var importDate = importTransactionGridRow.Date;
+                var daysToSplit = 0.0;
+                switch ((BudgetItemRecurringTypes)qifMap.BudgetItem.RecurringType)
+                {
+                    case BudgetItemRecurringTypes.Days:
+                        daysToSplit =
+                            Math.Floor((double)qifMap.BudgetItem.RecurringPeriod / 2);
+                        break;
+                    case BudgetItemRecurringTypes.Weeks:
+                        daysToSplit =
+                            Math.Floor((double)(qifMap.BudgetItem.RecurringPeriod * 7) / 2);
+                        break;
+                    case BudgetItemRecurringTypes.Months:
+                    case BudgetItemRecurringTypes.Years:
+                        daysToSplit = 15;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                if (daysToSplit > 15)
+                {
+                    daysToSplit = 15;
+                }
+                var startDate = importDate.AddDays(-daysToSplit);
+                var endDate = importDate.AddDays(daysToSplit);
+                var registerItemFound = bankRegisterTable
+                    .FirstOrDefault(p => p.BudgetItemId == qifMap.BudgetId
+                                         && p.ItemDate >= startDate
+                                         && p.ItemDate <= endDate);
+                if (registerItemFound != null)
+                {
+                    importTransactionGridRow.RegisterItemAutoFillValue = registerItemFound.GetAutoFillValue();
+                    importTransactionGridRow.RegisterDate = registerItemFound.ItemDate;
+                }
             }
         }
 
