@@ -81,64 +81,64 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 new AutoFillSetup(AppGlobals.LookupContext.BankRegisterLookup.Clone());
 
             RegisterItemAutoFillSetup.LookupAdd += RegisterItemAutoFillSetup_LookupAdd;
-            RegisterItemAutoFillSetup.LookupView += RegisterItemAutoFillSetup_LookupView;
+            //RegisterItemAutoFillSetup.LookupView += RegisterItemAutoFillSetup_LookupView;
             //RegisterItemAutoFillSetup.AllowLookupAdd = false;
             //RegisterItemAutoFillSetup.AllowLookupView = false;
             SourceAutoFillSetup =
                 new AutoFillSetup(AppGlobals.LookupContext.BankTransactions.GetFieldDefinition(p => p.SourceId));
         }
 
-        private void RegisterItemAutoFillSetup_LookupView(object sender, DbLookup.Lookup.LookupAddViewArgs e)
-        {
-            e.Handled = true;
-            var registerItem =
-                AppGlobals.LookupContext
-                    .BankAccountRegisterItems
-                    .GetEntityFromPrimaryKeyValue(e.SelectedPrimaryKeyValue);
+        //private void RegisterItemAutoFillSetup_LookupView(object sender, DbLookup.Lookup.LookupAddViewArgs e)
+        //{
+        //    e.Handled = true;
+        //    var registerItem =
+        //        AppGlobals.LookupContext
+        //            .BankAccountRegisterItems
+        //            .GetEntityFromPrimaryKeyValue(e.SelectedPrimaryKeyValue);
 
-            registerItem = registerItem.FillOutProperties(true);
-            var itemType = (BankAccountRegisterItemTypes)registerItem.ItemType;
-            switch (itemType)
-            {
-                case BankAccountRegisterItemTypes.BudgetItem:
-                    ShowBudgetRegister(e);
-                    break;
-                case BankAccountRegisterItemTypes.Miscellaneous:
-                    ShowMiscRegister(e, registerItem);
-                    break;
-                case BankAccountRegisterItemTypes.TransferToBankAccount:
-                    if (registerItem.IsTransferMisc)
-                    {
-                        ShowMiscRegister(e, registerItem);
-                    }
-                    else
-                    {
-                        ShowBudgetRegister(e);
+        //    registerItem = registerItem.FillOutProperties(true);
+        //    var itemType = (BankAccountRegisterItemTypes)registerItem.ItemType;
+        //    switch (itemType)
+        //    {
+        //        case BankAccountRegisterItemTypes.BudgetItem:
+        //            ShowBudgetRegister(e);
+        //            break;
+        //        case BankAccountRegisterItemTypes.Miscellaneous:
+        //            ShowMiscRegister(e, registerItem);
+        //            break;
+        //        case BankAccountRegisterItemTypes.TransferToBankAccount:
+        //            if (registerItem.IsTransferMisc)
+        //            {
+        //                ShowMiscRegister(e, registerItem);
+        //            }
+        //            else
+        //            {
+        //                ShowBudgetRegister(e);
                         
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+        //            }
+        //            break;
+        //        default:
+        //            throw new ArgumentOutOfRangeException();
+        //    }
+        //}
 
-        private static void ShowBudgetRegister(LookupAddViewArgs e)
-        {
-            SystemGlobals.TableRegistry.ShowEditAddOnTheFly(e.SelectedPrimaryKeyValue);
-            e.CallBackToken.OnRefreshData();
-        }
+        //private static void ShowBudgetRegister(LookupAddViewArgs e)
+        //{
+        //    SystemGlobals.TableRegistry.ShowEditAddOnTheFly(e.SelectedPrimaryKeyValue);
+        //    e.CallBackToken.OnRefreshData();
+        //}
 
-        private void ShowMiscRegister(LookupAddViewArgs e, BankAccountRegisterItem registerItem)
-        {
-            if (Manager
-                .ViewModel
-                .BankViewModel
-                .BankAccountView
-                .ShowBankAccountMiscWindow(registerItem, new ViewModelInput()))
-            {
-                e.CallBackToken.OnRefreshData();
-            }
-        }
+        //private void ShowMiscRegister(LookupAddViewArgs e, BankAccountRegisterItem registerItem)
+        //{
+        //    if (Manager
+        //        .ViewModel
+        //        .BankViewModel
+        //        .BankAccountView
+        //        .ShowBankAccountMiscWindow(registerItem, new ViewModelInput()))
+        //    {
+        //        e.CallBackToken.OnRefreshData();
+        //    }
+        //}
 
         private void RegisterItemAutoFillSetup_LookupAdd(object sender, DbLookup.Lookup.LookupAddViewArgs e)
         {
