@@ -141,70 +141,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             var count = rows.Count();
             var rowIndex = 0;
             
-            var budgetItemsFound = true;
-            var registerRows = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>();
-
-            foreach (var gridRow in rows)
-            {
-                rowIndex++;
-                splashWindow.SetProgress($"Validating Row {rowIndex} of {count}");
-                if (!ValidateTransactionRow(gridRow, true)) return false;
-
-                if (gridRow.BudgetItemSplits.Any())
-                {
-                    foreach (var budgetSplit in gridRow.BudgetItemSplits)
-                    {
-                        if (registerRows != null && !BudgetItemFoundInRegister(budgetSplit.RegisterItemAutoFillValue, registerRows))
-                        {
-                            budgetItemsFound = false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (registerRows != null && !BudgetItemFoundInRegister(gridRow.RegisterItemAutoFillValue, registerRows))
-                    {
-                        budgetItemsFound = false;
-                    }
-                }
-            }
-
-            if (!budgetItemsFound)
-            {
-                var message =
-                    "Some Budget Items in these transactions were not found in the Registered Grid of this Bank Account. Are you sure you are importing these transactions into the right Bank Account?";
-                var caption = "Bank Account Validation";
-                if (!splashWindow.ShowYesNoMessageBox(message, caption))
-                {
-                    return false;
-                }
-            }
-
             rowIndex = 0;
             foreach (var gridRow in rows)
             {
                 rowIndex++;
                 splashWindow.SetProgress($"Posting Row {rowIndex} of {count}");
+                BankAccountRegisterItem registerItem = null;
+                BudgetItem budgetItem = null;
                 if (gridRow.BudgetItemSplits.Any())
                 {
                     foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
                     {
-                        var budgetItemId = gridRowBudgetItemSplit.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
-                            .ToInt();
-                        var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
+                        registerItem = gridRowBudgetItemSplit.RegisterItemAutoFillValue
+                            .GetEntity<BankAccountRegisterItem>();
+                        registerItem = registerItem.FillOutProperties(true);
+                        budgetItem = registerItem.BudgetItem;
                         var amount = ProcessAmount(gridRowBudgetItemSplit.Amount, gridRow, budgetItem);
-                        var row = PostBudgetItem(budgetItem, gridRowBudgetItemSplit.Amount, gridRow, true);
+                        var row = PostRegisterItem(registerItem, gridRowBudgetItemSplit.Amount, gridRow, true);
                         if (row != null)
                             bankBalance = UpdateBankBalance(row, bankBalance, amount);
                     }
                 }
                 else
                 {
-                    var budgetItemId = gridRow.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
-                        .ToInt();
-                    var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
+                    registerItem = gridRow.RegisterItemAutoFillValue.GetEntity<BankAccountRegisterItem>();
+                    registerItem = registerItem.FillOutProperties(true);
+                    budgetItem = registerItem.BudgetItem;
                     var amount = ProcessAmount(gridRow.Amount, gridRow, budgetItem);
-                    var row = PostBudgetItem(budgetItem, amount, gridRow, false);
+                    var row = PostRegisterItem(registerItem, amount, gridRow, false);
                     if (row != null) 
                         bankBalance = UpdateBankBalance(row, bankBalance, amount);
                 }
@@ -364,78 +328,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return bankBalance;
         }
 
-        private BankAccountRegisterGridRow PostBudgetItem(BudgetItem budgetItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
+        private BankAccountRegisterGridRow PostRegisterItem(BankAccountRegisterItem registerItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
         {
-            var dateMinValue = gridRow.Date;
-            var incompleteRows = ViewModel.BankViewModel.RegisterGridManager.Rows
-                .OfType<BankAccountRegisterGridRow>()
-                .Where(p => !p.Completed && p.BudgetItemId == budgetItem.Id);
-            if (incompleteRows.Any())
-            {
-                var budgetDate = incompleteRows.Min(p => p.ItemDate);
-                if (budgetDate < dateMinValue)
-                {
-                    dateMinValue = budgetDate;
-                }
-                if (gridRow.Date > dateMinValue)
-                {
-                    dateMinValue = budgetDate;
-                }
-            }
-
-            var dateMaxValue = gridRow.Date;
-            switch ((BudgetItemRecurringTypes)budgetItem.RecurringType)
-            {
-                case BudgetItemRecurringTypes.Days:
-                    dateMaxValue = dateMaxValue.AddDays(budgetItem.RecurringPeriod);
-                    break;
-                case BudgetItemRecurringTypes.Weeks:
-                    dateMaxValue = dateMaxValue.AddDays(budgetItem.RecurringPeriod * 7);
-                    break;
-                case BudgetItemRecurringTypes.Months:
-                    dateMaxValue = dateMaxValue.AddMonths(budgetItem.RecurringPeriod);
-                    break;
-                case BudgetItemRecurringTypes.Years:
-                    dateMaxValue = dateMaxValue.AddYears(budgetItem.RecurringPeriod);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            var registerRows 
-                = ViewModel.BankViewModel.RegisterGridManager.Rows
-                    .OfType<BankAccountRegisterGridRow>()
-                    .OrderBy(p => p.ItemDate)
-                    .ThenBy(p => p.ProjectedAmount);
-
-            BankAccountRegisterGridRow registerRow = null;
-            
-            registerRow =
-                registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id &&
-                                                 (p.ItemDate >= dateMinValue && p.ItemDate < dateMaxValue)
-                                                 && p.Completed == false);
-
-            if (registerRow == null)
-            {
-                registerRow = registerRows.FirstOrDefault(p => p.BudgetItemId == budgetItem.Id
-                                                               && p.ItemDate <= dateMaxValue
-                                                               && p.Completed == false);
-            }
-            
-            if (registerRow == null)
-            {
-                var transferRows = ViewModel.BankViewModel.RegisterGridManager.Rows
-                    .OfType<BankAccountRegisterGridTransferRow>().OrderBy(p => p.ItemDate).ThenBy(p => p.ProjectedAmount);
-                var transferRow = transferRows.FirstOrDefault(p => 
-                    p.BudgetItemId == budgetItem.Id &&(p.ItemDate >= dateMinValue || p.ItemDate < dateMaxValue)
-                                                    && p.Completed == false);
-             
-                registerRow = transferRow;
-            }
+            var registerRow = gridRow
+                .Manager
+                .ViewModel
+                .BankViewModel
+                .RegisterGridManager
+                .Rows.OfType<BankAccountRegisterGridRow>()
+                .FirstOrDefault(p => p.RegisterId == registerItem.Id);
 
             if (registerRow != null)
             {
-                var registerItem = new BankAccountRegisterItem();
                 if (gridRow.SourceAutoFillValue != null)
                 {
                     var detailId = 1;
@@ -462,12 +366,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 return registerRow;
 
             }
-            else
-            {
-                var row = AddNewGridRow(budgetItem, amount, gridRow, isSplit);
-                if (row == null) return null;
-                return row;
-            }
+            return registerRow;
         }
 
         private static bool UpdateRegisterRow(double amount, BankAccountRegisterGridRow registerRow,  
@@ -491,118 +390,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return true;
         }
 
-        private BankAccountRegisterGridRow AddNewGridRow
-            (BudgetItem budgetItem, double amount, ImportTransactionGridRow gridRow, bool isSplit)
-        {
-            var bankRegisterItem = new BankAccountRegisterItem();
-            bankRegisterItem.BankAccountId = gridRow.Manager.ViewModel.BankViewModel.Id;
-            bankRegisterItem.ItemDate = gridRow.Date;
-            bankRegisterItem.ItemType = (int) budgetItem.Type;
-            bankRegisterItem.BudgetItemId = budgetItem.Id;
-            bankRegisterItem.BudgetItem = budgetItem;
-            //bankRegisterItem.Description = $"Increase {budgetItem.Description} ";
-            bankRegisterItem.Description = gridRow.Description;
-
-
-            bankRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.Miscellaneous;
-            bankRegisterItem.Completed = true;
-            bankRegisterItem.ProjectedAmount = amount;
-            if (budgetItem != null)
-            {
-                if (gridRow.Manager.ViewModel.BankViewModel.AccountType == BankAccountTypes.CreditCard)
-                {
-                    if ((BudgetItemTypes)budgetItem.Type == BudgetItemTypes.Expense)
-                    {
-                        if (amount < 0)
-                        {
-                            bankRegisterItem.IsNegative = true;
-                        }
-                    }
-                }
-            }
-            bankRegisterItem.ActualAmount = amount;
-            bankRegisterItem.BankText = gridRow.Description;
-            BankAccountRegisterItem transferToRegisterItem = null;
-            var itemToAdd = bankRegisterItem;
-            switch ((BudgetItemTypes)budgetItem.Type)
-            {
-                case BudgetItemTypes.Income:
-                    //bankRegisterItem.Description += "Income";
-                    break;
-                case BudgetItemTypes.Expense:
-                    //bankRegisterItem.Description += "Expense";
-                    bankRegisterItem.ProjectedAmount = -amount;
-                    bankRegisterItem.ActualAmount = amount;
-                    break;
-                case BudgetItemTypes.Transfer:
-                    bankRegisterItem.Description = $"Transfer To {budgetItem.TransferToBankAccount.Description}";
-                    bankRegisterItem.RegisterGuid = Guid.NewGuid().ToString();
-                    bankRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
-                    transferToRegisterItem = new BankAccountRegisterItem();
-
-                    transferToRegisterItem.ProjectedAmount = gridRow.Amount;
-                    transferToRegisterItem.BudgetItem = budgetItem;
-                    transferToRegisterItem.BudgetItemId = budgetItem.Id;
-                    transferToRegisterItem.RegisterGuid = Guid.NewGuid().ToString();
-                    transferToRegisterItem.TransferRegisterGuid = bankRegisterItem.RegisterGuid;
-                    transferToRegisterItem.ItemDate = gridRow.Date;
-                    transferToRegisterItem.Description = $"Transfer From {budgetItem.BankAccount.Description}";
-                    transferToRegisterItem.ItemType = (int) BankAccountRegisterItemTypes.TransferToBankAccount;
-                    transferToRegisterItem.BankText = gridRow.Description;
-                    bankRegisterItem.ProjectedAmount = -amount;
-                    bankRegisterItem.TransferRegisterGuid = transferToRegisterItem.RegisterGuid;
-                    switch (gridRow.TransactionTypes)
-                    {
-                        case TransactionTypes.Deposit:
-                            if (budgetItem.TransferToBankAccountId != null
-                                && budgetItem.TransferToBankAccountId.Value == ViewModel.BankViewModel.Id)
-                            {
-                                transferToRegisterItem.BankAccountId = budgetItem.TransferToBankAccountId.Value;
-                                itemToAdd = transferToRegisterItem;
-                                transferToRegisterItem.ProjectedAmount = amount;
-                                transferToRegisterItem.Completed = true;
-                                bankRegisterItem.BankAccountId = budgetItem.BankAccountId;
-                                bankRegisterItem.Completed = false;
-                            }
-                            break;
-                        case TransactionTypes.Withdrawal:
-                            if (budgetItem.TransferToBankAccountId != null)
-                                transferToRegisterItem.BankAccountId = budgetItem.TransferToBankAccountId.Value;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            if (!AppGlobals.DataRepository.SaveNewRegisterItem(bankRegisterItem, transferToRegisterItem))
-                return null;
-
-            ViewModel.BankViewModel.RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem>()
-            {
-                itemToAdd
-            });
-            var newRow = ViewModel.BankViewModel.RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
-                .FirstOrDefault(p => p.RegisterId == itemToAdd.Id);
-
-            if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
-            {
-                newRow.ActualAmountDetails.Add(new BankAccountRegisterItemAmountDetail()
-                {
-                    Amount = gridRow.Amount,
-                    BankText = gridRow.Description,
-                    Date = gridRow.Date,
-                    DetailId = 1,
-                    RegisterId = itemToAdd.Id,
-                    SourceId = gridRow.SourceAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
-                });
-                bankRegisterItem.Description += $" {budgetItem.Description} ";
-                if (!UpdateRegisterRow(0, newRow, bankRegisterItem, gridRow)) return null;
-            }
-            return newRow;
-        }
 
         public void LoadGrid()
         {
