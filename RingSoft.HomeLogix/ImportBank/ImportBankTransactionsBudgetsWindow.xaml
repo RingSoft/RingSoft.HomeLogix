@@ -60,10 +60,12 @@
 
         <Label Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Content="Budget Items" HorizontalAlignment="Left"/>
 
-        <deg:DataEntryGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Grid" Manager="{Binding GridManager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="400" Height="200" HorizontalAlignment="Left" EnterToTab="False">
+        <deg:DataEntryGrid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Grid" Manager="{Binding GridManager, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="500" Height="200" HorizontalAlignment="Left" EnterToTab="False">
 
             <deg:DataEntryGrid.Columns>
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportBankTransactionsBudgetsGridRow.BudgetColumnId}" Header="Budget Item" Width="200"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportBankTransactionsBudgetsGridRow.RegisterColumnId}" Header="Register Item" Width="200"/>
+
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportBankTransactionsBudgetsGridRow.RegisterDateColumnId}" Header="Register Item&#10;Date" Width="100"/>
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportBankTransactionsBudgetsGridRow.AmountColumnId}" Width="100" Header="Amount" Alignment="Right"/>
 

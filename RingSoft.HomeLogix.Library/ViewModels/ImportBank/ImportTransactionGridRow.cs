@@ -28,7 +28,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
 
     public class BudgetSplit
     {
-        public AutoFillValue BudgetItem { get; set; }
+        public AutoFillValue RegisterItemAutoFillValue { get; set; }
+        public DateTime RegisterDate { get; set; }
         public double Amount { get; set; }
     }
     public class ImportTransactionGridRow : DataEntryGridRow

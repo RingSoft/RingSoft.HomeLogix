@@ -59,12 +59,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return null;
                 }
 
-                if (importBankTransactionsBudgetsGridRow.BudgetAutoFillValue == null || !importBankTransactionsBudgetsGridRow.BudgetAutoFillValue.IsValid())
+                if (importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue == null || !importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue.IsValid())
                 {
                     if (importBankTransactionsBudgetsGridRow.BudgetAmount != 0 && !importBankTransactionsBudgetsGridRow.IsNew)
                     {
-                        var message = "Row budget item cannot be empty.";
-                        var caption = "Invalid Row Budget Item";
+                        var message = "Row register item cannot be empty.";
+                        var caption = "Invalid Row Register Item";
                         ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
                         return null;
                     }
@@ -87,7 +87,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     budgetsSplit.Add(new BudgetSplit
                     {
-                        BudgetItem = importBankTransactionsBudgetsGridRow.BudgetAutoFillValue,
+                        RegisterItemAutoFillValue = importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue,
+                        RegisterDate = importBankTransactionsBudgetsGridRow.RegisterDate.GetValueOrDefault(),
                         Amount = importBankTransactionsBudgetsGridRow.BudgetAmount
                     });
                 }
@@ -102,7 +103,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (ViewModel.Row.RegisterItemAutoFillValue != null && ViewModel.Row.RegisterItemAutoFillValue.IsValid())
                 {
                     var row = GetNewRow() as ImportBankTransactionsBudgetsGridRow;
-                    row.BudgetAutoFillValue = ViewModel.Row.RegisterItemAutoFillValue;
+                    row.RegisterItemAutoFillValue = ViewModel.Row.RegisterItemAutoFillValue;
+                    row.RegisterDate = ViewModel.Row.RegisterDate;
                     row.BudgetAmount = ViewModel.Row.Amount;
                     AddRow(row);
                 }
@@ -112,7 +114,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 foreach (var budgetSplit in splits)
                 {
                     var row = GetNewRow() as ImportBankTransactionsBudgetsGridRow;
-                    row.BudgetAutoFillValue = budgetSplit.BudgetItem;
+                    row.RegisterItemAutoFillValue = budgetSplit.RegisterItemAutoFillValue;
+                    row.RegisterDate = budgetSplit.RegisterDate;
                     row.BudgetAmount = budgetSplit.Amount;
                     AddRow(row);
                 }

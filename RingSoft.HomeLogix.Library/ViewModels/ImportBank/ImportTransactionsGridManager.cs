@@ -75,7 +75,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                                 TransactionId = bankTransaction.TransactionId,
                                 RowId = budgetRowId,
                                 RegisterItemId =
-                                    rowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
+                                    rowBudgetItemSplit.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value.ToInt(),
                                 Amount = rowBudgetItemSplit.Amount
                             });
                             budgetRowId++;
@@ -154,7 +154,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     foreach (var budgetSplit in gridRow.BudgetItemSplits)
                     {
-                        if (registerRows != null && !BudgetItemFoundInRegister(budgetSplit.BudgetItem, registerRows))
+                        if (registerRows != null && !BudgetItemFoundInRegister(budgetSplit.RegisterItemAutoFillValue, registerRows))
                         {
                             budgetItemsFound = false;
                         }
@@ -189,7 +189,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     foreach (var gridRowBudgetItemSplit in gridRow.BudgetItemSplits)
                     {
-                        var budgetItemId = gridRowBudgetItemSplit.BudgetItem.PrimaryKeyValue.KeyValueFields[0].Value
+                        var budgetItemId = gridRowBudgetItemSplit.RegisterItemAutoFillValue.PrimaryKeyValue.KeyValueFields[0].Value
                             .ToInt();
                         var budgetItem = AppGlobals.DataRepository.GetBudgetItem(budgetItemId);
                         var amount = ProcessAmount(gridRowBudgetItemSplit.Amount, gridRow, budgetItem);
@@ -636,7 +636,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     bankRow.BudgetItemSplits.Add(new BudgetSplit
                     {
-                        BudgetItem = AppGlobals.LookupContext.OnAutoFillTextRequest(
+                        RegisterItemAutoFillValue = AppGlobals.LookupContext.OnAutoFillTextRequest(
                             AppGlobals.LookupContext.BudgetItems,
                             bankTransactionBudgetItem.RegisterItemId.ToString()),
                         Amount = bankTransactionBudgetItem.Amount,
