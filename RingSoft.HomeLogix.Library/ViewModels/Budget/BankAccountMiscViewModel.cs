@@ -78,49 +78,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-
-        private TextComboBoxControlSetup _itemTypeComboBoxControlSetup;
-
-        public TextComboBoxControlSetup ItemTypeComboBoxControlSetup
-        {
-            get => _itemTypeComboBoxControlSetup;
-            set
-            {
-                if (_itemTypeComboBoxControlSetup == value)
-                    return;
-
-                _itemTypeComboBoxControlSetup = value;
-                OnPropertyChanged();
-            }
-        }
-
-
-        private TextComboBoxItem _itemTypeComboBoxItem;
-
-        public TextComboBoxItem ItemTypeComboBoxItem
-        {
-            get => _itemTypeComboBoxItem;
-            set
-            {
-                if (_itemTypeComboBoxItem == value)
-                    return;
-
-                _itemTypeComboBoxItem = value;
-                if (!_loading)
-                {
-                    BudgetItemAutoFillValue = null;
-                }
-                SetBudgetAutoFillSetup();
-                SetViewMode();
-                OnPropertyChanged();
-            }
-        }
-
-        public BudgetItemTypes ItemType
-        {
-            get => (BudgetItemTypes)ItemTypeComboBoxItem.NumericValue;
-            set => ItemTypeComboBoxItem = ItemTypeComboBoxControlSetup.GetItem((int)value);
-        }
+        public BudgetItemTypes ItemType { get; private set; }
 
         private bool _itemTypeEnabled;
 
@@ -211,6 +169,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _budgetItemAutoFillValue = value;
                 SetViewMode();
+                if (BudgetItemAutoFillValue.IsValid())
+                {
+                    var budgetItem = BudgetItemAutoFillValue.GetEntity<BudgetItem>();
+                    if (budgetItem != null)
+                    {
+                        budgetItem = budgetItem.FillOutProperties(false);
+                        ItemType = (BudgetItemTypes)budgetItem.Type;
+                    }
+                }
                 if (BudgetItemAutoFillValue != null)
                     AutofillDescription();
                 OnPropertyChanged();
@@ -285,9 +252,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             View = view;
             TransferToBankAccountAutoFillSetup = new AutoFillSetup(AppGlobals.LookupContext.BankAccountsLookup.Clone())
                 {AddViewParameter = _viewModelInput};
-
-            ItemTypeComboBoxControlSetup = new TextComboBoxControlSetup();
-            ItemTypeComboBoxControlSetup.LoadFromEnum<BudgetItemTypes>();
 
             _registerItem = registerItem;
             if (_registerItem.Id == 0)
@@ -369,10 +333,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void SetBudgetAutoFillSetup()
         {
             var budgetItemLookup = AppGlobals.LookupContext.BudgetItemsLookup.Clone();
-            budgetItemLookup.FilterDefinition.AddFixedFilter(f => (int)f.Type, Conditions.Equals,
-                (int)ItemType);
-
-            _viewModelInput.LockBudgetItemType = ItemType;
             BudgetItemAutoFillSetup = new AutoFillSetup(budgetItemLookup) {AddViewParameter = _viewModelInput};
         }
 

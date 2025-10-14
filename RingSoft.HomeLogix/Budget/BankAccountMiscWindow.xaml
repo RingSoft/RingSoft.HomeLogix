@@ -44,10 +44,6 @@
 
         </StackPanel>
 
-        <Label Grid.Row="1" Grid.Column="0" Content="Type"/>
-
-        <dec:TextComboBoxControl Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" IsEnabled="{Binding Path=ItemTypeEnabled}" Setup="{Binding Path=ItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=ItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
-
         <Label Grid.Row="2" Grid.Column="0" x:Name="BudgetItemLabel" Content="Budget Item"/>
 
         <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" x:Name="BudgetItemControl" Setup="{Binding Path=BudgetItemAutoFillSetup}" Value="{Binding Path=BudgetItemAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Width="200" DesignText="Large Budget Item Description"/>
