@@ -727,7 +727,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any())
                 {
                     var message =
-                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Register Items and update the Current Balance.";
+                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Register Items and update the Bank Balance.";
 
                     var caption = "Import Bank Transactions";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
