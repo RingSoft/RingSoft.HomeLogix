@@ -44,23 +44,25 @@
         <Grid Margin="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Orientation="Horizontal">
+            <Label Content="* = Required" HorizontalAlignment="Left"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <Label Content="Budget Item ID" />
 
                 <dec:StringReadOnlyBox Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                        DesignText="123456" Width="75" HorizontalAlignment="Left" />
 
-                <Label Content="Description" />
+                <Label Content="Description *" />
 
                 <lc:AutoFillControl x:Name="DescriptionControl"
                                     DesignText="Big Budget Item ABCDEFG" Width="225" HorizontalAlignment="Left" />
             </StackPanel>
 
-            <dec:DataEntryTabControl x:Name="TabControl" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
+            <dec:DataEntryTabControl x:Name="TabControl" Grid.Row="2" Grid.Column="0" VerticalAlignment="Stretch">
                 <TabItem Header="Details">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -82,7 +84,7 @@
 
                         <dec:TextComboBoxControl Grid.Row="0" Grid.Column="1" IsEnabled="{Binding Path=BudgetItemTypeEnabled}" Setup="{Binding Path=BudgetItemTypeComboBoxControlSetup}" SelectedItem="{Binding Path=BudgetItemTypeComboBoxItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Expense xxx" Width="100" HorizontalAlignment="Left"/>
 
-                        <Label Grid.Row="0" Grid.Column="2" Content="Bank Account"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="Bank Account *"/>
 
                         <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=BankAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
@@ -120,7 +122,7 @@
 
                         <StackPanel x:Name="TransferToStackPanel" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal" Visibility="Collapsed">
 
-                            <Label Content="Transfer To Bank Account"/>
+                            <Label Content="Transfer To Bank Account *"/>
 
                             <lc:AutoFillControl x:Name="TransferToBankAccount" Setup="{Binding Path=BankAutoFillSetup}" Value="{Binding Path=TransferToBankAccountAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DesignText="Jane's Checking Account (...0123)" Width="225"/>
 
@@ -199,7 +201,7 @@
                 </dec:DataEntryMemoTabItem>
             </dec:DataEntryTabControl>
 
-            <Grid Grid.Row="2" Grid.Column="0">
+            <Grid Grid.Row="3" Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

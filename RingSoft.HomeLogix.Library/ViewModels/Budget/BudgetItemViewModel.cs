@@ -251,6 +251,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _startingDate = value;
                 SetViewMode();
+                SetGenTranProps();
                 OnPropertyChanged();
             }
         }
@@ -655,7 +656,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 var bankAccount = BankAutoFillValue.GetEntity<BankAccount>();
                 bankAccount = bankAccount.FillOutProperties(false);
-                if (bankAccount.PendingGeneration)
+                if (bankAccount.PendingGeneration && StartingDate.HasValue)
                 {
                     GenTranUiCommand.Visibility = UiVisibilityTypes.Visible;
                     GenTran = true;
@@ -706,7 +707,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Amount = 0;
             RecurringPeriod = 1;
             RecurringType = BudgetItemRecurringTypes.Months;
-            StartingDate = _dbStartDate = DateTime.Today;
+            StartingDate = null;
+            _dbStartDate = DateTime.Today;
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
             PayCCBalance = false;
@@ -1500,7 +1502,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private void OnClearRecurring()
         {
             StartingDate = null;
-            EndingDate = DateTime.Today.AddMonths(-1);
+            EndingDate = null;
             Amount = 0;
             RecurringType = BudgetItemRecurringTypes.Years;
         }
