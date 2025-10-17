@@ -14,6 +14,12 @@ using System.Linq;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public enum ValFailControls
+    {
+        Bank = 0,
+        TransFerToBank = 1,
+    }
+
     public interface IBudgetItemView : IDbMaintenanceView
     {
         void SetViewType(bool isCC = false);
@@ -21,6 +27,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void ShowMonthlyStatsControls(bool show = true);
 
         bool AddAdjustment(BudgetItem budgetItem);
+
+        void HandleValFail(ValFailControls control);
     }
 
     public class YearlyHistoryFilter
@@ -1277,6 +1285,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId),
                         message,
                         "Invalid Transfer To Bank Account");
+                    _view.HandleValFail(ValFailControls.TransFerToBank);
                     return false;
                 }
                 else if (AppGlobals.LookupContext.BankAccounts
@@ -1294,11 +1303,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (!BankAutoFillValue.IsValid())
             {
-                var message = "Invalid Bank Account";
+                var message = "You must select a valid or add a new Bank Account";
                 OnValidationFail(
                     AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
                     message,
                     "Invalid Bank Account");
+                _view.HandleValFail(ValFailControls.Bank);
                 return false;
 
             }

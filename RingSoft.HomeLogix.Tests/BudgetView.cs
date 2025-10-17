@@ -22,5 +22,10 @@ namespace RingSoft.DevLogix.Tests.QualityAssurance
         {
             return true;
         }
+
+        public void HandleValFail(ValFailControls control)
+        {
+            
+        }
     }
 }

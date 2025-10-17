@@ -125,5 +125,22 @@ namespace RingSoft.HomeLogix.Budget
             win.Owner = OwnerWindow;
             return win.ShowDialog();
         }
+
+        public void HandleValFail(ValFailControls control)
+        {
+            switch (control)
+            {
+                case ValFailControls.Bank:
+                    BankAccountControl.Focus();
+                    BankAccountControl.ShowLookupWindow();
+                    break;
+                case ValFailControls.TransFerToBank:
+                    TransferToBankAccount.Focus();
+                    TransferToBankAccount.ShowLookupWindow();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(control), control, null);
+            }
+        }
     }
 }
