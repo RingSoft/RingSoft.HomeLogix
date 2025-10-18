@@ -385,9 +385,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             if (!BudgetItemAutoFillValue.IsValid())
             {
-                var message = "Budget Item must contain a valid value.";
-                View.OnValidationFail(message, "Invalid Budget Item.",
-                    ValidationFocusControls.BudgetItem);
+                BudgetItemAutoFillSetup.HandleValFail("Budget Item");
                 return;
             }
             _registerItem.BudgetItemId = BudgetItemAutoFillValue.GetEntity<BudgetItem>().Id;
