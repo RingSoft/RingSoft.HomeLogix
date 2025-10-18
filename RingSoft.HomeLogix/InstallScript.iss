@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "HomeLogix"
-#define MyAppVersion "5.00.7"
+#define MyAppVersion "5.00.8"
 #define MyAppPublisher "RingSoft"
 #define MyAppURL "http://www.ringsoft.site/"
 #define MyAppExeName "RingSoft.HomeLogix.exe"
