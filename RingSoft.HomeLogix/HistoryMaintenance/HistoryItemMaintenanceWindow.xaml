@@ -100,7 +100,7 @@
                 </StackPanel>
 
             </Grid>
-            <Label Grid.Row="1" Grid.Column="0" Content="Sources" HorizontalAlignment="Left"/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Businesses" HorizontalAlignment="Left"/>
             <lc:LookupControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="LookupControl" Height="400" LookupDefinition="{Binding SourceHistoryLookupDefinition}">
                 
                 <lc:LookupControl.LookupColumns>

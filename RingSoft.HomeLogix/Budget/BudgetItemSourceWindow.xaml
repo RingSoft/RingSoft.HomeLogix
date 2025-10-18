@@ -10,7 +10,7 @@
         xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
         mc:Ignorable="d"
         Style="{StaticResource BaseWindowStyle}"
-        Title="Budget Item Source" Height="500" Width="450">
+        Title="Budget Item Business" Height="500" Width="450">
     <Window.DataContext>
         <vm:BudgetItemSourceViewModel x:Name="BudgetItemSourceViewModel"/>
     </Window.DataContext>
@@ -32,7 +32,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Label Content="Budget Item Source ID" />
+            <Label Content="Budget Item Business ID" />
 
             <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                    DesignText="123456" Width="75" HorizontalAlignment="Left" />

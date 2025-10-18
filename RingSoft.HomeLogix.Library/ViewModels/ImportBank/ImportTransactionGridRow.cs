@@ -278,6 +278,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     else
                     {
                         RegisterItemAutoFillValue = null;
+                        RegisterDate = null;
                     }
                     break;
                 case ImportColumns.Source:

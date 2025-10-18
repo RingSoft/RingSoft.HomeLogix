@@ -107,6 +107,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         Grid.HandleValFail();
                         return false;
                     }
+
+                    if (!row.SourceAutoFillValue.IsValid() && !row.SourceAutoFillValue.Text.IsNullOrEmpty())
+                    {
+                        ControlsGlobals.UserInterface.ShowMessageBox(
+                            SystemGlobals.GetValFailMessage("Business", true)
+                            , "Invalid Business"
+                            , RsMessageBoxIcons.Exclamation);
+                        Grid.GotoCell(row, ImportTransactionGridRow.SourceColumnId);
+                        Grid.HandleValFail();
+                        return false;
+                    }
                 }
             }
 

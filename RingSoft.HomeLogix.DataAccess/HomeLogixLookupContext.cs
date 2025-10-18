@@ -274,7 +274,7 @@ namespace RingSoft.HomeLogix.DataAccess
             BankAccounts.HasLookupDefinition(BankAccountsLookup);
 
             BudgetItemSourceLookup = new LookupDefinition<SourceLookup, BudgetItemSource>(BudgetItemSources);
-            BudgetItemSourceLookup.AddVisibleColumnDefinition(p => p.SourceName, "Source Name", 
+            BudgetItemSourceLookup.AddVisibleColumnDefinition(p => p.SourceName, "Business", 
                 p => p.Name, 70);
             BudgetItemSources.HasLookupDefinition(BudgetItemSourceLookup);
 
@@ -295,7 +295,7 @@ namespace RingSoft.HomeLogix.DataAccess
                     BankAccountRegisterItemAmountDetails);
             BankRegisterAmountDetailsLookup.AddVisibleColumnDefinition(p => p.Date, "Date", p => p.Date, 20);
             BankRegisterAmountDetailsLookup.Include(p => p.Source)
-                .AddVisibleColumnDefinition(p => p.Source, "Source", p => p.Name, 60);
+                .AddVisibleColumnDefinition(p => p.Source, "Business", p => p.Name, 60);
             BankRegisterAmountDetailsLookup.AddVisibleColumnDefinition(p => p.Amount, "Amount", p => p.Amount, 20);
             BankAccountRegisterItemAmountDetails.HasLookupDefinition(BankRegisterAmountDetailsLookup);
 
@@ -326,7 +326,7 @@ namespace RingSoft.HomeLogix.DataAccess
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Date,
                 "Date", p => p.Date, 20);
             sourceHistoryLookupDefinition.Include(p => p.Source).
-                AddVisibleColumnDefinition(p => p.Source, "Source",
+                AddVisibleColumnDefinition(p => p.Source, "Business",
                     p => p.Name, 30);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.Amount, "Amount", p => p.Amount, 20);
             sourceHistoryLookupDefinition.AddVisibleColumnDefinition(p => p.BankText, "Bank Text", p => p.BankText, 30);
@@ -380,7 +380,7 @@ namespace RingSoft.HomeLogix.DataAccess
             QifMapLookup.Include(p => p.BudgetItem)
                 .AddVisibleColumnDefinition(p => p.BudgetItem, "Budget Item", p => p.Description, 33);
             QifMapLookup.Include(p => p.Source)
-                .AddVisibleColumnDefinition(p => p.Source, "Source", p => p.Name, 33);
+                .AddVisibleColumnDefinition(p => p.Source, "Business", p => p.Name, 33);
             QifMaps.HasLookupDefinition(QifMapLookup);
         }
 
@@ -447,6 +447,7 @@ namespace RingSoft.HomeLogix.DataAccess
             BudgetItems.GetFieldDefinition(p => (int) p.RecurringType).IsEnum<BudgetItemRecurringTypes>();
 
             BudgetItemSources.PriorityLevel = 30;
+            BudgetItemSources.HasDescription("Budget Item Business");
 
             BudgetPeriodHistory.PriorityLevel = 40;
 
