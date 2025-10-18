@@ -81,7 +81,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public int? MonthOnDay { get; set; }
 
-        public ICollection<BankTransaction> Transactions { get; set; }
+        //public ICollection<BankTransaction> Transactions { get; set; }
 
         //public virtual ICollection<BankAccountRegisterItem> RegisterItems { get; set; }
 
@@ -89,7 +89,7 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual ICollection<BudgetPeriodHistory> PeriodHistory { get; set; }
 
-        public virtual ICollection<BankTransactionBudget> TransactionBudgets { get; set; }
+        //public virtual ICollection<BankTransactionBudget> TransactionBudgets { get; set; }
 
         public virtual ICollection<QifMap> Maps { get; set; }
 
@@ -100,8 +100,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             //RegisterItems = new HashSet<BankAccountRegisterItem>();
             History = new HashSet<History>();
             PeriodHistory = new HashSet<BudgetPeriodHistory>();
-            Transactions = new HashSet<BankTransaction>();
-            TransactionBudgets = new HashSet<BankTransactionBudget>();
+            //Transactions = new HashSet<BankTransaction>();
+            //TransactionBudgets = new HashSet<BankTransactionBudget>();
             Maps = new HashSet<QifMap>();
             MainBudgets = new HashSet<MainBudget>();
         }

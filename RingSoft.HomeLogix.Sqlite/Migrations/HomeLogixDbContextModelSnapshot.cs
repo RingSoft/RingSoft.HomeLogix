@@ -290,7 +290,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int?>("BudgetItemId")
+                    b.Property<int>("BudgetItemId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("Completed")
@@ -380,9 +380,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("BankAccountRegisterItemAmountDetailRegisterId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("BudgetId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar");
 
@@ -409,8 +406,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("BankAccountId", "TransactionId");
 
-                    b.HasIndex("BudgetId");
-
                     b.HasIndex("QifMapId");
 
                     b.HasIndex("RegisterId");
@@ -436,15 +431,10 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int?>("BudgetItemId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("RegisterItemId")
                         .HasColumnType("integer");
 
                     b.HasKey("BankId", "TransactionId", "RowId");
-
-                    b.HasIndex("BudgetItemId");
 
                     b.HasIndex("RegisterItemId");
 
@@ -752,7 +742,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
                         .WithMany()
-                        .HasForeignKey("BudgetItemId");
+                        .HasForeignKey("BudgetItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BankAccount");
 
@@ -786,11 +778,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
-                        .WithMany("Transactions")
-                        .HasForeignKey("BudgetId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.QifMap", "QifMap")
                         .WithMany("Transactions")
                         .HasForeignKey("QifMapId")
@@ -812,8 +799,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Navigation("BankAccount");
 
-                    b.Navigation("BudgetItem");
-
                     b.Navigation("QifMap");
 
                     b.Navigation("RegisterItem");
@@ -823,10 +808,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankTransactionBudget", b =>
                 {
-                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", null)
-                        .WithMany("TransactionBudgets")
-                        .HasForeignKey("BudgetItemId");
-
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItem", "RegisterItem")
                         .WithMany("BankTransactionBudgets")
                         .HasForeignKey("RegisterItemId")
@@ -999,10 +980,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Navigation("Maps");
 
                     b.Navigation("PeriodHistory");
-
-                    b.Navigation("TransactionBudgets");
-
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItemSource", b =>

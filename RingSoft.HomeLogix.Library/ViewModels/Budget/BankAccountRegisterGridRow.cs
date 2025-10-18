@@ -355,7 +355,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.BankAccountId = Manager.ViewModel.Id;
             entity.RegisterGuid = RegisterGuid;
             entity.ItemType = (int)LineType;
-            entity.BudgetItemId = BudgetItemId;
+            entity.BudgetItemId = BudgetItemId.GetValueOrDefault();
             entity.ItemDate = ItemDate;
             entity.Description = Description;
             entity.ActualAmount = ActualAmount;

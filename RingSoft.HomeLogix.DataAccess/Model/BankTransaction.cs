@@ -20,9 +20,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public string Description { get; set; }
 
-        public int? BudgetId { get; set; }
+        //public int? BudgetId { get; set; }
 
-        public virtual BudgetItem BudgetItem { get; set; }
+        //public virtual BudgetItem BudgetItem { get; set; }
 
         public int? RegisterId { get; set; }
 

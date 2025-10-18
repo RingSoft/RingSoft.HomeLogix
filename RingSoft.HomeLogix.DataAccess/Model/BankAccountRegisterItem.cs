@@ -42,9 +42,8 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public DateTime ItemDate { get; set; }
 
-        public int? BudgetItemId { get; set; }
+        public int BudgetItemId { get; set; }
 
-        [AllowNull]
         public virtual BudgetItem BudgetItem { get; set; }
 
         [MaxLength(50)]

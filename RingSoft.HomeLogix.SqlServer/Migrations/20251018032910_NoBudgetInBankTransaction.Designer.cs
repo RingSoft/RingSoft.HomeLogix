@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.HomeLogix.SqlServer;
 
@@ -11,9 +12,11 @@ using RingSoft.HomeLogix.SqlServer;
 namespace RingSoft.HomeLogix.SqlServer.Migrations
 {
     [DbContext(typeof(SqlServerHomeLogixDbContext))]
-    partial class SqlServerHomeLogixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251018032910_NoBudgetInBankTransaction")]
+    partial class NoBudgetInBankTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,7 +304,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar");
 
-                    b.Property<int>("BudgetItemId")
+                    b.Property<int?>("BudgetItemId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("Completed")
@@ -761,9 +764,7 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "BudgetItem")
                         .WithMany()
-                        .HasForeignKey("BudgetItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BudgetItemId");
 
                     b.Navigation("BankAccount");
 

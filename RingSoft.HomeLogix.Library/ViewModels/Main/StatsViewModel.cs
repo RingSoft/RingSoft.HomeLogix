@@ -395,7 +395,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 if (budgetItem == null)
                 {
                     budgetItem = new MainBudget();
-                    budgetItem.BudgetItemId = bankAccountRegisterItem.BudgetItemId.GetValueOrDefault();
+                    budgetItem.BudgetItemId = bankAccountRegisterItem.BudgetItemId;
                     budgetItem.ItemType = (byte)bankAccountRegisterItem.BudgetItem.Type;
                     budgetItem.BudgetItem = bankAccountRegisterItem.BudgetItem;
                     budgetItems.Add(budgetItem);

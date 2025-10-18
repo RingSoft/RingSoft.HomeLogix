@@ -294,7 +294,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         registerItem = registerItem.FillOutProperties(true);
                         qifMap = new QifMap();
                         qifMap.BankText = gridRow.Description;
-                        qifMap.BudgetId = registerItem.BudgetItemId.GetValueOrDefault();
+                        qifMap.BudgetId = registerItem.BudgetItemId;
                         if (gridRow.SourceAutoFillValue != null && gridRow.SourceAutoFillValue.IsValid())
                         {
                             qifMap.SourceId = AppGlobals.LookupContext.BudgetItemSources
