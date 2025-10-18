@@ -99,11 +99,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     if (row.RegisterItemAutoFillValue == null || !row.RegisterItemAutoFillValue.IsValid())
                     {
-                        var message = "You must select a register item for this transaction.";
+                        var message = SystemGlobals.GetValFailMessage("Register Item", true);
                         var caption = "Invalid Register Item";
                         ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
                             RsMessageBoxIcons.Exclamation);
                         Grid.GotoCell(row, ImportTransactionGridRow.RegisterItemColumnId);
+                        Grid.HandleValFail();
                         return false;
                     }
                 }
@@ -128,6 +129,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             if (!registerGridRows.Any(p => p.BudgetItemId == budgetItem.Id))
             {
                 return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidateOnPost()
+        {
+            var rows = Rows.OfType<ImportTransactionGridRow>().Where(p => p.IsNew == false);
+
+            foreach (var importTransactionGridRow in rows)
+            {
+                if (!ValidateTransactionRow(importTransactionGridRow, true)) return false;
             }
 
             return true;

@@ -63,9 +63,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     if (importBankTransactionsBudgetsGridRow.BudgetAmount != 0 && !importBankTransactionsBudgetsGridRow.IsNew)
                     {
-                        var message = "Row register item cannot be empty.";
-                        var caption = "Invalid Row Register Item";
-                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Exclamation);
+                        var message = SystemGlobals.GetValFailMessage("Register Item", true);
+                        var caption = "Invalid Register Item";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption,
+                            RsMessageBoxIcons.Exclamation);
+                        Grid.GotoCell(importBankTransactionsBudgetsGridRow
+                            , (int)ImportBudgetsColumn.RegisterItem);
+                        Grid.HandleValFail();
                         return null;
                     }
                 }

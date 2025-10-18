@@ -131,12 +131,10 @@ namespace RingSoft.HomeLogix.Budget
             switch (control)
             {
                 case ValFailControls.Bank:
-                    BankAccountControl.Focus();
-                    BankAccountControl.ShowLookupWindow();
+                    BankAccountControl.HandleValFail("Bank Account");
                     break;
                 case ValFailControls.TransFerToBank:
-                    TransferToBankAccount.Focus();
-                    TransferToBankAccount.ShowLookupWindow();
+                    TransferToBankAccount.HandleValFail("Transfer To Bank Account");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(control), control, null);

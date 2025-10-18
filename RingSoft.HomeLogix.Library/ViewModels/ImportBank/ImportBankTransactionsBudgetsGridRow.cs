@@ -147,9 +147,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 case ImportBudgetsColumn.RegisterItem:
                     var registerAutoFillCellProps = value as DataEntryGridAutoFillCellProps;
-                    if (registerAutoFillCellProps != null && registerAutoFillCellProps.AutoFillValue.IsValid())
+                    if (registerAutoFillCellProps != null)// && registerAutoFillCellProps.AutoFillValue.IsValid())
                     {
                         RegisterItemAutoFillValue = registerAutoFillCellProps.AutoFillValue;
+                        
                         if (RegisterItemAutoFillValue.IsValid())
                         {
                             var entity = RegisterItemAutoFillValue.GetEntity<BankAccountRegisterItem>();
@@ -160,10 +161,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                             }
                         }
                     }
-                    else
-                    {
-                        RegisterItemAutoFillValue = null;
-                    }
+                    //else
+                    //{
+                    //    RegisterItemAutoFillValue = null;
+                    //}
                     break;
                 case ImportBudgetsColumn.Amount:
                     var amountCellProps = value as DataEntryGridDecimalCellProps;

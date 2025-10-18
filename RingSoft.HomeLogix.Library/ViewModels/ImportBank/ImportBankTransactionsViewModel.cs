@@ -103,6 +103,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 {
                     //Manager.PostTransactions();
                     //View.ShowPostProcedure();
+                    if (!Manager.ValidateOnPost())
+                    {
+                        return;
+                    }
                     var procedure = RingSoftAppGlobals.CreateAppProcedure();
                     procedure.DoAppProcedure += (sender, args) =>
                     {

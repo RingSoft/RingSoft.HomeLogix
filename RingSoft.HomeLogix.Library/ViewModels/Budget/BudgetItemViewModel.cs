@@ -1280,11 +1280,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 if (!TransferToBankAccountAutoFillValue.IsValid())
                 {
-                    var message = "Transfer To Bank Account must be a valid Bank Account.";
-                    OnValidationFail(
-                        AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId),
-                        message,
-                        "Invalid Transfer To Bank Account");
+                    //var message = "Transfer To Bank Account must be a valid Bank Account.";
+                    //OnValidationFail(
+                    //    AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId),
+                    //    message,
+                    //    "Invalid Transfer To Bank Account");
                     _view.HandleValFail(ValFailControls.TransFerToBank);
                     return false;
                 }
@@ -1303,11 +1303,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (!BankAutoFillValue.IsValid())
             {
-                var message = "You must select a valid or add a new Bank Account";
-                OnValidationFail(
-                    AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
-                    message,
-                    "Invalid Bank Account");
+                //var message = "You must select a valid or add a new Bank Account";
+                //OnValidationFail(
+                //    AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
+                //    message,
+                //    "Invalid Bank Account");
                 _view.HandleValFail(ValFailControls.Bank);
                 return false;
 
