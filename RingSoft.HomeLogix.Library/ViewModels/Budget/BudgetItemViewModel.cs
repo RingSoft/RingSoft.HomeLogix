@@ -1276,6 +1276,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool ValidateEntity(BudgetItem entity)
         {
+            if (!ValExistBudgetItem()) return false;
+
             if (BudgetItemType == BudgetItemTypes.Transfer)
             {
                 if (!TransferToBankAccountAutoFillValue.IsValid())
@@ -1338,6 +1340,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return base.ValidateEntity(entity);
+        }
+
+        private bool ValExistBudgetItem()
+        {
+            if (Id != 0)
+            {
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<BudgetItem>();
+                if (!table.Any(p => p.Id == Id))
+                {
+                    ControlsGlobals.UserInterface.ShowMessageBox("This Budget Item has been deleted."
+                        , "Invalid Budget Item"
+                        , RsMessageBoxIcons.Exclamation);
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         protected override bool SaveEntity(BudgetItem entity)
@@ -1448,40 +1468,53 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return AppGlobals.DataRepository.SaveBankAccount(bankAccount);
         }
 
+        protected override DbMaintenanceResults DoDelete()
+        {
+            if (!ValExistBudgetItem()) return DbMaintenanceResults.ValidationError;
+
+            return base.DoDelete();
+        }
+
         protected override bool DeleteEntity()
         {
+            var result = true;
             var test = this;
             DbBankAccount = AppGlobals.DataRepository.GetBankAccount(DbBankAccountId, false);
-            switch (BudgetItemType)
+            if (DbBankAccount != null)
             {
-                case BudgetItemTypes.Income:
-                    DbBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
-                    break;
-                case BudgetItemTypes.Expense:
-                    DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
-                    break;
-                case BudgetItemTypes.Transfer:
-                    DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
-                    if (DbTransferToBankId != null)
+                switch (BudgetItemType)
+                {
+                    case BudgetItemTypes.Income:
+                        DbBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                        break;
+                    case BudgetItemTypes.Expense:
+                        DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                        break;
+                    case BudgetItemTypes.Transfer:
+                        DbBankAccount.MonthlyBudgetWithdrawals -= _dbMonthlyAmount;
+                        if (DbTransferToBankId != null)
+                        {
+                            DbTransferToBankAccount =
+                                AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
+                            DbTransferToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                        }
+
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                result = AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount);
+
+                if (result)
+                {
+                    foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
                     {
-                        DbTransferToBankAccount =
-                            AppGlobals.DataRepository.GetBankAccount((int)DbTransferToBankId, false);
-                        DbTransferToBankAccount.MonthlyBudgetDeposits -= _dbMonthlyAmount;
+                        bankAccountViewModel.DeleteBudgetItem(Id);
                     }
 
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            var result = AppGlobals.DataRepository.DeleteBudgetItem(Id, DbBankAccount, DbTransferToBankAccount);
-
-            if (result)
-            {
-                foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
-                {
-                    bankAccountViewModel.DeleteBudgetItem(Id);
+                    DbBankAccount = DbTransferToBankAccount = null;
                 }
-                DbBankAccount = DbTransferToBankAccount = null;
             }
 
             return result;
