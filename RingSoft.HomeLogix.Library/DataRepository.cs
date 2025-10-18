@@ -261,6 +261,7 @@ namespace RingSoft.HomeLogix.Library
             var context = AppGlobals.GetNewDbContext();
             foreach (var registerItem in registerItems)
             {
+                registerItem.BudgetItem = null;
                 if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
                     $"Saving Bank Account Register Item '{registerItem.Description}.'")) 
                     return false;

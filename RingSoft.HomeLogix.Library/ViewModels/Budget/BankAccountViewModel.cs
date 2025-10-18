@@ -40,6 +40,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void RestartApp();
 
         void RefreshGrid(BankAccount bankAccount);
+
+        void ToggleCompleteAll(bool completeAll);
     }
 
     public class CompletedRegisterData
@@ -457,6 +459,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public RelayCommand ImportTransactionsCommand { get; }
 
+        public RelayCommand CompleteAllCommand { get; }
+
         public List<BankAccountRegisterItemAmountDetail> RegisterDetails { get; } =
             new List<BankAccountRegisterItemAmountDetail>();
 
@@ -495,6 +499,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemsAddModifyCommand = new RelayCommand(OnAddModifyBudgetItems);
 
             ImportTransactionsCommand = new RelayCommand(ImportTransactions);
+
+            CompleteAllCommand = new RelayCommand((() =>
+            {
+                CompleteAll = !CompleteAll;
+                BankAccountView.ToggleCompleteAll(CompleteAll);
+            }));
 
             LastGenerationDate = null;
             TypeEnabled = true;
@@ -573,6 +583,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             _completeGrid = false;
             CompleteAll = false;
+            BankAccountView.ToggleCompleteAll(false);
             _completeGrid = true;
 
             MonthlyLookupDefinition.SetCommand(GetLookupCommand(LookupCommands.Clear));
@@ -629,7 +640,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             BudgetItemsLookupDefinition.SetCommand(
                 GetLookupCommand(LookupCommands.Refresh, primaryKeyValue, ViewModelInput));
 
-            CompleteAll = false;
             TypeEnabled = false;
         }
 
@@ -724,10 +734,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
                 }
 
-                if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any())
+                var context = SystemGlobals.DataRepository.GetDataContext();
+                var table = context.GetTable<History>();
+                var bankHasHistory = table.Any(p => p.BankAccountId == Id);
+
+                if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any() && !bankHasHistory)
                 {
                     var message =
-                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Register Items and update the Bank Balance.";
+                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Register Items and update the Bank Balance.\r\n\r\n  If you don't want to spend time adding actual values and your bank doesn't have the option to download QIF files, you can just update the Bank Balance and check Completed on the Register Items that have cleared on your bank account's bank statement.";
 
                     var caption = "Import Bank Transactions";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
@@ -747,6 +761,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void LoadFromEntityProcedure(BankAccount entity)
         {
+            _completeGrid = false;
+            BankAccountView.ToggleCompleteAll(false);
+            CompleteAll = false;
+            _completeGrid = true;
+
             AccountType = (BankAccountTypes)entity.AccountType;
             CurrentBalance = entity.CurrentBalance;
             MonthlyBudgetDeposits = entity.MonthlyBudgetDeposits;

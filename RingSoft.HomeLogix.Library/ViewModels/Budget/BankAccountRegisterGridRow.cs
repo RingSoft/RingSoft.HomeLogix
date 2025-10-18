@@ -47,6 +47,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             get
             {
+                if (ActualAmount == null)
+                {
+                    return null;
+                }
                 switch (TransactionType)
                 {
                     case TransactionTypes.Deposit:

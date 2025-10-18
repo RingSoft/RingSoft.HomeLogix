@@ -76,5 +76,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             
         }
+
+        public void ToggleCompleteAll(bool completeAll)
+        {
+            
+        }
     }
 }

@@ -149,5 +149,17 @@ namespace RingSoft.HomeLogix.Budget
                 BankAccountViewModel.LoadFromEntityProcedure(bankAccount);
             });
         }
+
+        public void ToggleCompleteAll(bool completeAll)
+        {
+            if (completeAll)
+            {
+                CompleteAllButton.Content = "Uncomplete All";
+            }
+            else
+            {
+                CompleteAllButton.Content = "Complete All";
+            }
+        }
     }
 }
