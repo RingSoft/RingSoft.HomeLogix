@@ -118,6 +118,19 @@ namespace RingSoft.HomeLogix.DataAccess
         }
     }
 
+    public class RegisterAmountFormula : ILookupFormula
+    {
+        public int Id => 5;
+
+        public string GetDatabaseValue(object entity)
+        {
+            if (entity is BankAccountRegisterItem registerItem)
+            {
+                return Math.Abs(registerItem.ProjectedAmount).ToString();
+            }
+            return string.Empty;
+        }
+    }
 
     public class HomeLogixLookupContext : LookupContext, IAdvancedFindLookupContext
     {
@@ -281,7 +294,15 @@ namespace RingSoft.HomeLogix.DataAccess
             BankRegisterLookup =
                 new LookupDefinition<BankAccountRegisterLookup, BankAccountRegisterItem>(BankAccountRegisterItems);
             BankRegisterLookup.AddVisibleColumnDefinition(p => p.Description, "Description", p => p.Description, 50);
-            BankRegisterLookup.AddVisibleColumnDefinition(p => p.RegisterDate, "Register Date", p => p.ItemDate, 50);
+            var registerColumn = BankRegisterLookup.AddVisibleColumnDefinition(p => p.RegisterDate, "Register Date", p => p.ItemDate, 25);
+            BankRegisterLookup.AddVisibleColumnDefinition(p => p.Amount
+                    , "Projected Amount"
+                    , new RegisterAmountFormula(), 25, "")
+                .HasDecimalFieldType(DecimalFieldTypes.Currency);
+
+
+            BankRegisterLookup.AddOrderByColumn(registerColumn);
+
             BankAccountRegisterItems.HasLookupDefinition(BankRegisterLookup);
 
             BankTransactionsLookup = new LookupDefinition<BudgetItemLookup, BankTransaction>(BankTransactions);
