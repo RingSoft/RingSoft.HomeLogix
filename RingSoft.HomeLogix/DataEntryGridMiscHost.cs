@@ -56,6 +56,7 @@ namespace RingSoft.HomeLogix
                         _cellProps.Row.LoadFromEntity(registerItem);
                         Grid.UpdateRow(_cellProps.Row);
                         Grid.GotoCell(_cellProps.Row, _cellProps.ColumnId);
+                        _cellProps.Row.Manager.ReSortGrid();
                     }
                     else
                     {

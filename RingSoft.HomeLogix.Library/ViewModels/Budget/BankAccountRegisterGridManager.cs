@@ -82,13 +82,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public void AddGeneratedRegisterItems(IEnumerable<BankAccountRegisterItem> registerItems)
         {
-            var isDirty = ViewModel.RecordDirty;
-
             Grid?.SetBulkInsertMode();
             foreach (var bankAccountRegisterItem in registerItems)
             {
                 AddRowFromEntity(bankAccountRegisterItem);
             }
+
+            ReSortGrid();
+        }
+
+        public void ReSortGrid()
+        {
+            var isDirty = ViewModel.RecordDirty;
+            Grid?.SetBulkInsertMode();
 
             var newList = Rows.OfType<BankAccountRegisterGridRow>().OrderBy(o => o.ItemDate)
                 .ThenByDescending(t => t.ProjectedAmount).ToList();

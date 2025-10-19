@@ -850,6 +850,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (BankAccountView.ShowBankAccountMiscWindow(registerItem, ViewModelInput))
             {
                 RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> { registerItem });
+                
                 CalculateTotals();
                 AppGlobals.MainViewModel.RefreshView();
             }
