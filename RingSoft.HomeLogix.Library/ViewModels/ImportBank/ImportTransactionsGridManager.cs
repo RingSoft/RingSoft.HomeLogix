@@ -108,7 +108,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         return false;
                     }
 
-                    if (!row.SourceAutoFillValue.IsValid(true) && !row.SourceAutoFillValue.Text.IsNullOrEmpty())
+                    var validSource = row.SourceAutoFillValue.IsValid(true);
+                    if (row.SourceAutoFillValue == null && !validSource)
+                    {
+                        validSource = true;
+                    }
+                    if (!validSource)
                     {
                         ControlsGlobals.UserInterface.ShowMessageBox(
                             SystemGlobals.GetValFailMessage("Business", true)
