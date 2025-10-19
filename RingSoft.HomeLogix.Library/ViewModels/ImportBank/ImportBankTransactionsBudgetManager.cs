@@ -59,7 +59,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     return null;
                 }
 
-                if (importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue == null || !importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue.IsValid())
+                if (importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue == null || !importBankTransactionsBudgetsGridRow.RegisterItemAutoFillValue.IsValid(true))
                 {
                     if (importBankTransactionsBudgetsGridRow.BudgetAmount != 0 && !importBankTransactionsBudgetsGridRow.IsNew)
                     {

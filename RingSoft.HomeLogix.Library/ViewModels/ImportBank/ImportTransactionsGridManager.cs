@@ -97,7 +97,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 if (post)
                 {
-                    if (row.RegisterItemAutoFillValue == null || !row.RegisterItemAutoFillValue.IsValid())
+                    if (row.RegisterItemAutoFillValue == null || !row.RegisterItemAutoFillValue.IsValid(true))
                     {
                         var message = SystemGlobals.GetValFailMessage("Register Item", true);
                         var caption = "Invalid Register Item";
@@ -108,7 +108,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         return false;
                     }
 
-                    if (!row.SourceAutoFillValue.IsValid() && !row.SourceAutoFillValue.Text.IsNullOrEmpty())
+                    if (!row.SourceAutoFillValue.IsValid(true) && !row.SourceAutoFillValue.Text.IsNullOrEmpty())
                     {
                         ControlsGlobals.UserInterface.ShowMessageBox(
                             SystemGlobals.GetValFailMessage("Business", true)

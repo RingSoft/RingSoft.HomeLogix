@@ -989,6 +989,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _newBankAccountRegisterItems = null;
             _bankAccountRegisterItemsToDelete = null;
 
+            if (Id != 0)
+            {
+                if (!TableDefinition.DoesEntityExist(Entity))
+                {
+                    DbBankAccountId = 0;
+                    DbTransferToBankId = 0;
+                }
+            }
+
             var newBankAccountId = 0;
             if (BankAutoFillValue != null && BankAutoFillValue.PrimaryKeyValue.IsValid())
                 newBankAccountId = AppGlobals.LookupContext.BankAccounts
@@ -1276,11 +1285,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool ValidateEntity(BudgetItem entity)
         {
-            if (!ValExistBudgetItem()) return false;
-
             if (BudgetItemType == BudgetItemTypes.Transfer)
             {
-                if (!TransferToBankAccountAutoFillValue.IsValid())
+                if (!TransferToBankAccountAutoFillValue.IsValid(true))
                 {
                     //var message = "Transfer To Bank Account must be a valid Bank Account.";
                     //OnValidationFail(
@@ -1303,7 +1310,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
-            if (!BankAutoFillValue.IsValid())
+            if (!BankAutoFillValue.IsValid(true))
             {
                 //var message = "You must select a valid or add a new Bank Account";
                 //OnValidationFail(
@@ -1340,24 +1347,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             return base.ValidateEntity(entity);
-        }
-
-        private bool ValExistBudgetItem()
-        {
-            if (Id != 0)
-            {
-                var context = SystemGlobals.DataRepository.GetDataContext();
-                var table = context.GetTable<BudgetItem>();
-                if (!table.Any(p => p.Id == Id))
-                {
-                    ControlsGlobals.UserInterface.ShowMessageBox("This Budget Item has been deleted."
-                        , "Invalid Budget Item"
-                        , RsMessageBoxIcons.Exclamation);
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         protected override bool SaveEntity(BudgetItem entity)
@@ -1466,13 +1455,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             bankAccount.ProjectedLowestBalanceDate = lowestBalanceDate;
 
             return AppGlobals.DataRepository.SaveBankAccount(bankAccount);
-        }
-
-        protected override DbMaintenanceResults DoDelete()
-        {
-            if (!ValExistBudgetItem()) return DbMaintenanceResults.ValidationError;
-
-            return base.DoDelete();
         }
 
         protected override bool DeleteEntity()
