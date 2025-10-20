@@ -258,6 +258,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Description")
+                        .IsUnique();
+
                     b.ToTable("BankAccounts");
                 });
 
@@ -342,6 +345,10 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.HasIndex("BankAccountId");
 
                     b.HasIndex("BudgetItemId");
+
+                    b.HasIndex("Description");
+
+                    b.HasIndex("ItemDate");
 
                     b.ToTable("BankAccountRegisterItems");
                 });
@@ -516,6 +523,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BankAccountId");
+
+                    b.HasIndex("Description")
+                        .IsUnique();
 
                     b.HasIndex("TransferToBankAccountId");
 

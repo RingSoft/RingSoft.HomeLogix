@@ -38,6 +38,8 @@ namespace RingSoft.HomeLogix.DataAccess
                 .WithMany(p => p.BudgetTransferFromItems)
                 .HasForeignKey(p => p.TransferToBankAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(p => p.Description).IsUnique();
         }
     }
 }

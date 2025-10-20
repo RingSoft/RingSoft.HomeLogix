@@ -31,6 +31,10 @@ namespace RingSoft.HomeLogix.DataAccess
                 .WithMany(p => p.RegisterItems)
                 .HasForeignKey(p => p.BankAccountId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(p => p.ItemDate);
+
+            builder.HasIndex(p => p.Description);
         }
     }
 }

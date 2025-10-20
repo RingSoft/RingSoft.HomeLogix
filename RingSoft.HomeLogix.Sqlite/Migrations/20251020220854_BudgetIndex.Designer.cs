@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RingSoft.HomeLogix.Sqlite;
 
@@ -10,9 +11,11 @@ using RingSoft.HomeLogix.Sqlite;
 namespace RingSoft.HomeLogix.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteHomeLogixDbContext))]
-    partial class HomeLogixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251020220854_BudgetIndex")]
+    partial class BudgetIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -249,9 +252,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Description")
-                        .IsUnique();
-
                     b.ToTable("BankAccounts");
                 });
 
@@ -334,10 +334,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.HasIndex("BankAccountId");
 
                     b.HasIndex("BudgetItemId");
-
-                    b.HasIndex("Description");
-
-                    b.HasIndex("ItemDate");
 
                     b.ToTable("BankAccountRegisterItems");
                 });

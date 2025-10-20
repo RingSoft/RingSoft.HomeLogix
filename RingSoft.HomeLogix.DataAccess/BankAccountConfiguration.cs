@@ -24,6 +24,8 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.ProjectedLowestBalanceAmount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.ProjectedLowestBalanceDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.ShowInGraph).HasColumnType(DbConstants.BoolColumnType);
+
+            builder.HasIndex(p => p.Description).IsUnique();
         }
     }
 }
