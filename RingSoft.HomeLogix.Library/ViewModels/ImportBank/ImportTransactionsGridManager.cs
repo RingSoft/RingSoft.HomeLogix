@@ -243,8 +243,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     ViewModel.BankViewModel.RegisterGridManager.CalculateProjectedBalanceData();
                     ViewModel.BankViewModel.RegisterGridManager.Grid?.RefreshGridView();
                     ViewModel.View.CloseWindow(true);
-                    ViewModel.BankViewModel.SaveNoPost();
-                    ViewModel.BankViewModel.RecordDirty = true;
                 }
                 else
                 {

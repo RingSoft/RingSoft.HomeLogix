@@ -107,12 +107,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         return;
                     }
+
+                    var procedureResult = true;
                     var procedure = RingSoftAppGlobals.CreateAppProcedure();
                     procedure.DoAppProcedure += (sender, args) =>
                     {
-                        Manager.PostTransactions(procedure.SplashWindow);
+                        procedureResult = Manager.PostTransactions(procedure.SplashWindow);
                     };
                     procedure.Start("Posting Transactions to Register");
+                    if (procedureResult)
+                    {
+                        BankViewModel.SaveNoPost();
+                        BankViewModel.RecordDirty = true;
+                    }
                     return;
                 }
                 if (Manager.SaveTransactions())
