@@ -47,7 +47,7 @@
 
                 <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DateColumnId}" Header="Date *" Width="100" DesignText="01/01/1980"/>
 
-                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DescriptionColumnId}" Header="Description *" Width="200"/>
+                <deg:DataEntryGridTextColumn ColumnId="{x:Static vm:ImportTransactionGridRow.DescriptionColumnId}" Header="Description" Width="200"/>
 
                 <deg:DataEntryGridCustomControlColumn ColumnId="{x:Static vm:ImportTransactionGridRow.TransactionTypeColumnId}" Header="Transaction&#10;Type" Width="150" ContentTemplate="{StaticResource BankRegisterTransactionType}" />
 
