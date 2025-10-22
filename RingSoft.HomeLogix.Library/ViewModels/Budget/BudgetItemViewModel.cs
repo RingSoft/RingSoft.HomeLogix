@@ -1128,7 +1128,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             budgetItem.TransferToBankAccountId = newTransferToBankAccountId;
             budgetItem.TransferToBankAccount = _newTransferToBankAccount;
             budgetItem.BankAccountId = newBankAccountId;
-            if (RecordDirty)
+            if (RecordDirty || GenTran)
             {
                 if (DbBankAccountId == 0)
                 {
@@ -1182,7 +1182,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     var existingRegisterItems =
                         AppGlobals.DataRepository.GetRegisterItemsForBankAccount(newBankAccount.Id);
 
-                    if (existingRegisterItems.Any())
+                    if (existingRegisterItems.Any() && !GenTran)
                     {
 
                         _newBankAccountRegisterItems =
@@ -1195,7 +1195,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         }
                     }
 
-                    if (GenTran && RecordDirty)
+                    if (GenTran)
                     {
                         ProcessGenTran(budgetItem);
                     }
@@ -1244,6 +1244,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     updateMainDate = true;
                 }
 
+                if (Id > 0)
+                {
+                    var registerTable = context.GetTable<BankAccountRegisterItem>();
+                    _bankAccountRegisterItemsToDelete = registerTable.Where(
+                        p => p.ItemType == (int)BankAccountRegisterItemTypes.BudgetItem
+                             && p.BudgetItemId == Id).ToList();
+                }
                 _newBankAccountRegisterItems = BudgetItemProcessor
                     .GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem, startDate)
                     .ToList();

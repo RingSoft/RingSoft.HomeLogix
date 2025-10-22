@@ -27,7 +27,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="GenerateButton" Content="Generate Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
+                            <ac:DbMaintenanceButton Grid.Row="0" Grid.Column="0" x:Name="GenerateButton" Content="Generate Future Register Items From Budget" ImageSource="{StaticResource GearsImage}" Style="{StaticResource SubButton}"/>
 
                             <ac:DbMaintenanceButton Grid.Row="1" Grid.Column="0" x:Name="AddButton" Content="Add Register Item" ImageSource="{StaticResource AddImage}" Style="{StaticResource SubButton}" HorizontalContentAlignment="Left"/>
 

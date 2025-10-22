@@ -106,7 +106,7 @@
 
                         </StackPanel>
 
-                        <Label Grid.Row="2" Grid.Column="0" Content="Next Generated&#10;Register Item Date"/>
+                        <Label Grid.Row="2" Grid.Column="0" Content="Next Future&#10;Register Item Date"/>
 
                         <dec:DateEditControl Grid.Row="2" Grid.Column="1" x:Name="StartingDateControl" Value="{Binding Path=StartingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" DesignText="01/01/2020" Width="100"/>
 
@@ -116,7 +116,7 @@
 
                             <dec:DateEditControl Value="{Binding Path=EndingDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DateFormatType="DateOnly" AllowNullValue="True" HorizontalAlignment="Left" Width="100"/>
 
-                            <CheckBox x:Name="GenTranCheckBox" Content="Generate Bank Account Register Item" IsChecked="{Binding GenTran, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <CheckBox x:Name="GenTranCheckBox" Content="Generate Future Register Item" IsChecked="{Binding GenTran, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
 
                         </StackPanel>
 

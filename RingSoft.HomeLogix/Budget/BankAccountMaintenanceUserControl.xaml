@@ -94,7 +94,7 @@
 
             <dec:DataEntryTabControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" x:Name="TabControl">
 
-                <TabItem Header="Register">
+                <TabItem Header="Future Register">
 
                     <Grid>
                         <Grid.RowDefinitions>

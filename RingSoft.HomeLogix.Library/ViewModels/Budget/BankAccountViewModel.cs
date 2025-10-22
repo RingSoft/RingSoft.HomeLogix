@@ -729,7 +729,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 if (CheckAllowGenTran(entity) && PendingGeneration)
                 {
-                    var message = "Click Generate Register Items From Budget to see what your bank balance will be in the future.";
+                    var message = "Click Generate Future Register Items From Budget to see what your bank balance will be in the future.\r\n\r\nYou can delete any Future Register row by right-clicking on the row and clicking Delete Row.";
                     var caption = "Future Forecast";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
                 }
@@ -741,7 +741,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any() && !bankHasHistory)
                 {
                     var message =
-                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Register Items and update the Bank Balance.\r\n\r\n  If you don't want to spend time adding actual values and your bank doesn't have the option to download QIF files, you can just update the Bank Balance and check Completed on the Register Items that have cleared on your bank account's bank statement.";
+                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Register Items and set actual amounts to Future Register Items and update the Bank Balance.\r\n\r\nIf you don't want to spend time adding actual values and your bank doesn't have the option to download QIF files, you can just update the Bank Balance and check Completed on the Future Register Items that have cleared on your bank account's bank statement.";
 
                     var caption = "Import Bank Transactions";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
@@ -886,7 +886,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     GenerateTransactions(generateToDate);
                 };
-                procedure.Start("Generating Register Items");
+                procedure.Start("Generating Future Register Items");
 
                 KeyAutoFillUiCommand.SetFocus();
             }
@@ -994,7 +994,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _doProcessCompletedRows = false;
             if (completedRows.Any() && _processCompletedRows)
             {
-                var message = "Do you wish to post the Completed rows to History and delete them from the Register?";
+                var message = "Do you wish to post the Completed rows to History and delete them from the Future Register?";
                 if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
                     MessageBoxButtonsResult.Yes)
                     _doProcessCompletedRows = true;
