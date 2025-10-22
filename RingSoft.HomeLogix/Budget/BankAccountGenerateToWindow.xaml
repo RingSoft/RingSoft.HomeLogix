@@ -5,11 +5,11 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                 xmlns:dec="clr-namespace:RingSoft.DataEntryControls.WPF;assembly=RingSoft.DataEntryControls.WPF"
                 mc:Ignorable="d"
-        Title="Bank Account Register Generate To" SizeToContent="WidthAndHeight"
+        Title="Future Register Generate To" SizeToContent="WidthAndHeight"
         Style="{StaticResource BaseWindowStyle}"
                 DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel Margin="5">
-        <Label HorizontalAlignment="Left" Content="Generate Register Items from budget up to the following date:"/>
+        <Label HorizontalAlignment="Left" Content="Generate Future Register Items from budget up to the following date:"/>
         <dec:DateEditControl Value="{Binding Path=GenerateToDate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AllowNullValue="False" HorizontalAlignment="Left" DesignText="12/31/2021" Width="100"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="OkButton" Content="_OK" IsDefault="True" Width="50"/>
