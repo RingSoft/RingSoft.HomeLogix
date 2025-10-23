@@ -1346,10 +1346,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     reconciledMessageShown = true;
                     var message =
-                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this budget item in the Register.  Do you wish to continue?";
+                        "This budget item is currently being reconciled.  If you continue, you will loose all your changes to this budget item in the Future Register.  Do you wish to continue?";
 
                     if (!Processor.ShowYesNoMessage(message, "Budget Item Being Modified", true))
                         return false;
+                }
+            }
+
+            if (GenTran && entity.Id > 0)
+            {
+                var message =
+                    "The first future register item has already been generated for this budget item.  If you continue, it will be replaced with a new future register item with this information.  To avoid this, uncheck Generate Future Register Item, click New to create a new Budget Item, or Click Generate Future Register Items From Budget in the Manage Bank Accounts Window.  Do you wish to continue?";
+                if (!Processor.ShowYesNoMessage(message, "Replace Future Register Item", true))
+                {
+                    return false;
                 }
             }
 

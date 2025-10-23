@@ -76,7 +76,7 @@
 
                 <dec:TextComboBoxControl Grid.Row="0" Grid.Column="5" Setup="{Binding TypeSetup}" SelectedItem="{Binding TypeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" IsEnabled="{Binding TypeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Bank Balance"/>
+                <Label Grid.Row="1" Grid.Column="0" Content="Current Balance"/>
 
                 <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left" ReadOnlyMode="True"/>
 
