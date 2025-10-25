@@ -68,7 +68,7 @@
 
                 <dec:StringReadOnlyBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Id, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" DesignText="123456" Width="50"/>
 
-                <Label Grid.Row="0" Grid.Column="2" Content="Bank Account Name"/>
+                <Label Grid.Row="0" Grid.Column="2" Content="Name"/>
 
                 <lc:AutoFillControl Grid.Row="0" Grid.Column="3" x:Name="BankAccountControl" DesignText="Jane's Checking Account (...0123)" Width="225" HorizontalAlignment="Left"/>
 
