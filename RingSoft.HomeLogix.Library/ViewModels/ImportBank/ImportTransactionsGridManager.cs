@@ -548,7 +548,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 if (query.Count() == 1)
                 {
                     foundMap = true;
-                    ProcessFoundQif(query.FirstOrDefault(), importTransactionGridRow, bankRegisterTable);
+                    ProcessFoundQif(query.FirstOrDefault(), importTransactionGridRow, bankRegisterTable, ViewModel.BankViewModel);
                 }
                 else if (query.Count() == 0)
                 {
@@ -576,13 +576,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         }
 
         private static void ProcessFoundQif(QifMap qifMap, ImportTransactionGridRow importTransactionGridRow
-            , IQueryable<BankAccountRegisterItem> bankRegisterTable)
+            , IQueryable<BankAccountRegisterItem> bankRegisterTable, BankAccountViewModel bankAccountViewModel)
         {
             qifMap = AppGlobals.DataRepository.GetQifMap(qifMap.Id);
 
             importTransactionGridRow.MapTransaction = false;
             importTransactionGridRow.QifMap = qifMap;
-            ProcessFoundBudgetItem(qifMap.BudgetItem, importTransactionGridRow, bankRegisterTable);
+            ProcessFoundBudgetItem(qifMap.BudgetItem, importTransactionGridRow, bankRegisterTable, bankAccountViewModel);
 
             ProcessFoundSource(qifMap, importTransactionGridRow);
         }
@@ -599,7 +599,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
         }
 
         private static void ProcessFoundBudgetItem(BudgetItem budgetItem, ImportTransactionGridRow importTransactionGridRow
-        , IQueryable<BankAccountRegisterItem> bankRegisterTable)
+        , IQueryable<BankAccountRegisterItem> bankRegisterTable, BankAccountViewModel bankAccountViewModel)
         {
             if (budgetItem != null)
             {
@@ -630,6 +630,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 var endDate = importDate.AddDays(daysToSplit);
                 var registerItemFound = bankRegisterTable
                     .FirstOrDefault(p => p.BudgetItemId == budgetItem.Id
+                                         && p.BankAccountId == bankAccountViewModel.Id
                                          && p.ItemDate >= startDate
                                          && p.ItemDate <= endDate);
                 if (registerItemFound != null)
@@ -666,7 +667,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                         if (importTransactionGridRow != row
                             && !importTransactionGridRow.RegisterItemAutoFillValue.IsValid())
                         {
-                            ProcessFoundBudgetItem(budgetItem, importTransactionGridRow, registerTable);
+                            ProcessFoundBudgetItem(budgetItem, importTransactionGridRow, registerTable, ViewModel.BankViewModel);
                             importTransactionGridRow.MapTransaction = false;
                         }
                     }

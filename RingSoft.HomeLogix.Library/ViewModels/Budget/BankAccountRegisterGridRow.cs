@@ -443,5 +443,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return registerData;
         }
 
+        public override string ToString()
+        {
+            return Description;
+        }
     }
 }

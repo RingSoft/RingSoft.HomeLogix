@@ -84,5 +84,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
             BankTransactions = new HashSet<BankTransaction>();
             BankTransactionBudgets = new HashSet<BankTransactionBudget>();
         }
+
+        public override string ToString()
+        {
+            return Description;
+        }
     }
 }
