@@ -44,6 +44,7 @@ namespace RingSoft.DevLogix.Tests
         public override void Initialize()
         {
             AppGlobals.UnitTesting = true;
+            SystemGlobals.UnitTestMode = true;
             AppGlobals.Initialize();
             AppGlobals.LookupContext.Initialize(new SqliteHomeLogixDbContext(), DbPlatforms.Sqlite);
             AppGlobals.MainViewModel = new MainViewModel();

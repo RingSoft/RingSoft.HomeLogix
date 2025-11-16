@@ -79,6 +79,7 @@ namespace RingSoft.HomeLogix.Tests
                 , true));
 
             bankAccountViewModel.SaveCommand.Execute(null);
+
             bankAccount.UtFillOutEntity();
 
             Assert.AreEqual(count - 1, bankAccount.RegisterItems.Count);

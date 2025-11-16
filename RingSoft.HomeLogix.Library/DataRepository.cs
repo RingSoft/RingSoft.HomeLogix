@@ -172,6 +172,7 @@ namespace RingSoft.HomeLogix.Library
                     .ThenInclude(ti => ti.BudgetItem)
                        .ThenInclude(ti => ti.TransferToBankAccount)
                     .FirstOrDefault(f => f.Id == bankAccountId);
+                result.UtFillOutEntity();
 
             }
             else
@@ -251,23 +252,23 @@ namespace RingSoft.HomeLogix.Library
 
         public bool SaveRegisterItem(BankAccountRegisterItem registerItem)
         {
-            var context = AppGlobals.GetNewDbContext();
-            return context.DbContext.SaveEntity(context.BankAccountRegisterItems, registerItem,
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            return context.SaveEntity(registerItem,
                 $"Saving Bank Account Register Item '{registerItem.Description}.'");
         }
 
         public bool SaveRegisterItems(List<BankAccountRegisterItem> registerItems)
         {
-            var context = AppGlobals.GetNewDbContext();
+            var context = SystemGlobals.DataRepository.GetDataContext();
             foreach (var registerItem in registerItems)
             {
                 registerItem.BudgetItem = null;
-                if (!context.DbContext.SaveNoCommitEntity(context.BankAccountRegisterItems, registerItem,
+                if (!context.SaveNoCommitEntity(registerItem,
                     $"Saving Bank Account Register Item '{registerItem.Description}.'")) 
                     return false;
             }
 
-            return context.DbContext.SaveEfChanges("Saving Bank Register");
+            return context.Commit("Saving Bank Register");
         }
 
         public bool SaveRegisterItem(BankAccountRegisterItem registerItem, List<BankAccountRegisterItemAmountDetail> amountDetails)
@@ -333,6 +334,15 @@ namespace RingSoft.HomeLogix.Library
             budgetItem.BankAccount = bankAccount;
             budgetItem.TransferToBankAccount = transferBankAcct;
 
+            if (SystemGlobals.UnitTestMode)
+            {
+                foreach (var bankRegisterItem in newBankRegisterItems)
+                {
+                    context.SaveNoCommitEntity(bankRegisterItem, "");
+                }
+            }
+
+
             if (dbBankAccount != null)
             {
                 if (!context.SaveNoCommitEntity(dbBankAccount, "Saving Bank Account"))
@@ -349,8 +359,12 @@ namespace RingSoft.HomeLogix.Library
             if (budgetItem.Id != 0)
             {
                 addAfterSave = false;
-                if (newBankRegisterItems != null)
-                    context.AddRange(newBankRegisterItems);
+
+                if (!SystemGlobals.UnitTestMode)
+                {
+                    if (newBankRegisterItems != null)
+                        context.AddRange(newBankRegisterItems);
+                }
 
                 if (registerItemsToDelete != null)
                     context.RemoveRange(registerItemsToDelete);

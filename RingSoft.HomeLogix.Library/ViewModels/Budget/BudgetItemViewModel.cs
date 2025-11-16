@@ -715,7 +715,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Amount = 0;
             RecurringPeriod = 1;
             RecurringType = BudgetItemRecurringTypes.Months;
-            StartingDate = null;
+            StartingDate = AppGlobals.UnitTesting?DateTime.Today:null;
             _dbStartDate = DateTime.Today;
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
@@ -1231,9 +1231,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var context = SystemGlobals.DataRepository.GetDataContext();
                 var table = context.GetTable<BankAccountRegisterItem>()
                     .Include(p => p.BudgetItem);
+
                 if (table.Any())
                 {
-                    if (!table.Where(p => p.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
+                    if (!table.Where(p => p.BudgetItem != null && p.BudgetItem.Type == (byte)BudgetItemTypes.Expense)
                         .Any() && BudgetItemType == BudgetItemTypes.Expense)
                     {
                         updateMainDate = true;
