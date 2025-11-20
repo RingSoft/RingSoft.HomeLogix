@@ -68,7 +68,7 @@ namespace RingSoft.HomeLogix.Library
             RingSoftAppGlobals.AppTitle = "HomeLogix";
             RingSoftAppGlobals.AppCopyright = $"©{DateTime.Today.Year} by Peter Ringering";
             RingSoftAppGlobals.AppGuid = "7b811d4b-e39a-4316-a1dd-ba58eeafede7";
-            RingSoftAppGlobals.AppVersion = 414;
+            RingSoftAppGlobals.AppVersion = 415;
             RingSoftAppGlobals.PathToDownloadUpgrade = MasterDbContext.ProgramDataFolder;
             SystemGlobals.ProgramDataFolder = MasterDbContext.ProgramDataFolder;
         }
