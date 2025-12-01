@@ -21,9 +21,12 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMaintenanceUserControl : IBankAccountView
     {
+        private VmUiControl _ccGroupUiCommand;
         public BankAccountMaintenanceUserControl()
         {
             InitializeComponent();
+            _ccGroupUiCommand = new VmUiControl(CCOptionsGroup, BankAccountViewModel.CcOptionsUiCommand);
+
             TopHeaderControl.Loaded += (sender, args) =>
             {
                 if (TopHeaderControl.CustomPanel is BankCustomPanel bankCustomPanel)

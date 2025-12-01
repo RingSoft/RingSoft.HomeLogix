@@ -113,6 +113,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _typeItem = value;
                 CalculateTotals();
                 SetProjVisibility();
+
+                switch (AccountType)
+                {
+                    case BankAccountTypes.Checking:
+                    case BankAccountTypes.Savings:
+                        InterestUiCommand.Caption = "Interest Payment Budget Item";
+                        CcOptionsUiCommand.Visibility = UiVisibilityTypes.Collapsed;
+                        break;
+                    case BankAccountTypes.CreditCard:
+                        InterestUiCommand.Caption = "Interest Charge Budget Item";
+                        CcOptionsUiCommand.Visibility = UiVisibilityTypes.Visible;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -473,6 +489,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public UiCommand ProjLowBalDateUiCommand { get; } = new UiCommand();
 
         public UiCommand ProjLowBalAmountUiCommand { get; } = new UiCommand();
+
+        public UiCommand InterestUiCommand { get; } = new UiCommand();
+
+        public UiCommand CcOptionsUiCommand { get; } = new UiCommand();
 
         public bool PendingGeneration { get; private set; }
 
