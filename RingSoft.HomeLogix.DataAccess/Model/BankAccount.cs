@@ -18,6 +18,14 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         CreditCard = 2
     }
 
+    public enum BankCreditCardOptions
+    {
+        [Description("Pay Off Each Month")]
+        PayOffEachMonth = 0,
+        [Description("Carry Balance")]
+        CarryBalance = 1
+    }
+
     public class BankAccount
     {
         [Required]
@@ -63,6 +71,22 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         [DefaultValue(false)]
         public bool PendingGeneration { get; set; }
+
+        public int StatementDayOfMonth { get; set; }
+
+        public byte? CreditCardOption { get; set; }
+
+        [Required]
+        [DefaultValue(0)]
+        public double BankAccountIntrestRate { get; set; }
+
+        public int? InterestBudgetId { get; set; }
+
+        public virtual BudgetItem InterestBudgetItem { get; set; }
+
+        public int? PayCCBalanceBudgetId { get; set; }
+
+        public virtual BudgetItem PayCCBalanceBudgetItem { get; set; }
 
         public DateTime? LastCompletedDate { get; set; }
 

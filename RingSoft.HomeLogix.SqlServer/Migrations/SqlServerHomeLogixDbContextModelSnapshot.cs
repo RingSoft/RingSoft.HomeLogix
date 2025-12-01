@@ -218,6 +218,12 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<byte>("AccountType")
                         .HasColumnType("tinyint");
 
+                    b.Property<decimal>("BankAccountIntrestRate")
+                        .HasColumnType("numeric");
+
+                    b.Property<byte?>("CreditCardOption")
+                        .HasColumnType("tinyint");
+
                     b.Property<decimal>("CurrentBalance")
                         .HasColumnType("numeric");
 
@@ -225,6 +231,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
+
+                    b.Property<int?>("InterestBudgetId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("LastCompletedDate")
                         .HasColumnType("datetime");
@@ -241,6 +250,9 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
 
+                    b.Property<int?>("PayCCBalanceBudgetId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("PendingGeneration")
                         .HasColumnType("bit");
 
@@ -256,10 +268,17 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Property<bool>("ShowInGraph")
                         .HasColumnType("bit");
 
+                    b.Property<int>("StatementDayOfMonth")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Description")
                         .IsUnique();
+
+                    b.HasIndex("InterestBudgetId");
+
+                    b.HasIndex("PayCCBalanceBudgetId");
 
                     b.ToTable("BankAccounts");
                 });
@@ -741,6 +760,23 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
                     b.Navigation("SearchForAdvancedFind");
                 });
 
+            modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccount", b =>
+                {
+                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "InterestBudgetItem")
+                        .WithMany("InterestBankAccounts")
+                        .HasForeignKey("InterestBudgetId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", "PayCCBalanceBudgetItem")
+                        .WithMany("CCPaymentBankAccounts")
+                        .HasForeignKey("PayCCBalanceBudgetId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("InterestBudgetItem");
+
+                    b.Navigation("PayCCBalanceBudgetItem");
+                });
+
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BankAccountPeriodHistory", b =>
                 {
                     b.HasOne("RingSoft.HomeLogix.DataAccess.Model.BankAccount", "BankAccount")
@@ -993,7 +1029,11 @@ namespace RingSoft.HomeLogix.SqlServer.Migrations
 
             modelBuilder.Entity("RingSoft.HomeLogix.DataAccess.Model.BudgetItem", b =>
                 {
+                    b.Navigation("CCPaymentBankAccounts");
+
                     b.Navigation("History");
+
+                    b.Navigation("InterestBankAccounts");
 
                     b.Navigation("MainBudgets");
 
