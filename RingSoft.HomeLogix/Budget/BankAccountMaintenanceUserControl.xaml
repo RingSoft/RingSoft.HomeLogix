@@ -10,6 +10,7 @@
              xmlns:lib="clr-namespace:RingSoft.HomeLogix.Library;assembly=RingSoft.HomeLogix.Library"
              xmlns:vm="clr-namespace:RingSoft.HomeLogix.Library.ViewModels.Budget;assembly=RingSoft.HomeLogix.Library"
              xmlns:lm="clr-namespace:RingSoft.HomeLogix.DataAccess.LookupModel;assembly=RingSoft.HomeLogix.DataAccess"
+             xmlns:da="clr-namespace:RingSoft.HomeLogix.DataAccess.Model;assembly=RingSoft.HomeLogix.DataAccess"
              xmlns:local="clr-namespace:RingSoft.HomeLogix.Budget"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" WindowWidth="1200" WindowHeight="800">
@@ -142,6 +143,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -151,15 +153,15 @@
 
                         <Label Grid.Row="0" Grid.Column="0" Content="Account Statement Day"/>
 
-                        <dec:IntegerEditControl Grid.Row="0" Grid.Column="1" MinimumValue="1" MaximumValue="31" HorizontalAlignment="Left" Width="50" Value="1"/>
+                        <dec:IntegerEditControl Grid.Row="0" Grid.Column="1" MinimumValue="1" MaximumValue="31" HorizontalAlignment="Left" Width="50" Value="{Binding StatementDayOfMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <Label Grid.Row="1" Grid.Column="0" Content="Annual Percent Rate"/>
 
-                        <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" FormatType="Percent" HorizontalAlignment="Left" Width="100" TextAlignment="Left"/>
+                        <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" FormatType="Percent" HorizontalAlignment="Left" Width="100" TextAlignment="Left" Value="{Binding BankAccountIntrestRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <Label Grid.Row="2" Grid.Column="0" x:Name="InterestLabel" Content="Interest Payment Budget Item"/>
 
-                        <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="InterestPaymentBudgetItemControl" DesignText="Interest Income (...0123)" Width="200" HorizontalAlignment="Left" UiCommand="{Binding InterestUiCommand}" UiLabel="{Binding ElementName=InterestLabel}"/>
+                        <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="InterestPaymentBudgetItemControl" DesignText="Interest Income (...0123)" Width="200" HorizontalAlignment="Left" Setup="{Binding InterestBudgetAutoFillSetup}" Value="{Binding InterestBudgetAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding InterestUiCommand}" UiLabel="{Binding ElementName=InterestLabel}"/>
 
                         <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="CCOptionsGroup" Header="Credit Card Options">
                             <Grid>
@@ -173,15 +175,16 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <RadioButton Grid.Row="0" Grid.Column="0" Content="Carry Balance" HorizontalAlignment="Left"/>
+                                <RadioButton Grid.Row="0" Grid.Column="0" Content="Carry Balance" HorizontalAlignment="Left" IsChecked="{Binding Path=CreditCardOption, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static da:BankCreditCardOptions.CarryBalance}, Mode=TwoWay}"/>
 
-                                <RadioButton Grid.Row="1" Grid.Column="0" Content="Pay Statement Balance Off Each Month" HorizontalAlignment="Left"/>
+                                <RadioButton Grid.Row="1" Grid.Column="0" Content="Pay Statement Balance Off Each Month" HorizontalAlignment="Left" IsChecked="{Binding Path=CreditCardOption, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static da:BankCreditCardOptions.PayOffEachMonth}, Mode=TwoWay}"/>
 
                                 <Label Grid.Row="2" Grid.Column="0" x:Name="CCPaymentBudgetLabel" Content="Credit Card Payment Budget Item"/>
 
-                                <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200"/>
+                                <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" Setup="{Binding CCPaymentBudgetAutoFillSetup}" Value="{Binding CCPaymentBudgetAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding PayCCBudgetUiCommand}" UiLabel="{Binding ElementName= CCPaymentBudgetLabel}"/>
                             </Grid>
                         </GroupBox>
+
                     </Grid>
                 </TabItem>
                 <TabItem Header="Statistics" Height="16" VerticalAlignment="Bottom">

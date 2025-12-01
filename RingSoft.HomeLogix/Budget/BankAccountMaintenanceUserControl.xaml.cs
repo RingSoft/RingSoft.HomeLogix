@@ -53,6 +53,7 @@ namespace RingSoft.HomeLogix.Budget
             AddHotKey(hotKey);
 
             RegisterFormKeyControl(BankAccountControl);
+            BankAccountViewModel.SetPayCCVisibility();
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()

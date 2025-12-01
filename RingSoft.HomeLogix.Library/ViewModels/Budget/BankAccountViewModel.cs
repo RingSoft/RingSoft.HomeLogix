@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using RingSoft.DbLookup.AutoFill;
 using BankAccountRegisterItemTypes = RingSoft.HomeLogix.DataAccess.Model.BankAccountRegisterItemTypes;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
@@ -461,6 +462,123 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private int _statementDayOfMonth;
+
+        public int StatementDayOfMonth
+        {
+            get => _statementDayOfMonth;
+            set
+            {
+                if (_statementDayOfMonth == value)
+                {
+                    return;
+                }
+                _statementDayOfMonth = value;
+                OnPropertyChanged();
+                CheckCalcBankInterest_CCPayment();
+            }
+        }
+
+        private double _bankAccountIntrestRate;
+
+        public double BankAccountIntrestRate
+        {
+            get => _bankAccountIntrestRate;
+            set
+            {
+                if (_bankAccountIntrestRate == value)
+                {
+                    return;
+                }
+                _bankAccountIntrestRate = value;
+                OnPropertyChanged();
+                CheckCalcBankInterest_CCPayment();
+            }
+        }
+
+        private AutoFillSetup _interestBudgetAutoFillSetup;
+
+        public AutoFillSetup InterestBudgetAutoFillSetup
+        {
+            get => _interestBudgetAutoFillSetup;
+            set
+            {
+                if (_interestBudgetAutoFillSetup == value)
+                {
+                    return;
+                }
+                _interestBudgetAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _interestBudgetAutoFillValue;
+        public AutoFillValue InterestBudgetAutoFillValue
+        {
+            get => _interestBudgetAutoFillValue;
+            set
+            {
+                if (_interestBudgetAutoFillValue == value)
+                {
+                    return;
+                }
+                _interestBudgetAutoFillValue = value;
+                OnPropertyChanged();
+                CheckCalcBankInterest_CCPayment();
+            }
+        }
+
+        private BankCreditCardOptions _creditCardOption;
+
+        public BankCreditCardOptions CreditCardOption
+        {
+            get => _creditCardOption;
+            set
+            {
+                if (_creditCardOption == value)
+                {
+                    return;
+                }
+                _creditCardOption = value;
+                OnPropertyChanged();
+                SetPayCCVisibility();
+            }
+        }
+
+        private AutoFillSetup _cCPaymentBudgetaAutoFillSetup;
+
+        public AutoFillSetup CCPaymentBudgetAutoFillSetup
+        {
+            get => _cCPaymentBudgetaAutoFillSetup;
+            set
+            {
+                if (_cCPaymentBudgetaAutoFillSetup == value)
+                {
+                    return;
+                }
+                _cCPaymentBudgetaAutoFillSetup = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private AutoFillValue _cCPaymentBudgetAutoFillValue;
+
+        public AutoFillValue CCPaymentBudgetAutoFillValue
+        {
+            get => _cCPaymentBudgetAutoFillValue;
+            set
+            {
+                if (_cCPaymentBudgetAutoFillValue == value)
+                {
+                    return;
+                }
+                _cCPaymentBudgetAutoFillValue = value;
+
+                OnPropertyChanged();
+                CheckCalcBankInterest_CCPayment();
+            }
+        }
+
         #endregion
 
         public int InitRegisterId { get; private set; }
@@ -493,6 +611,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public UiCommand InterestUiCommand { get; } = new UiCommand();
 
         public UiCommand CcOptionsUiCommand { get; } = new UiCommand();
+
+        public UiCommand PayCCBudgetUiCommand { get; } = new UiCommand();
 
         public bool PendingGeneration { get; private set; }
 
@@ -1879,6 +1999,56 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ProjLowBalDateUiCommand.Visibility = visibility;
 
             ProjLowBalAmountUiCommand.Visibility = visibility;
+        }
+
+        private void CheckCalcBankInterest_CCPayment()
+        {
+            switch (AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
+                    {
+                        CalculateTotals();
+                    }
+                    break;
+                case BankAccountTypes.CreditCard:
+                    switch (CreditCardOption)
+                    {
+                        case BankCreditCardOptions.CarryBalance:
+                            if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
+                            {
+                                CalculateTotals();
+                            }
+                            break;
+                        case BankCreditCardOptions.PayOffEachMonth:
+                            if (CCPaymentBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
+                            {
+                                CalculateTotals();
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public void SetPayCCVisibility()
+        {
+            switch (CreditCardOption)
+            {
+                case BankCreditCardOptions.CarryBalance:
+                    PayCCBudgetUiCommand.Visibility = UiVisibilityTypes.Hidden;
+                    break;
+                case BankCreditCardOptions.PayOffEachMonth:
+                    PayCCBudgetUiCommand.Visibility = UiVisibilityTypes.Visible;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
