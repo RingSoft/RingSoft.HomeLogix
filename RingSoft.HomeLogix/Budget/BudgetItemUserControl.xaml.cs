@@ -83,15 +83,6 @@ namespace RingSoft.HomeLogix.Budget
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;
 
-
-            if (BudgetItemViewModel.PayCCBalance)
-            {
-                AmountControl.IsEnabled = false;
-            }
-            else
-            {
-                AmountControl.IsEnabled = true;
-            }
         }
 
         public void ShowMonthlyStatsControls(bool show = true)

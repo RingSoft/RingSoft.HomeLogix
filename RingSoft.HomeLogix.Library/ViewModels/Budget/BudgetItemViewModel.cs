@@ -509,37 +509,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private bool _payCCBalance;
-
-        public bool PayCCBalance
-        {
-            get { return _payCCBalance; }
-            set
-            {
-                if (_payCCBalance == value)
-                    return;
-
-                _payCCBalance = value;
-                SetViewMode();
-                OnPropertyChanged();
-            }
-        }
-
-        private byte _payCCDay;
-
-        public byte PayCCDay
-        {
-            get { return _payCCDay; }
-            set
-            {
-                if (_payCCDay == value)
-                    return;
-
-                _payCCDay = value;
-                OnPropertyChanged();
-            }
-        }
-
         private bool _genTran;
 
         public bool GenTran
@@ -719,7 +688,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _dbStartDate = DateTime.Today;
             EndingDate = null;
             _dbMonthlyAmount = MonthlyAmount = 0;
-            PayCCBalance = false;
 
             TransferToBankAccountAutoFillValue = null;
             DbTransferToBankId = 0;
@@ -740,7 +708,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 GetLookupCommand(LookupCommands.Clear));
 
             AddAdjustmentCommand.IsEnabled = false;
-            PayCCDay = 0;
             GenTran = false;
 
             _loading = false;
@@ -779,16 +746,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     isCC = (DataAccess.Model.BankAccountTypes)transferToBank.AccountType ==
                            DataAccess.Model.BankAccountTypes.CreditCard;
                 }
-            }
-
-            if (isCC == false)
-            {
-                PayCCBalance = false;
-            }
-
-            if (PayCCBalance)
-            {
-                Amount = 0;
             }
 
             _view.SetViewType(isCC);
@@ -963,8 +920,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             Notes = entity.Notes;
             LastCompletedDate = entity.LastCompletedDate;
             TransferToBankAccountAutoFillValue = entity.TransferToBankAccount.GetAutoFillValue();
-            PayCCBalance = entity.PayCCBalance;
-            PayCCDay = entity.PayCCDay;
 
             _loading = false;
             SetViewMode();
@@ -1284,9 +1239,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 CurrentMonthEnding = CurrentMonthEnding,
                 Notes = Notes,
                 LastCompletedDate = LastCompletedDate,
-                PayCCBalance = PayCCBalance,
                 MonthOnDay = OnDayValue,
-                PayCCDay = PayCCDay,
             };
             return budgetItem;
         }
