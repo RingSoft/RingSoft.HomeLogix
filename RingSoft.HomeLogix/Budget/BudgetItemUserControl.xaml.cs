@@ -83,25 +83,6 @@ namespace RingSoft.HomeLogix.Budget
             TransferToStackPanel.Visibility =
                 BudgetItemViewModel.TransferToBankVisible ? Visibility.Visible : Visibility.Collapsed;
 
-            if (isCC)
-            {
-                PayCCBalanceCheckBox.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                PayCCBalanceCheckBox.Visibility = Visibility.Collapsed;
-            }
-
-            if (BudgetItemViewModel.PayCCBalance && PayCCBalanceCheckBox.Visibility == Visibility.Visible)
-            {
-                PayCCDayLabel.Visibility = Visibility.Visible;
-                PayCCDatControl.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                PayCCDayLabel.Visibility = Visibility.Collapsed;
-                PayCCDatControl.Visibility = Visibility.Collapsed;
-            }
 
             if (BudgetItemViewModel.PayCCBalance)
             {

@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 
@@ -176,6 +177,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         budgetItem = budgetItem.FillOutProperties(false);
                         ItemType = (BudgetItemTypes)budgetItem.Type;
+                        switch (ItemType)
+                        {
+                            case BudgetItemTypes.Transfer:
+                                var transferBankAccount = new BankAccount
+                                {
+                                    Id = budgetItem.TransferToBankAccountId.GetValueOrDefault()
+                                };
+                                transferBankAccount = transferBankAccount.FillOutProperties(false);
+                                TransferToBankAccountAutoFillValue = transferBankAccount.GetAutoFillValue();
+                                break;
+                        }
                     }
                 }
                 if (BudgetItemAutoFillValue != null)
