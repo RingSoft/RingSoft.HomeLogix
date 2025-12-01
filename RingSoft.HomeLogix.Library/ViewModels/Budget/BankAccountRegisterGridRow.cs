@@ -250,7 +250,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             RegisterId = entity.Id;
             RegisterGuid = entity.RegisterGuid;
             ItemDate = entity.ItemDate;
-            RegisterPayCCType = (RegisterPayCCTypes)entity.PayCCType;
 
             BudgetItemId = entity.BudgetItemId;  //Must default to null or completed Escrow rows won't save.
             BudgetItemValue = entity.BudgetItem.GetAutoFillValue();
@@ -320,20 +319,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     : TransactionTypes.Deposit;
                 ProjectedAmount = Math.Abs(entity.ProjectedAmount);
 
-                var payCCType = (RegisterPayCCTypes)entity.PayCCType;
-                switch (payCCType)
-                {
-                    case RegisterPayCCTypes.None:
-                        break;
-                    case RegisterPayCCTypes.FromBank:
-                        TransactionType = TransactionTypes.Withdrawal;
-                        break;
-                    case RegisterPayCCTypes.ToCC:
-                        TransactionType = TransactionTypes.Deposit;
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
             }
 
             if (entity.ActualAmount != null) 
@@ -439,7 +424,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
-            registerData.PayCCDay = BudgetItem.PayCCDay;
             return registerData;
         }
 

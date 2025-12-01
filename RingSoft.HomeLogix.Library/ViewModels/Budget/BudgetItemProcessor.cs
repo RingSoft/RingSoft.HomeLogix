@@ -183,10 +183,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     ProjectedAmount = amount
                 };
 
-                if (budgetItem.PayCCBalance)
-                {
-                    registerItem.PayCCType = (byte)RegisterPayCCTypes.FromBank;
-                }
                 result.Add(registerItem);
 
                 if ((BudgetItemTypes)budgetItem.Type == BudgetItemTypes.Transfer && budgetItem.TransferToBankAccountId != null)
@@ -209,11 +205,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ProjectedAmount = -amount,
                         TransferRegisterGuid = transferFromRegisterId
                     };
-
-                    if (budgetItem.PayCCBalance)
-                    {
-                        registerItem.PayCCType = (byte)RegisterPayCCTypes.ToCC;
-                    }
 
                     result.Add(registerItem);
                 }

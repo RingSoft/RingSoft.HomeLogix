@@ -21,8 +21,6 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.MonthOnDay).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.MonthlyAmount).HasColumnType(DbConstants.DecimalColumnType);          
             builder.Property(p => p.Notes).HasColumnType(DbConstants.MemoColumnType);
-            builder.Property(p => p.PayCCBalance).HasColumnType(DbConstants.BoolColumnType);
-            builder.Property(p => p.PayCCBalance).HasColumnType(DbConstants.ByteColumnType);
             builder.Property(p => p.RecurringPeriod).HasColumnType(DbConstants.IntegerColumnType);
             builder.Property(p => p.RecurringType).HasColumnType(DbConstants.ByteColumnType);
             builder.Property(p => p.StartingDate).HasColumnType(DbConstants.DateColumnType);

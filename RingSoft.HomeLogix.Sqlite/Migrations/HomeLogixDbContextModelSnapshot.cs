@@ -15,7 +15,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
 
             modelBuilder.Entity("RingSoft.DbLookup.AdvancedFind.AdvancedFind", b =>
                 {
@@ -315,9 +315,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int>("ItemType")
                         .HasColumnType("integer");
 
-                    b.Property<byte>("PayCCType")
-                        .HasColumnType("smallint");
-
                     b.Property<double>("ProjectedAmount")
                         .HasColumnType("numeric");
 
@@ -485,12 +482,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("ntext");
-
-                    b.Property<bool>("PayCCBalance")
-                        .HasColumnType("smallint");
-
-                    b.Property<byte>("PayCCDay")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("RecurringPeriod")
                         .HasColumnType("integer");

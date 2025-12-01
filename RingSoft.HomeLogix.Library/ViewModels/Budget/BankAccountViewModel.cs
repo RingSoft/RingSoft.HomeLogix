@@ -1707,23 +1707,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             registerData.ProjectedAmount = Math.Abs(register.ProjectedAmount);
             registerData.ItemDate = register.ItemDate;
             registerData.IsNegative = register.IsNegative;
-            registerData.PayCCDay = register.BudgetItem.PayCCDay;
 
-            var registerPayCCType = (RegisterPayCCTypes)register.PayCCType;
-            switch (registerPayCCType)
-            {
-                case RegisterPayCCTypes.None:
-                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.None;
-                    break;
-                case RegisterPayCCTypes.FromBank:
-                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.FromBank;
-                    break;
-                case RegisterPayCCTypes.ToCC:
-                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.ToCC;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
 
             //registerData.RegisterItemType =
             //    (MobileInterop.PhoneModel.BankAccountRegisterItemTypes)register.ItemType;

@@ -144,64 +144,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var bankAccountRegisterGridRow in rows)
             {
                 var calcPrevBalance = false;
-                if (bankAccountRegisterGridRow.BudgetItem.PayCCBalance
-                    && bankAccountRegisterGridRow.BudgetItem.PayCCDay > 0
-                    && ViewModel.AccountType == BankAccountTypes.CreditCard)
-                {
-                    var balanceDay = new DateTime(bankAccountRegisterGridRow.ItemDate.Year
-                        , bankAccountRegisterGridRow.ItemDate.Month
-                        , bankAccountRegisterGridRow.BudgetItem.PayCCDay);
-
-                    var balanceRow = rows.FirstOrDefault(
-                        p => !p.BudgetItem.PayCCBalance
-                             && p.ItemDate >= balanceDay.AddMonths(-1)
-                             && !p.Completed);
-
-                    if (balanceRow == null)
-                    {
-                        balanceRow = rows.LastOrDefault(
-                            p => !p.BudgetItem.PayCCBalance
-                                 && p.ItemDate < bankAccountRegisterGridRow.ItemDate
-                                 && !p.Completed);
-                    }
-
-                    if (balanceRow != null)
-                    {
-                        var prevPayCCRow = rows.FirstOrDefault(p => p.BudgetItem.PayCCBalance
-                                                                    && p.ItemDate < bankAccountRegisterGridRow
-                                                                        .ItemDate
-                                                                    && !p.Completed);
-
-                        calcPrevBalance = true;
-                        if (prevPayCCRow != null)
-                        {
-                            var currentRowIndex = Rows.IndexOf(bankAccountRegisterGridRow);
-                            var previousRowIndex = Rows.IndexOf(prevPayCCRow);
-                            var difference = currentRowIndex - previousRowIndex;
-                            if (difference == 1)
-                            {
-                                bankAccountRegisterGridRow.ProjectedAmount = prevPayCCRow.Balance.GetValueOrDefault();
-                                bankAccountRegisterGridRow.SaveToDbOnTheFly();
-                            }
-                            else
-                            {
-                                bankAccountRegisterGridRow.ProjectedAmount = balanceRow.Balance.GetValueOrDefault()
-                                                                             - balanceRow.ProjectedAmount;
-                                bankAccountRegisterGridRow.Balance = 0;
-                                bankAccountRegisterGridRow.SaveToDbOnTheFly();
-                            }
-                        }
-                        else
-                        {
-                            if (bankAccountRegisterGridRow.ProjectedAmount <= 0)
-                            {
-                                bankAccountRegisterGridRow.ProjectedAmount = balanceRow.Balance.GetValueOrDefault();
-                                bankAccountRegisterGridRow.SaveToDbOnTheFly();
-                            }
-                            bankAccountRegisterGridRow.PayCCAllowEdit = true;
-                        }
-                    }
-                }
                 var registerData = bankAccountRegisterGridRow.GetRegisterData();
                 newBalance = BankAccountViewModel.CalcNewBalance(ViewModel.AccountType, registerData, newBalance);
 

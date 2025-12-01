@@ -21,7 +21,6 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.IsNegative).HasColumnType(DbConstants.BoolColumnType);
             builder.Property(p => p.ItemDate).HasColumnType(DbConstants.DateColumnType);
             builder.Property(p => p.ItemType).HasColumnType(DbConstants.IntegerColumnType);
-            builder.Property(p => p.PayCCType).HasColumnType(DbConstants.ByteColumnType);
             builder.Property(p => p.ProjectedAmount).HasColumnType(DbConstants.DecimalColumnType);
             builder.Property(p => p.RegisterGuid).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.TransferRegisterGuid).HasColumnType(DbConstants.StringColumnType);
