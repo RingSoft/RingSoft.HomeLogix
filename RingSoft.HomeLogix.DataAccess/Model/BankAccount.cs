@@ -20,10 +20,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
     public enum BankCreditCardOptions
     {
-        [Description("Pay Off Each Month")]
-        PayOffEachMonth = 0,
         [Description("Carry Balance")]
-        CarryBalance = 1
+        CarryBalance = 0,
+        [Description("Pay Off Each Month")]
+        PayOffEachMonth = 1,
     }
 
     public class BankAccount

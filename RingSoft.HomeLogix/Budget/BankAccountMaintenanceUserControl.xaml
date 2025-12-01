@@ -135,6 +135,55 @@
                     </Grid>
 
                 </TabItem>
+                <TabItem x:Name="OptionsTabItem" Header="Bank Account Options">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" Content="Account Statement Day"/>
+
+                        <dec:IntegerEditControl Grid.Row="0" Grid.Column="1" MinimumValue="1" MaximumValue="31" HorizontalAlignment="Left" Width="50" Value="1"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Content="Account Interest Rate"/>
+
+                        <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" FormatType="Percent" HorizontalAlignment="Left" Width="100" TextAlignment="Left"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" x:Name="InterestLabel" Content="Interest Payment Budget Item"/>
+
+                        <lc:AutoFillControl Grid.Row="2" Grid.Column="1" x:Name="InterestPaymentBudgetItemControl" DesignText="Interest Income (...0123)" Width="200" HorizontalAlignment="Left"/>
+
+                        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" x:Name="CCOptionsGroup" Header="Credit Card Options">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <RadioButton Grid.Row="0" Grid.Column="0" Content="Carry Balance" HorizontalAlignment="Left"/>
+
+                                <RadioButton Grid.Row="1" Grid.Column="0" Content="Pay Statement Balance Off Each Month" HorizontalAlignment="Left"/>
+
+                                <Label Grid.Row="2" Grid.Column="0" x:Name="CCPaymentBudgetLabel" Content="Credit Card Payment Budget Item"/>
+
+                                <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200"/>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+                </TabItem>
                 <TabItem Header="Statistics" Height="16" VerticalAlignment="Bottom">
 
                     <Grid>
