@@ -68,6 +68,10 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public bool IsTransferMisc { get; set; }
 
+        [DefaultValue(false)]
+        [Required]
+        public bool IsCCPayment { get; set; }
+
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 
         public virtual ICollection<BankTransactionBudget> BankTransactionBudgets { get; set; }

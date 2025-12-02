@@ -244,7 +244,7 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("PayCCBalanceBudgetId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PayCCBalanceDay")
+                    b.Property<int>("PayCCBalanceDay")
                         .HasColumnType("integer");
 
                     b.Property<bool>("PendingGeneration")
@@ -324,6 +324,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
+
+                    b.Property<bool>("IsCCPayment")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsNegative")
                         .HasColumnType("bit");

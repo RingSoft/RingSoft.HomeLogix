@@ -88,7 +88,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
 
         public virtual BudgetItem PayCCBalanceBudgetItem { get; set; }
 
-        public int? PayCCBalanceDay { get; set; }
+        [Required]
+        [DefaultValue(1)]
+        public int PayCCBalanceDay { get; set; }
 
         public DateTime? LastCompletedDate { get; set; }
 

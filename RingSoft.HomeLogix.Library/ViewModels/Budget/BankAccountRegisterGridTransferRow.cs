@@ -15,6 +15,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool IsTransferMisc { get; private set; }
 
+        public bool IsCCPayment { get; set; }
+
         public override string Description
         {
             get
@@ -87,6 +89,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             TransferDescription = entity.Description;
             TransferRegisterGuid = entity.TransferRegisterGuid;
             IsTransferMisc = entity.IsTransferMisc;
+            IsCCPayment = entity.IsCCPayment;
             base.LoadFromEntity(entity);
         }
 
@@ -95,6 +98,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             entity.TransferRegisterGuid = TransferRegisterGuid;
             entity.Description = TransferDescription;
             entity.IsTransferMisc = IsTransferMisc;
+            entity.IsCCPayment = IsCCPayment;
             base.SaveToEntity(entity, rowIndex);
         }
     }

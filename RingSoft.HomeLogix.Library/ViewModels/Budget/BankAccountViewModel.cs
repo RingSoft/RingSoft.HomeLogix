@@ -592,6 +592,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+                _payCCBalanceDay = value;
                 OnPropertyChanged();
                 CheckCalcBankInterest_CCPayment();
             }
@@ -869,7 +870,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 .Include(i => i.RegisterItems)
                 .ThenInclude(ti => ti.BudgetItem)
                 .ThenInclude(ti => ti.TransferToBankAccount)
-                .Include(p => p.InterestBudgetItem);
+                .Include(p => p.InterestBudgetItem)
+                .Include(p => p.PayCCBalanceBudgetItem);
             //var bankAccount = AppGlobals.DataRepository.GetEntity(query, p => p.Id == Id);
             var bankAccount = query.FirstOrDefault(p => p.Id == Id);
 
@@ -1009,7 +1011,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             InterestBudgetAutoFillValue = entity.InterestBudgetItem.GetAutoFillValue();
             CreditCardOption = (BankCreditCardOptions)entity.CreditCardOption.GetValueOrDefault();
             CCPaymentBudgetAutoFillValue = entity.PayCCBalanceBudgetItem.GetAutoFillValue();
-            PayCCBalanceDay = entity.PayCCBalanceDay.GetValueOrDefault();
+            PayCCBalanceDay = entity.PayCCBalanceDay;
 
             _loading = false;
             CalculateTotals();
