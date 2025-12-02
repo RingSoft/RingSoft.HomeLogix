@@ -244,6 +244,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<int?>("PayCCBalanceBudgetId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("PayCCBalanceDay")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("PendingGeneration")
                         .HasColumnType("bit");
 

@@ -169,6 +169,7 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
@@ -182,6 +183,10 @@
                                 <Label Grid.Row="2" Grid.Column="0" x:Name="CCPaymentBudgetLabel" Content="Credit Card Payment Budget Item"/>
 
                                 <lc:AutoFillControl Grid.Row="2" Grid.Column="1" Width="200" Setup="{Binding CCPaymentBudgetAutoFillSetup}" Value="{Binding CCPaymentBudgetAutoFillValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding PayCCBudgetUiCommand}" UiLabel="{Binding ElementName= CCPaymentBudgetLabel}"/>
+
+                                <Label Grid.Row="3" Grid.Column="0" x:Name="PayCCDayLabel" Content="Credit Card Payment Day"/>
+
+                                <dec:IntegerEditControl Grid.Row="3" Grid.Column="1" Width="50" HorizontalAlignment="Left" Value="{Binding PayCCBalanceDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding PayCCDayUiCommand}" UiLabel="{Binding ElementName=PayCCDayLabel}"/>
                             </Grid>
                         </GroupBox>
 
