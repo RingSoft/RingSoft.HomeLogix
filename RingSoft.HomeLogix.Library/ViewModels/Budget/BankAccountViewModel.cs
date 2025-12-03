@@ -526,7 +526,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
                 _interestBudgetAutoFillValue = value;
                 OnPropertyChanged(raiseDirtyFlag:InterestBudgetAutoFillSetup.SetDirty);
-                CheckCalcBankInterest_CCPayment();
+                if (InterestBudgetAutoFillSetup.SetDirty)
+                {
+                    CheckCalcBankInterest_CCPayment();
+                }
             }
         }
 
@@ -577,7 +580,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _cCPaymentBudgetAutoFillValue = value;
 
                 OnPropertyChanged(raiseDirtyFlag:CCPaymentBudgetAutoFillSetup.SetDirty);
-                CheckCalcBankInterest_CCPayment();
+                if (CCPaymentBudgetAutoFillSetup.SetDirty)
+                {
+                    CheckCalcBankInterest_CCPayment();
+                }
             }
         }
 
@@ -1156,6 +1162,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             RegisterGridManager.AddGeneratedRegisterItems(registerItems.Where(w => w.BankAccountId == Id));
+
+            GenerateInterest_PayCCRows(generateToDate.GetValueOrDefault(), false, false, false);
 
             var test = RegisterGridManager.Rows;
             CalculateTotals();
@@ -2131,7 +2139,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             if (CCPaymentBudgetAutoFillValue.IsValid() 
                                 && PayCCBalanceDay > 0)
                             {
-                                CalculateTotals();
+                                GenerateInterest_PayCCRows(LastGenerationDate.GetValueOrDefault(), true, true);
                             }
                             break;
                         default:
@@ -2158,6 +2166,186 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void GenerateInterest_PayCCRows(DateTime genToDate, bool calcTotals, bool resetGen, bool waitCursor = true)
+        {
+            if (waitCursor)
+            {
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
+            }
+            var registerItemsToAdd = new List<BankAccountRegisterItem>();
+            BudgetItem? budgetItem = null;
+            var refreshTransferFromBank = false;
+
+            switch (AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    break;
+                case BankAccountTypes.CreditCard:
+                    switch (CreditCardOption)
+                    {
+                        case BankCreditCardOptions.CarryBalance:
+                            break;
+                        case BankCreditCardOptions.PayOffEachMonth:
+                            budgetItem = GeneratePayCCRegisterItems(genToDate, registerItemsToAdd, resetGen);
+                            refreshTransferFromBank = true;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (budgetItem == null)
+            {
+                return;
+            }
+
+            RegisterGridManager.AddGeneratedRegisterItems(registerItemsToAdd.Where(w => w.BankAccountId == Id));
+
+            if (calcTotals)
+            {
+                CalculateTotals();
+                SetTotals(Entity);
+            }
+
+            AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItemsToAdd,
+                new List<BudgetItem>
+                {
+                    budgetItem
+                });
+
+            if (calcTotals)
+            {
+                //Peter Ringering - 07/10/2024 04:15:16 PM - E-67
+                var bankAccount1 = AppGlobals.DataRepository.GetBankAccount(Id);
+                RegisterGridManager.LoadGrid(bankAccount1.RegisterItems);
+
+                //Peter Ringering - 11/23/2024 05:02:40 PM - E-79
+                RegisterGridManager.CalculateProjectedBalanceData();
+            }
+
+            if (refreshTransferFromBank)
+            {
+                var bankViewModels = AppGlobals.MainViewModel.BankAccountViewModels
+                    .Where(p => p.Id == budgetItem.BankAccountId);
+                foreach (var bankAccountViewModel in bankViewModels)
+                {
+                    bankAccountViewModel.RefreshFromDb();
+                }
+            }
+
+            if (waitCursor)
+            {
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
+            }
+        }
+
+        private BudgetItem GeneratePayCCRegisterItems(DateTime genToDate, List<BankAccountRegisterItem> registerItemsToAdd
+        , bool reset = false)
+        {
+            var budgetItem = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
+            if (budgetItem == null)
+                return null;
+            budgetItem = budgetItem.FillOutProperties(false);
+
+            if (reset)
+            {
+                ResetGenPayCCRows(budgetItem);
+            }
+
+            var firstRow = RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridRow>()
+                .OrderBy(o => o.ItemDate)
+                .FirstOrDefault();
+
+            var itemDate = new DateTime(firstRow.ItemDate.Year, firstRow.ItemDate.Month, PayCCBalanceDay);
+            itemDate = itemDate.AddMonths(1);
+
+            while (itemDate <= genToDate)
+            {
+                var existRow = RegisterGridManager
+                    .Rows.OfType<BankAccountRegisterGridTransferRow>()
+                    .FirstOrDefault(p => p.ItemDate == itemDate
+                                         && p.IsCCPayment == true);
+
+                if (existRow == null)
+                {
+                    var registerItem = new BankAccountRegisterItem
+                    {
+                        BankAccountId = Id,
+                        ItemDate = itemDate,
+                        BudgetItemId = budgetItem.Id,
+                        Description = budgetItem.Description,
+                        ProjectedAmount = 0,
+                        RegisterGuid = Guid.NewGuid().ToString(),
+                        ItemType = (int)BankAccountRegisterItemTypes.TransferToBankAccount,
+                        IsCCPayment = true,
+                    };
+
+                    registerItemsToAdd.Add(registerItem);
+
+                    var transferFromRegisterId = Guid.NewGuid().ToString();
+                    registerItem.TransferRegisterGuid = transferFromRegisterId;
+
+                    var fromRegisterItem = new BankAccountRegisterItem
+                    {
+                        RegisterGuid = transferFromRegisterId,
+                        BankAccountId = budgetItem.BankAccountId,
+                        ItemType = (int)BankAccountRegisterItemTypes.TransferToBankAccount,
+                        ItemDate = itemDate,
+                        BudgetItemId = budgetItem.Id,
+                        Description = budgetItem.Description,
+                        ProjectedAmount = -0,
+                        TransferRegisterGuid = registerItem.RegisterGuid,
+                        IsCCPayment = true,
+                    };
+                    registerItemsToAdd.Add(fromRegisterItem);
+
+                    itemDate = itemDate.AddMonths(1);
+                }
+            }
+
+            return budgetItem;
+        }
+
+        private void ResetGenPayCCRows(BudgetItem budgetItem)
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountRegisterItem>();
+
+            var registerToDelete = new List<int>();
+            var existingRows = RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridTransferRow>()
+                .Where(p => p.IsCCPayment == true)
+                .ToList();
+            foreach (var existingRow in existingRows)
+            {
+                registerToDelete.Add(existingRow.RegisterId);
+                RegisterGridManager.InternalRemoveRow(existingRow);
+            }
+
+            foreach (var registerId in registerToDelete)
+            {
+                var registerItem = table.FirstOrDefault(p => p.Id == registerId);
+                if (registerItem != null)
+                {
+                    context.DeleteEntity(registerItem, "Deleting Pay CC Generated Row");
+                }
+            }
+
+            var fromRegisters = table.Where(p => p.IsCCPayment
+            && p.BankAccountId == budgetItem.BankAccountId);
+
+            foreach (var fromRegister in fromRegisters)
+            {
+                context.DeleteEntity(fromRegister, "Deleting Pay CC Generated Row");
+            }
+
         }
     }
 }
