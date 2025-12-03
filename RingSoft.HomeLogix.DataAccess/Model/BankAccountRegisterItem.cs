@@ -68,9 +68,9 @@ namespace RingSoft.HomeLogix.DataAccess.Model
         [Required]
         public bool IsTransferMisc { get; set; }
 
-        [DefaultValue(false)]
+        [DefaultValue(0)]
         [Required]
-        public bool IsCCPayment { get; set; }
+        public byte RegisterPayCCType { get; set; }
 
         public virtual ICollection<BankAccountRegisterItemAmountDetail> AmountDetails { get; set; }
 

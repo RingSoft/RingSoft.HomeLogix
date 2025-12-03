@@ -25,7 +25,7 @@ namespace RingSoft.HomeLogix.DataAccess
             builder.Property(p => p.RegisterGuid).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.TransferRegisterGuid).HasColumnType(DbConstants.StringColumnType);
             builder.Property(p => p.IsTransferMisc).HasColumnType(DbConstants.BoolColumnType);
-            builder.Property(p => p.IsCCPayment).HasColumnType(DbConstants.BoolColumnType);
+            builder.Property(p => p.RegisterPayCCType).HasColumnType(DbConstants.ByteColumnType);
 
             builder.HasOne(p => p.BankAccount)
                 .WithMany(p => p.RegisterItems)

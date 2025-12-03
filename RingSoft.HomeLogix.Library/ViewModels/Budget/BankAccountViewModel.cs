@@ -2284,7 +2284,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ProjectedAmount = 0,
                         RegisterGuid = Guid.NewGuid().ToString(),
                         ItemType = (int)BankAccountRegisterItemTypes.TransferToBankAccount,
-                        IsCCPayment = true,
+                        RegisterPayCCType = (byte)RegisterPayCCTypes.ToCC,
                     };
 
                     registerItemsToAdd.Add(registerItem);
@@ -2300,9 +2300,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         ItemDate = itemDate,
                         BudgetItemId = budgetItem.Id,
                         Description = budgetItem.Description,
-                        ProjectedAmount = -0,
+                        ProjectedAmount = 0,
                         TransferRegisterGuid = registerItem.RegisterGuid,
-                        IsCCPayment = true,
+                        RegisterPayCCType = (byte)RegisterPayCCTypes.FromBank,
                     };
                     registerItemsToAdd.Add(fromRegisterItem);
 
@@ -2338,7 +2338,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
-            var fromRegisters = table.Where(p => p.IsCCPayment
+            var fromRegisters = table.Where(p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank
             && p.BankAccountId == budgetItem.BankAccountId);
 
             foreach (var fromRegister in fromRegisters)

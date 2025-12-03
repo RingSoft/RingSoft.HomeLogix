@@ -144,6 +144,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             foreach (var bankAccountRegisterGridRow in rows)
             {
                 var calcPrevBalance = false;
+
                 var registerData = bankAccountRegisterGridRow.GetRegisterData();
                 newBalance = BankAccountViewModel.CalcNewBalance(ViewModel.AccountType, registerData, newBalance);
 
@@ -161,7 +162,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             if (bankAccountRegisterGridRow 
                                 is BankAccountRegisterGridTransferRow transferRow)
                             {
-                                var fromBankGuid = transferRow.TransferRegisterGuid;
                                 var registerTable
                                     = context.GetTable<BankAccountRegisterItem>()
                                         .Include(p => p.BankAccount);

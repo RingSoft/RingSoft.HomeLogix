@@ -325,9 +325,6 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
 
-                    b.Property<bool>("IsCCPayment")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsNegative")
                         .HasColumnType("bit");
 
@@ -346,6 +343,9 @@ namespace RingSoft.HomeLogix.Sqlite.Migrations
                     b.Property<string>("RegisterGuid")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar");
+
+                    b.Property<byte>("RegisterPayCCType")
+                        .HasColumnType("smallint");
 
                     b.Property<string>("TransferRegisterGuid")
                         .HasMaxLength(50)

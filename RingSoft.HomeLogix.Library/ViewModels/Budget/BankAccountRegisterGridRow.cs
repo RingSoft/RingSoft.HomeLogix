@@ -331,6 +331,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
             ActualAmountDetails = entity.AmountDetails.ToList();
             Completed = entity.Completed;
+            RegisterPayCCType = (RegisterPayCCTypes)entity.RegisterPayCCType;
         }
 
         public override bool ValidateRow()
@@ -367,6 +368,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             entity.Completed = Completed;
             entity.IsNegative = IsNegative;
+            entity.RegisterPayCCType = (byte)RegisterPayCCType;
         }
 
         public void SaveToEntity(BankAccountRegisterItem entity, int rowIndex,
