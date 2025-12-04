@@ -29,8 +29,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public BankCreditCardOptions CreditCardOption { get; set; }
         public int StatementDayOfMonth { get; set; }
         public double BankAccountIntrestRate { get; set; }
-        public BudgetItem InterestBudgetItem { get; set; }
-        public BudgetItem CCPaymentBudgetItem { get; set; }
+        public AutoFillValue InterestBudgetAutoFillValue { get; set; }
+        public AutoFillValue CcPaymentBudgetaAutoFillValue { get; set; }
         public int PayCCBalanceDay { get; set; }
         public bool DialogResult { get; set; }
     }
@@ -2399,6 +2399,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankOptions = new BankOptionsData
             {
                 CreditCardOption = CreditCardOption,
+                StatementDayOfMonth = StatementDayOfMonth,
+                BankAccountIntrestRate = BankAccountIntrestRate,
+                InterestBudgetAutoFillValue = InterestBudgetAutoFillValue,
+                CcPaymentBudgetaAutoFillValue = CCPaymentBudgetAutoFillValue,
+                PayCCBalanceDay = PayCCBalanceDay
             };
 
             ShowBankOptions(bankOptions);

@@ -221,6 +221,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     throw new ArgumentOutOfRangeException();
             }
 
+            if (bankOptionsData.StatementDayOfMonth == 0)
+            {
+                bankOptionsData.StatementDayOfMonth = 1;
+            }
+
+            if (bankOptionsData.PayCCBalanceDay == 0)
+            {
+                bankOptionsData.PayCCBalanceDay = 1;
+            }
+            StatementDayOfMonth = bankOptionsData.StatementDayOfMonth;
+            BankAccountIntrestRate = bankOptionsData.BankAccountIntrestRate;
+            InterestBudgetAutoFillValue = bankOptionsData.InterestBudgetAutoFillValue;
+            CCPaymentBudgetAutoFillValue = bankOptionsData.CcPaymentBudgetaAutoFillValue;
+            PayCCBalanceDay = bankOptionsData.PayCCBalanceDay;
         }
 
         private void SetupInterestAutoFillSetup()
