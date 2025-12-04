@@ -173,7 +173,8 @@ namespace RingSoft.HomeLogix.Budget
 
         public void ShowBankOptionsWindow(BankOptionsData bankOptionsData)
         {
-            
+            var dialog = new BankOptionsWindow(bankOptionsData);
+            LookupControlsGlobals.WindowRegistry.ShowDialog(dialog);
         }
 
         public void SetBankOptionsButtonCaption(string caption)

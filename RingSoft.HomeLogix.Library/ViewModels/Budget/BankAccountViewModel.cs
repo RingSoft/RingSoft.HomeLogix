@@ -32,7 +32,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public BudgetItem InterestBudgetItem { get; set; }
         public BudgetItem CCPaymentBudgetItem { get; set; }
         public int PayCCBalanceDay { get; set; }
-        public bool DialogResut { get; set; }
+        public bool DialogResult { get; set; }
     }
 
     public interface IBankAccountView : IDbMaintenanceView
@@ -2368,7 +2368,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void ShowBankOptions()
         {
-            BankAccountView.ShowBankOptionsWindow(new BankOptionsData());
+            var bankOptions = new BankOptionsData
+            {
+                BankAccountViewModel = this,
+                CreditCardOption = CreditCardOption,
+            };
+
+            BankAccountView.ShowBankOptionsWindow(bankOptions);
         }
     }
 }
