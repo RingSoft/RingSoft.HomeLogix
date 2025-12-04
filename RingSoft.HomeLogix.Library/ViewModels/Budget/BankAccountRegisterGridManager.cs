@@ -150,10 +150,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     statementDate = new DateTime(statementDate.Year, statementDate.Month,
                         ViewModel.StatementDayOfMonth);
 
-                    var balanceRow = Rows.OfType<BankAccountRegisterGridRow>()
+                    if (ViewModel.StatementDayOfMonth == ViewModel.PayCCBalanceDay)
+                    {
+                        statementDate = bankAccountRegisterGridRow.ItemDate.AddDays(-1);
+                    }
+                    BankAccountRegisterGridRow? balanceRow = null;
+
+                    balanceRow = Rows.OfType<BankAccountRegisterGridRow>()
                         .OrderBy(p => p.ItemDate)
                         .ThenByDescending(p => p.ProjectedAmount)
-                        .LastOrDefault(p => p.ItemDate <= statementDate && p.Completed == false);
+                        .LastOrDefault(p => p.ItemDate <= statementDate
+                                            && p.Completed == false);
+
+                    if (balanceRow != null && balanceRow.RegisterPayCCType == RegisterPayCCTypes.ToCC)
+                    {
+                        continue;
+                    }
 
                     var projectedAmount = 0.0;
                     if (balanceRow == null)
@@ -177,14 +189,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         }
                     }
 
-                    var deposits = Rows.OfType<BankAccountRegisterGridRow>()
-                        .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.None
-                            && p.ItemDate >= statementDate
-                        && p.ItemDate < bankAccountRegisterGridRow.ItemDate
-                        && p.TransactionType == TransactionTypes.Deposit)
-                        .Sum(p => p.ProjectedAmount > 0 ? p.ProjectedAmount : 0);
+                    if (ViewModel.StatementDayOfMonth != ViewModel.PayCCBalanceDay)
+                    {
+                        var deposits = Rows.OfType<BankAccountRegisterGridRow>()
+                            .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.None
+                                        && p.ItemDate >= statementDate
+                                        && p.ItemDate < bankAccountRegisterGridRow.ItemDate
+                                        && p.TransactionType == TransactionTypes.Deposit)
+                            .Sum(p => p.ProjectedAmount > 0 ? p.ProjectedAmount : 0);
 
-                    projectedAmount -= deposits;
+                        projectedAmount -= deposits;
+                    }
                     bankAccountRegisterGridRow.ProjectedAmount = projectedAmount;
 
                     bankAccountRegisterGridRow.SaveToDbOnTheFly();
