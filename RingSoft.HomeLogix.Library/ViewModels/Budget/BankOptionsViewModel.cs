@@ -9,8 +9,14 @@ using System.Text;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public interface IBankOptionsView
+    {
+        void Close();
+    }
     public class BankOptionsViewModel : INotifyPropertyChanged
     {
+        #region Properties
+
         private int _statementDayOfMonth;
 
         public int StatementDayOfMonth
@@ -140,6 +146,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        #endregion
+
         public BankOptionsData BankOptionsData { get; private set; }
 
         public UiCommand InterestUiCommand { get; } = new UiCommand();
@@ -150,13 +158,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public UiCommand PayCCDayUiCommand { get; } = new UiCommand();
 
+        public RelayCommand OkCommand { get; }
+
+        public RelayCommand CancelCommand { get; }
+
+        public IBankOptionsView View { get; private set; }
+
         public BankOptionsViewModel()
         {
+            OkCommand = new RelayCommand(OnOK);
 
+            CancelCommand = new RelayCommand(OnCancel);
         }
 
-        public void Initialize(BankOptionsData bankOptionsData)
+        public void Initialize(IBankOptionsView view, BankOptionsData bankOptionsData)
         {
+            View = view;
             BankOptionsData = bankOptionsData;
             CreditCardOption = bankOptionsData.CreditCardOption;
         }
@@ -178,6 +195,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private void OnOK()
+        {
+            BankOptionsData.DialogResult = true;
+
+            View.Close();
+        }
+
+        private void OnCancel()
+        {
+            BankOptionsData.DialogResult = false;
+
+            View.Close();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

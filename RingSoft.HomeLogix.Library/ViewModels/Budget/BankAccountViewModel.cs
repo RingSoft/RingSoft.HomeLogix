@@ -495,6 +495,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _statementDayOfMonth = value;
                 OnPropertyChanged();
                 CheckCalcBankInterest_CCPayment();
@@ -512,6 +513,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _bankAccountIntrestRate = value;
                 OnPropertyChanged();
                 CheckCalcBankInterest_CCPayment();
@@ -529,12 +531,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _interestBudgetAutoFillSetup = value;
-                OnPropertyChanged(raiseDirtyFlag:false);
+                OnPropertyChanged(raiseDirtyFlag: false);
             }
         }
 
         private AutoFillValue _interestBudgetAutoFillValue;
+
         public AutoFillValue InterestBudgetAutoFillValue
         {
             get => _interestBudgetAutoFillValue;
@@ -544,8 +548,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _interestBudgetAutoFillValue = value;
-                OnPropertyChanged(raiseDirtyFlag:InterestBudgetAutoFillSetup.SetDirty);
+                OnPropertyChanged(raiseDirtyFlag: InterestBudgetAutoFillSetup.SetDirty);
                 if (InterestBudgetAutoFillSetup.SetDirty)
                 {
                     CheckCalcBankInterest_CCPayment();
@@ -564,6 +569,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _creditCardOption = value;
                 OnPropertyChanged();
                 SetPayCCVisibility();
@@ -581,8 +587,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _cCPaymentBudgetaAutoFillSetup = value;
-                OnPropertyChanged(raiseDirtyFlag:false);
+                OnPropertyChanged(raiseDirtyFlag: false);
             }
         }
 
@@ -597,9 +604,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _cCPaymentBudgetAutoFillValue = value;
 
-                OnPropertyChanged(raiseDirtyFlag:CCPaymentBudgetAutoFillSetup.SetDirty);
+                OnPropertyChanged(raiseDirtyFlag: CCPaymentBudgetAutoFillSetup.SetDirty);
                 if (CCPaymentBudgetAutoFillSetup.SetDirty)
                 {
                     CheckCalcBankInterest_CCPayment();
@@ -618,6 +626,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     return;
                 }
+
                 _payCCBalanceDay = value;
                 OnPropertyChanged();
                 CheckCalcBankInterest_CCPayment();
@@ -708,9 +717,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             RegisterGridManager = new BankAccountRegisterGridManager(this);
 
-            InterestBudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.InterestBudgetId));
+            InterestBudgetAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.InterestBudgetId));
 
-            CCPaymentBudgetAutoFillSetup = new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.PayCCBalanceBudgetId));
+            CCPaymentBudgetAutoFillSetup =
+                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.PayCCBalanceBudgetId));
 
         }
 
@@ -756,24 +767,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             if (newValue)
             {
-                
+
             }
+
             base.OnRecordDirtyChanged(newValue);
         }
 
         private void SetupInterestAutoFillSetup()
         {
-            var intBudgetLookupDefinition = (LookupDefinition<BudgetItemLookup, BudgetItem>)InterestBudgetAutoFillSetup.LookupDefinition;
+            var intBudgetLookupDefinition =
+                (LookupDefinition<BudgetItemLookup, BudgetItem>)InterestBudgetAutoFillSetup.LookupDefinition;
             intBudgetLookupDefinition.FilterDefinition.ClearFixedFilters();
 
             switch (AccountType)
             {
                 case BankAccountTypes.Checking:
                 case BankAccountTypes.Savings:
-                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals, (int)BudgetItemTypes.Income);
+                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
+                        (int)BudgetItemTypes.Income);
                     break;
                 case BankAccountTypes.CreditCard:
-                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals, (int)BudgetItemTypes.Expense);
+                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
+                        (int)BudgetItemTypes.Expense);
 
                     break;
                 default:
@@ -876,7 +891,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             TypeEnabled = false;
 
             newEntity = newEntity.FillOutProperties(false);
-            var payCCLookupDefinition = (LookupDefinition<BudgetItemLookup, BudgetItem>)CCPaymentBudgetAutoFillSetup.LookupDefinition;
+            var payCCLookupDefinition =
+                (LookupDefinition<BudgetItemLookup, BudgetItem>)CCPaymentBudgetAutoFillSetup.LookupDefinition;
             payCCLookupDefinition.FilterDefinition.ClearFixedFilters();
 
             switch ((BankAccountTypes)newEntity.AccountType)
@@ -886,7 +902,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         Conditions.Equals, newEntity.Id);
                     break;
             }
-            payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals, (int)BudgetItemTypes.Transfer);
+
+            payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
+                (int)BudgetItemTypes.Transfer);
 
             PayCCBudgetUiCommand.IsEnabled = true;
         }
@@ -943,7 +961,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var table = context.GetTable<BudgetItem>();
 
             if (!table.Any(p => p.BankAccountId == Id
-                && p.StartingDate != null))
+                                && p.StartingDate != null))
             {
                 return false;
             }
@@ -971,15 +989,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 //BankAccountView.LoadBank(entity);
                 var procedure = RingSoftAppGlobals.CreateAppProcedure();
-                procedure.DoAppProcedure += (sender, args) =>
-                {
-                    LoadFromEntityProcedure(entity);
-                };
+                procedure.DoAppProcedure += (sender, args) => { LoadFromEntityProcedure(entity); };
                 procedure.Start("Loading Bank Account");
 
                 if (CheckAllowGenTran(entity) && PendingGeneration)
                 {
-                    var message = "Click Generate Future Register Items From Budget to see what your bank balance will be in the future.\r\n\r\nYou can delete any Future Register row by right-clicking on the row and clicking Delete Row.";
+                    var message =
+                        "Click Generate Future Register Items From Budget to see what your bank balance will be in the future.\r\n\r\nYou can delete any Future Register row by right-clicking on the row and clicking Delete Row.";
                     var caption = "Future Forecast";
                     ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
                 }
@@ -988,7 +1004,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 var table = context.GetTable<History>();
                 var bankHasHistory = table.Any(p => p.BankAccountId == Id);
 
-                if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any() && !bankHasHistory)
+                if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any() &&
+                    !bankHasHistory)
                 {
                     var message =
                         "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Future Register Items and set actual amounts to Future Register Items and update the Bank Balance.\r\n\r\nIf you don't want to spend time adding actual values and your bank doesn't have the option to download QIF files, you can just update the Bank Balance and check Completed on the Future Register Items that have cleared on your bank account's bank statement.";
@@ -1113,7 +1130,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (BankAccountView.ShowBankAccountMiscWindow(registerItem, ViewModelInput))
             {
                 RegisterGridManager.AddGeneratedRegisterItems(new List<BankAccountRegisterItem> { registerItem });
-                
+
                 CalculateTotals();
                 AppGlobals.MainViewModel.RefreshView();
             }
@@ -1145,10 +1162,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 //BankAccountView.GenerateTransactions(generateToDate.Value);
                 var procedure = RingSoftAppGlobals.CreateAppProcedure();
-                procedure.DoAppProcedure += (sender, args) =>
-                {
-                    GenerateTransactions(generateToDate);
-                };
+                procedure.DoAppProcedure += (sender, args) => { GenerateTransactions(generateToDate); };
                 procedure.Start("Generating Future Register Items");
 
                 KeyAutoFillUiCommand.SetFocus();
@@ -1277,7 +1291,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             _doProcessCompletedRows = false;
             if (completedRows.Any() && _processCompletedRows)
             {
-                var message = "Do you wish to post the Completed rows to History and delete them from the Future Register?";
+                var message =
+                    "Do you wish to post the Completed rows to History and delete them from the Future Register?";
                 if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
                     MessageBoxButtonsResult.Yes)
                     _doProcessCompletedRows = true;
@@ -1474,6 +1489,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     splashWindow.SetProgress($"Processing Row {rowIndex} of {count}");
                 }
+
                 var amountDetails = new List<BankAccountRegisterItemAmountDetail>();
                 var registerItem = new BankAccountRegisterItem();
                 completedRow.SaveToEntity(registerItem, 0, amountDetails);
@@ -2130,6 +2146,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 return;
             }
+
             switch (AccountType)
             {
                 case BankAccountTypes.Checking:
@@ -2138,6 +2155,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     {
                         CalculateTotals();
                     }
+
                     break;
                 case BankAccountTypes.CreditCard:
                     switch (CreditCardOption)
@@ -2147,17 +2165,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             {
                                 CalculateTotals();
                             }
+
                             break;
                         case BankCreditCardOptions.PayOffEachMonth:
-                            if (CCPaymentBudgetAutoFillValue.IsValid() 
+                            if (CCPaymentBudgetAutoFillValue.IsValid()
                                 && PayCCBalanceDay > 0)
                             {
                                 GenerateInterest_PayCCRows(LastGenerationDate.GetValueOrDefault(), true, true);
                             }
+
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2181,12 +2202,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private void GenerateInterest_PayCCRows(DateTime genToDate, bool calcTotals, bool resetGen, bool waitCursor = true)
+        private void GenerateInterest_PayCCRows(DateTime genToDate, bool calcTotals, bool resetGen,
+            bool waitCursor = true)
         {
             if (waitCursor)
             {
                 ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
             }
+
             var registerItemsToAdd = new List<BankAccountRegisterItem>();
             BudgetItem? budgetItem = null;
             var refreshTransferFromBank = false;
@@ -2208,6 +2231,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2265,8 +2289,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private BudgetItem GeneratePayCCRegisterItems(DateTime genToDate, List<BankAccountRegisterItem> registerItemsToAdd
-        , bool reset = false)
+        private BudgetItem GeneratePayCCRegisterItems(DateTime genToDate,
+            List<BankAccountRegisterItem> registerItemsToAdd
+            , bool reset = false)
         {
             var budgetItem = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
             if (budgetItem == null)
@@ -2326,6 +2351,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     };
                     registerItemsToAdd.Add(fromRegisterItem);
                 }
+
                 itemDate = itemDate.AddMonths(1);
             }
 
@@ -2358,7 +2384,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             var fromRegisters = table.Where(p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank
-            && p.BankAccountId == budgetItem.BankAccountId);
+                                                 && p.BankAccountId == budgetItem.BankAccountId);
 
             foreach (var fromRegister in fromRegisters)
             {
@@ -2370,9 +2396,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             var bankOptions = new BankOptionsData
             {
-                BankAccountViewModel = this,
                 CreditCardOption = CreditCardOption,
             };
+
+            ShowBankOptions(bankOptions);
+        }
+
+        public void ShowBankOptions(BankOptionsData bankOptions)
+        {
+            bankOptions.BankAccountViewModel = this;
 
             BankAccountView.ShowBankOptionsWindow(bankOptions);
         }

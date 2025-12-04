@@ -16,13 +16,13 @@ namespace RingSoft.HomeLogix.Budget
     /// <summary>
     /// Interaction logic for BankOptionsWindow.xaml
     /// </summary>
-    public partial class BankOptionsWindow
+    public partial class BankOptionsWindow : IBankOptionsView
     {
         public BankOptionsWindow(BankOptionsData bankOptionsData)
         {
             InitializeComponent();
 
-            LocalViewModel.Initialize(bankOptionsData);
+            LocalViewModel.Initialize(this, bankOptionsData);
 
             var caption = LocalViewModel.BankOptionsData.BankAccountViewModel.AccountType switch
             {

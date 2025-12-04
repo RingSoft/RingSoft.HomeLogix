@@ -21,6 +21,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -63,9 +64,17 @@
 
                 <Label Grid.Row="3" Grid.Column="0" x:Name="PayCCDayLabel" Content="Credit Card Payment Day"/>
 
-                <dec:IntegerEditControl Grid.Row="3" Grid.Column="1" Width="50" HorizontalAlignment="Left" Value="{Binding PayCCBalanceDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding PayCCDayUiCommand}" UiLabel="{Binding ElementName=PayCCDayLabel}"/>
+                <dec:IntegerEditControl Grid.Row="3" Grid.Column="1" Width="50" HorizontalAlignment="Left" Value="{Binding PayCCBalanceDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" UiCommand="{Binding PayCCDayUiCommand}" UiLabel="{Binding ElementName=PayCCDayLabel}" MinimumValue="1" MaximumValue="31"/>
             </Grid>
         </GroupBox>
+
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,5" >
+
+            <Button Content="_OK" Width="50" Command="{Binding OkCommand}" IsDefault="True"/>
+
+            <Button Content="_Cancel" Margin="5,0,0,0" Width="50" Command="{Binding CancelCommand}" IsCancel="True"/>
+
+        </StackPanel>
     </Grid>
 
 </dec:BaseWindow>
