@@ -15,8 +15,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public bool IsTransferMisc { get; private set; }
 
-        public bool IsCCPayment { get; set; }
-
         public override string Description
         {
             get

@@ -411,21 +411,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             registerData.TransactionType = TransactionType.ToRegisterDataTranType();
 
-            switch (RegisterPayCCType)
-            {
-                case RegisterPayCCTypes.None:
-                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.None;
-                    break;
-                case RegisterPayCCTypes.FromBank:
-                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.FromBank;
-                    break;
-                case RegisterPayCCTypes.ToCC:
-                    registerData.RegisterPayCCType = MobileRegisterPayCCTypes.ToCC;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
             return registerData;
         }
 

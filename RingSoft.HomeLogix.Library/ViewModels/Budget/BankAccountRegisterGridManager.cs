@@ -143,15 +143,58 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var bankAccountRegisterGridRow in rows)
             {
-                var calcPrevBalance = false;
+                if ( bankAccountRegisterGridRow is BankAccountRegisterGridTransferRow transferRow1
+                    && bankAccountRegisterGridRow.RegisterPayCCType == RegisterPayCCTypes.ToCC)
+                {
+                    var statementDate = bankAccountRegisterGridRow.ItemDate.AddMonths(-1);
+                    statementDate = new DateTime(statementDate.Year, statementDate.Month,
+                        ViewModel.StatementDayOfMonth);
 
+                    var balanceRow = Rows.OfType<BankAccountRegisterGridRow>()
+                        .OrderBy(p => p.ItemDate)
+                        .ThenByDescending(p => p.ProjectedAmount)
+                        .LastOrDefault(p => p.ItemDate <= statementDate && p.Completed == false);
+
+                    var projectedAmount = 0.0;
+                    if (balanceRow == null)
+                    {
+                        if (bankAccountRegisterGridRow.ProjectedAmount == 0)
+                        {
+                            projectedAmount = ViewModel.CurrentBalance;
+                        }
+                        else
+                        {
+                            projectedAmount = bankAccountRegisterGridRow.ProjectedAmount;
+                        }
+                        bankAccountRegisterGridRow.PayCCAllowEdit = true;
+                    }
+                    else
+                    {
+                        bankAccountRegisterGridRow.PayCCAllowEdit = false;
+                        if (balanceRow.Balance != null)
+                        {
+                            projectedAmount = balanceRow.Balance.Value;
+                        }
+                    }
+
+                    var deposits = Rows.OfType<BankAccountRegisterGridRow>()
+                        .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.None
+                            && p.ItemDate >= statementDate
+                        && p.ItemDate < bankAccountRegisterGridRow.ItemDate
+                        && p.TransactionType == TransactionTypes.Deposit)
+                        .Sum(p => p.ProjectedAmount > 0 ? p.ProjectedAmount : 0);
+
+                    projectedAmount -= deposits;
+                    bankAccountRegisterGridRow.ProjectedAmount = projectedAmount;
+
+                    bankAccountRegisterGridRow.SaveToDbOnTheFly();
+                }
                 var registerData = bankAccountRegisterGridRow.GetRegisterData();
                 newBalance = BankAccountViewModel.CalcNewBalance(ViewModel.AccountType, registerData, newBalance);
 
                 if (registerData.ProjectedAmount.CompareTo(bankAccountRegisterGridRow.ProjectedAmount) != 0
-                    || calcPrevBalance)
+                    || bankAccountRegisterGridRow.RegisterPayCCType == RegisterPayCCTypes.ToCC)
                 {
-                    bankAccountRegisterGridRow.ProjectedAmount = registerData.ProjectedAmount;
                     switch (bankAccountRegisterGridRow.LineType)
                     {
                         case BankAccountRegisterItemTypes.BudgetItem:
@@ -185,8 +228,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             throw new ArgumentOutOfRangeException();
                     }
                 }
-
-                calcPrevBalance = false;
 
                 if (lowestBalanceDate == null)
                     lowestBalanceDate = bankAccountRegisterGridRow.ItemDate.AddDays(-1);
