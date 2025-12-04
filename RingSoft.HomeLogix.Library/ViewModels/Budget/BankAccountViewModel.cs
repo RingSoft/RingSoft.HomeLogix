@@ -799,7 +799,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override void ClearData()
         {
             _loading = true;
-
+            ShowBankOptionsCommand.IsEnabled = false;
             Id = 0;
             AccountType = BankAccountTypes.Checking;
             CurrentProjectedEndingBalance = 0;
@@ -891,6 +891,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             TypeEnabled = false;
 
             newEntity = newEntity.FillOutProperties(false);
+
             var payCCLookupDefinition =
                 (LookupDefinition<BudgetItemLookup, BudgetItem>)CCPaymentBudgetAutoFillSetup.LookupDefinition;
             payCCLookupDefinition.FilterDefinition.ClearFixedFilters();
@@ -907,6 +908,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 (int)BudgetItemTypes.Transfer);
 
             PayCCBudgetUiCommand.IsEnabled = true;
+            ShowBankOptionsCommand.IsEnabled = true;
         }
 
         protected override BankAccount GetEntityFromDb(BankAccount newEntity, PrimaryKeyValue primaryKeyValue)

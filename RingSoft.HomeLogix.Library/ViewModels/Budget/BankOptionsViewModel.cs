@@ -6,6 +6,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition;
+using RingSoft.DbLookup.QueryBuilder;
+using RingSoft.HomeLogix.DataAccess.LookupModel;
+using RingSoft.HomeLogix.Sqlite.Migrations;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -175,8 +180,72 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             View = view;
             BankOptionsData = bankOptionsData;
+
+            InterestBudgetAutoFillSetup =
+                new AutoFillSetup(AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.InterestBudgetId));
+
+            CCPaymentBudgetAutoFillSetup =
+                new AutoFillSetup(AppGlobals.LookupContext.BankAccounts.GetFieldDefinition(p => p.PayCCBalanceBudgetId));
+
+            var payCCLookupDefinition =
+                (LookupDefinition<BudgetItemLookup, BudgetItem>)CCPaymentBudgetAutoFillSetup.LookupDefinition;
+            payCCLookupDefinition.FilterDefinition.ClearFixedFilters();
+
+            switch (BankOptionsData.BankAccountViewModel.AccountType)
+            {
+                case BankAccountTypes.CreditCard:
+                    payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
+                        Conditions.Equals, BankOptionsData.BankAccountViewModel.Id);
+                    break;
+            }
+
+            payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
+                (int)BudgetItemTypes.Transfer);
+
+            SetupInterestAutoFillSetup();
+
             CreditCardOption = bankOptionsData.CreditCardOption;
+
+            switch (BankOptionsData.BankAccountViewModel.AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    InterestUiCommand.Caption = "Interest Payment Budget Item";
+                    CcOptionsUiCommand.Visibility = UiVisibilityTypes.Collapsed;
+                    break;
+                case BankAccountTypes.CreditCard:
+                    InterestUiCommand.Caption = "Interest Charge Budget Item";
+                    CcOptionsUiCommand.Visibility = UiVisibilityTypes.Visible;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
         }
+
+        private void SetupInterestAutoFillSetup()
+        {
+            var intBudgetLookupDefinition =
+                (LookupDefinition<BudgetItemLookup, BudgetItem>)InterestBudgetAutoFillSetup.LookupDefinition;
+            intBudgetLookupDefinition.FilterDefinition.ClearFixedFilters();
+
+            switch (BankOptionsData.BankAccountViewModel.AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
+                        (int)BudgetItemTypes.Income);
+                    break;
+                case BankAccountTypes.CreditCard:
+                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
+                        (int)BudgetItemTypes.Expense);
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
 
         public void SetPayCCVisibility()
         {
