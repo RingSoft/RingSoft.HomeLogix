@@ -23,6 +23,18 @@ using BankAccountRegisterItemTypes = RingSoft.HomeLogix.DataAccess.Model.BankAcc
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public class BankOptionsData
+    {
+        public BankAccountViewModel BankAccountViewModel { get; set; }
+        public BankCreditCardOptions CreditCardOption { get; set; }
+        public int StatementDayOfMonth { get; set; }
+        public double BankAccountIntrestRate { get; set; }
+        public BudgetItem InterestBudgetItem { get; set; }
+        public BudgetItem CCPaymentBudgetItem { get; set; }
+        public int PayCCBalanceDay { get; set; }
+        public bool DialogResut { get; set; }
+    }
+
     public interface IBankAccountView : IDbMaintenanceView
     {
         void EnableRegisterGrid(bool value);
@@ -44,6 +56,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void RefreshGrid(BankAccount bankAccount);
 
         void ToggleCompleteAll(bool completeAll);
+
+        void ShowBankOptionsWindow(BankOptionsData bankOptionsData);
+
+        void SetBankOptionsButtonCaption(string caption);
     }
 
     public class CompletedRegisterData
@@ -119,13 +135,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 switch (AccountType)
                 {
                     case BankAccountTypes.Checking:
+                        BankAccountView.SetBankOptionsButtonCaption("Checking Account");
+                        break;
                     case BankAccountTypes.Savings:
-                        InterestUiCommand.Caption = "Interest Payment Budget Item";
-                        CcOptionsUiCommand.Visibility = UiVisibilityTypes.Collapsed;
+                        BankAccountView.SetBankOptionsButtonCaption("Savings Account");
+                        //InterestUiCommand.Caption = "Interest Payment Budget Item";
+                        //CcOptionsUiCommand.Visibility = UiVisibilityTypes.Collapsed;
                         break;
                     case BankAccountTypes.CreditCard:
-                        InterestUiCommand.Caption = "Interest Charge Budget Item";
-                        CcOptionsUiCommand.Visibility = UiVisibilityTypes.Visible;
+                        BankAccountView.SetBankOptionsButtonCaption("Credit Card");
+                        //InterestUiCommand.Caption = "Interest Charge Budget Item";
+                        //CcOptionsUiCommand.Visibility = UiVisibilityTypes.Visible;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -620,6 +640,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public RelayCommand CompleteAllCommand { get; }
 
+        public RelayCommand ShowBankOptionsCommand { get; }
+
         public List<BankAccountRegisterItemAmountDetail> RegisterDetails { get; } =
             new List<BankAccountRegisterItemAmountDetail>();
 
@@ -660,6 +682,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public BankAccountViewModel()
         {
+            ShowBankOptionsCommand = new RelayCommand(ShowBankOptions);
+
             AddNewRegisterItemCommand = new RelayCommand(AddNewRegisterItem);
 
             GenerateRegisterItemsFromBudgetCommand = new RelayCommand(GenerateRegisterItemsFromBudget);
@@ -2340,7 +2364,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 context.DeleteEntity(fromRegister, "Deleting Pay CC Generated Row");
             }
+        }
 
+        private void ShowBankOptions()
+        {
+            BankAccountView.ShowBankOptionsWindow(new BankOptionsData());
         }
     }
 }

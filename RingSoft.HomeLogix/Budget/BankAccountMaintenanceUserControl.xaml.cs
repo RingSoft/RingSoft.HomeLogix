@@ -52,6 +52,11 @@ namespace RingSoft.HomeLogix.Budget
             hotKey.AddKey(Key.G);
             AddHotKey(hotKey);
 
+            hotKey = new HotKey(BankAccountViewModel.ShowBankOptionsCommand);
+            hotKey.AddKey(Key.B);
+            hotKey.AddKey(Key.O);
+            AddHotKey(hotKey);
+
             RegisterFormKeyControl(BankAccountControl);
             BankAccountViewModel.SetPayCCVisibility();
         }
@@ -164,6 +169,18 @@ namespace RingSoft.HomeLogix.Budget
             {
                 CompleteAllButton.Content = "Complete All";
             }
+        }
+
+        public void ShowBankOptionsWindow(BankOptionsData bankOptionsData)
+        {
+            
+        }
+
+        public void SetBankOptionsButtonCaption(string caption)
+        {
+            ShowBankOptionsButton.Content = $"{caption} Options";
+            ShowBankOptionsButton.ToolTip.HeaderText = $"Show {caption} Options (Ctrl + B, Ctrl + O)";
+            ShowBankOptionsButton.ToolTip.DescriptionText = $"Show {caption.ToLower()} options.";
         }
     }
 }

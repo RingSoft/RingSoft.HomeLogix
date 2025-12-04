@@ -81,5 +81,15 @@ namespace RingSoft.HomeLogix.Tests
         {
             
         }
+
+        public void ShowBankOptionsWindow(BankOptionsData bankOptionsData)
+        {
+            
+        }
+
+        public void SetBankOptionsButtonCaption(string caption)
+        {
+            
+        }
     }
 }

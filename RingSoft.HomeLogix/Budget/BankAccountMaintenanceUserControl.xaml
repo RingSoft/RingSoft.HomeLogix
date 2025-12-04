@@ -63,6 +63,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <Label Content="Bank Account ID"/>
@@ -76,6 +77,8 @@
                 <Label Grid.Row="0" Grid.Column="4" Content="Account Type"/>
 
                 <dec:TextComboBoxControl Grid.Row="0" Grid.Column="5" Setup="{Binding TypeSetup}" SelectedItem="{Binding TypeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" IsEnabled="{Binding TypeEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <dec:EnhancedButton Grid.Row="0" Grid.Column="6" x:Name="ShowBankOptionsButton" Command="{Binding ShowBankOptionsCommand}" IsTabStop="False" Margin="5,0,0,0"/>
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Current Balance"/>
 
