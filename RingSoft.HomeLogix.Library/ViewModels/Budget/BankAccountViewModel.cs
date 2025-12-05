@@ -790,7 +790,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 //BankAccountView.LoadBank(entity);
                 var procedure = RingSoftAppGlobals.CreateAppProcedure();
-                procedure.DoAppProcedure += (sender, args) => { LoadFromEntityProcedure(entity); };
+                procedure.DoAppProcedure += (sender, args) => { LoadFromEntityProcedure(entity, procedure); };
                 procedure.Start("Loading Bank Account");
 
                 if (CheckAllowGenTran(entity) && PendingGeneration)
@@ -827,7 +827,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        public void LoadFromEntityProcedure(BankAccount entity)
+        public void LoadFromEntityProcedure(BankAccount entity, IAppProcedure? procedure = null)
         {
             _completeGrid = false;
             BankAccountView.ToggleCompleteAll(false);
@@ -863,7 +863,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             PayCCBalanceDay = entity.PayCCBalanceDay;
 
             _loading = false;
-            CalculateTotals();
+            CalculateTotals(procedure:procedure);
 
             if (RegisterGridManager.MonthlyBudgetDeposits != 0)
             {
@@ -884,7 +884,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //        RsMessageBoxIcons.Exclamation);
         }
 
-        public void CalculateTotals(bool calculateProjectedBalanceData = true)
+        public void CalculateTotals(bool calculateProjectedBalanceData = true, IAppProcedure? procedure = null)
         {
             if (_loading)
                 return;
@@ -896,7 +896,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             if (calculateProjectedBalanceData)
-                RegisterGridManager.CalculateProjectedBalanceData();
+                RegisterGridManager.CalculateProjectedBalanceData(procedure);
 
             ProjectedEndingBalanceDifference = NewProjectedEndingBalance - CurrentProjectedEndingBalance;
 
@@ -2033,7 +2033,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (calcTotals)
             {
-                CalculateTotals();
+                CalculateTotals(procedure:procedure);
                 SetTotals(Entity);
             }
 
@@ -2051,7 +2051,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 RegisterGridManager.LoadGrid(bankAccount1.RegisterItems);
 
                 //Peter Ringering - 11/23/2024 05:02:40 PM - E-79
-                RegisterGridManager.CalculateProjectedBalanceData();
+                RegisterGridManager.CalculateProjectedBalanceData(procedure:procedure);
             }
 
             if (refreshTransferFromBank && calcTotals)
@@ -2173,7 +2173,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
 
                 registerToDelete.Add(existingRow.RegisterId);
-                RegisterGridManager.InternalRemoveRow(existingRow);
+                //RegisterGridManager.InternalRemoveRow(existingRow);
             }
 
             count = registerToDelete.Count;
@@ -2193,6 +2193,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     context.DeleteEntity(registerItem, "Deleting Pay CC Generated Row");
                 }
             }
+
+            var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
+            RegisterGridManager.LoadGrid(bankAccount.RegisterItems);
 
             var fromRegisters = table.Where(p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank
                                                  && p.BankAccountId == budgetItem.BankAccountId);
