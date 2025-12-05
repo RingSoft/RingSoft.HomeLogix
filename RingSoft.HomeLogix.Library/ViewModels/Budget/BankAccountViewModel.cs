@@ -32,6 +32,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public AutoFillValue InterestBudgetAutoFillValue { get; set; }
         public AutoFillValue CcPaymentBudgetaAutoFillValue { get; set; }
         public int PayCCBalanceDay { get; set; }
+        public bool Recalculate { get; set; }
         public bool DialogResult { get; set; }
     }
 
@@ -498,7 +499,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _statementDayOfMonth = value;
                 OnPropertyChanged();
-                CheckCalcBankInterest_CCPayment();
             }
         }
 
@@ -516,7 +516,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _bankAccountIntrestRate = value;
                 OnPropertyChanged();
-                CheckCalcBankInterest_CCPayment();
             }
         }
 
@@ -551,10 +550,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _interestBudgetAutoFillValue = value;
                 OnPropertyChanged(raiseDirtyFlag: InterestBudgetAutoFillSetup.SetDirty);
-                if (InterestBudgetAutoFillSetup.SetDirty)
-                {
-                    CheckCalcBankInterest_CCPayment();
-                }
             }
         }
 
@@ -608,10 +603,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 _cCPaymentBudgetAutoFillValue = value;
 
                 OnPropertyChanged(raiseDirtyFlag: CCPaymentBudgetAutoFillSetup.SetDirty);
-                if (CCPaymentBudgetAutoFillSetup.SetDirty)
-                {
-                    CheckCalcBankInterest_CCPayment();
-                }
             }
         }
 
@@ -629,7 +620,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _payCCBalanceDay = value;
                 OnPropertyChanged();
-                CheckCalcBankInterest_CCPayment();
             }
         }
 
@@ -2142,51 +2132,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ProjLowBalAmountUiCommand.Visibility = visibility;
         }
 
-        private void CheckCalcBankInterest_CCPayment()
-        {
-            if (_loading)
-            {
-                return;
-            }
-
-            switch (AccountType)
-            {
-                case BankAccountTypes.Checking:
-                case BankAccountTypes.Savings:
-                    if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
-                    {
-                        CalculateTotals();
-                    }
-
-                    break;
-                case BankAccountTypes.CreditCard:
-                    switch (CreditCardOption)
-                    {
-                        case BankCreditCardOptions.CarryBalance:
-                            if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
-                            {
-                                CalculateTotals();
-                            }
-
-                            break;
-                        case BankCreditCardOptions.PayOffEachMonth:
-                            if (CCPaymentBudgetAutoFillValue.IsValid()
-                                && PayCCBalanceDay > 0)
-                            {
-                                GenerateInterest_PayCCRows(LastGenerationDate.GetValueOrDefault(), true, true);
-                            }
-
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         public void SetPayCCVisibility()
         {
             switch (CreditCardOption)
@@ -2414,6 +2359,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             bankOptions.BankAccountViewModel = this;
 
             BankAccountView.ShowBankOptionsWindow(bankOptions);
+
+            if (bankOptions.DialogResult)
+            {
+                CreditCardOption = bankOptions.CreditCardOption;
+                StatementDayOfMonth = bankOptions.StatementDayOfMonth;
+                BankAccountIntrestRate = bankOptions.BankAccountIntrestRate;
+                InterestBudgetAutoFillValue = bankOptions.InterestBudgetAutoFillValue;
+                CCPaymentBudgetAutoFillValue = bankOptions.CcPaymentBudgetaAutoFillValue;
+                PayCCBalanceDay = bankOptions.PayCCBalanceDay;
+                RecordDirty = true;
+
+                if (bankOptions.Recalculate)
+                {
+                    GenerateInterest_PayCCRows(LastGenerationDate.GetValueOrDefault(), true, true);
+                }
+            }
         }
     }
 }

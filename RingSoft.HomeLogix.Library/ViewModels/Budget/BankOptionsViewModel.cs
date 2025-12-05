@@ -4,8 +4,10 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.Lookup;
 using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.QueryBuilder;
@@ -278,15 +280,158 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
+        private async void CheckRecalculate()
+        {
+            BankOptionsData.Recalculate = false;
+            {
+                var message =
+                    "Do you wish to recalculate the Register Grid?  All existing calculations will be lost.";
+                if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Recalculate") ==
+                    MessageBoxButtonsResult.Yes)
+                    BankOptionsData.Recalculate = true;
+            }
+        }
+
         private void OnOK()
         {
             BankOptionsData.DialogResult = true;
 
+            var recalc = false;
+            if (BankOptionsData.StatementDayOfMonth != StatementDayOfMonth)
+            {
+                BankOptionsData.StatementDayOfMonth = StatementDayOfMonth;
+                recalc = true;
+            }
+
+            if (Math.Abs(BankOptionsData.BankAccountIntrestRate - BankAccountIntrestRate) > 0.0001)
+            {
+                BankOptionsData.BankAccountIntrestRate = BankAccountIntrestRate;
+                recalc = true;
+            }
+
+            if (BankOptionsData.InterestBudgetAutoFillValue.GetEntity<BudgetItem>().Id
+                != InterestBudgetAutoFillValue.GetEntity<BudgetItem>().Id)
+            {
+                BankOptionsData.InterestBudgetAutoFillValue = InterestBudgetAutoFillValue;
+                recalc = true;
+            }
+
+            if (BankOptionsData.CreditCardOption != CreditCardOption)
+            {
+                BankOptionsData.CreditCardOption = CreditCardOption;
+                recalc = true;
+            }
+
+            if (BankOptionsData.CcPaymentBudgetaAutoFillValue.GetEntity<BudgetItem>().Id
+                != CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>().Id)
+            {
+                BankOptionsData.CcPaymentBudgetaAutoFillValue = CCPaymentBudgetAutoFillValue;
+                recalc = true;
+            }
+
+            if (BankOptionsData.PayCCBalanceDay != PayCCBalanceDay)
+            {
+                BankOptionsData.PayCCBalanceDay = PayCCBalanceDay;
+                recalc = true;
+            }
+
+            if (recalc)
+            {
+                if (!ValidateData())
+                {
+                    return;
+                }
+            }
+            
+            if (BankOptionsData.BankAccountViewModel.RegisterGridManager.Rows.Any())
+            {
+                BankOptionsData.Recalculate = recalc;
+                CheckRecalculate();
+            }
+
+            BankOptionsData.StatementDayOfMonth = StatementDayOfMonth;
+            BankOptionsData.BankAccountIntrestRate = BankAccountIntrestRate;
+            BankOptionsData.InterestBudgetAutoFillValue = InterestBudgetAutoFillValue;
+            BankOptionsData.CreditCardOption = CreditCardOption;
+            BankOptionsData.CcPaymentBudgetaAutoFillValue = CCPaymentBudgetAutoFillValue;
+            BankOptionsData.PayCCBalanceDay = PayCCBalanceDay;
+
             View.Close();
         }
 
+        private bool ValidateData()
+        {
+            switch (BankOptionsData.BankAccountViewModel.AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        ControlsGlobals.UserInterface.ShowMessageBox(
+                            "You must specify an interest rate and an interest budget item."
+                            , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                        return false;
+                    }
+
+                    break;
+                case BankAccountTypes.CreditCard:
+                    switch (CreditCardOption)
+                    {
+                        case BankCreditCardOptions.CarryBalance:
+                            if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                ControlsGlobals.UserInterface.ShowMessageBox(
+                                    "You must specify an interest rate and an interest budget item."
+                                    , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                return false;
+                            }
+                            break;
+                        case BankCreditCardOptions.PayOffEachMonth:
+                            if (CCPaymentBudgetAutoFillValue.IsValid()
+                                && PayCCBalanceDay > 0)
+                            {
+                                var budgetItem = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>().FillOutProperties(false);
+                                if (budgetItem.TransferToBankAccountId != BankOptionsData.BankAccountViewModel.Id)
+                                {
+                                    ControlsGlobals.UserInterface.ShowMessageBox(
+                                        "The credit card payment budget item must be a transfer to this credit card account."
+                                        , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                    return false;
+                                }
+                                return true;
+                            }
+                            else
+                            {
+                                ControlsGlobals.UserInterface.ShowMessageBox(
+                                    "You must specify credit card payment budget item."
+                                    , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                return false;
+                            }
+
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return false;
+        }
+
+
         private void OnCancel()
         {
+            BankOptionsData.Recalculate = false;
             BankOptionsData.DialogResult = false;
 
             View.Close();

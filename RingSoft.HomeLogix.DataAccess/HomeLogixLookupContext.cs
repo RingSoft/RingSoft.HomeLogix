@@ -436,6 +436,9 @@ namespace RingSoft.HomeLogix.DataAccess
 
             BankAccounts.GetFieldDefinition(p => p.Notes).IsMemo();
 
+            BankAccounts.GetFieldDefinition(p => p.InterestBudgetId).DoAllowRecursion(false);
+            BankAccounts.GetFieldDefinition(p => p.PayCCBalanceBudgetId).DoAllowRecursion(false);
+
             BankAccountRegisterItemAmountDetails.GetFieldDefinition(p => p.Amount)
                 .HasDecimalFieldType(DecimalFieldTypes.Currency);
 
