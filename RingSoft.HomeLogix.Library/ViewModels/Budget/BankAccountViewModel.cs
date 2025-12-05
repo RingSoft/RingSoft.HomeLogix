@@ -1180,6 +1180,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             budgetItem.BankAccount = null;
                             budgetItem.TransferToBankAccount = null;
+                            budgetItem.CCPaymentBankAccounts.Clear();
                             if (!context.SaveNoCommitEntity(budgetItem,
                                     $"Saving Budget Item '{budgetItem.Description}'"))
                                 return false;

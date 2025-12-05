@@ -82,7 +82,7 @@
 
                 <Label Grid.Row="1" Grid.Column="0" Content="Current Balance"/>
 
-                <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left" ReadOnlyMode="True"/>
+                <dec:DecimalEditControl Grid.Row="1" Grid.Column="1" Value="{Binding Path=CurrentBalance, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FormatType="Currency" TextAlignment="Left" DesignText="$123,456,789.12" Width="120" HorizontalAlignment="Left" ReadOnlyMode="True"/>
 
                 <Button Grid.Row="1" Grid.Column="2" x:Name="CompleteAllButton" Content="Complete All" Command="{Binding CompleteAllCommand}" IsTabStop="False"/>
 

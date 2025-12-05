@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine.DataEntryGrid;
 using RingSoft.DbLookup;
 using RingSoft.DbMaintenance;
@@ -126,13 +127,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return result;
         }
 
-        public void CalculateProjectedBalanceData()
+        public void CalculateProjectedBalanceData(IAppProcedure? procedure = null)
         {
             var newBalance = ViewModel.CurrentBalance;
             var lowestBalance = newBalance;
             DateTime? lowestBalanceDate = null;
 
             var rows = Rows.OfType<BankAccountRegisterGridRow>();
+            var count = rows.Count();
+            var index = 0;
 
             //09/30/2024
             //var bankTotals =
@@ -143,6 +146,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             foreach (var bankAccountRegisterGridRow in rows)
             {
+                index++;
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Calculating row {index} / {count}");
+                }
+
                 if ( bankAccountRegisterGridRow is BankAccountRegisterGridTransferRow transferRow1
                     && bankAccountRegisterGridRow.RegisterPayCCType == RegisterPayCCTypes.ToCC)
                 {
