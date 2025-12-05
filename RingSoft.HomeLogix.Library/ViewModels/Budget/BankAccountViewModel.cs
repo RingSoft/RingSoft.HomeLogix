@@ -1035,7 +1035,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
                 budgetItems, null, bankAccount);
 
-            CalculateTotals();
+            CalculateTotals(procedure:procedure);
 
             SetTotals(bankAccount);
 
@@ -1106,7 +1106,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         }
 
         private async void CheckProcessCompletedData(List<BankAccountRegisterGridRow> completedRows
-            , CompletedRegisterData completedRegisterData)
+            , CompletedRegisterData completedRegisterData
+            , IAppProcedure? procedure = null)
         {
             _saveEntity = true;
             _doProcessCompletedRows = false;
@@ -1114,24 +1115,66 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 var message =
                     "Do you wish to post the Completed rows to History and delete them from the Future Register?";
-                if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, "Post Completed") ==
-                    MessageBoxButtonsResult.Yes)
-                    _doProcessCompletedRows = true;
+                var caption = "Post Completed Rows";
+
+                if (procedure == null)
+                {
+                    if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                        MessageBoxButtonsResult.Yes)
+                        _doProcessCompletedRows = true;
+                }
+                else
+                {
+                    _doProcessCompletedRows = procedure.SplashWindow.ShowYesNoMessageBox(message, caption);
+                }
             }
 
             if (_doProcessCompletedRows)
-                if (!ProcessCompletedRows(completedRegisterData, completedRows))
+                if (!ProcessCompletedRows(completedRegisterData, completedRows, procedure))
                     _saveEntity = false;
         }
 
         protected override bool SaveEntity(BankAccount entity)
         {
+            var result = true;
+            if (SystemGlobals.UnitTestMode)
+            {
+                result = SaveEntityProcedure(entity);
+                return result;
+            }
+
+            var procedure = RingSoftAppGlobals.CreateAppProcedure();
+            procedure.DoAppProcedure += (sender, args) => { result = SaveEntityProcedure(entity, procedure); };
+            procedure.Start("Saving Bank Account");
+
+            if (result)
+            {
+                if (RegisterGridManager.Rows.Any())
+                {
+                    var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);
+                    var newFirstDate = rows.FirstOrDefault().ItemDate;
+                    if (newFirstDate.Month != _firstRegisterDate.Month)
+                    {
+                        GenerateRegisterItemsFromBudgetCommand.Execute(null);
+                        AppGlobals.MainViewModel.SetCurrentMonthEnding(newFirstDate);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private bool SaveEntityProcedure(BankAccount entity, IAppProcedure? procedure = null)
+        {
+            var result = true;
+            var index = 0;
+            var count = 0;
+
             var completedRows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>()
                 .Where(w => w.Completed).ToList();
 
             var completedRegisterData = new CompletedRegisterData();
 
-            CheckProcessCompletedData(completedRows, completedRegisterData);
+            CheckProcessCompletedData(completedRows, completedRegisterData, procedure);
             if (!_saveEntity)
             {
                 return false;
@@ -1144,9 +1187,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     return false;
                 if (completedRegisterData != null)
                 {
+                    count = completedRegisterData.BankAccountPeriodHistoryRecords.Count;
+                    index = 0;
                     foreach (var bankAccountPeriodHistoryRecord in
                              completedRegisterData.BankAccountPeriodHistoryRecords)
                     {
+                        if (procedure != null)
+                        {
+                            procedure.SplashWindow.SetProgress($"Processing Bank Period {bankAccountPeriodHistoryRecord.PeriodEndingDate.ToShortDateString()}");
+                        }
                         var bankAccountPeriodHistory = context.GetTable<BankAccountPeriodHistory>();
                         if (bankAccountPeriodHistory.Any(a =>
                                 a.PeriodType == bankAccountPeriodHistoryRecord.PeriodType &&
@@ -1186,9 +1235,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                 return false;
                         }
 
-
                         foreach (var budgetPeriodHistoryRecord in completedRegisterData.BudgetPeriodHistoryRecords)
                         {
+                            if (procedure != null)
+                            {
+                                procedure.SplashWindow.SetProgress($"Processing Budget Period {budgetPeriodHistoryRecord.PeriodEndingDate.ToShortDateString()}");
+                            }
+
                             budgetPeriodHistoryRecord.BudgetItem = null;
                             if (!AppGlobals.DataRepository.SaveBudgetPeriodRecord(context, budgetPeriodHistoryRecord))
                                 return false;
@@ -1209,7 +1262,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             }
 
-            var result = context.Commit($"Saving Bank Account '{entity.Description}");
+            result = context.Commit($"Saving Bank Account '{entity.Description}");
             if (result)
             {
                 _recordSaved = true;
@@ -1238,7 +1291,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     RegisterGridManager.InternalRemoveRow(completedRow);
                 }
 
-                CalculateTotals();
+                CalculateTotals(procedure:procedure);
 
                 if (RegisterGridManager.Rows.Any())
                 {
@@ -1264,22 +1317,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
 
             result = true;
-            if (RegisterGridManager.Rows.Any())
-            {
-                var rows = RegisterGridManager.Rows.OfType<BankAccountRegisterGridRow>().OrderBy(p => p.ItemDate);
-                var newFirstDate = rows.FirstOrDefault().ItemDate;
-                if (newFirstDate.Month != _firstRegisterDate.Month)
-                {
-                    GenerateRegisterItemsFromBudgetCommand.Execute(null);
-                    AppGlobals.MainViewModel.SetCurrentMonthEnding(newFirstDate);
-                }
-            }
 
             return result;
         }
 
         private bool ProcessCompletedRows(CompletedRegisterData completedRegisterData,
-            List<BankAccountRegisterGridRow> completedRows)
+            List<BankAccountRegisterGridRow> completedRows
+            , IAppProcedure? procedure = null)
         {
             if (SystemGlobals.UnitTestMode)
             {
@@ -1288,12 +1332,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             else
             {
                 //BankAccountView.PostRegister(completedRegisterData, completedRows);
-                var procedure = RingSoftAppGlobals.CreateAppProcedure();
-                procedure.DoAppProcedure += (sender, args) =>
+                if (procedure == null)
+                {
+                    procedure = RingSoftAppGlobals.CreateAppProcedure();
+                    procedure.DoAppProcedure += (sender, args) =>
+                    {
+                        PostTransactions(completedRegisterData, completedRows, procedure.SplashWindow);
+                    };
+                    procedure.Start("Posting Register");
+                }
+                else
                 {
                     PostTransactions(completedRegisterData, completedRows, procedure.SplashWindow);
-                };
-                procedure.Start("Posting Register");
+                }
             }
 
             return true;
