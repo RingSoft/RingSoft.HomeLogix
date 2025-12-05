@@ -21,11 +21,9 @@ namespace RingSoft.HomeLogix.Budget
     /// </summary>
     public partial class BankAccountMaintenanceUserControl : IBankAccountView
     {
-        private VmUiControl _ccGroupUiCommand;
         public BankAccountMaintenanceUserControl()
         {
             InitializeComponent();
-            _ccGroupUiCommand = new VmUiControl(CCOptionsGroup, BankAccountViewModel.CcOptionsUiCommand);
 
             TopHeaderControl.Loaded += (sender, args) =>
             {
@@ -58,7 +56,6 @@ namespace RingSoft.HomeLogix.Budget
             AddHotKey(hotKey);
 
             RegisterFormKeyControl(BankAccountControl);
-            BankAccountViewModel.SetPayCCVisibility();
         }
 
         protected override DbMaintenanceViewModelBase OnGetViewModel()

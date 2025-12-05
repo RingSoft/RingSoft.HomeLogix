@@ -153,7 +153,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
 
                 OnPropertyChanged();
-                SetupInterestAutoFillSetup();
             }
         }
 
@@ -484,146 +483,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 OnPropertyChanged(null, false);
             }
         }
-
-        private int _statementDayOfMonth;
-
-        public int StatementDayOfMonth
-        {
-            get => _statementDayOfMonth;
-            set
-            {
-                if (_statementDayOfMonth == value)
-                {
-                    return;
-                }
-
-                _statementDayOfMonth = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _bankAccountIntrestRate;
-
-        public double BankAccountIntrestRate
-        {
-            get => _bankAccountIntrestRate;
-            set
-            {
-                if (_bankAccountIntrestRate == value)
-                {
-                    return;
-                }
-
-                _bankAccountIntrestRate = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private AutoFillSetup _interestBudgetAutoFillSetup;
-
-        public AutoFillSetup InterestBudgetAutoFillSetup
-        {
-            get => _interestBudgetAutoFillSetup;
-            set
-            {
-                if (_interestBudgetAutoFillSetup == value)
-                {
-                    return;
-                }
-
-                _interestBudgetAutoFillSetup = value;
-                OnPropertyChanged(raiseDirtyFlag: false);
-            }
-        }
-
-        private AutoFillValue _interestBudgetAutoFillValue;
-
-        public AutoFillValue InterestBudgetAutoFillValue
-        {
-            get => _interestBudgetAutoFillValue;
-            set
-            {
-                if (_interestBudgetAutoFillValue == value)
-                {
-                    return;
-                }
-
-                _interestBudgetAutoFillValue = value;
-                OnPropertyChanged(raiseDirtyFlag: InterestBudgetAutoFillSetup.SetDirty);
-            }
-        }
-
-        private BankCreditCardOptions _creditCardOption;
-
-        public BankCreditCardOptions CreditCardOption
-        {
-            get => _creditCardOption;
-            set
-            {
-                if (_creditCardOption == value)
-                {
-                    return;
-                }
-
-                _creditCardOption = value;
-                OnPropertyChanged();
-                SetPayCCVisibility();
-            }
-        }
-
-        private AutoFillSetup _cCPaymentBudgetaAutoFillSetup;
-
-        public AutoFillSetup CCPaymentBudgetAutoFillSetup
-        {
-            get => _cCPaymentBudgetaAutoFillSetup;
-            set
-            {
-                if (_cCPaymentBudgetaAutoFillSetup == value)
-                {
-                    return;
-                }
-
-                _cCPaymentBudgetaAutoFillSetup = value;
-                OnPropertyChanged(raiseDirtyFlag: false);
-            }
-        }
-
-        private AutoFillValue _cCPaymentBudgetAutoFillValue;
-
-        public AutoFillValue CCPaymentBudgetAutoFillValue
-        {
-            get => _cCPaymentBudgetAutoFillValue;
-            set
-            {
-                if (_cCPaymentBudgetAutoFillValue == value)
-                {
-                    return;
-                }
-
-                _cCPaymentBudgetAutoFillValue = value;
-
-                OnPropertyChanged(raiseDirtyFlag: CCPaymentBudgetAutoFillSetup.SetDirty);
-            }
-        }
-
-        private int _payCCBalanceDay;
-
-        public int PayCCBalanceDay
-        {
-            get => _payCCBalanceDay;
-            set
-            {
-                if (_payCCBalanceDay == value)
-                {
-                    return;
-                }
-
-                _payCCBalanceDay = value;
-                OnPropertyChanged();
-            }
-        }
-
         #endregion
+
+        public int StatementDayOfMonth { get; set; }
+        public double BankAccountIntrestRate { get; set; }
+        public AutoFillValue InterestBudgetAutoFillValue { get; set; }
+        public BankCreditCardOptions CreditCardOption { get; set; }
+        public AutoFillValue CCPaymentBudgetAutoFillValue { get; set; }
+        public int PayCCBalanceDay { get; set; }
 
         public int InitRegisterId { get; private set; }
 
@@ -653,14 +520,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public UiCommand ProjLowBalDateUiCommand { get; } = new UiCommand();
 
         public UiCommand ProjLowBalAmountUiCommand { get; } = new UiCommand();
-
-        public UiCommand InterestUiCommand { get; } = new UiCommand();
-
-        public UiCommand CcOptionsUiCommand { get; } = new UiCommand();
-
-        public UiCommand PayCCBudgetUiCommand { get; } = new UiCommand();
-
-        public UiCommand PayCCDayUiCommand { get; } = new UiCommand();
 
         public bool PendingGeneration { get; private set; }
 
@@ -706,13 +565,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             PrintProcessingHeader += BankAccountViewModel_PrintProcessingHeader;
 
             RegisterGridManager = new BankAccountRegisterGridManager(this);
-
-            InterestBudgetAutoFillSetup =
-                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.InterestBudgetId));
-
-            CCPaymentBudgetAutoFillSetup =
-                new AutoFillSetup(TableDefinition.GetFieldDefinition(p => p.PayCCBalanceBudgetId));
-
         }
 
         protected override void Initialize()
@@ -763,29 +615,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             base.OnRecordDirtyChanged(newValue);
         }
 
-        private void SetupInterestAutoFillSetup()
-        {
-            var intBudgetLookupDefinition =
-                (LookupDefinition<BudgetItemLookup, BudgetItem>)InterestBudgetAutoFillSetup.LookupDefinition;
-            intBudgetLookupDefinition.FilterDefinition.ClearFixedFilters();
-
-            switch (AccountType)
-            {
-                case BankAccountTypes.Checking:
-                case BankAccountTypes.Savings:
-                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
-                        (int)BudgetItemTypes.Income);
-                    break;
-                case BankAccountTypes.CreditCard:
-                    intBudgetLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
-                        (int)BudgetItemTypes.Expense);
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         protected override void ClearData()
         {
             _loading = true;
@@ -834,8 +663,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CreditCardOption = BankCreditCardOptions.CarryBalance;
             PayCCBalanceDay = 1;
 
-            PayCCBudgetUiCommand.IsEnabled = false;
-
             _loading = false;
         }
 
@@ -880,24 +707,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             TypeEnabled = false;
 
-            newEntity = newEntity.FillOutProperties(false);
-
-            var payCCLookupDefinition =
-                (LookupDefinition<BudgetItemLookup, BudgetItem>)CCPaymentBudgetAutoFillSetup.LookupDefinition;
-            payCCLookupDefinition.FilterDefinition.ClearFixedFilters();
-
-            switch ((BankAccountTypes)newEntity.AccountType)
-            {
-                case BankAccountTypes.CreditCard:
-                    payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
-                        Conditions.Equals, newEntity.Id);
-                    break;
-            }
-
-            payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.Type, Conditions.Equals,
-                (int)BudgetItemTypes.Transfer);
-
-            PayCCBudgetUiCommand.IsEnabled = true;
             ShowBankOptionsCommand.IsEnabled = true;
         }
 
@@ -2152,23 +1961,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             ProjLowBalAmountUiCommand.Visibility = visibility;
         }
 
-        public void SetPayCCVisibility()
-        {
-            switch (CreditCardOption)
-            {
-                case BankCreditCardOptions.CarryBalance:
-                    PayCCBudgetUiCommand.Visibility = UiVisibilityTypes.Collapsed;
-                    PayCCDayUiCommand.Visibility = UiVisibilityTypes.Collapsed;
-                    break;
-                case BankCreditCardOptions.PayOffEachMonth:
-                    PayCCBudgetUiCommand.Visibility = UiVisibilityTypes.Visible;
-                    PayCCDayUiCommand.Visibility = UiVisibilityTypes.Visible;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         private void GenerateInterest_PayCCRows(DateTime genToDate
             , bool calcTotals
             , bool resetGen
@@ -2185,7 +1977,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         , null
                         , procedure);
                 };
-                procedure.Start("Generating Interest and Pay Credit Card Rows");
+                procedure.Start("Generating Rows");
                 return;
             }
 
