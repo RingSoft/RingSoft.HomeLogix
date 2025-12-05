@@ -1154,14 +1154,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 //BankAccountView.GenerateTransactions(generateToDate.Value);
                 var procedure = RingSoftAppGlobals.CreateAppProcedure();
-                procedure.DoAppProcedure += (sender, args) => { GenerateTransactions(generateToDate); };
+                procedure.DoAppProcedure += (sender, args) => { GenerateTransactions(generateToDate, procedure); };
                 procedure.Start("Generating Future Register Items");
 
                 KeyAutoFillUiCommand.SetFocus();
             }
         }
 
-        public void GenerateTransactions(DateTime? generateToDate)
+        public void GenerateTransactions(DateTime? generateToDate, IAppProcedure? procedure = null)
         {
             if (generateToDate == null)
                 return;
@@ -1170,20 +1170,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (budgetItems == null)
                 return;
 
+            var count = budgetItems.Count;
+
             var newBankAccount = GetEntityData();
 
             var registerItems = new List<BankAccountRegisterItem>();
 
+            var index = 0;
             foreach (var budgetItem in budgetItems)
             {
+                index++;
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Processing Budget Item {budgetItem.Description} {index} / {count}");
+                }
                 registerItems.AddRange(
                     BudgetItemProcessor.GenerateBankAccountRegisterItems(Id, budgetItem, generateToDate.Value));
             }
 
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id, false);
 
+            DateTime? generateInt_PayCCStartingDate = null;
             if (registerItems.Any())
             {
+                generateInt_PayCCStartingDate = registerItems.LastOrDefault().ItemDate;
                 bankAccount.PendingGeneration = PendingGeneration = false;
                 if (ViewModelInput.BudgetRefresh != null)
                 {
@@ -1198,9 +1208,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 registerItem.BudgetItem = budgetItems.FirstOrDefault(f => f.Id == registerItem.BudgetItemId);
             }
 
+            var lastRow = RegisterGridManager.Rows
+                .OfType<BankAccountRegisterGridRow>()
+                .OrderBy(o => o.ItemDate)
+                .LastOrDefault();
+
             RegisterGridManager.AddGeneratedRegisterItems(registerItems.Where(w => w.BankAccountId == Id));
 
-            GenerateInterest_PayCCRows(generateToDate.GetValueOrDefault(), false, false, false);
+            
+            GenerateInterest_PayCCRowsProcedure(generateToDate.GetValueOrDefault()
+                , false
+                , false
+                , lastRow
+                , procedure);
 
             var test = RegisterGridManager.Rows;
             AppGlobals.DataRepository.SaveGeneratedRegisterItems(registerItems,
@@ -2149,16 +2169,37 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             }
         }
 
-        private void GenerateInterest_PayCCRows(DateTime genToDate, bool calcTotals, bool resetGen,
-            bool waitCursor = true)
+        private void GenerateInterest_PayCCRows(DateTime genToDate
+            , bool calcTotals
+            , bool resetGen
+            , IAppProcedure? procedure = null)
         {
-            if (waitCursor)
+            if (procedure == null && resetGen)
             {
-                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
+                procedure = RingSoftAppGlobals.CreateAppProcedure();
+                procedure.DoAppProcedure += (sender, args) =>
+                {
+                    GenerateInterest_PayCCRowsProcedure(genToDate
+                        , calcTotals
+                        , resetGen
+                        , null
+                        , procedure);
+                };
+                procedure.Start("Generating Interest and Pay Credit Card Rows");
+                return;
             }
 
+            GenerateInterest_PayCCRowsProcedure(genToDate, calcTotals, resetGen);
+        }
+
+        private void GenerateInterest_PayCCRowsProcedure(DateTime genToDate
+            , bool calcTotals
+            , bool resetGen
+            , BankAccountRegisterGridRow? startingRow = null
+            , IAppProcedure? procedure = null)
+        {
             var registerItemsToAdd = new List<BankAccountRegisterItem>();
-            BudgetItem? budgetItem = null;
+            BudgetItem budgetItem = null;
             var refreshTransferFromBank = false;
 
             switch (AccountType)
@@ -2172,7 +2213,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         case BankCreditCardOptions.CarryBalance:
                             break;
                         case BankCreditCardOptions.PayOffEachMonth:
-                            budgetItem = GeneratePayCCRegisterItems(genToDate, registerItemsToAdd, resetGen);
+                            budgetItem = GeneratePayCCRegisterItems(genToDate, registerItemsToAdd, procedure, startingRow, resetGen);
                             refreshTransferFromBank = true;
                             break;
                         default:
@@ -2229,15 +2270,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     bankAccountViewModel.RefreshFromDb();
                 }
             }
-
-            if (waitCursor)
-            {
-                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
-            }
         }
 
         private BudgetItem GeneratePayCCRegisterItems(DateTime genToDate,
             List<BankAccountRegisterItem> registerItemsToAdd
+            , IAppProcedure? procedure
+            , BankAccountRegisterGridRow? startingRow = null
             , bool reset = false)
         {
             var budgetItem = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
@@ -2247,7 +2285,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             if (reset)
             {
-                ResetGenPayCCRows(budgetItem);
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress("Deleting existing credit card existing rows.");
+                }
+                ResetGenPayCCRows(budgetItem, procedure);
             }
 
             var firstRow = RegisterGridManager.Rows
@@ -2255,11 +2297,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 .OrderBy(o => o.ItemDate)
                 .FirstOrDefault();
 
+            if (startingRow != null)
+            {
+                firstRow = startingRow;
+            }
+
             var itemDate = new DateTime(firstRow.ItemDate.Year, firstRow.ItemDate.Month, PayCCBalanceDay);
             itemDate = itemDate.AddMonths(1);
 
             while (itemDate <= genToDate)
             {
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Processing credit card payment date: {itemDate.ToShortDateString()}");
+                }
                 var existRow = RegisterGridManager
                     .Rows.OfType<BankAccountRegisterGridTransferRow>()
                     .FirstOrDefault(p => p.ItemDate == itemDate
@@ -2305,7 +2356,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return budgetItem;
         }
 
-        private void ResetGenPayCCRows(BudgetItem budgetItem)
+        private void ResetGenPayCCRows(BudgetItem budgetItem, IAppProcedure? procedure)
         {
             var context = SystemGlobals.DataRepository.GetDataContext();
             var table = context.GetTable<BankAccountRegisterItem>();
@@ -2315,14 +2366,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 .OfType<BankAccountRegisterGridTransferRow>()
                 .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.ToCC)
                 .ToList();
+
+            var count = existingRows.Count;
+
+            var index = 0;
+
             foreach (var existingRow in existingRows)
             {
+                index++;
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Deleting credit card deposit row {index} of {count}.");
+                }
+
                 registerToDelete.Add(existingRow.RegisterId);
                 RegisterGridManager.InternalRemoveRow(existingRow);
             }
 
+            count = registerToDelete.Count;
+
+            index = 0;
+
             foreach (var registerId in registerToDelete)
             {
+                index++;
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Deleting credit card deposit row {index} of {count}.");
+                }
                 var registerItem = table.FirstOrDefault(p => p.Id == registerId);
                 if (registerItem != null)
                 {
@@ -2333,8 +2404,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var fromRegisters = table.Where(p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank
                                                  && p.BankAccountId == budgetItem.BankAccountId);
 
+            index = 0;
+            count = fromRegisters.Count();
+
+
             foreach (var fromRegister in fromRegisters)
             {
+                index++;
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Deleting credit card payment row {index} of {count}.");
+                }
+
                 context.DeleteEntity(fromRegister, "Deleting Pay CC Generated Row");
             }
         }

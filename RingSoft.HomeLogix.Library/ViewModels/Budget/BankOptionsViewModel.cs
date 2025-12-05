@@ -348,6 +348,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 BankOptionsData.Recalculate = recalc;
                 CheckRecalculate();
             }
+            else
+            {
+                BankOptionsData.Recalculate = false;
+            }
 
             BankOptionsData.StatementDayOfMonth = StatementDayOfMonth;
             BankOptionsData.BankAccountIntrestRate = BankAccountIntrestRate;
