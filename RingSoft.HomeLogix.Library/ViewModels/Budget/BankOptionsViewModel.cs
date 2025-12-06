@@ -346,7 +346,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (BankOptionsData.BankAccountViewModel.RegisterGridManager.Rows.Any())
             {
                 BankOptionsData.Recalculate = recalc;
-                CheckRecalculate();
+                if (!recalc)
+                {
+                    CheckRecalculate();
+                }
             }
             else
             {

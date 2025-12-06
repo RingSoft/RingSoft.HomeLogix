@@ -16,6 +16,13 @@ using RingSoft.DbLookup;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Main
 {
+    public class UpgradeBankData
+    {
+        public BankAccount BankAccount { get; set; }
+        public int PayCCDay { get; set; }
+        public BudgetItem PayCCBudgetItem { get; set; }
+        public bool DialogResult { get; set; }
+    }
     public class MainBudgetData
     {
         public MainBudget BudgetObj { get; set; }
@@ -258,6 +265,85 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 //BudgetLookupDefinition = CreateBudgetLookupDefinition(true);
                 RefreshView();
             }
+            CheckCCUpgrade();
+        }
+
+        private async void CheckCCUpgrade()
+        {
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var regTable = context.GetTable<BankAccountRegisterItem>();
+
+            var banks = new List<BankAccount>();
+            var budgets = new List<BudgetItem>();
+            var bankUpgradeDatas = new List<UpgradeBankData>();
+
+            var ccRegItems = regTable
+                .Include(p => p.BudgetItem)
+                .Include(p => p.BankAccount)
+                .Where(p => p.BudgetItem.Type == (byte)BudgetItemTypes.Transfer
+                            && p.BudgetItem.Amount == 0
+                            && p.BudgetItem.StartingDate != null
+                            && p.BankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                            && p.RegisterPayCCType == (byte)RegisterPayCCTypes.None);
+
+            if (ccRegItems.Any())
+            {
+                var message =
+                    "It appears that you have credit card budget items that were created in a previous version of HomeLogix.  " +
+                    "To take advantage of the new credit card payment features, these budget items need to be upgraded.  " +
+                    "Click OK to upgrade these budget items now.";
+
+                var caption = "Upgrade Credit Card Budget Items";
+
+                if (await ControlsGlobals.UserInterface.ShowYesNoMessageBox(message, caption) ==
+                    MessageBoxButtonsResult.Yes)
+                {
+                    foreach (var regItem in ccRegItems)
+                    {
+                        if (!banks.Contains(regItem.BankAccount))
+                        {
+                            banks.Add(regItem.BankAccount);
+                            var upgradeData = new UpgradeBankData
+                            {
+                                BankAccount = regItem.BankAccount,
+                                PayCCDay = regItem.ItemDate.Day,
+                                PayCCBudgetItem = regItem.BudgetItem,
+                            };
+                            bankUpgradeDatas.Add(upgradeData);
+                        }
+
+                        if (!budgets.Contains(regItem.BudgetItem))
+                        {
+                            budgets.Add(regItem.BudgetItem);
+                        }
+                    }
+
+                    var processBudgets = true;
+                    foreach (var upgradeData in bankUpgradeDatas)
+                    {
+                        var primaryKey =
+                            AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(upgradeData.BankAccount);
+                        var vmInput = new ViewModelInput
+                        {
+                            UpgradeBankData = upgradeData,
+                        };
+                        SystemGlobals.TableRegistry.ShowEditAddOnTheFly(primaryKey, vmInput);
+                        if (!upgradeData.DialogResult)
+                        {
+                            processBudgets = false;
+                        }
+                    }
+
+                    if (processBudgets)
+                    {
+                        foreach (var budgetItem in budgets)
+                        {
+                            budgetItem.StartingDate = null;
+                            context.SaveEntity(budgetItem, "Saving budget item");
+                        }
+                    }
+                }
+            }
         }
 
         public void ChangeCurrentDate(DateTime date)
@@ -280,7 +366,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             }
         }
 
-        public void RefreshView()
+        public void RefreshView(IAppProcedure? procedure = null)
+        {
+            if (procedure == null && !AppGlobals.UnitTesting)
+            {
+                procedure = RingSoftAppGlobals.CreateAppProcedure();
+                procedure.DoAppProcedure += (sender, args) => { RefreshViewProcedure(procedure); };
+                procedure.Start("Loading Main Screen");
+                return;
+            }
+            RefreshViewProcedure(procedure);
+        }
+
+        private void RefreshViewProcedure(IAppProcedure? procedure = null)
         {
             if (AppGlobals.UnitTesting)
             {
@@ -299,13 +397,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 if (StatsDataExists())
                 {
                     if (StatsViewModel != null) 
-                        StatsViewModel.RefreshView();
+                        StatsViewModel.RefreshView(procedure);
                 }
                 else
                 {
                     View.ShowStatsTab(false, false);
                     StatsViewModel = null;
                 }
+            }
+
+            if (procedure != null)
+            {
+                procedure.SplashWindow.SetProgress("Retrieving budget totals.");
             }
             //BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
             var budgetTotals = AppGlobals.DataRepository.GetBudgetTotals(CurrentMonthEnding,
@@ -318,10 +421,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             foreach (var bankAccountViewModel in BankAccountViewModels)
             {
-                bankAccountViewModel.CalculateTotals();
+                bankAccountViewModel.CalculateTotals(procedure:procedure);
             }
         }
-
 
 
         private void ManageBudget()

@@ -22,7 +22,7 @@ namespace RingSoft.HomeLogix.Library
 {
     public interface IMainViewModel
     {
-        void RefreshView();
+        void RefreshView(IAppProcedure? procedure = null);
 
         DateTime CurrentMonthEnding { get; set; }
     }

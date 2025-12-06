@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RingSoft.HomeLogix.DataAccess.Model;
 using RingSoft.HomeLogix.Library.ViewModels.ImportBank;
+using RingSoft.HomeLogix.Library.ViewModels.Main;
 
 namespace RingSoft.HomeLogix.Library.ViewModels
 {
@@ -24,5 +25,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public BudgetItemViewModel BudgetRefresh { get; set; }
 
         public ImportTransactionGridRow RefreshImportRow { get; set; }
+
+        public UpgradeBankData UpgradeBankData { get; set; }
     }
 }

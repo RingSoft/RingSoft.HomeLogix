@@ -295,7 +295,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             return bankLookupDefinition;
         }
 
-        public void RefreshView()
+        public void RefreshView(IAppProcedure? procedure = null)
         {
             _currentMonthEnding = AppGlobals.MainViewModel.CurrentMonthEnding;
             if (AppGlobals.UnitTesting)
@@ -303,12 +303,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 return;
             }
             //BudgetLookupDefinition.HasFromFormula(CreateBudgetLookupDefinitionFormula());
+
+            if (procedure != null)
+            {
+                procedure.SplashWindow.SetProgress("Setting up main budget lookup.");
+            }
+
             var context = AppGlobals.DataRepository.GetDataContext();
             var mainTable = context.GetTable<MainBudget>();
             context.RemoveRange(mainTable);
             if (context.Commit("Clearing Main Budget Table"))
             {
-                var budgetItems = GetBudgetItems(context);
+                var budgetItems = GetBudgetItems(context, procedure);
 
                 context.AddRange(budgetItems);
                 context.Commit("Adding Main Budgets");
@@ -348,7 +354,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         }
 
 
-        public List<MainBudget> GetBudgetItems(IDbContext context)
+        public List<MainBudget> GetBudgetItems(IDbContext context, IAppProcedure? procedure = null)
         {
             var budgetItems = new List<MainBudget>();
 
@@ -361,8 +367,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                             && p.PeriodEndingDate.Year == _currentMonthEnding.Year)
                 .OrderBy(p => p.BudgetItem.Description);
 
+            var count = periodHistory.Count();
+            var index = 0;
+
             foreach (var budgetPeriodHistory in periodHistory)
             {
+                index++;
+                if (procedure != null)
+                {
+                    procedure.SplashWindow.SetProgress($"Processing budget {index} / {count}.");
+                }
+
                 var budgetItem = budgetItems
                     .FirstOrDefault(p => p.BudgetItemId == budgetPeriodHistory.BudgetItemId);
 
