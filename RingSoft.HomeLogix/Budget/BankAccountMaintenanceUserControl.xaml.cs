@@ -179,6 +179,19 @@ namespace RingSoft.HomeLogix.Budget
             ShowBankOptionsButton.Content = $"{caption} Options";
             ShowBankOptionsButton.ToolTip.HeaderText = $"Show {caption} Options (Ctrl + B, Ctrl + O)";
             ShowBankOptionsButton.ToolTip.DescriptionText = $"Show {caption.ToLower()} options.";
+
+            switch (BankAccountViewModel.AccountType)
+            {
+                case BankAccountTypes.Checking:
+                case BankAccountTypes.Savings:
+                    ShowBankOptionsButton.Visibility = Visibility.Collapsed;
+                    break;
+                case BankAccountTypes.CreditCard:
+                    ShowBankOptionsButton.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }
