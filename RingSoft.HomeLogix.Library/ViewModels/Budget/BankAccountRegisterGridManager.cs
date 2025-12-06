@@ -220,7 +220,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                         projectedAmount -= deposits;
                     }
-                    bankAccountRegisterGridRow.ProjectedAmount = projectedAmount;
+
+                    if (!bankAccountRegisterGridRow.PayCCAllowEdit || bankAccountRegisterGridRow.ProjectedAmount <= 0)
+                    {
+                        bankAccountRegisterGridRow.ProjectedAmount = projectedAmount;
+                    }
 
                     bankAccountRegisterGridRow.SaveToDbOnTheFly();
                 }
