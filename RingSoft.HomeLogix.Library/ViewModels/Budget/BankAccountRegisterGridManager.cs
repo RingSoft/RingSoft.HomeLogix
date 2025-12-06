@@ -143,6 +143,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //        ViewModel.Id, true);
             var banksToRefresh = new List<int>();
             var context = SystemGlobals.DataRepository.GetDataContext();
+            var firstCCPayRow = true;
 
             foreach (var bankAccountRegisterGridRow in rows)
             {
@@ -188,10 +189,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             projectedAmount = bankAccountRegisterGridRow.ProjectedAmount;
                         }
                         bankAccountRegisterGridRow.PayCCAllowEdit = true;
+                        firstCCPayRow = false;
                     }
                     else
                     {
-                        bankAccountRegisterGridRow.PayCCAllowEdit = false;
+                        if (firstCCPayRow)
+                        {
+                            firstCCPayRow = false;
+                            bankAccountRegisterGridRow.PayCCAllowEdit = true;
+                        }
+                        else
+                        {
+                            bankAccountRegisterGridRow.PayCCAllowEdit = false;
+                        }
+
                         if (balanceRow.Balance != null)
                         {
                             projectedAmount = balanceRow.Balance.Value;
