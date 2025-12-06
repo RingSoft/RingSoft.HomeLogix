@@ -171,13 +171,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         .ThenByDescending(p => p.ProjectedAmount)
                         .LastOrDefault(p => p.ItemDate <= statementDate
                                             && p.Completed == false);
-
+                    var projectedAmount = 0.0;
                     if (balanceRow != null && balanceRow.RegisterPayCCType == RegisterPayCCTypes.ToCC)
                     {
-                        continue;
+                        projectedAmount = balanceRow.Balance.GetValueOrDefault();
                     }
-
-                    var projectedAmount = 0.0;
+                    
                     if (balanceRow == null)
                     {
                         if (bankAccountRegisterGridRow.ProjectedAmount == 0)
