@@ -2122,6 +2122,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             , BankAccountRegisterGridRow? startingRow = null
             , bool reset = false)
         {
+            BankAccountRegisterItem? firstImportRegisterItem = null;
+
+            if (ViewModelInput != null
+                && ViewModelInput.UpgradeBankData != null
+                && ViewModelInput.UpgradeBankData.FirstCCRegisterItem != null)
+            {
+                firstImportRegisterItem = ViewModelInput.UpgradeBankData.FirstCCRegisterItem;
+            }
             var budgetItem = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
             if (budgetItem == null)
                 return null;
@@ -2148,6 +2156,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var itemDate = new DateTime(firstRow.ItemDate.Year, firstRow.ItemDate.Month, PayCCBalanceDay);
             itemDate = itemDate.AddMonths(1);
+
+            if (firstImportRegisterItem != null)
+            {
+                itemDate = firstImportRegisterItem.ItemDate;
+            }
 
             while (itemDate <= genToDate)
             {
@@ -2211,7 +2224,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.ToCC)
                 .ToList();
 
-            if (ViewModelInput != null && ViewModelInput.UpgradeBankData != null)
+            if (ViewModelInput != null && ViewModelInput.UpgradeBankData != null && !ViewModelInput.UpgradeBankData.Processed)
             {
                 existingRows = RegisterGridManager.Rows
                     .OfType<BankAccountRegisterGridTransferRow>()
@@ -2256,12 +2269,23 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var bankAccount = AppGlobals.DataRepository.GetBankAccount(Id);
             RegisterGridManager.LoadGrid(bankAccount.RegisterItems);
 
-            var fromRegisters = table.Where(p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank
-                                                 && p.BankAccountId == budgetItem.BankAccountId);
+            var fromRegisters = table.Where(
+                p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank 
+                     && p.BankAccountId == budgetItem.BankAccountId).ToList();
+
+            if (ViewModelInput.UpgradeBankData != null
+                && ViewModelInput.UpgradeBankData != null
+                && !ViewModelInput.UpgradeBankData.Processed)
+            {
+                fromRegisters = table
+                    .Include(p => p.BudgetItem)
+                    .Where(p => p.BankAccountId == budgetItem.BankAccountId
+                                && p.ItemType == (byte)BankAccountRegisterItemTypes.TransferToBankAccount
+                                && p.BudgetItem.Amount == 0).ToList();
+            }
 
             index = 0;
             count = fromRegisters.Count();
-
 
             foreach (var fromRegister in fromRegisters)
             {
@@ -2304,12 +2328,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 InterestBudgetAutoFillValue = bankOptions.InterestBudgetAutoFillValue;
                 CCPaymentBudgetAutoFillValue = bankOptions.CcPaymentBudgetaAutoFillValue;
                 PayCCBalanceDay = bankOptions.PayCCBalanceDay;
-                RecordDirty = true;
 
                 if (bankOptions.Recalculate)
                 {
                     GenerateInterest_PayCCRows(LastGenerationDate.GetValueOrDefault(), true, true);
                 }
+                DoSave();
             }
         }
 
@@ -2326,6 +2350,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 ShowBankOptions(bankOptions);
                 ViewModelInput.UpgradeBankData.DialogResult = bankOptions.DialogResult;
+                ViewModelInput.UpgradeBankData.Recalculate = bankOptions.Recalculate;
             }
 
             base.OnContentRendered();

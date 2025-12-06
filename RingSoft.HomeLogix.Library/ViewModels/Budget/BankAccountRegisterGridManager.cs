@@ -221,9 +221,21 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         projectedAmount -= deposits;
                     }
 
-                    if (!bankAccountRegisterGridRow.PayCCAllowEdit || bankAccountRegisterGridRow.ProjectedAmount <= 0)
+                    if (ViewModel.ViewModelInput != null
+                        && bankAccountRegisterGridRow.PayCCAllowEdit
+                        && ViewModel.ViewModelInput.UpgradeBankData != null
+                        && ViewModel.ViewModelInput.UpgradeBankData.FirstCCRegisterItem != null)
                     {
-                        bankAccountRegisterGridRow.ProjectedAmount = projectedAmount;
+                        bankAccountRegisterGridRow.ProjectedAmount =                             ViewModel.ViewModelInput.UpgradeBankData.FirstCCRegisterItem.ProjectedAmount;
+                        ViewModel.ViewModelInput.UpgradeBankData.FirstCCRegisterItem = null;
+                    }
+                    else
+                    {
+                        if (!bankAccountRegisterGridRow.PayCCAllowEdit ||
+                            bankAccountRegisterGridRow.ProjectedAmount <= 0)
+                        {
+                            bankAccountRegisterGridRow.ProjectedAmount = projectedAmount;
+                        }
                     }
 
                     bankAccountRegisterGridRow.SaveToDbOnTheFly();

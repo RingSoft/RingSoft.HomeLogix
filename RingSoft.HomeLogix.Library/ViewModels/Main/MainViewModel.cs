@@ -22,6 +22,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         public int PayCCDay { get; set; }
         public BudgetItem PayCCBudgetItem { get; set; }
         public bool DialogResult { get; set; }
+        public bool Recalculate { get; set; }
+        public BankAccountRegisterItem FirstCCRegisterItem { get; set; }
+        public bool Processed { get; set; }
     }
     public class MainBudgetData
     {
@@ -273,6 +276,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var context = SystemGlobals.DataRepository.GetDataContext();
             var regTable = context.GetTable<BankAccountRegisterItem>();
 
+            if (!regTable.Any())
+            {
+                return;
+            }
+
             var banks = new List<BankAccount>();
             var budgets = new List<BudgetItem>();
             var bankUpgradeDatas = new List<UpgradeBankData>();
@@ -280,6 +288,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             var ccRegItems = regTable
                 .Include(p => p.BudgetItem)
                 .Include(p => p.BankAccount)
+                .OrderBy(p => p.BankAccountId)
+                .ThenBy(p => p.ItemDate)
                 .Where(p => p.BudgetItem.Type == (byte)BudgetItemTypes.Transfer
                             && p.BudgetItem.Amount == 0
                             && p.BudgetItem.StartingDate != null
@@ -289,7 +299,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             if (ccRegItems.Any())
             {
                 var message =
-                    "It appears that you have credit card budget items that were created in a previous version of HomeLogix.  " +
+                    "It appears that you have transfer budget items with credit card payment that were created in a previous version of HomeLogix.  " +
                     "To take advantage of the new credit card payment features, these budget items need to be upgraded.  " +
                     "Click OK to upgrade these budget items now.";
 
@@ -308,6 +318,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                                 BankAccount = regItem.BankAccount,
                                 PayCCDay = regItem.ItemDate.Day,
                                 PayCCBudgetItem = regItem.BudgetItem,
+                                FirstCCRegisterItem = regItem,
                             };
                             bankUpgradeDatas.Add(upgradeData);
                         }
@@ -328,9 +339,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                             UpgradeBankData = upgradeData,
                         };
                         SystemGlobals.TableRegistry.ShowEditAddOnTheFly(primaryKey, vmInput);
-                        if (!upgradeData.DialogResult)
+                        if (!upgradeData.DialogResult || !upgradeData.Recalculate)
                         {
                             processBudgets = false;
+                        }
+                        else
+                        {
+                            upgradeData.Processed = true;
                         }
                     }
 
