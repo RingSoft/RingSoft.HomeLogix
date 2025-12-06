@@ -2139,7 +2139,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var firstRow = RegisterGridManager.Rows
                 .OfType<BankAccountRegisterGridRow>()
                 .OrderBy(o => o.ItemDate)
-                .FirstOrDefault(/*p => !p.PayCCAllowEdit*/);
+                .FirstOrDefault(p => !p.PayCCAllowEdit);
 
             if (startingRow != null)
             {
@@ -2208,8 +2208,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var registerToDelete = new List<int>();
             var existingRows = RegisterGridManager.Rows
                 .OfType<BankAccountRegisterGridTransferRow>()
-                .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.ToCC
-                /*&& !p.PayCCAllowEdit*/)
+                .Where(p => p.RegisterPayCCType == RegisterPayCCTypes.ToCC)
                 .ToList();
 
             if (ViewModelInput != null && ViewModelInput.UpgradeBankData != null)
