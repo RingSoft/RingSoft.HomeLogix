@@ -294,6 +294,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private void OnOK()
         {
+            if (!ValidateData())
+            {
+                return;
+            }
+
             BankOptionsData.DialogResult = true;
 
             var recalc = false;
@@ -335,14 +340,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 recalc = true;
             }
 
-            if (recalc)
-            {
-                if (!ValidateData())
-                {
-                    return;
-                }
-            }
-            
             if (BankOptionsData.BankAccountViewModel.RegisterGridManager.Rows.Any())
             {
                 BankOptionsData.Recalculate = recalc;
@@ -388,19 +385,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountTypes.CreditCard:
                     switch (CreditCardOption)
                     {
-                        case BankCreditCardOptions.CarryBalance:
-                            if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                ControlsGlobals.UserInterface.ShowMessageBox(
-                                    "You must specify an interest rate and an interest budget item."
-                                    , "Validation Fail", RsMessageBoxIcons.Exclamation);
-                                return false;
-                            }
-                            break;
+                        //case BankCreditCardOptions.CarryBalance:
+                        //    if (InterestBudgetAutoFillValue.IsValid() && BankAccountIntrestRate > 0)
+                        //    {
+                        //        return true;
+                        //    }
+                        //    else
+                        //    {
+                        //        ControlsGlobals.UserInterface.ShowMessageBox(
+                        //            "You must specify an interest rate and an interest budget item."
+                        //            , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                        //        return false;
+                        //    }
+                        //    break;
                         case BankCreditCardOptions.PayOffEachMonth:
                             if (CCPaymentBudgetAutoFillValue.IsValid()
                                 && PayCCBalanceDay > 0)
@@ -411,6 +408,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                     ControlsGlobals.UserInterface.ShowMessageBox(
                                         "The credit card payment budget item must be a transfer to this credit card account."
                                         , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                    PayCCBudgetUiCommand.SetFocus();
+                                    CCPaymentBudgetAutoFillSetup.Control.ShowLookupWindow();
+                                    return false;
+                                }
+                                if (PayCCBalanceDay > StatementDayOfMonth)
+                                {
+                                    ControlsGlobals.UserInterface.ShowMessageBox(
+                                        "The credit card payment day of the month must be less than or equal to the bank account statement day of the month."
+                                        , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                    PayCCDayUiCommand.SetFocus();
                                     return false;
                                 }
                                 return true;
@@ -418,12 +425,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             else
                             {
                                 ControlsGlobals.UserInterface.ShowMessageBox(
-                                    "You must specify credit card payment budget item."
+                                    "You must specify a transfer credit card payment budget item."
                                     , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                PayCCBudgetUiCommand.SetFocus();
+                                CCPaymentBudgetAutoFillSetup.Control.ShowLookupWindow();
                                 return false;
                             }
-
                             break;
+                        case BankCreditCardOptions.CarryBalance:
+                            return true;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }

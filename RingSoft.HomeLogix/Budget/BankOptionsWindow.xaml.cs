@@ -38,6 +38,7 @@ namespace RingSoft.HomeLogix.Budget
             };
 
             Title = caption;
+            LocalViewModel.SetPayCCVisibility();
         }
     }
 }
