@@ -25,6 +25,12 @@ namespace RingSoft.DevLogix.Tests
         public int JuniorCheckingBankAccountId { get; } = 5;
         public int SallyCheckingBankAccountId { get; } = 6;
 
+        public int VisaCard_PayCCOffEveryMonth_BankAccountId { get; } = 7;
+        public int MasterCard_PayCCOffEveryMonth_BankAccountId { get; } = 8;
+        public int DiscoverCard_CarryBalance_BankAccountId { get; } = 9;
+        public int MainCheckingAccount_BankAccountId { get; } = 10;
+        public int SecondChecking_BankAccountId { get; } = 11;
+
         public int JohnIncomeBudgetItemId { get; } = 1;
         public int JaneIncomeBudgetItemId { get; } = 2;
         public int HousePaymentBudgetItemId { get; } = 3;
@@ -33,6 +39,9 @@ namespace RingSoft.DevLogix.Tests
         public int JuniorIncomeBudgetItemId { get; } = 7;
         public int JuniorSavingsDepositBudgetItemId { get; } = 9;
         public int SallyAllowanceBudgetItemId { get; } = 10;
+
+        public int CCPaymentBudgetItemId { get; } = 11;
+
 
         public new HomeLogixTestDataRepository DataRepository { get; } 
             
@@ -132,6 +141,49 @@ namespace RingSoft.DevLogix.Tests
             bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Sally's Checking Account");
 
             bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccountViewModel.NewCommand.Execute(null);
+
+            bankAccountViewModel.Id = VisaCard_PayCCOffEveryMonth_BankAccountId;
+            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Visa Card - Pay Off Every Month");
+            bankAccountViewModel.AccountType = BankAccountTypes.CreditCard;
+            bankAccountViewModel.SaveCommand.Execute(null);
+
+            bankAccountViewModel.CreditCardOption = BankCreditCardOptions.PayOffEachMonth;
+            bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccountViewModel.NewCommand.Execute(null);
+
+            bankAccountViewModel.Id = MasterCard_PayCCOffEveryMonth_BankAccountId;
+            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Master Card - Pay Off Every Month");
+            bankAccountViewModel.AccountType = BankAccountTypes.CreditCard;
+            bankAccountViewModel.SaveCommand.Execute(null);
+
+            bankAccountViewModel.CreditCardOption = BankCreditCardOptions.PayOffEachMonth;
+            bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccountViewModel.NewCommand.Execute(null);
+
+
+            bankAccountViewModel.Id = DiscoverCard_CarryBalance_BankAccountId;
+            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Discover Card - Carry Balance");
+            bankAccountViewModel.AccountType = BankAccountTypes.CreditCard;
+            bankAccountViewModel.SaveCommand.Execute(null);
+
+            bankAccountViewModel.CreditCardOption = BankCreditCardOptions.CarryBalance;
+            bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccountViewModel.NewCommand.Execute(null);
+
+            bankAccountViewModel.Id = MainCheckingAccount_BankAccountId;
+            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Main Checking Account");
+            bankAccountViewModel.AccountType = BankAccountTypes.Checking;
+
+            bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccountViewModel.NewCommand.Execute(null);
+
+            bankAccountViewModel.Id = SecondChecking_BankAccountId;
+            bankAccountViewModel.KeyAutoFillValue = new AutoFillValue(null, "Second Checking Account");
+            bankAccountViewModel.AccountType = BankAccountTypes.Checking;
+
+            bankAccountViewModel.SaveCommand.Execute(null);
+            bankAccountViewModel.NewCommand.Execute(null);
         }
 
         private void CreateAndTestBudgetItems()
@@ -348,6 +400,15 @@ namespace RingSoft.DevLogix.Tests
             Assert.AreEqual(100, bankAccount.MonthlyBudgetDeposits,
                 "Sally's Allowance Deposit");
 
+            budgetItemViewModel.NewCommand.Execute(null);
+            budgetItemViewModel.Id = CCPaymentBudgetItemId;
+            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Credit Card Payment");
+            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(MainCheckingAccount_BankAccountId);
+            budgetItemViewModel.BankAutoFillValue = bankAccount.GetAutoFillValue();
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(VisaCard_PayCCOffEveryMonth_BankAccountId);
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = bankAccount.GetAutoFillValue();
+            budgetItemViewModel.SaveCommand.Execute(null);
         }
     }
 }

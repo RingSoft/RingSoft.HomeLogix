@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RingSoft.DataEntryControls.Engine;
+using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
 using RingSoft.DbMaintenance;
 using RingSoft.DevLogix.Tests;
@@ -397,5 +398,24 @@ namespace RingSoft.HomeLogix.Tests
                 "Delete Transfer, Update Withdrawals");
         }
 
+        [TestMethod]
+        public void TestNewBudget_NoPayCCGenerated()
+        {
+            Globals.ClearData();
+
+            var dataRepository = AppGlobals.DataRepository;
+            var budgetItem = dataRepository.GetBudgetItem(Globals.CCPaymentBudgetItemId);
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = Globals;
+            budgetItemViewModel.OnViewLoaded(
+                new BudgetView());
+
+            budgetItemViewModel.OnRecordSelected(budgetItem);
+
+            var newCCBankAccount = dataRepository.GetBankAccount(Globals.MasterCard_PayCCOffEveryMonth_BankAccountId);
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = newCCBankAccount.GetAutoFillValue();
+            budgetItemViewModel.SaveCommand.Execute(null);
+        }
     }
-}
+    }

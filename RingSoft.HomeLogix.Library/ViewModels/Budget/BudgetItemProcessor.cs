@@ -3,6 +3,7 @@ using RingSoft.HomeLogix.DataAccess.Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using RingSoft.DbLookup;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -138,6 +139,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 return result;
 
             var amount = budgetItem.Amount;
+            if (amount <= 0)
+            {
+                return result;
+            }
             switch ((BudgetItemTypes)budgetItem.Type)
             {
                 case BudgetItemTypes.Income:

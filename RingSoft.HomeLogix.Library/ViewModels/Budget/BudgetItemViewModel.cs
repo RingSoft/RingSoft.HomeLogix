@@ -31,6 +31,17 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         void HandleValFail(ValFailControls control);
     }
 
+    public class CCRecalcData
+    {
+        public List<BankAccount> BanksToPurgeRegister { get; set; } = new List<BankAccount>();
+
+        public List<BankAccount> CreditCardBankAccounts { get; set; } = new List<BankAccount>();
+
+        public BudgetItem BudgetItem { get; set; }
+
+        public BudgetItemViewModel BudgetItemViewModel { get; set; }
+    }
+
     public class YearlyHistoryFilter
     {
         public ViewModelInput ViewModelInput { get; set; }
@@ -547,6 +558,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public UiCommand GenTranUiCommand { get; } = new UiCommand();
 
+        public CCRecalcData CCRecalcData { get; private set; }
+
         private IBudgetItemView _view;
         private bool _loading;
         private double _dbMonthlyAmount;
@@ -558,7 +571,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private BudgetItemTypes? _lockBudgetItemType;
         private BudgetItem _budgetItemHistoryFilter;
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
-        private bool _purgeCCRegisters;
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
@@ -744,8 +756,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (transferToBank != null)
                 {
                     transferToBank = transferToBank.FillOutProperties(false);
-                    isCC = (DataAccess.Model.BankAccountTypes)transferToBank.AccountType ==
-                           DataAccess.Model.BankAccountTypes.CreditCard;
+                    isCC = (BankAccountTypes)transferToBank.AccountType ==
+                           BankAccountTypes.CreditCard;
                 }
             }
 
@@ -836,6 +848,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             AddAdjustmentCommand.IsEnabled = !ReadOnlyMode;
 
+            var budgetItem = newEntity.FillOutProperties(false);
+            DbBankAccountId = budgetItem.BankAccountId;
+            DbTransferToBankId = budgetItem.TransferToBankAccountId;
+
             _loading = false;
             _registerAffected = false;
         }
@@ -852,8 +868,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             //Amount = budgetItem.Amount;
             _dbMonthlyAmount = budgetItem.MonthlyAmount;
-            DbBankAccountId = budgetItem.BankAccountId;
-            DbTransferToBankId = budgetItem.TransferToBankAccountId;
 
             _budgetItemHistoryFilter = budgetItem;
             ViewModelInput.HistoryFilterBudgetItem = budgetItem;
@@ -1096,12 +1110,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     if (StartingDate == null)
                     {
                         _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                            .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType == BankAccountRegisterItemTypes.BudgetItem).ToList();
+                            .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType == BankAccountRegisterItemTypes.BudgetItem && w.RegisterPayCCType == (byte)RegisterPayCCTypes.None).ToList();
                     }
                     else
                     {
                         _bankAccountRegisterItemsToDelete = existingBankAccount.RegisterItems
-                            .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate).ToList();
+                            .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate
+                                                             && w.RegisterPayCCType == (byte)RegisterPayCCTypes.None).ToList();
                     }
 
                     if (DbTransferToBankId != null)
@@ -1116,13 +1131,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                             {
                                 _bankAccountRegisterItemsToDelete.AddRange(regItems
                                     .Where(w => w.BudgetItemId == Id && (BankAccountRegisterItemTypes)w.ItemType ==
-                                        BankAccountRegisterItemTypes.BudgetItem));
+                                        BankAccountRegisterItemTypes.BudgetItem
+                                        && w.RegisterPayCCType == (byte)RegisterPayCCTypes.None));
 
                             }
                             else
                             {
                                 _bankAccountRegisterItemsToDelete.AddRange(regItems
-                                    .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate));
+                                    .Where(w => w.BudgetItemId == Id && w.ItemDate >= budgetItem.StartingDate && w.RegisterPayCCType == (byte)RegisterPayCCTypes.None)
+                                );
                             }
                         }
                     }
@@ -1206,7 +1223,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     var registerTable = context.GetTable<BankAccountRegisterItem>();
                     _bankAccountRegisterItemsToDelete = registerTable.Where(
                         p => p.ItemType == (int)BankAccountRegisterItemTypes.BudgetItem
-                             && p.BudgetItemId == Id).ToList();
+                             && p.BudgetItemId == Id
+                             && p.RegisterPayCCType == (byte)RegisterPayCCTypes.None).ToList();
                 }
                 _newBankAccountRegisterItems = BudgetItemProcessor
                     .GenerateBankAccountRegisterItems(budgetItem.BankAccountId, budgetItem, startDate)
@@ -1268,6 +1286,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.TransferToBankAccountId),
                         message,
                         "Invalid Transfer To Bank Account");
+
+                    return false;
+                }
+
+                if (entity.BankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                    && entity.TransferToBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
+                {
+                    var message = "You cannot transfer money from a credit card to checking or savings bank account.";
+                    OnValidationFail(
+                        AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
+                        message,
+                        "Invalid Bank Account");
                     return false;
                 }
             }
@@ -1323,11 +1353,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override bool SaveEntity(BudgetItem entity)
         {
+            CheckRecalcCC(entity);
+
             var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount, 
                 _newBankAccountRegisterItems, _bankAccountRegisterItemsToDelete);
 
-            _purgeCCRegisters = false;
-            if (result && RecalcRegister(entity.BankAccount, DbBankAccount, entity))
+            if (result && RecalcRegister(entity.BankAccount))
             {
                 foreach (var bankAccountViewModel in AppGlobals.MainViewModel.BankAccountViewModels)
                 {
@@ -1369,37 +1400,138 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return result;
         }
 
-        private bool RecalcRegister(BankAccount bankAccount, BankAccount dbBankAccount, BudgetItem budgetItem)
+        private void CheckRecalcCC(BudgetItem budgetItem)
         {
-            if (budgetItem.Type == (byte)BudgetItemTypes.Transfer
-                && budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard)
+            CCRecalcData recalcData = new CCRecalcData();
+
+            if (budgetItem.Type == (byte)BudgetItemTypes.Transfer)
             {
-                
+                //Changed Transfer From Bank Account has changed and transfer to is a credit card and CCOptions is pay off each month
+                if (budgetItem.BankAccountId != DbBankAccountId && DbBankAccountId != 0)
+                {
+                    if (budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                        && DbTransferToBankId > 0
+                        && budgetItem.TransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
+                    {
+                        //Add both bank accounts to register purge list.
+                        recalcData.BanksToPurgeRegister.Add(budgetItem.BankAccount);
+                        recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+
+                        recalcData.CreditCardBankAccounts.Add(budgetItem.TransferToBankAccount);
+                    }
+                }
+
+                if (DbTransferToBankId != 0 && budgetItem.TransferToBankAccountId != DbTransferToBankId)
+                {
+                    //Changed transfer to bank Account and transfer to acct is credit card and CCOptions is pay off each month
+                    if (budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard)
+                    {
+                        if (budgetItem.TransferToBankAccount.CreditCardOption ==
+                            (byte)BankCreditCardOptions.PayOffEachMonth)
+                        {
+                            if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbBankAccountId))
+                            {
+                                recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                            }
+
+                            if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == budgetItem.TransferToBankAccountId))
+                            {
+                                recalcData.CreditCardBankAccounts.Add(budgetItem.TransferToBankAccount);
+                            }
+                        }
+
+                        //Old transfer to bank account is credit card and new transfer to Bank CCOptions is carry balance and old transfer to bank acct is pay off each month
+                        else if (DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth
+                                 && DbTransferToBankAccount.CreditCardOption != budgetItem.TransferToBankAccount.CreditCardOption
+                                 && DbBankAccountId != 0)
+                        {
+                            if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbBankAccountId))
+                            {
+                                recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                            }
+                        }
+                    }
+
+                    //Old transfer to bank account is credit card and CCOptions is pay off each month
+                    if (DbTransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                        &&
+                        DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
+                    {
+                        if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == DbTransferToBankId))
+                        {
+                            recalcData.CreditCardBankAccounts.Add(DbTransferToBankAccount);
+                        }
+                    }
+                }
+
+                //From bank acct type is different than db bank acct type and transfer to bank acct is credit card and CCOptions is pay off each month.
+                if (budgetItem.BankAccountId != DbBankAccountId &&  DbBankAccountId > 0)
+                {
+                    if (budgetItem.BankAccount.AccountType != DbBankAccount.AccountType
+                        && budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                        && budgetItem.TransferToBankAccount.CreditCardOption ==
+                        (byte)BankCreditCardOptions.PayOffEachMonth)
+                    {
+                        if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbBankAccountId))
+                        {
+                            recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                        }
+
+                        if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == budgetItem.TransferToBankAccountId))
+                        {
+                            recalcData.CreditCardBankAccounts.Add(
+                                budgetItem.TransferToBankAccount);
+                        }
+                    }
+                }
+
+                //Transfer to bank acct type is different than db transfer to acct type and db transfer to bank acct is credit card and CCOptions is pay off each month and transfer to bank account is non credit card.
+                if (DbTransferToBankId != 0 && DbBankAccountId != 0 && budgetItem.TransferToBankAccountId != DbTransferToBankId)
+                {
+                    if (budgetItem.TransferToBankAccount.AccountType != (byte)BankAccountTypes.CreditCard
+                        && DbTransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                        && DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
+                    {
+                        if (!recalcData.BanksToPurgeRegister.Any(p => p.Id ==DbBankAccountId))
+                        {
+                            recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                        }
+
+                        if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == DbTransferToBankId))
+                        {
+                            recalcData.CreditCardBankAccounts.Add(
+                                DbTransferToBankAccount);
+                        }
+                    }
+                }
             }
-            else
-            {
-                if (_newBankAccountRegisterItems == null && _bankAccountRegisterItemsToDelete == null)
-                    return true;
-            }
 
-            if (!RecalcBankAccountRegister(bankAccount, dbBankAccount, budgetItem))
+            recalcData.BudgetItem = budgetItem;
+            recalcData.BudgetItemViewModel = this;
+            CCRecalcData = recalcData;
+        }
+
+        private bool RecalcRegister(BankAccount bankAccount)
+        {
+            if (_newBankAccountRegisterItems == null && _bankAccountRegisterItemsToDelete == null)
+                return true;
+
+            if (!RecalcBankAccountRegister(bankAccount))
                 return false;
 
-            if (!RecalcBankAccountRegister(DbBankAccount, null, budgetItem))
+            if (!RecalcBankAccountRegister(DbBankAccount))
                 return false;
 
-            if (!RecalcBankAccountRegister(_newTransferToBankAccount, DbTransferToBankAccount, budgetItem))
+            if (!RecalcBankAccountRegister(_newTransferToBankAccount))
                 return false;
 
-            if (!RecalcBankAccountRegister(DbTransferToBankAccount, null, budgetItem))
+            if (!RecalcBankAccountRegister(DbTransferToBankAccount))
                 return false;
 
             return true;
         }
 
-        private bool RecalcBankAccountRegister(BankAccount bankAccount
-            , BankAccount? dbBankAccount
-            , BudgetItem budgetItem)
+        private bool RecalcBankAccountRegister(BankAccount bankAccount)
         {
             if (bankAccount == null)
                 return true;
@@ -1411,48 +1543,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (!registerItems.Any())
                 return true;
 
-            var ccRegisterItems = registerItems
-                .Where(p => p.RegisterPayCCType != (byte)RegisterPayCCTypes.None);
-
-            if (dbBankAccount != null 
-                && bankAccount.Id != dbBankAccount.Id
-                && budgetItem.Type == (byte)BudgetItemTypes.Transfer
-                && budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
-                && budgetItem.TransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
-            {
-                _purgeCCRegisters = true;
-                ControlsGlobals.UserInterface.ShowMessageBox(
-                    $"You will need to recalculate the credit card {budgetItem.TransferToBankAccount.Description} bank account."
-                    , "Recalculate Credit Card"
-                    , RsMessageBoxIcons.Exclamation);
-            }
-
-            if (ccRegisterItems.Any()
-                && _purgeCCRegisters
-                && budgetItem.Type == (byte)BudgetItemTypes.Transfer)
-            {
-                var context = SystemGlobals.DataRepository.GetDataContext();
-
-                context.RemoveRange(ccRegisterItems);
-                context.Commit("");
-                var viewModels = AppGlobals.MainViewModel.BankAccountViewModels
-                    .Where(p => p.Id == bankAccount.Id);
-                foreach (var viewModel in viewModels)
-                {
-                    viewModel.RefreshFromDb();
-                }
-            }
-
             var newBalance = bankAccount.CurrentBalance;
             var lowestBalance = newBalance;
             DateTime? lowestBalanceDate = null;
 
             foreach (var registerItem in registerItems)
             {
-                if (registerItem.ItemDate.Month == 1 && registerItem.ItemDate.Day == 3)
-                {
-                    
-                }
                 if (lowestBalanceDate == null)
                     lowestBalanceDate = registerItem.ItemDate.AddDays(-1);
 
@@ -1469,7 +1565,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             bankAccount.ProjectedLowestBalanceAmount = lowestBalance;
             bankAccount.ProjectedLowestBalanceDate = lowestBalanceDate;
 
-            return AppGlobals.DataRepository.SaveBankAccount(bankAccount);
+            var result = AppGlobals.DataRepository.SaveBankAccount(bankAccount);
+            return result;
         }
 
         protected override bool DeleteEntity()
