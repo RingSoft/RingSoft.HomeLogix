@@ -23,6 +23,12 @@ using BankAccountRegisterItemTypes = RingSoft.HomeLogix.DataAccess.Model.BankAcc
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
+    public class BankAccountRecalcInput
+    {
+        public CCRecalcData CCRecalcData { get; set; }
+
+        public BankAccount BankAccount { get; set; }
+    }
     public class BankOptionsData
     {
         public BankAccountViewModel BankAccountViewModel { get; set; }
@@ -2301,7 +2307,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var fromRegisters = table.Where(
                 p => p.RegisterPayCCType == (byte)RegisterPayCCTypes.FromBank 
-                     && p.BankAccountId == budgetItem.BankAccountId).ToList();
+                     && p.BankAccountId == budgetItem.BankAccountId
+                     && p.BudgetItemId == budgetItem.Id).ToList();
 
             if (ViewModelInput.UpgradeBankData != null
                 && ViewModelInput.UpgradeBankData != null
@@ -2369,18 +2376,28 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         public override void OnContentRendered()
         {
-            if (ViewModelInput != null && ViewModelInput.UpgradeBankData != null)
+            if (ViewModelInput != null)
             {
-                var bankOptions = new BankOptionsData
+                if (ViewModelInput.UpgradeBankData != null)
                 {
-                    CcPaymentBudgetaAutoFillValue = ViewModelInput.UpgradeBankData.PayCCBudgetItem.GetAutoFillValue(),
-                    CreditCardOption = BankCreditCardOptions.PayOffEachMonth,
-                    PayCCBalanceDay = ViewModelInput.UpgradeBankData.PayCCDay,
-                };
+                    var bankOptions = new BankOptionsData
+                    {
+                        CcPaymentBudgetaAutoFillValue = ViewModelInput.UpgradeBankData.PayCCBudgetItem.GetAutoFillValue(),
+                        CreditCardOption = BankCreditCardOptions.PayOffEachMonth,
+                        PayCCBalanceDay = ViewModelInput.UpgradeBankData.PayCCDay,
+                    };
 
-                ShowBankOptions(bankOptions);
-                ViewModelInput.UpgradeBankData.DialogResult = bankOptions.DialogResult;
-                ViewModelInput.UpgradeBankData.Recalculate = bankOptions.Recalculate;
+                    ShowBankOptions(bankOptions);
+                    ViewModelInput.UpgradeBankData.DialogResult = bankOptions.DialogResult;
+                    ViewModelInput.UpgradeBankData.Recalculate = bankOptions.Recalculate;
+                }
+
+                if (ViewModelInput.RecalcInput != null)
+                {
+                    GenerateInterest_PayCCRows(LastGenerationDate.GetValueOrDefault(), true, true);
+                    DoSave();
+                    Processor.CloseWindow();
+                }
             }
 
             base.OnContentRendered();

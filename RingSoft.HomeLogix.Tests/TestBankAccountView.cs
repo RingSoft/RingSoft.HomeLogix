@@ -91,5 +91,10 @@ namespace RingSoft.HomeLogix.Tests
         {
             
         }
+
+        public void Close()
+        {
+            
+        }
     }
 }

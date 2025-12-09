@@ -27,5 +27,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels
         public ImportTransactionGridRow RefreshImportRow { get; set; }
 
         public UpgradeBankData UpgradeBankData { get; set; }
+
+        public BankAccountRecalcInput RecalcInput { get; set; }
     }
 }

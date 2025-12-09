@@ -1399,12 +1399,120 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             return base.ValidateEntity(entity);
         }
 
+        private bool RecalcCCData()
+        {
+            if (!CCRecalcData.HasData)
+            {
+                return true;
+            }
+
+            var result = true;
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            foreach (var bankPurge in CCRecalcData.BanksToPurgeRegister)
+            {
+                var acctType = (BankAccountTypes)bankPurge.AccountType;
+                switch (acctType)
+                {
+                    case BankAccountTypes.Checking:
+                    case BankAccountTypes.Savings:
+                        result = PurgeRegister(bankPurge, context);
+                        break;
+                    case BankAccountTypes.CreditCard:
+                        var ccOption = (BankCreditCardOptions)bankPurge.CreditCardOption;
+                        switch (ccOption)
+                        {
+                            case BankCreditCardOptions.CarryBalance:
+                                result = PurgeRegister(bankPurge, context);
+                                break;
+                            case BankCreditCardOptions.PayOffEachMonth:
+                                bankPurge.CreditCardOption = (byte)BankCreditCardOptions.CarryBalance;
+                                bankPurge.PayCCBalanceBudgetId = null;
+                                result = context.SaveNoCommitEntity(bankPurge, "");
+                                if (result)
+                                {
+                                    result = PurgeRegister(bankPurge, context);
+                                }
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            if (result)
+            {
+                result = context.Commit("");
+            }
+
+            if (result)
+            {
+                foreach (var creditCardBankAccount in CCRecalcData.CreditCardBankAccounts)
+                {
+                    result = RecalcCCBank(context, creditCardBankAccount);
+                }
+            }
+            return result;
+        }
+
+        private bool RecalcCCBank(IDbContext context, BankAccount bankToRecalc)
+        {
+            var result = true;
+
+            bankToRecalc.PayCCBalanceBudgetId = CCRecalcData.BudgetItem.Id;
+
+            result = context.SaveEntity(bankToRecalc, "");
+
+            if (result)
+            {
+                var recalcInput = new BankAccountRecalcInput
+                {
+                    BankAccount = bankToRecalc,
+                    CCRecalcData = CCRecalcData,
+                };
+
+                var bankViewModelInput = new ViewModelInput
+                {
+                    RecalcInput = recalcInput,
+                };
+
+                var bankPrimaryKey = AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(bankToRecalc);
+                SystemGlobals.TableRegistry.ShowEditAddOnTheFly(bankPrimaryKey, bankViewModelInput);
+            }
+
+            return result;
+        }
+
+        private bool PurgeRegister(BankAccount bankAccount, IDbContext context)
+        {
+            var result = true;
+            var table = context.GetTable<BankAccountRegisterItem>();
+            var registersToPurge = table.Where
+                (p => p.BankAccountId == bankAccount.Id
+                && p.BudgetItemId == CCRecalcData.BudgetItem.Id
+                && p.RegisterPayCCType != (byte)RegisterPayCCTypes.None);
+
+            if (registersToPurge.Any())
+            {
+                context.RemoveRange(registersToPurge);
+            }
+
+            return result;
+        }
+
         protected override bool SaveEntity(BudgetItem entity)
         {
             CheckRecalcCC(entity);
 
             var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount, 
                 _newBankAccountRegisterItems, _bankAccountRegisterItemsToDelete);
+
+            if (result)
+            {
+                result = RecalcCCData();
+            }
 
             if (result && RecalcRegister(entity.BankAccount))
             {
