@@ -251,7 +251,7 @@ namespace RingSoft.HomeLogix.Tests
             var newTransferToBankAccount =
                 dataRepository.GetBankAccount(Globals.MasterCard_PayCCOffEveryMonth_BankAccountId);
 
-            //In this scenario, we do no recalc.  We purge Old ToPayOffCC (visa) and both old and new To BankAccounts (Main, Visa, and Master Card)
+            //In this scenario, we do no recalc.  We purge Old ToPayOffCC (visa) and both old and new To BankAccounts (Main, and Master Card)
             budgetItemViewModel.BankAutoFillValue = newTransferFromBankAccount.GetAutoFillValue();
             budgetItemViewModel.TransferToBankAccountAutoFillValue = newTransferToBankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);

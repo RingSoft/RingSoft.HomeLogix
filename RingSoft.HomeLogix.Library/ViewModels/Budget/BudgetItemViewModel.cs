@@ -1326,11 +1326,26 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (entity.BankAccount.AccountType == (byte)BankAccountTypes.CreditCard
                     && entity.TransferToBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
                 {
-                    var message = "You cannot transfer money from a credit card to checking or savings bank account.";
-                    OnValidationFail(
-                        AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
-                        message,
-                        "Invalid Bank Account");
+                    if (entity.BankAccount.PayCCBalanceBudgetId == entity.Id)
+                    {
+                        var message =
+                            "You cannot transfer money from a credit card to checking or savings bank account.";
+                        OnValidationFail(
+                            AppGlobals.LookupContext.BudgetItems.GetFieldDefinition(p => p.BankAccountId),
+                            message,
+                            "Invalid Bank Account");
+                        return false;
+                    }
+                }
+
+                if (entity.BankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                    && entity.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                    && entity.TransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth
+                    && entity.TransferToBankAccount.PayCCBalanceBudgetId == entity.Id)
+                {
+                    ControlsGlobals.UserInterface.ShowMessageBox(
+                        "You cannot change this budget item's bank account to be a credit card.  The transfer to bank's credit card monthly balance payment budget item is this budget item.",
+                        "Validation Fail", RsMessageBoxIcons.Exclamation);
                     return false;
                 }
             }
