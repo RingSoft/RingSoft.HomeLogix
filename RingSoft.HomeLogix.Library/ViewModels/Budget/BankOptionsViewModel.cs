@@ -198,6 +198,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 case BankAccountTypes.CreditCard:
                     payCCLookupDefinition.FilterDefinition.AddFixedFilter(p => p.TransferToBankAccountId,
                         Conditions.Equals, BankOptionsData.BankAccountViewModel.Id);
+
+                    payCCLookupDefinition.FilterDefinition.Include(p => p.BankAccount)
+                        .AddFixedFilter(p => p.AccountType, Conditions.NotEquals
+                            , (byte)BankAccountTypes.CreditCard);
                     break;
             }
 
@@ -421,12 +425,20 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                     return false;
                                 }
 
-                                //var ccPaymentBudget = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
-                                //ccPaymentBudget = ccPaymentBudget.FillOutProperties(true);
-                                //if (ccPaymentBudget.BankAccount.AccountType == ((byte)BankAccountTypes.CreditCard))
-                                //{
-                                    
-                                //}
+                                var ccPaymentBudget = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
+                                ccPaymentBudget = ccPaymentBudget.FillOutProperties(new List<TableDefinitionBase>
+                                {
+                                    AppGlobals.LookupContext.BankAccounts,
+                                });
+                                if (BankOptionsData.BankAccountViewModel.AccountType == BankAccountTypes.CreditCard
+                                    && CreditCardOption == BankCreditCardOptions.PayOffEachMonth
+                                    && ccPaymentBudget.BankAccount.AccountType == ((byte)BankAccountTypes.CreditCard))
+                                {
+                                    ControlsGlobals.UserInterface.ShowMessageBox(
+                                        "You cannot pay off this balance with another credit card."
+                                        , "Validation Fail", RsMessageBoxIcons.Exclamation);
+                                    return false;
+                                }
                                 return true;
                             }
                             else
