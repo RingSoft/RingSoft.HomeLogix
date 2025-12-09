@@ -802,26 +802,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 procedure.DoAppProcedure += (sender, args) => { LoadFromEntityProcedure(entity, procedure); };
                 procedure.Start("Loading Bank Account");
 
-                if (CheckAllowGenTran(entity) && PendingGeneration)
+                if (ViewModelInput?.RecalcInput == null)
                 {
-                    var message =
-                        "Click Generate Future Register Items From Budget to see what your bank balance will be in the future.\r\n\r\nYou can delete any Future Register row by right-clicking on the row and clicking Delete Row.";
-                    var caption = "Future Forecast";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
-                }
+                    if (CheckAllowGenTran(entity) && PendingGeneration)
+                    {
+                        var message =
+                            "Click Generate Future Register Items From Budget to see what your bank balance will be in the future.\r\n\r\nYou can delete any Future Register row by right-clicking on the row and clicking Delete Row.";
+                        var caption = "Future Forecast";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                    }
 
-                var context = SystemGlobals.DataRepository.GetDataContext();
-                var table = context.GetTable<History>();
-                var bankHasHistory = table.Any(p => p.BankAccountId == Id);
+                    var context = SystemGlobals.DataRepository.GetDataContext();
+                    var table = context.GetTable<History>();
+                    var bankHasHistory = table.Any(p => p.BankAccountId == Id);
 
-                if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any() &&
-                    !bankHasHistory)
-                {
-                    var message =
-                        "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Future Register Items and set actual amounts to Future Register Items and update the Bank Balance.\r\n\r\nIf you don't want to spend time adding actual values and your bank doesn't have the option to download QIF files, you can just update the Bank Balance and check Completed on the Future Register Items that have cleared on your bank account's bank statement.";
+                    if (LastCompleteDate.GetValueOrDefault().Year == 1980 && RegisterGridManager.Rows.Any() &&
+                        !bankHasHistory)
+                    {
+                        var message =
+                            "Click Import Bank Transactions to input actual amounts from your bank statement and/or import a .QIF file that you download from your bank's web site.  This feature makes it quick and easy to complete Future Register Items and set actual amounts to Future Register Items and update the Bank Balance.\r\n\r\nIf you don't want to spend time adding actual values and your bank doesn't have the option to download QIF files, you can just update the Bank Balance and check Completed on the Future Register Items that have cleared on your bank account's bank statement.";
 
-                    var caption = "Import Bank Transactions";
-                    ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                        var caption = "Import Bank Transactions";
+                        ControlsGlobals.UserInterface.ShowMessageBox(message, caption, RsMessageBoxIcons.Information);
+                    }
                 }
             }
             //LoadFromEntityProcedure(entity);

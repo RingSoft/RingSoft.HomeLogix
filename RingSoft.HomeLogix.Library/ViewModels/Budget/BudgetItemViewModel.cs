@@ -1445,6 +1445,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             if (result)
             {
                 result = context.Commit("");
+                if (result)
+                {
+                    foreach (var bankAccount in CCRecalcData.BanksToPurgeRegister)
+                    {
+                        AppGlobals.RefreshBankViewModels(bankAccount.Id);
+                    }
+                }
             }
 
             if (result)

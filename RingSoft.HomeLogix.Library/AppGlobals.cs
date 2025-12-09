@@ -417,5 +417,17 @@ namespace RingSoft.HomeLogix.Library
                     throw new ArgumentOutOfRangeException(nameof(sourceTransactionType), sourceTransactionType, null);
             }
         }
+
+        public static void RefreshBankViewModels(int bankAccountId)
+        {
+            var bankViewModels = MainViewModel.BankAccountViewModels
+                .Where(p => p.Id == bankAccountId);
+
+            foreach (var viewModel in bankViewModels)
+            {
+                viewModel.RefreshFromDb();
+            }
+
+        }
     }
 }
