@@ -56,7 +56,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 {
                     result = true;
                 }
-                return false;
+                return result;
             }
         }
     }
@@ -1580,7 +1580,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     if (DbBankAccountId != 0 && budgetItem.Id != DbBankAccountId)
                     {
-                        if (DbBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
+                        if (DbBankAccount != null && DbBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
                         {
                             recalcData.BanksToPurgeRegister.Add(DbBankAccount);
                         }

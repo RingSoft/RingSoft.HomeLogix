@@ -331,7 +331,7 @@ namespace RingSoft.HomeLogix.Tests
             //In this scenario, we do nothing.
             budgetItemViewModel.SaveCommand.Execute(null);
 
-            Assert.IsNull(budgetItemViewModel.CCRecalcData);
+            Assert.IsFalse(budgetItemViewModel.CCRecalcData.HasData);
         }
     }
 }
