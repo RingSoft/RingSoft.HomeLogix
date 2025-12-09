@@ -420,6 +420,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                     PayCCDayUiCommand.SetFocus();
                                     return false;
                                 }
+
+                                //var ccPaymentBudget = CCPaymentBudgetAutoFillValue.GetEntity<BudgetItem>();
+                                //ccPaymentBudget = ccPaymentBudget.FillOutProperties(true);
+                                //if (ccPaymentBudget.BankAccount.AccountType == ((byte)BankAccountTypes.CreditCard))
+                                //{
+                                    
+                                //}
                                 return true;
                             }
                             else
