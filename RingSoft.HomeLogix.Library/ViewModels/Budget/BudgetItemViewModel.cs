@@ -40,6 +40,25 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         public BudgetItem BudgetItem { get; set; }
 
         public BudgetItemViewModel BudgetItemViewModel { get; set; }
+
+        public bool HasData
+        {
+            get
+            {
+                var result = false;
+
+                if (CreditCardBankAccounts.Any())
+                {
+                    result = true;
+                }
+
+                if (BanksToPurgeRegister.Any())
+                {
+                    result = true;
+                }
+                return false;
+            }
+        }
     }
 
     public class YearlyHistoryFilter
@@ -1197,9 +1216,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 budgetItem.BankAccount = newBankAccount;
             }
 
-            if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
+            if (budgetItem.BankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
             {
-                DbTransferToBankAccount = null;
+                if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
+                {
+                    DbTransferToBankAccount = null;
+                }
             }
 
             return budgetItem;
@@ -1545,6 +1567,41 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         {
                             recalcData.BanksToPurgeRegister.Add(
                                 DbTransferToBankAccount);
+                        }
+                    }
+                }
+
+                //Transfer From is a credit card and transfer To is a credit card.
+                if (budgetItem.BankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                    && budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard)
+                {
+                    recalcData.BanksToPurgeRegister.Clear();
+                    recalcData.CreditCardBankAccounts.Clear();
+
+                    if (DbBankAccountId != 0 && budgetItem.Id != DbBankAccountId)
+                    {
+                        if (DbBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
+                        {
+                            recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                        }
+                    }
+
+                    if (DbTransferToBankId != 0 && DbTransferToBankId != budgetItem.TransferToBankAccountId)
+                    {
+                        if (DbTransferToBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
+                        {
+                            recalcData.BanksToPurgeRegister.Add(DbTransferToBankAccount);
+                        }
+                        else if (DbTransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                                 && DbTransferToBankAccount.CreditCardOption == (byte)DataAccess.Model.BankCreditCardOptions.PayOffEachMonth)
+                        {
+                            recalcData.BanksToPurgeRegister.Add(DbTransferToBankAccount);
+                        }
+
+                        if (budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                            && budgetItem.TransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
+                        {
+                            recalcData.BanksToPurgeRegister.Add(budgetItem.TransferToBankAccount);
                         }
                     }
                 }
