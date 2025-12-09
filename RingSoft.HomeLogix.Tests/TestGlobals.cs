@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RingSoft.App.Library;
 using RingSoft.DbLookup;
@@ -41,7 +42,6 @@ namespace RingSoft.DevLogix.Tests
         public int SallyAllowanceBudgetItemId { get; } = 10;
 
         public int CCPaymentBudgetItemId { get; } = 11;
-
 
         public new HomeLogixTestDataRepository DataRepository { get; } 
             
@@ -409,6 +409,9 @@ namespace RingSoft.DevLogix.Tests
             bankAccount = AppGlobals.DataRepository.GetBankAccount(VisaCard_PayCCOffEveryMonth_BankAccountId);
             budgetItemViewModel.TransferToBankAccountAutoFillValue = bankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.IsFalse(budgetItemViewModel.CCRecalcData.BanksToPurgeRegister.Any());
+            Assert.IsFalse(budgetItemViewModel.CCRecalcData.CreditCardBankAccounts.Any());
         }
     }
 }

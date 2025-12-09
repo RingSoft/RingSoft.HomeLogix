@@ -848,10 +848,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             AddAdjustmentCommand.IsEnabled = !ReadOnlyMode;
 
-            var budgetItem = newEntity.FillOutProperties(false);
-            DbBankAccountId = budgetItem.BankAccountId;
-            DbTransferToBankId = budgetItem.TransferToBankAccountId;
-
             _loading = false;
             _registerAffected = false;
         }
@@ -882,6 +878,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 DateControlsEnabled = false;
             }
+
+            DbBankAccountId = budgetItem.BankAccountId;
+            DbTransferToBankId = budgetItem.TransferToBankAccountId;
 
             return budgetItem;
         }
@@ -1175,7 +1174,19 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 }
             }
 
+            var resetDbBankId = false;
             if (DbBankAccountId == newTransferToBankAccountId || DbBankAccountId == newBankAccountId)
+            {
+                resetDbBankId = true;
+            }
+
+            if (resetDbBankId && DbTransferToBankId != newTransferToBankAccountId)
+            {
+                resetDbBankId = false;
+            }
+
+
+            if (resetDbBankId)
             {
                 DbBankAccount = null;
             }
@@ -1454,12 +1465,29 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     //Old transfer to bank account is credit card and CCOptions is pay off each month
                     if (DbTransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
-                        &&
-                        DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
+                        && DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
                     {
-                        if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == DbTransferToBankId))
+                        if (DbTransferToBankId != budgetItem.TransferToBankAccountId)
                         {
-                            recalcData.CreditCardBankAccounts.Add(DbTransferToBankAccount);
+                            //if New CCOptions = Payoff and old is pay off, purge old CC register
+                            if (budgetItem.TransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                                && budgetItem.TransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
+                            {
+                                if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbTransferToBankId))
+                                {
+                                    recalcData.BanksToPurgeRegister.Add(DbTransferToBankAccount);
+                                }
+                            }
+                            //New CC Options is carry balance.  Recalc Old CC Bank.
+                            else
+                            {
+                                if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == DbTransferToBankId))
+                                {
+                                    recalcData.CreditCardBankAccounts.Add(DbTransferToBankAccount);
+                                }
+
+                            }
+
                         }
                     }
                 }
