@@ -1536,14 +1536,14 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         && DbTransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
                         && DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.PayOffEachMonth)
                     {
-                        if (!recalcData.BanksToPurgeRegister.Any(p => p.Id ==DbBankAccountId))
+                        if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbBankAccountId))
                         {
                             recalcData.BanksToPurgeRegister.Add(DbBankAccount);
                         }
 
-                        if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == DbTransferToBankId))
+                        if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbTransferToBankId))
                         {
-                            recalcData.CreditCardBankAccounts.Add(
+                            recalcData.BanksToPurgeRegister.Add(
                                 DbTransferToBankAccount);
                         }
                     }
