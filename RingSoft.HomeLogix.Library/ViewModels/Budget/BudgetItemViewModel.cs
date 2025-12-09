@@ -1440,14 +1440,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                         if (budgetItem.TransferToBankAccount.CreditCardOption ==
                             (byte)BankCreditCardOptions.PayOffEachMonth)
                         {
-                            if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbBankAccountId))
+                            //if old credit card cc option = carry balance or old transfer to is non-credit card
+                            if (DbTransferToBankId != 0 && (
+                                    DbTransferToBankAccount.AccountType == (byte)BankAccountTypes.CreditCard
+                                    && DbTransferToBankAccount.CreditCardOption == (byte)BankCreditCardOptions.CarryBalance)
+                                || DbTransferToBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
                             {
-                                recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                                if (!recalcData.CreditCardBankAccounts.Any(p =>
+                                        p.Id == budgetItem.TransferToBankAccountId))
+                                {
+                                    recalcData.CreditCardBankAccounts.Add(budgetItem.TransferToBankAccount);
+                                }
                             }
-
-                            if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == budgetItem.TransferToBankAccountId))
+                            else
                             {
-                                recalcData.CreditCardBankAccounts.Add(budgetItem.TransferToBankAccount);
+                                if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbBankAccountId))
+                                {
+                                    recalcData.BanksToPurgeRegister.Add(DbBankAccount);
+                                }
+
+                                if (!recalcData.CreditCardBankAccounts.Any(p =>
+                                        p.Id == budgetItem.TransferToBankAccountId))
+                                {
+                                    recalcData.CreditCardBankAccounts.Add(budgetItem.TransferToBankAccount);
+                                }
                             }
                         }
 
