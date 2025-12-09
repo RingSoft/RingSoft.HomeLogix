@@ -132,7 +132,7 @@ namespace RingSoft.HomeLogix.Tests
 
             newToCCBankAccount = dataRepository.GetBankAccount(Globals.VisaCard_PayCCOffEveryMonth_BankAccountId);
 
-            //In this scenario, we recalc visa card (old).  No purge needed
+            //In this scenario, we recalc visa card (new).  No purge needed
             budgetItemViewModel.TransferToBankAccountAutoFillValue = newToCCBankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);
 
@@ -175,6 +175,22 @@ namespace RingSoft.HomeLogix.Tests
                 .Any(p => p.Id == Globals.VisaCard_PayCCOffEveryMonth_BankAccountId));
 
             Assert.AreEqual(2, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister.Count);
+
+            //NewTransferToCC_PayOff_OldTransferTo_NonCC-------------------------------------------------
+
+            var newToCCBankAccount = dataRepository.GetBankAccount(Globals.VisaCard_PayCCOffEveryMonth_BankAccountId);
+
+            //In this scenario, we recalc visa card (new).  No purge needed
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = newToCCBankAccount.GetAutoFillValue();
+            budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.AreEqual(1, budgetItemViewModel.CCRecalcData.CreditCardBankAccounts.Count);
+
+            Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.CreditCardBankAccounts
+                .Any(p => p.Id == Globals.VisaCard_PayCCOffEveryMonth_BankAccountId));
+
+            Assert.AreEqual(0, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister.Count);
+
         }
     }
 }
