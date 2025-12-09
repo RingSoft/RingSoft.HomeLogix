@@ -42,6 +42,7 @@ namespace RingSoft.DevLogix.Tests
         public int SallyAllowanceBudgetItemId { get; } = 10;
 
         public int CCPaymentBudgetItemId { get; } = 11;
+        public int TransferFromToCCBankAccountBudgetItemId { get; } = 12;
 
         public new HomeLogixTestDataRepository DataRepository { get; } 
             
@@ -410,8 +411,19 @@ namespace RingSoft.DevLogix.Tests
             budgetItemViewModel.TransferToBankAccountAutoFillValue = bankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);
 
-            Assert.IsFalse(budgetItemViewModel.CCRecalcData.BanksToPurgeRegister.Any());
-            Assert.IsFalse(budgetItemViewModel.CCRecalcData.CreditCardBankAccounts.Any());
+            Assert.IsFalse(budgetItemViewModel.CCRecalcData.HasData);
+
+            budgetItemViewModel.NewCommand.Execute(null);
+            budgetItemViewModel.Id = TransferFromToCCBankAccountBudgetItemId;
+            budgetItemViewModel.KeyAutoFillValue = new AutoFillValue(null, "Credit Card Payment");
+            budgetItemViewModel.BudgetItemType = BudgetItemTypes.Transfer;
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(DiscoverCard_CarryBalance_BankAccountId);
+            budgetItemViewModel.BankAutoFillValue = bankAccount.GetAutoFillValue();
+            bankAccount = AppGlobals.DataRepository.GetBankAccount(VisaCard_PayCCOffEveryMonth_BankAccountId);
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = bankAccount.GetAutoFillValue();
+            budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.IsFalse(budgetItemViewModel.CCRecalcData.HasData);
         }
     }
 }

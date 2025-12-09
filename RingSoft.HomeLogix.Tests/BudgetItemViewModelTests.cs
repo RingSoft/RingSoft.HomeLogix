@@ -272,7 +272,7 @@ namespace RingSoft.HomeLogix.Tests
         }
 
         [TestMethod]
-        public void TestBudget_FromBankCCType_NoChangeToCCType()
+        public void TestBudget_FromBankType_NoChangeToBankType()
         {
             Globals.ClearData();
 
@@ -291,6 +291,48 @@ namespace RingSoft.HomeLogix.Tests
 
             Assert.IsFalse(budgetItemViewModel.CCRecalcData.HasData);
         }
+
+        [TestMethod]
+        public void TestBudget_FromBankType_NoChangeToBankType_Transfer()
+        {
+            Globals.ClearData();
+
+            var dataRepository = AppGlobals.DataRepository;
+            var budgetItem = dataRepository.GetBudgetItem(Globals.TransferBudgetItemId);
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = Globals;
+            budgetItemViewModel.OnViewLoaded(
+                new BudgetView());
+
+            budgetItemViewModel.OnRecordSelected(budgetItem);
+
+            //In this scenario, we do nothing.
+            budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.IsFalse(budgetItemViewModel.CCRecalcData.HasData);
+        }
+
+        [TestMethod]
+        public void TestBudget_FromBankType_NoChangeToBankType_TransferCCToCC()
+        {
+            Globals.ClearData();
+
+            var dataRepository = AppGlobals.DataRepository;
+            var budgetItem = dataRepository.GetBudgetItem(Globals.TransferFromToCCBankAccountBudgetItemId);
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = Globals;
+            budgetItemViewModel.OnViewLoaded(
+                new BudgetView());
+
+            budgetItemViewModel.OnRecordSelected(budgetItem);
+
+            //In this scenario, we do nothing.
+            budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.IsNull(budgetItemViewModel.CCRecalcData);
+        }
     }
-    }
+}
     

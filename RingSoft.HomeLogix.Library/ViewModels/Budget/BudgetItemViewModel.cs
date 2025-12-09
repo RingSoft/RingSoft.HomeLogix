@@ -1214,13 +1214,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             {
                 //newBankAccount.RegisterItems = null;
                 budgetItem.BankAccount = newBankAccount;
-            }
 
-            if (budgetItem.BankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
-            {
-                if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
+                if (newBankAccount.AccountType != (byte)BankAccountTypes.CreditCard)
                 {
-                    DbTransferToBankAccount = null;
+                    if (DbTransferToBankId == newBankAccountId || DbTransferToBankId == newTransferToBankAccountId)
+                    {
+                        DbTransferToBankAccount = null;
+                    }
                 }
             }
 
