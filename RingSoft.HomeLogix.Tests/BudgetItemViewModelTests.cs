@@ -41,10 +41,10 @@ namespace RingSoft.HomeLogix.Tests
 
             budgetItemViewModel.OnRecordSelected(budgetItem);
 
-            var newCCBankAccount = dataRepository.GetBankAccount(Globals.MasterCard_PayCCOffEveryMonth_BankAccountId);
+            var newToCCBankAccount = dataRepository.GetBankAccount(Globals.MasterCard_PayCCOffEveryMonth_BankAccountId);
 
             //In this scenario, we purge main and visa card (old).  Recalculate Master card only.
-            budgetItemViewModel.TransferToBankAccountAutoFillValue = newCCBankAccount.GetAutoFillValue();
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = newToCCBankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);
 
             Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.CreditCardBankAccounts
@@ -76,11 +76,56 @@ namespace RingSoft.HomeLogix.Tests
 
             budgetItemViewModel.OnRecordSelected(budgetItem);
 
-            var newCCBankAccount = dataRepository.GetBankAccount(Globals.SecondChecking_BankAccountId);
+            var newCCFromBankAccount = dataRepository.GetBankAccount(Globals.SecondChecking_BankAccountId);
 
-            //In this scenario, we purge main and visa card (old).  Recalculate Visa card only.
-            budgetItemViewModel.BankAutoFillValue = newCCBankAccount.GetAutoFillValue();
+            //In this scenario, we purge main and second.  Recalculate Visa card only.
+            budgetItemViewModel.BankAutoFillValue = newCCFromBankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.CreditCardBankAccounts
+                .Any(p => p.Id == Globals.VisaCard_PayCCOffEveryMonth_BankAccountId));
+
+            Assert.AreEqual(1, budgetItemViewModel.CCRecalcData.CreditCardBankAccounts.Count);
+
+            Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister
+                .Any(p => p.Id == Globals.MainCheckingAccount_BankAccountId));
+
+            Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister
+                .Any(p => p.Id == Globals.SecondChecking_BankAccountId));
+
+            Assert.AreEqual(2, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister.Count);
+        }
+
+        [TestMethod]
+        public void TestBudget_NewToCC_CarryBalance_OldToCC_PayOff()
+        {
+            Globals.ClearData();
+
+            var dataRepository = AppGlobals.DataRepository;
+            var budgetItem = dataRepository.GetBudgetItem(Globals.CCPaymentBudgetItemId);
+
+            var budgetItemViewModel = new BudgetItemViewModel();
+            budgetItemViewModel.Processor = Globals;
+            budgetItemViewModel.OnViewLoaded(
+                new BudgetView());
+
+            budgetItemViewModel.OnRecordSelected(budgetItem);
+
+            var newToCCBankAccount = dataRepository.GetBankAccount(Globals.DiscoverCard_CarryBalance_BankAccountId);
+
+            //In this scenario, we purge main and visa card (old).  No recalc needed
+            budgetItemViewModel.TransferToBankAccountAutoFillValue = newToCCBankAccount.GetAutoFillValue();
+            budgetItemViewModel.SaveCommand.Execute(null);
+
+            Assert.AreEqual(0, budgetItemViewModel.CCRecalcData.CreditCardBankAccounts.Count);
+
+            Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister
+                .Any(p => p.Id == Globals.MainCheckingAccount_BankAccountId));
+
+            Assert.AreEqual(true, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister
+                .Any(p => p.Id == Globals.VisaCard_PayCCOffEveryMonth_BankAccountId));
+
+            Assert.AreEqual(2, budgetItemViewModel.CCRecalcData.BanksToPurgeRegister.Count);
         }
     }
 }

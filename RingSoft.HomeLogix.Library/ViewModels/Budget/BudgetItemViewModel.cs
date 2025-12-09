@@ -1478,12 +1478,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                                     recalcData.BanksToPurgeRegister.Add(DbTransferToBankAccount);
                                 }
                             }
-                            //New CC Options is carry balance.  Recalc Old CC Bank.
+                            //New CC Options is carry balance.  Purge Old CC Bank.
                             else
                             {
-                                if (!recalcData.CreditCardBankAccounts.Any(p => p.Id == DbTransferToBankId))
+                                if (!recalcData.BanksToPurgeRegister.Any(p => p.Id == DbTransferToBankId))
                                 {
-                                    recalcData.CreditCardBankAccounts.Add(DbTransferToBankAccount);
+                                    recalcData.BanksToPurgeRegister.Add(DbTransferToBankAccount);
                                 }
 
                             }
