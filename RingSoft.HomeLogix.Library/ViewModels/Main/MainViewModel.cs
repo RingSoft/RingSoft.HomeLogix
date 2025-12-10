@@ -301,7 +301,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 var message =
                     "It appears that you have transfer budget items with credit card payment that were created in a previous version of HomeLogix.  " +
                     "To take advantage of the new credit card payment features, these budget items need to be upgraded.  " +
-                    "Click OK to upgrade these budget items now.";
+                    "Click Yes to upgrade these budget items now.";
 
                 var caption = "Upgrade Credit Card Budget Items";
 

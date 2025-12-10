@@ -272,7 +272,31 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
             AppGlobals.MainViewModel.StatsViewModel = this;
             BankLookupDefinition = CreateBankLookupDefinition();
             BudgetLookupDefinition = AppGlobals.LookupContext.MainBudgetLookup.Clone();
+
+            BankLookupDefinition.RefreshChanged += BankLookupDefinition_RefreshChanged;
+            BudgetLookupDefinition.RefreshChanged += BudgetLookupDefinition_RefreshChanged;
             RefreshView();
+        }
+
+        private void BudgetLookupDefinition_RefreshChanged(object sender, LookupRefreshArgs e)
+        {
+            HandleLookupRefresh(e);
+        }
+
+        private void BankLookupDefinition_RefreshChanged(object sender, LookupRefreshArgs e)
+        {
+            HandleLookupRefresh(e);
+        }
+
+        private void HandleLookupRefresh(LookupRefreshArgs args)
+        {
+            var procedure = RingSoftAppGlobals.CreateAppProcedure();
+            procedure.DoAppProcedure += (sender, procedureArgs) =>
+            {
+                args.RefreshCommand.Execute(null);
+            };
+            procedure.Start($"Processing {args.LookupDefinition.Title} Lookup");
+            args.Handled = true;
         }
 
         private LookupDefinition<MainBankLookup, BankAccount> CreateBankLookupDefinition()
@@ -296,6 +320,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
         }
 
         public void RefreshView(IAppProcedure? procedure = null)
+        {
+            if (procedure == null)
+            {
+                procedure = RingSoftAppGlobals.CreateAppProcedure();
+                procedure.DoAppProcedure += (sender, args) =>
+                {
+                    RefreshViewProcedure(procedure);
+                };
+                procedure.Start("Refreshing Statics View");
+                return;
+            }
+
+            RefreshViewProcedure(procedure);
+        }
+
+        private void RefreshViewProcedure(IAppProcedure procedure)
         {
             _currentMonthEnding = AppGlobals.MainViewModel.CurrentMonthEnding;
             if (AppGlobals.UnitTesting)
@@ -345,7 +385,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
 
             MakeBudgetChartData();
             MakeActualChartData();
-
         }
 
         private static DateTime GetPeriodEndDate(DateTime value)
