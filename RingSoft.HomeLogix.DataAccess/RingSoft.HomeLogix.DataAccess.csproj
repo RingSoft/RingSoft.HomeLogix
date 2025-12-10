@@ -3,9 +3,6 @@
     <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="RingSoft.App.Library" Version="10.0.4" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbMaintenance\RingSoft.DbMaintenance.csproj" />
+    <PackageReference Include="RingSoft.App.Library" Version="10.0.5" />
   </ItemGroup>
 </Project>

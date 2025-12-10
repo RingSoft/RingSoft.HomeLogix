@@ -802,7 +802,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 procedure.DoAppProcedure += (sender, args) => { LoadFromEntityProcedure(entity, procedure); };
                 procedure.Start("Loading Bank Account");
 
-                if (ViewModelInput?.RecalcInput == null)
+                if (ViewModelInput?.RecalcInput == null && ViewModelInput?.UpgradeBankData == null)
                 {
                     if (CheckAllowGenTran(entity) && PendingGeneration)
                     {
@@ -2313,7 +2313,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                      && p.BankAccountId == budgetItem.BankAccountId
                      && p.BudgetItemId == budgetItem.Id).ToList();
 
-            if (ViewModelInput.UpgradeBankData != null
+            if (ViewModelInput != null
                 && ViewModelInput.UpgradeBankData != null
                 && !ViewModelInput.UpgradeBankData.Processed)
             {

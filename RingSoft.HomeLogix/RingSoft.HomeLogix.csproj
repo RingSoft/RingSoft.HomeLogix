@@ -32,10 +32,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="RingSoft.App.Controls" Version="10.0.4" />
+    <PackageReference Include="RingSoft.App.Controls" Version="10.0.5" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\RingSoft.DbLookup\RingSoft.DbLookup.Controls.WPF\RingSoft.DbLookup.Controls.WPF.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.DataAccess\RingSoft.HomeLogix.DataAccess.csproj" />
     <ProjectReference Include="..\RingSoft.HomeLogix.Library\RingSoft.HomeLogix.Library.csproj" />
   </ItemGroup>
