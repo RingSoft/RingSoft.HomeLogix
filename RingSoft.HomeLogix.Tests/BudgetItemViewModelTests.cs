@@ -210,7 +210,7 @@ namespace RingSoft.HomeLogix.Tests
             var newTransferFromBankAccount = dataRepository.GetBankAccount(Globals.SecondChecking_BankAccountId);
             var newTransferToBankAccount = dataRepository.GetBankAccount(Globals.MasterCard_PayCCOffEveryMonth_BankAccountId);
 
-            //In this scenario, we recakc new ToPayOffCC (master card) only.  We purge Old ToPayOffCC (visa) and both old and new To BankAccounts (Main and Second)
+            //In this scenario, we recakc new ToPayOffCC (master card) only.  We purge Old ToPayOffCC (visa) and both old and new From BankAccounts (Main and Second)
             budgetItemViewModel.BankAutoFillValue = newTransferFromBankAccount.GetAutoFillValue();
             budgetItemViewModel.TransferToBankAccountAutoFillValue = newTransferToBankAccount.GetAutoFillValue();
             budgetItemViewModel.SaveCommand.Execute(null);

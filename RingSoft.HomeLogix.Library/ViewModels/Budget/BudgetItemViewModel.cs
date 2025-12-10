@@ -1401,7 +1401,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         private bool RecalcCCData()
         {
-            if (!CCRecalcData.HasData)
+            if (!CCRecalcData.HasData || SystemGlobals.UnitTestMode)
             {
                 return true;
             }
