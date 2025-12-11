@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using RingSoft.App.Library;
 using RingSoft.DbLookup.Lookup;
+using RingSoft.DbLookup.ModelDefinition;
 using RingSoft.DbLookup.TableProcessing;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
@@ -183,7 +184,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     {
                         registerItem = gridRowBudgetItemSplit.RegisterItemAutoFillValue
                             .GetEntity<BankAccountRegisterItem>();
-                        registerItem = registerItem.FillOutProperties(true);
+                        registerItem = registerItem.FillOutProperties(parentJoins: new List<TableDefinitionBase>
+                        {
+                            AppGlobals.LookupContext.BankAccounts,
+                            AppGlobals.LookupContext.BudgetItems,
+                        }, gridTables: new List<TableDefinitionBase>());
                         budgetItem = registerItem.BudgetItem;
                         var amount = ProcessAmount(gridRowBudgetItemSplit.Amount, gridRow, budgetItem);
                         var row = PostRegisterItem(registerItem, gridRowBudgetItemSplit.Amount, gridRow, true);
@@ -194,7 +199,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 else
                 {
                     registerItem = gridRow.RegisterItemAutoFillValue.GetEntity<BankAccountRegisterItem>();
-                    registerItem = registerItem.FillOutProperties(true);
+                    registerItem = registerItem.FillOutProperties(parentJoins:new List<TableDefinitionBase>
+                    {
+                        AppGlobals.LookupContext.BankAccounts,
+                        AppGlobals.LookupContext.BudgetItems,
+                    }, gridTables:new List<TableDefinitionBase>());
                     budgetItem = registerItem.BudgetItem;
                     var amount = ProcessAmount(gridRow.Amount, gridRow, budgetItem);
                     var row = PostRegisterItem(registerItem, amount, gridRow, false);
