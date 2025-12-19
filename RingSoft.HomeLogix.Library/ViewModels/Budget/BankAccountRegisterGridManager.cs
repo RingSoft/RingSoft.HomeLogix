@@ -168,7 +168,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                     balanceRow = Rows.OfType<BankAccountRegisterGridRow>()
                         .OrderBy(p => p.ItemDate)
-                        .ThenByDescending(p => p.ProjectedAmount)
+                        .ThenBy(p => p.ProjectedAmount)
                         .LastOrDefault(p => p.ItemDate <= statementDate
                                             && p.Completed == false);
                     var projectedAmount = 0.0;

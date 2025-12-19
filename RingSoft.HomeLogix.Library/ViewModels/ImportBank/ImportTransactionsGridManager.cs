@@ -314,7 +314,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                     if (qifMap == null)
                     {
                         var registerItem = gridRow.RegisterItemAutoFillValue.GetEntity<BankAccountRegisterItem>();
-                        registerItem = registerItem.FillOutProperties(true);
+                        registerItem = registerItem.FillOutProperties(parentJoins: new List<TableDefinitionBase>
+                        {
+                            AppGlobals.LookupContext.BankAccounts,
+                            AppGlobals.LookupContext.BudgetItems,
+                        }, gridTables: new List<TableDefinitionBase>());
+
                         qifMap = new QifMap();
                         qifMap.BankText = gridRow.Description;
                         qifMap.BudgetId = registerItem.BudgetItemId;
@@ -663,7 +668,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 BudgetItem budgetItem = null;
                 if (registerItem != null)
                 {
-                    registerItem = registerItem.FillOutProperties(true);
+                    registerItem = registerItem.FillOutProperties(gridTables:new List<TableDefinitionBase>()
+                    , parentJoins:new List<TableDefinitionBase>
+                    {
+                        AppGlobals.LookupContext.BudgetItems,
+                        AppGlobals.LookupContext.BankAccounts,
+                    });
                     budgetItem = registerItem.BudgetItem;
                 }
 
