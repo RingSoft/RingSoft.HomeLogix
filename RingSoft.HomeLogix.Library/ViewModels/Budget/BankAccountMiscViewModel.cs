@@ -453,32 +453,34 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 switch (ItemType)
                 {
                     case BudgetItemTypes.Income:
-                        switch (BankViewModel.AccountType)
-                        {
-                            case BankAccountTypes.Checking:
-                            case BankAccountTypes.Savings:
-                                _registerItem.ProjectedAmount = Amount;
-                                break;
-                            case BankAccountTypes.CreditCard:
-                                _registerItem.ProjectedAmount = -Amount;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        _registerItem.ProjectedAmount = Amount;
+                        //switch (BankViewModel.AccountType)
+                        //{
+                        //    case BankAccountTypes.Checking:
+                        //    case BankAccountTypes.Savings:
+                        //        _registerItem.ProjectedAmount = Amount;
+                        //        break;
+                        //    case BankAccountTypes.CreditCard:
+                        //        _registerItem.ProjectedAmount = Amount;
+                        //        break;
+                        //    default:
+                        //        throw new ArgumentOutOfRangeException();
+                        //}
                         break;
                     case BudgetItemTypes.Expense:
-                        switch (BankViewModel.AccountType)
-                        {
-                            case BankAccountTypes.Checking:
-                            case BankAccountTypes.Savings:
-                                _registerItem.ProjectedAmount = -Amount;
-                                break;
-                            case BankAccountTypes.CreditCard:
-                                _registerItem.ProjectedAmount = Amount;
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
+                        _registerItem.ProjectedAmount = -Amount;
+                        //switch (BankViewModel.AccountType)
+                        //{
+                        //    case BankAccountTypes.Checking:
+                        //    case BankAccountTypes.Savings:
+                        //        _registerItem.ProjectedAmount = -Amount;
+                        //        break;
+                        //    case BankAccountTypes.CreditCard:
+                        //        _registerItem.ProjectedAmount = -Amount;
+                        //        break;
+                        //    default:
+                        //        throw new ArgumentOutOfRangeException();
+                        //}
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
