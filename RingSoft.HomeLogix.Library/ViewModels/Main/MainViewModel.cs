@@ -86,7 +86,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Main
                 _currentMonthEnding = value;
                 if (_setCurrentDateText)
                 {
-                    CurrentMonthEndingText = CurrentMonthEnding.ToString("MMMM yyyy");
+                    CurrentMonthEndingText = $"Current Month: {CurrentMonthEnding.ToString("MMMM yyyy")}";
                 }
             }
         }

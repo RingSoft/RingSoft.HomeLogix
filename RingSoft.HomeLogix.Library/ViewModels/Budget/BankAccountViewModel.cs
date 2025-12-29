@@ -1303,8 +1303,15 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     }
                 }
 
+                count = completedRows.Count;
+                index = 0;
                 foreach (var completedRow in completedRows)
                 {
+                    index++;
+                    if (procedure != null)
+                    {
+                        procedure.SplashWindow.SetProgress($"Removing Completed Row {index} of {count}");
+                    }
                     RegisterGridManager.InternalRemoveRow(completedRow);
                 }
 
@@ -1333,6 +1340,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 AppGlobals.MainViewModel.RefreshView();
             }
 
+            if (_doProcessCompletedRows)
+            {
+                _completeGrid = false;
+                CompleteAll = false;
+                BankAccountView.ToggleCompleteAll(false);
+                _completeGrid = true;
+            }
             result = true;
 
             return result;
