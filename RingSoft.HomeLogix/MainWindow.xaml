@@ -82,9 +82,9 @@
 
             <ac:DbMaintenanceButton x:Name="AdvancedFindButton" Content="_Advanced Find" ImageSource="{StaticResource FindImage}" Command="{Binding AdvancedFindCommand}"/>
 
-            <ac:DbMaintenanceButton  Content="_Upgrade Version" ImageSource="{StaticResource AfUpImage}" Command="{Binding UpgradeCommand}"/>
+            <ac:DbMaintenanceButton x:Name="UpgradeVersionButton" Content="_Upgrade Version" ImageSource="{StaticResource AfUpImage}" Command="{Binding UpgradeCommand}"/>
 
-            <ac:DbMaintenanceButton  Content="About _HomeLogix" ImageSource="{StaticResource HomeImage}" Command="{Binding AboutCommand}"/>
+            <ac:DbMaintenanceButton x:Name="AboutButton" Content="About _HomeLogix" ImageSource="{StaticResource HomeImage}" Command="{Binding AboutCommand}"/>
 
         </StackPanel>
         <StackPanel DockPanel.Dock="Top"  Orientation="Horizontal" HorizontalAlignment="Center">

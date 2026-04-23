@@ -57,6 +57,9 @@ namespace RingSoft.HomeLogix
             hotKey.AddKey(Key.Right);
             HotKeyProcessor.AddHotKey(hotKey);
 
+            ExitButton.ToolTip.HeaderText = "Exit (Alt + X)";
+            ExitButton.ToolTip.DescriptionText = "Exit the HomeLogix application.";
+
             ChangeHouseholdButton.ToolTip.HeaderText = "Change Household (Alt + T)";
             ChangeHouseholdButton.ToolTip.DescriptionText = "Login to a different household.";
 
@@ -80,6 +83,12 @@ namespace RingSoft.HomeLogix
 
             AdvancedFindButton.ToolTip.HeaderText = "Advanced Find (Alt + A)";
             AdvancedFindButton.ToolTip.DescriptionText = "Show the advanced find window.";
+
+            UpgradeVersionButton.ToolTip.HeaderText = "Upgrade Version (Alt + U)";
+            UpgradeVersionButton.ToolTip.DescriptionText = "Upgrade to the latest version of HomeLogix.";
+
+            AboutButton.ToolTip.HeaderText = "About HomeLogix (Alt + H)";
+            AboutButton.ToolTip.DescriptionText = "Show version information about HomeLogix.";
 
             Loaded += MainWindow_Loaded;
         }
