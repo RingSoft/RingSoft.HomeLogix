@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -1742,22 +1743,72 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             CCRecalcData = recalcData;
         }
 
-        private bool RecalcRegister(BankAccount bankAccount)
+        private bool CheckRenameRegister()
         {
-            if (_newBankAccountRegisterItems == null && _bankAccountRegisterItemsToDelete == null)
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var commitRequired = false;
+
+            var registerItems = context.GetTable<BankAccountRegisterItem>()
+                .Where(p => p.BudgetItemId == Id
+                            && p.ItemType != (byte)BankAccountRegisterItemTypes.Miscellaneous);
+
+            if (!registerItems.Any())
                 return true;
 
-            if (!RecalcBankAccountRegister(bankAccount))
+            var result = true;
+            foreach (var registerItem in registerItems)
+            {
+                registerItem.Description = KeyAutoFillValue.Text;
+                result = context.SaveNoCommitEntity(registerItem, "");
+                if (!result)
+                    return false;
+                commitRequired = true;
+            }
+
+            if (commitRequired)
+            {
+                result = context.Commit("");
+            }
+
+            return result;
+        }
+
+        private bool RecalcRegister(BankAccount bankAccount)
+        {
+
+            if (!CheckRenameRegister())
+            {
                 return false;
+            }
+
+
+            if (_newBankAccountRegisterItems == null && _bankAccountRegisterItemsToDelete == null)
+            {
+                return true;
+            }
+
+            if (!RecalcBankAccountRegister(bankAccount))
+            {
+                return false;
+            }
+
 
             if (!RecalcBankAccountRegister(DbBankAccount))
+            {
                 return false;
+            }
+
 
             if (!RecalcBankAccountRegister(_newTransferToBankAccount))
+            {
                 return false;
+            }
+
 
             if (!RecalcBankAccountRegister(DbTransferToBankAccount))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -1778,8 +1829,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var lowestBalance = newBalance;
             DateTime? lowestBalanceDate = null;
 
-            var context = SystemGlobals.DataRepository.GetDataContext();
-            var commitRequired = false;
             foreach (var registerItem in registerItems)
             {
                 if (lowestBalanceDate == null)
@@ -1792,18 +1841,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     lowestBalance = newBalance;
                     lowestBalanceDate = registerItem.ItemDate;
                 }
-
-                if (registerItem.ItemType == (byte)BankAccountRegisterItemTypes.BudgetItem)
-                {
-                    registerItem.Description = KeyAutoFillValue.Text;
-                    context.SaveNoCommitEntity(registerItem, "");
-                    commitRequired = true;
-                }
-            }
-
-            if (commitRequired)
-            {
-                context.Commit("");
             }
 
             bankAccount.ProjectedEndingBalance = newBalance;
