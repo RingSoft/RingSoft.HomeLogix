@@ -1778,6 +1778,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             var lowestBalance = newBalance;
             DateTime? lowestBalanceDate = null;
 
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var commitRequired = false;
             foreach (var registerItem in registerItems)
             {
                 if (lowestBalanceDate == null)
@@ -1790,6 +1792,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     lowestBalance = newBalance;
                     lowestBalanceDate = registerItem.ItemDate;
                 }
+
+                if (registerItem.ItemType == (byte)BankAccountRegisterItemTypes.BudgetItem)
+                {
+                    registerItem.Description = KeyAutoFillValue.Text;
+                    context.SaveNoCommitEntity(registerItem, "");
+                    commitRequired = true;
+                }
+            }
+
+            if (commitRequired)
+            {
+                context.Commit("");
             }
 
             bankAccount.ProjectedEndingBalance = newBalance;
