@@ -707,13 +707,22 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             {
                 return result;
             }
+
+            var ignoreList = new List<string>()
+            {
+                "DEBIT",
+                "CREDIT",
+                "WITHDRAWAL",
+                "DEPOSIT",
+                "PAYPAL",
+            };
             var spacePos = row.Description.IndexOf(" ");
             var text = row.Description;
             if (spacePos > 0)
                 text = row.Description.MidStr(0, spacePos).Trim();
             while (foundMap == false)
             {
-                var foundRows = GetRowsContainingText(text);
+                var foundRows = GetRowsContainingText(text, ignoreList);
                 if (foundRows.Any())
                 {
                     result.AddRange(foundRows);
@@ -738,8 +747,12 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
             return result;
         }
 
-        public List<ImportTransactionGridRow> GetRowsContainingText(string text)
+        public List<ImportTransactionGridRow> GetRowsContainingText(string text, List<string> ignoreList)
         {
+            if (ignoreList.Any(p => text.ToUpper() == p.ToUpper()))
+            {
+                return new List<ImportTransactionGridRow>();
+            }
             var rows = Rows.OfType<ImportTransactionGridRow>()
                 .Where(p => p.FromBank 
                             && p.Description.Contains(text));
