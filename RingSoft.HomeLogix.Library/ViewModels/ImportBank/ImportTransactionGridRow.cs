@@ -271,6 +271,8 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                             {
                                 entity = entity.FillOutProperties(new List<TableDefinitionBase>());
                                 RegisterDate = entity.ItemDate;
+                                if (!FromBank)
+                                    Amount = Math.Abs(entity.ProjectedAmount);
                             }
                             Manager.SetMapRowsBudget(this);
                         }
