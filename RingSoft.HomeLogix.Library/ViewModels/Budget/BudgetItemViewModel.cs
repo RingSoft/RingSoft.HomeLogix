@@ -591,6 +591,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         private BudgetItemTypes? _lockBudgetItemType;
         private BudgetItem _budgetItemHistoryFilter;
         private YearlyHistoryFilter _yearlyHistoryFilter = new YearlyHistoryFilter();
+        private bool _firstSaveGenTran;
 
         private LookupDefinition<BudgetPeriodHistoryLookup, BudgetPeriodHistory>
             _periodHistoryLookupDefinition =
@@ -891,6 +892,13 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
             StartingDate = budgetItem.StartingDate;
+            if (_firstSaveGenTran)
+            {
+                ControlsGlobals.UserInterface.ShowMessageBox("Transactions have been generated for this Budget Item.  That is why the Next Future Register Item Date was incremented.  You can see the generated Future Register Items for this Budget Item by clicking Manage Bank Accounts, clicking Find and and selecting the '" + BankAutoFillValue.Text + "' Bank Account.", "Transactions Generated", RsMessageBoxIcons.Information);
+                _firstSaveGenTran = false;
+            }
+
+
             if (StartingDate != null)
                 _dbStartDate = StartingDate.Value;
 
@@ -1513,6 +1521,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         protected override bool SaveEntity(BudgetItem entity)
         {
             CheckRecalcCC(entity);
+
+            var context = SystemGlobals.DataRepository.GetDataContext();
+            var table = context.GetTable<BankAccountRegisterItem>();
+            if (!table.Any(p => p.ItemType == (byte)BankAccountRegisterItemTypes.BudgetItem) && GenTran)
+                _firstSaveGenTran = true;
 
             var result = AppGlobals.DataRepository.SaveBudgetItem(entity, DbBankAccount, DbTransferToBankAccount, 
                 _newBankAccountRegisterItems, _bankAccountRegisterItemsToDelete);
