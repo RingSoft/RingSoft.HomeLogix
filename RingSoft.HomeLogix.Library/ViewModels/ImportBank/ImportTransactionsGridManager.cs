@@ -715,6 +715,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.ImportBank
                 "WITHDRAWAL",
                 "DEPOSIT",
                 "PAYPAL",
+                "POS",
             };
             var spacePos = row.Description.IndexOf(" ");
             var text = row.Description;
