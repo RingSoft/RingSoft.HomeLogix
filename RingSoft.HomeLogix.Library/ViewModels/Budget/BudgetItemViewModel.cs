@@ -894,8 +894,11 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             StartingDate = budgetItem.StartingDate;
             if (_firstSaveGenTran)
             {
-                ControlsGlobals.UserInterface.ShowMessageBox("Transactions have been generated for this Budget Item.  That is why the Next Future Register Item Date was incremented.  You can see the generated Future Register Items for this Budget Item by clicking Manage Bank Accounts, clicking Find and and selecting the '" + BankAutoFillValue.Text + "' Bank Account.", "Transactions Generated", RsMessageBoxIcons.Information);
+                ControlsGlobals.UserInterface.ShowMessageBox("Transactions have been generated for this Budget Item.  That is why the Next Future Register Item Date was incremented.  Here are the generated Future Register Items for this Budget Item.", "Transactions Generated", RsMessageBoxIcons.Information);
                 _firstSaveGenTran = false;
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
+                SystemGlobals.TableRegistry.ShowEditAddOnTheFly(AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(budgetItem.BankAccount));
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
             }
 
 
