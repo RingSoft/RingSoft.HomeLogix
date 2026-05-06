@@ -1062,6 +1062,9 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             //Peter Ringering - 11/23/2024 05:02:40 PM - E-79
             RegisterGridManager.CalculateProjectedBalanceData();
+
+            if (AppGlobals.MainViewModel != null)
+                AppGlobals.MainViewModel.RefreshView();
         }
 
         private void SetTotals(BankAccount bankAccount)

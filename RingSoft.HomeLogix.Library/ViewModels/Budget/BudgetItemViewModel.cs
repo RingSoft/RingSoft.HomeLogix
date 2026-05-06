@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RingSoft.App.Library;
 using RingSoft.DataEntryControls.Engine;
 using RingSoft.DbLookup;
 using RingSoft.DbLookup.AutoFill;
@@ -7,11 +8,11 @@ using RingSoft.DbLookup.QueryBuilder;
 using RingSoft.DbMaintenance;
 using RingSoft.HomeLogix.DataAccess.LookupModel;
 using RingSoft.HomeLogix.DataAccess.Model;
+using RingSoft.HomeLogix.Library.ViewModels.Main;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using RingSoft.App.Library;
 
 namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 {
@@ -274,6 +275,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
                 _onDayValue = value;
                 OnPropertyChanged();
+                OnChangeSetDayValue();
             }
         }
 
@@ -875,11 +877,18 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
         protected override BudgetItem GetEntityFromDb(BudgetItem newEntity, PrimaryKeyValue primaryKeyValue)
         {
-            IQueryable<BudgetItem> query = SystemGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
-            query = query.Include(i => i.BankAccount)
-                .Include(i => i.TransferToBankAccount);
+            var budgetItem = GetBudgetItemEntity();
 
-            var budgetItem = query.FirstOrDefault(p => p.Id == Id);
+            if (_firstSaveGenTran)
+            {
+                StartingDate = budgetItem.StartingDate;
+                ControlsGlobals.UserInterface.ShowMessageBox("Transactions have been generated for this Budget Item.  That is why the Next Future Register Item Date was incremented.  Here are the generated Future Register Items for this Budget Item.", "Transactions Generated", RsMessageBoxIcons.Information);
+                _firstSaveGenTran = false;
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
+                SystemGlobals.TableRegistry.ShowEditAddOnTheFly(AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(budgetItem.BankAccount));
+                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
+                budgetItem = GetBudgetItemEntity();
+            }
 
             Amount = budgetItem.Amount;
 
@@ -892,15 +901,6 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             //ReadOnlyMode = AppGlobals.MainViewModel.BudgetItemViewModels.Any(a => a != this && a.Id == Id);
             BudgetItemTypeEnabled = false;
             StartingDate = budgetItem.StartingDate;
-            if (_firstSaveGenTran)
-            {
-                ControlsGlobals.UserInterface.ShowMessageBox("Transactions have been generated for this Budget Item.  That is why the Next Future Register Item Date was incremented.  Here are the generated Future Register Items for this Budget Item.", "Transactions Generated", RsMessageBoxIcons.Information);
-                _firstSaveGenTran = false;
-                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Default);
-                SystemGlobals.TableRegistry.ShowEditAddOnTheFly(AppGlobals.LookupContext.BankAccounts.GetPrimaryKeyValueFromEntity(budgetItem.BankAccount));
-                ControlsGlobals.UserInterface.SetWindowCursor(WindowCursorTypes.Wait);
-            }
-
 
             if (StartingDate != null)
                 _dbStartDate = StartingDate.Value;
@@ -913,6 +913,16 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             DbBankAccountId = budgetItem.BankAccountId;
             DbTransferToBankId = budgetItem.TransferToBankAccountId;
 
+            return budgetItem;
+        }
+
+        private BudgetItem GetBudgetItemEntity()
+        {
+            IQueryable<BudgetItem> query = SystemGlobals.DataRepository.GetDataContext().GetTable<BudgetItem>();
+            query = query.Include(i => i.BankAccount)
+                .Include(i => i.TransferToBankAccount);
+
+            var budgetItem = query.FirstOrDefault(p => p.Id == Id);
             return budgetItem;
         }
 
@@ -1940,6 +1950,30 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
             EndingDate = null;
             Amount = 0;
             RecurringType = BudgetItemRecurringTypes.Years;
+        }
+        
+        private void OnChangeSetDayValue()
+        {
+            if (_loading)
+            {
+                return;
+            }
+            
+            var day = OnDayValue.GetValueOrDefault();
+            if (day < 1)
+            {
+                StartingDate = null;
+                return;
+            }
+            
+            var lastDayOfMonth = new DateTime(AppGlobals.MainViewModel.CurrentMonthEnding.Year, AppGlobals.MainViewModel.CurrentMonthEnding.Month, 1);
+            lastDayOfMonth = lastDayOfMonth.AddMonths(1)
+                .AddDays(-1);
+            if (day > lastDayOfMonth.Day)
+            {
+                day = lastDayOfMonth.Day;
+            }
+            StartingDate = new DateTime(AppGlobals.MainViewModel.CurrentMonthEnding.Year, AppGlobals.MainViewModel.CurrentMonthEnding.Month, day);
         }
 
         protected override void OnPropertyChanged(string propertyName = null, bool raiseDirtyFlag = true)
