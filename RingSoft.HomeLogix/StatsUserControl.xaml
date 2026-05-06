@@ -34,13 +34,13 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
 
         <lc:LookupControl Grid.Row="0" Grid.Column="0" x:Name="BudgetLookupControl"
                               LookupDefinition="{Binding BudgetLookupDefinition}"
-                              HorizontalAlignment="Left" Width="750" Margin="5" ShowAdvancedFindButton="False" ForceRefreshOnActivate="False">
+                              HorizontalAlignment="Left" Margin="5" ShowAdvancedFindButton="False" ForceRefreshOnActivate="False">
 
             <lc:LookupControl.LookupColumns>
 
@@ -62,15 +62,19 @@
             </lc:LookupControl.LookupColumns>
         </lc:LookupControl>
 
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
 
             <ac:RSChart x:Name="BudgetChart" Width="400" Height="200" Items="{Binding BudgetChartData}" IsTabStop="False"/>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
 
             <ac:RSChart x:Name="ActualChart" Width="400" Height="200" Items="{Binding ActualChartData}" Margin="5,0,0,0" IsTabStop="False"/>
 
         </StackPanel>
 
-        <lc:LookupControl Grid.Row="0" Grid.Column="1" x:Name="BankLookupControl" LookupDefinition="{Binding BankLookupDefinition}" HorizontalAlignment="Left" Margin="5" ShowAdvancedFindButton="False" ForceRefreshOnActivate="False">
+        <lc:LookupControl Grid.Row="0" Grid.Column="1" x:Name="BankLookupControl" LookupDefinition="{Binding BankLookupDefinition}" HorizontalAlignment="Right" Margin="5" ShowAdvancedFindButton="False" ForceRefreshOnActivate="False">
             <lc:LookupControl.LookupColumns>
 
                 <lc:LookupColumn PropertyName="{lc:NameOf Description, Type={x:Type vm:MainBankLookup}}" Header="Bank Account" Width="250" DesignText = "A Very Large Bank" />
@@ -85,7 +89,8 @@
         </lc:LookupControl>
 
 
-        <GroupBox Grid.Row="2" Grid.Column="0" Header="Monthly Totals" HorizontalAlignment="Center" IsTabStop="False">
+        <GroupBox Grid.Row="2" Grid.Column="0" 
+                  Grid.ColumnSpan =" 2" Header="Monthly Totals" HorizontalAlignment="Center" IsTabStop="False">
 
             <Grid Margin="5">
                 <Grid.RowDefinitions>
@@ -150,7 +155,7 @@
             </Grid>
         </GroupBox>
 
-        <GroupBox Grid.Row="3" Grid.Column="0" Header="Yearly Totals" HorizontalAlignment="Center" IsTabStop="False">
+        <GroupBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Header="Yearly Totals" HorizontalAlignment="Center" IsTabStop="False">
             <Grid Margin="5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
