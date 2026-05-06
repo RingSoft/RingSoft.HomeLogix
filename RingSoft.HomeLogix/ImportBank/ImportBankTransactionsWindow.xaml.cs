@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using RingSoft.App.Controls;
@@ -47,6 +48,12 @@ namespace RingSoft.HomeLogix.ImportBank
                         }
                     }
                 };
+
+                if (ActualWidth > SystemParameters.PrimaryScreenWidth)
+                {
+                    Width = SystemParameters.PrimaryScreenWidth - 100;
+                }
+
             };
             CancelButton.Click += (sender, args) => Close();
         }
