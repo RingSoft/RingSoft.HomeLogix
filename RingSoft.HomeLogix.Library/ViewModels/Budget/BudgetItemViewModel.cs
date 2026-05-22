@@ -896,7 +896,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
         {
             var budgetItem = GetBudgetItemEntity();
 
-            if (_firstSaveGenTran)
+            if (_firstSaveGenTran && !SystemGlobals.UnitTestMode)
             {
                 StartingDate = budgetItem.StartingDate;
                 ControlsGlobals.UserInterface.ShowMessageBox("Transactions have been generated for this Budget Item.  That is why the Next Future Register Item Date was incremented.  Here are the generated Future Register Items for this Budget Item.", "Transactions Generated", RsMessageBoxIcons.Information);
@@ -907,6 +907,10 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 budgetItem = GetBudgetItemEntity();
             }
 
+            if (SystemGlobals.UnitTestMode)
+            {
+                _firstSaveGenTran = false;
+            }
             Amount = budgetItem.Amount;
 
             //Amount = budgetItem.Amount;
@@ -1212,7 +1216,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                     var existingRegisterItems =
                         AppGlobals.DataRepository.GetRegisterItemsForBankAccount(newBankAccount.Id);
 
-                    if (existingRegisterItems.Any() && !GenTran)
+                    if (existingRegisterItems.Any() && !GenTran && !newBankAccount.PendingGeneration)
                     {
 
                         _newBankAccountRegisterItems =
@@ -1793,7 +1797,7 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
 
             var registerItems = context.GetTable<BankAccountRegisterItem>()
                 .Where(p => p.BudgetItemId == Id
-                            && p.ItemType != (byte)BankAccountRegisterItemTypes.Miscellaneous);
+                            && p.ItemType != (byte)BankAccountRegisterItemTypes.Miscellaneous).ToList();
 
             if (!registerItems.Any())
                 return true;
