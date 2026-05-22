@@ -672,7 +672,24 @@ namespace RingSoft.HomeLogix.Library.ViewModels.Budget
                 if (bankAccount.PendingGeneration && StartingDate.HasValue)
                 {
                     GenTranUiCommand.Visibility = UiVisibilityTypes.Visible;
-                    GenTran = true;
+                    var context = SystemGlobals.DataRepository.GetDataContext();
+                    var table = context.GetTable<BankAccountRegisterItem>();
+                    var maxRegisterDate = table.Where(w => w.BankAccountId == bankAccount.Id).Select(s => (DateTime?)s.ItemDate).Max();
+                    if (maxRegisterDate.HasValue && StartingDate.Value <= maxRegisterDate.Value.AddMonths(1))
+                    {
+                        GenTran = true;
+                    }
+                    else
+                    {
+                        if (maxRegisterDate.HasValue)
+                        {
+                            GenTran = false;
+                        }
+                        else
+                        {
+                            GenTran = true;
+                        }
+                    }
                 }
                 else
                 {
